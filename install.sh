@@ -94,6 +94,7 @@ print_header() {
     echo "╔════════════════════════════════════════════════════════════════╗"
     echo "║                                                                ║"
     echo "║           OpenAgents Control Installer v1.0.0                 ║"
+    echo "║     Default: OpenAgent Experts Mode + Agent Swarm             ║"
     echo "║                                                                ║"
     echo "╚════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -505,9 +506,10 @@ check_interactive_mode() {
         echo "Or use a profile directly:"
         echo ""
         echo -e "${CYAN}# Quick install with profile${NC}"
-        echo "curl -fsSL ${RAW_URL}/install.sh | bash -s essential"
+        echo "curl -fsSL ${RAW_URL}/install.sh | bash -s developer"
         echo ""
         echo "Available profiles: essential, developer, business, full, advanced"
+        echo "Recommended: developer (OpenAgent Experts Mode + agent swarm defaults)"
         echo ""
         cleanup_and_exit 1
     fi
@@ -1260,7 +1262,8 @@ show_post_install() {
     else
         echo "2. Start using OpenCode agents:"
     fi
-    echo -e "   ${CYAN}opencode${NC}"
+    echo -e "   ${CYAN}opencode --agent OpenAgent${NC}"
+    echo "   OpenAgent defaults to Experts Mode powered by agent swarm orchestration."
     echo ""
     
     # Show installation location info
@@ -1398,11 +1401,11 @@ main() {
                 echo "Usage: $0 [PROFILE] [OPTIONS]"
                 echo ""
                 echo -e "${BOLD}Profiles:${NC}"
-                echo "  essential, --essential    Minimal setup with core agents"
-                echo "  developer, --developer    Code-focused development tools"
-                echo "  business, --business      Content and business-focused tools"
-                echo "  full, --full              Everything except system-builder"
-                echo "  advanced, --advanced      Complete system with all components"
+                echo "  essential, --essential    Minimal OpenAgent setup with Experts Mode defaults"
+                echo "  developer, --developer    Recommended coding setup with Experts Mode + swarm"
+                echo "  business, --business      Business/revenue/investor workflows under OpenAgent"
+                echo "  full, --full              Everything under one OpenAgent entrypoint"
+                echo "  advanced, --advanced      Full system plus meta/system-builder components"
                 echo ""
                 echo -e "${BOLD}Options:${NC}"
                 echo "  --install-dir PATH        Custom installation directory"
