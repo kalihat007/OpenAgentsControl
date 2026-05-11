@@ -3,7 +3,7 @@
     "allow": [
       "Bash(node install-context.js:*)",
       "Bash(bash .claude/hooks/session-start.sh)",
-      "Bash(node /Users/darrenhinde/Documents/GitHub/MYBUSINESS/claude-test/.claude/scripts/install-context.js:*)",
+      "Bash(node /Users/kalihat007/Documents/GitHub/MYBUSINESS/claude-test/.claude/scripts/install-context.js:*)",
       "Bash(node:*)",
       "Bash(bash .claude/scripts/install-context.sh:*)"
     ]

@@ -101,7 +101,7 @@ Installer File Test:
 
 1. Run the installer:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgentsControl/main/install.sh | bash -s essential
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s essential
 ```
 
 2. ContextScout should now work without errors:

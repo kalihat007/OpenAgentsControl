@@ -518,7 +518,7 @@ Before diving into details, here's how to check what context YOUR agents are usi
 
 ```bash
 # Run the token counting script
-cd /Users/darrenhinde/Documents/GitHub/opencode
+cd /Users/kalihat007/Documents/GitHub/opencode
 ./script/count-agent-tokens.sh AGENT_NAME MODEL_ID PROVIDER
 
 # Examples:

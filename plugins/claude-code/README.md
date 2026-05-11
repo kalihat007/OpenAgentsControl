@@ -29,7 +29,7 @@ Install directly from the Claude Code marketplace:
 
 ```bash
 # Add the OpenAgents Control marketplace repository
-/plugin marketplace add https://github.com/darrenhinde/OpenAgentsControl
+/plugin marketplace add https://github.com/kalihat007/OpenAgentsControl
 
 # Install the OAC plugin
 /plugin install oac
@@ -48,7 +48,7 @@ For plugin development or testing:
 
 ```bash
 # Clone the repository
-git clone https://github.com/darrenhinde/OpenAgentsControl.git
+git clone https://github.com/kalihat007/OpenAgentsControl.git
 cd OpenAgentsControl
 
 # Load plugin locally
@@ -490,7 +490,7 @@ Create `hooks/hooks.json`:
 
 ## 🤝 Contributing
 
-Contributions welcome! See the main [OpenAgents Control repository](https://github.com/darrenhinde/OpenAgentsControl) for contribution guidelines.
+Contributions welcome! See the main [OpenAgents Control repository](https://github.com/kalihat007/OpenAgentsControl) for contribution guidelines.
 
 ## 📄 License
 
@@ -498,8 +498,8 @@ MIT License - see [LICENSE](../LICENSE) for details.
 
 ## 🆘 Support
 
-- **Issues**: [GitHub Issues](https://github.com/darrenhinde/OpenAgentsControl/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/darrenhinde/OpenAgentsControl/discussions)
+- **Issues**: [GitHub Issues](https://github.com/kalihat007/OpenAgentsControl/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/kalihat007/OpenAgentsControl/discussions)
 
 ## 🗺️ Roadmap
 

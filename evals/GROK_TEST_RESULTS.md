@@ -94,7 +94,7 @@ Since Grok doesn't work, here's the minimal test suite for Claude:
 
 ### Run Core Test Suite with Claude
 ```bash
-cd /Users/darrenhinde/Documents/GitHub/opencode-agents/evals/framework
+cd /Users/kalihat007/Documents/GitHub/opencode-agents/evals/framework
 
 # Test 1: Approval before execution
 npm run eval:sdk -- --agent=openagent \

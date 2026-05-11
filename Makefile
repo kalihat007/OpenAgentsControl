@@ -1,9 +1,9 @@
 # OpenAgents - GitHub Project Management & Development
 # Quick commands for managing your GitHub Project board and running tests
 
-REPO := darrenhinde/OpenAgents
+REPO := kalihat007/OpenAgents
 PROJECT_NUMBER := 2
-OWNER := darrenhinde
+OWNER := kalihat007
 
 .PHONY: help idea ideas board labels project-info issue-view issue-comment issue-close bug feature
 .PHONY: test-evals test-golden test-smoke test-verbose build-evals validate-evals
@@ -140,7 +140,7 @@ issue-close: ## Close an issue (requires NUM)
 add-to-project: ## Add an issue to the project (requires ISSUE_URL)
 	@if [ -z "$(ISSUE_URL)" ]; then \
 		echo "Error: ISSUE_URL is required"; \
-		echo "Usage: make add-to-project ISSUE_URL=https://github.com/darrenhinde/OpenAgents/issues/123"; \
+		echo "Usage: make add-to-project ISSUE_URL=https://github.com/kalihat007/OpenAgents/issues/123"; \
 		exit 1; \
 	fi
 	@gh project item-add $(PROJECT_NUMBER) --owner $(OWNER) --url "$(ISSUE_URL)"

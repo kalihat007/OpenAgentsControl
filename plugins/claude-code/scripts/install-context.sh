@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-GITHUB_REPO="darrenhinde/OpenAgentsControl"
+GITHUB_REPO="kalihat007/OpenAgentsControl"
 GITHUB_BRANCH="main"
 CONTEXT_SOURCE_PATH=".opencode/context"
 

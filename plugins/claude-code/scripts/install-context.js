@@ -15,7 +15,7 @@ const { join } = require('path');
 const os = require('os');
 
 // Configuration
-const GITHUB_REPO = 'darrenhinde/OpenAgentsControl';
+const GITHUB_REPO = 'kalihat007/OpenAgentsControl';
 const GITHUB_BRANCH = 'main';
 const CONTEXT_SOURCE_PATH = '.opencode/context';
 

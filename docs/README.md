@@ -36,7 +36,7 @@ Welcome to the OpenAgents Control documentation! This directory contains all doc
 ### For Contributors
 - Read the [Contributing Guide](contributing/CONTRIBUTING.md)
 - Review the [Code of Conduct](contributing/CODE_OF_CONDUCT.md)
-- Check out [good first issues](https://github.com/darrenhinde/OpenAgentsControl/labels/good%20first%20issue)
+- Check out [good first issues](https://github.com/kalihat007/OpenAgentsControl/labels/good%20first%20issue)
 
 ### For Advanced Users
 - Study the [Agent System Blueprint](features/agent-system-blueprint.md)
@@ -83,13 +83,13 @@ docs/
 → [Contributing Guide](contributing/CONTRIBUTING.md)
 
 **...report a bug or request a feature**
-→ [GitHub Issues](https://github.com/darrenhinde/OpenAgentsControl/issues)
+→ [GitHub Issues](https://github.com/kalihat007/OpenAgentsControl/issues)
 
 ## 💡 Additional Resources
 
 - **Main README**: [../README.md](../README.md) - Complete overview and quick start
 - **CHANGELOG**: [../CHANGELOG.md](../CHANGELOG.md) - Version history and updates
-- **GitHub Repository**: https://github.com/darrenhinde/OpenAgentsControl
+- **GitHub Repository**: https://github.com/kalihat007/OpenAgentsControl
 - **OpenCode CLI Docs**: https://opencode.ai/docs
 - **Component Registry**: [../registry.json](../registry.json)
 
@@ -105,9 +105,9 @@ Latest updates:
 
 ## 🤝 Community
 
-- **Issues**: [Report bugs or request features](https://github.com/darrenhinde/OpenAgentsControl/issues)
-- **Discussions**: [Ask questions and share ideas](https://github.com/darrenhinde/OpenAgentsControl/discussions)
-- **Pull Requests**: [Contribute code](https://github.com/darrenhinde/OpenAgentsControl/pulls)
+- **Issues**: [Report bugs or request features](https://github.com/kalihat007/OpenAgentsControl/issues)
+- **Discussions**: [Ask questions and share ideas](https://github.com/kalihat007/OpenAgentsControl/discussions)
+- **Pull Requests**: [Contribute code](https://github.com/kalihat007/OpenAgentsControl/pulls)
 
 ## 📝 License
 
@@ -115,4 +115,4 @@ This project is licensed under the MIT License. See [LICENSE](../LICENSE) for de
 
 ---
 
-**Need help?** Check the [Contributing Guide](contributing/CONTRIBUTING.md) or open an [issue](https://github.com/darrenhinde/OpenAgentsControl/issues).
+**Need help?** Check the [Contributing Guide](contributing/CONTRIBUTING.md) or open an [issue](https://github.com/kalihat007/OpenAgentsControl/issues).

@@ -11,7 +11,7 @@ After merging this PR, update these GitHub repository settings:
 AI agent framework for plan-first development workflows with approval-based execution. Multi-language support (TypeScript, Python, Go, Rust) with automatic testing, code review, and validation.
 ```
 
-**Website:** `https://github.com/darrenhinde/OpenAgentsControl`
+**Website:** `https://github.com/kalihat007/OpenAgentsControl`
 
 ## 2. Topics (Add All 16)
 

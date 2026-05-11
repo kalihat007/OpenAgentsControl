@@ -114,7 +114,7 @@ Context Installer
 ========================
 
 ℹ Profile: essential
-ℹ Repository: darrenhinde/OpenAgentsControl
+ℹ Repository: kalihat007/OpenAgentsControl
 ℹ Branch: main
 ℹ Dry run: false
 

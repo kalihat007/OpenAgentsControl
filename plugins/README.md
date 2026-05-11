@@ -25,7 +25,7 @@ plugins/
 **Installation**:
 ```bash
 # From GitHub marketplace
-/plugin marketplace add darrenhinde/OpenAgentsControl
+/plugin marketplace add kalihat007/OpenAgentsControl
 /plugin install oac
 
 # Local testing

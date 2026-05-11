@@ -1,7 +1,7 @@
 # Abilities System - Implementation Plan
 
 > **Status:** Planning Complete - Ready for Implementation  
-> **Issue:** [#33](https://github.com/darrenhinde/OpenAgentsControl/issues/33)  
+> **Issue:** [#33](https://github.com/kalihat007/OpenAgentsControl/issues/33)  
 > **Date:** December 31, 2025
 
 ---
@@ -742,7 +742,7 @@ steps:
 
 ## References
 
-- [Issue #33](https://github.com/darrenhinde/OpenAgentsControl/issues/33) - Original proposal
+- [Issue #33](https://github.com/kalihat007/OpenAgentsControl/issues/33) - Original proposal
 - [oh-my-opencode](https://github.com/code-yeongyu/oh-my-opencode) - Plugin patterns
 - [OpenCode Skills](https://opencode.ai/docs/skills/) - Current skill system
 - [Scott Spence - Making Skills Reliable](https://scottspence.com/posts/how-to-make-claude-code-skills-activate-reliably)

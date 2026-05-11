@@ -30,7 +30,7 @@ This guide covers everything you need to know to develop agents, commands, tools
 
 ```bash
 # Clone the repository
-git clone https://github.com/darrenhinde/OpenAgentsControl.git
+git clone https://github.com/kalihat007/OpenAgentsControl.git
 cd OpenAgentsControl
 
 # Install dependencies for testing framework

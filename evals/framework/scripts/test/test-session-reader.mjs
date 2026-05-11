@@ -10,7 +10,7 @@ import { getProjectHash } from './dist/config.js';
 import path from 'path';
 import os from 'os';
 
-const projectPath = '/Users/darrenhinde/Documents/GitHub/opencode-agents/evals/framework';
+const projectPath = '/Users/kalihat007/Documents/GitHub/opencode-agents/evals/framework';
 const sessionStoragePath = path.join(os.homedir(), '.local', 'share', 'opencode');
 
 console.log('='.repeat(60));

@@ -986,12 +986,12 @@ What We Covered
    - The difference between schema URL (IDE autocomplete) vs actual code (npm)
 4. Created publishing guide - How to create, build, and publish your own OpenCode plugin
 Key Files Examined
-- /Users/darrenhinde/Documents/GitHub/test-larvel/oh-my-opencode/src/index.ts
-- /Users/darrenhinde/Documents/GitHub/test-larvel/oh-my-opencode/src/agents/*.ts
-- /Users/darrenhinde/Documents/GitHub/test-larvel/oh-my-opencode/src/features/background-agent/manager.ts
-- /Users/darrenhinde/Documents/GitHub/test-larvel/oh-my-opencode/src/tools/background-task/tools.ts
-- /Users/darrenhinde/Documents/GitHub/test-larvel/oh-my-opencode/src/hooks/auto-update-checker/*.ts
-- /Users/darrenhinde/Documents/GitHub/test-larvel/oh-my-opencode/package.json
+- /Users/kalihat007/Documents/GitHub/test-larvel/oh-my-opencode/src/index.ts
+- /Users/kalihat007/Documents/GitHub/test-larvel/oh-my-opencode/src/agents/*.ts
+- /Users/kalihat007/Documents/GitHub/test-larvel/oh-my-opencode/src/features/background-agent/manager.ts
+- /Users/kalihat007/Documents/GitHub/test-larvel/oh-my-opencode/src/tools/background-task/tools.ts
+- /Users/kalihat007/Documents/GitHub/test-larvel/oh-my-opencode/src/hooks/auto-update-checker/*.ts
+- /Users/kalihat007/Documents/GitHub/test-larvel/oh-my-opencode/package.json
 - /tmp/opencode-repo/packages/plugin/src/index.ts (from sst/opencode)
 ▣  Compaction · claude-opus-4-5 · 3m 0s
 Thinking: The user is asking me to continue if there are next steps. Let me check what the current state is and if there's anything pending.
