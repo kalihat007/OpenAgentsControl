@@ -5,7 +5,8 @@
   "workspaces": [
     "evals/framework",
     "packages/cli",
-    "packages/compatibility-layer"
+    "packages/compatibility-layer",
+    "packages/swarm-runtime"
   ],
   "bin": {
     "oac": "./bin/oac.js"
@@ -27,6 +28,9 @@
     "!**/node_modules/",
     "scripts/",
     "bin/",
+    "packages/swarm-runtime/dist/",
+    "packages/swarm-runtime/package.json",
+    "packages/swarm-runtime/README.md",
     "registry.json",
     "install.sh",
     "VERSION",

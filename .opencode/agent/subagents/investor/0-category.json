@@ -1,0 +1,7 @@
+{
+  "id": "investor",
+  "name": "Investor Magnet",
+  "description": "Investor narrative, PR, LinkedIn thought leadership, analyst relations, events, social proof, crisis-to-opportunity, and funding-round orchestration swarms",
+  "type": "subagent-category",
+  "version": "1.0.0"
+}

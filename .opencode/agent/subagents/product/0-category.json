@@ -1,0 +1,7 @@
+{
+  "id": "product",
+  "name": "Product",
+  "description": "Product management, scope, story, and acceptance-criteria agents",
+  "type": "subagent-category",
+  "version": "1.0.0"
+}

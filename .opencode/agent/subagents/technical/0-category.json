@@ -1,0 +1,7 @@
+{
+  "id": "technical",
+  "name": "Technical",
+  "description": "Deep-tech R&D, hardware-software co-design, embedded, FPGA, VAPT, HIL/SIL, compliance, release, and technical validation swarms",
+  "type": "subagent-category",
+  "version": "1.0.0"
+}

@@ -1,0 +1,7 @@
+{
+  "id": "revenue",
+  "name": "Revenue",
+  "description": "Marketing, sales, growth, customer success, trust, and revenue analytics swarm agents",
+  "type": "subagent-category",
+  "version": "1.0.0"
+}

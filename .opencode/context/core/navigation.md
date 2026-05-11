@@ -12,7 +12,13 @@
 core/
 ├── navigation.md
 ├── context-system.md
+├── business-operations-swarms.md
 ├── essential-patterns.md
+├── development-swarm.md
+├── revenue-swarm.md
+├── investor-magnet-swarm.md
+├── technical-swarm.md
+├── swarm-orchestration.md
 │
 ├── standards/
 │   ├── navigation.md
@@ -70,6 +76,12 @@ core/
 | **Security patterns** | `standards/security-patterns.md` |
 | **Review code** | `workflows/code-review.md` |
 | **Delegate task** | `workflows/task-delegation-basics.md` |
+| **Run agent swarm** | `swarm-orchestration.md` |
+| **Build development team swarm** | `development-swarm.md` |
+| **Build revenue growth swarm** | `revenue-swarm.md` |
+| **Build investor magnet swarm** | `investor-magnet-swarm.md` |
+| **Build business operating swarm** | `business-operations-swarms.md` |
+| **Build technical R&D swarm** | `technical-swarm.md` |
 | **Break down feature** | `workflows/feature-breakdown.md` |
 | **Resume session** | `guides/resuming-sessions.md` |
 | **Manage tasks** | `task-management/navigation.md` |
@@ -82,6 +94,12 @@ core/
 
 **Standards** → Code quality, testing, docs, security (critical priority)
 **Workflows** → Review, delegation, task breakdown (high priority)
+**Swarm** → Task graph, file locks, safe parallel batches, validation gates (critical priority)
+**Development Swarm** → PM, architect, tech lead, dev, QA, security, review, docs, integration, debug roles (critical priority)
+**Revenue Swarm** → CGO, market intel, customer research, brand, lead gen, conversion, pricing, content, PR, trust, analytics, sales coaching (critical priority)
+**Investor Magnet Swarm** → investor narrative, funding simulation, PR/media, LinkedIn thought leadership, analyst relations, events, social proof, crisis-to-opportunity, investor metrics (critical priority)
+**Business Operations Swarms** → CEO, support, product strategy, compliance, talent, finance, supply chain, R&D, crisis, partnerships, knowledge management (critical priority)
+**Technical Swarm** → Hardware/software co-design, embedded, FPGA, HIL/SIL, VAPT, compliance, EMC, SBOM, signing, OTA release (critical priority)
 **Task Management** → JSON-driven task tracking with CLI (high priority)
 **System** → Context management and guides (medium priority)
 

@@ -1,0 +1,22 @@
+{
+  "name": "@nextsystems/oac-swarm-runtime",
+  "version": "0.1.0",
+  "description": "Typed swarm planning primitives for OpenAgents Control task graphs, batches, locks, and event streams.",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

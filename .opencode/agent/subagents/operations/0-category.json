@@ -1,0 +1,7 @@
+{
+  "id": "operations",
+  "name": "Operations",
+  "description": "CEO, support, strategy, compliance, talent, finance, supply chain, R&D, crisis, partnership, and knowledge swarms",
+  "type": "subagent-category",
+  "version": "1.0.0"
+}

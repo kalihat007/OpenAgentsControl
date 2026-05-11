@@ -7,7 +7,13 @@
     "standard": "Standard components for typical use",
     "extended": "Extended components for advanced features",
     "specialized": "Specialized components for specific domains",
-    "meta": "Meta-level components for system generation"
+    "product": "Product management, requirements, story, and scope components",
+    "security": "Security review, threat analysis, vulnerability, and secure-default components",
+    "meta": "Meta-level components for system generation",
+    "revenue": "Marketing, sales, growth, customer success, trust, and revenue analytics components",
+    "operations": "CEO, customer support, product strategy, compliance, talent, finance, supply chain, R&D, crisis, partnership, and knowledge management components",
+    "technical": "Deep-tech R&D, hardware/software co-design, embedded firmware, FPGA/ASIC, automotive protocols, VAPT, HIL/SIL, compliance, EMC, SBOM, signing, and release components",
+    "investor": "Investor narrative, funding simulation, PR/media, LinkedIn thought leadership, analyst relations, events, social proof, crisis-to-opportunity, and investor metrics components"
   },
   "components": {
     "agents": [
@@ -131,7 +137,14 @@
           "context:standards-tests",
           "context:review-ref",
           "context:delegation-ref",
-          "context:external-libraries-workflow"
+          "context:external-libraries-workflow",
+          "subagent:swarm-orchestrator",
+          "context:development-swarm",
+          "context:swarm-orchestration",
+          "context:revenue-swarm",
+          "context:business-operations-swarms",
+          "context:technical-swarm",
+          "context:investor-magnet-swarm"
         ],
         "category": "core"
       }
@@ -258,6 +271,95 @@
         "category": "development"
       },
       {
+        "id": "product-manager",
+        "name": "ProductManagerAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/product/product-manager.md",
+        "description": "Parses requirements, defines scope, decomposes epics into stories, and sets acceptance criteria",
+        "tags": [
+          "product",
+          "requirements",
+          "stories",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "product"
+      },
+      {
+        "id": "system-architect",
+        "name": "SystemArchitectAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/development/system-architect.md",
+        "description": "Designs data models, API contracts, service boundaries, event flows, and integration constraints",
+        "tags": [
+          "architecture",
+          "contracts",
+          "data-modeling",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "development"
+      },
+      {
+        "id": "tech-lead",
+        "name": "TechLeadAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/development/tech-lead.md",
+        "description": "Chooses stack patterns, arbitrates disagreements, reviews integration points, and owns final technical decisions",
+        "tags": [
+          "technical-leadership",
+          "patterns",
+          "arbitration",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "development"
+      },
+      {
+        "id": "backend-developer",
+        "name": "BackendDeveloperAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/development/backend-developer.md",
+        "description": "Implements APIs, services, business logic, database queries, migrations, and backend tests within declared ownership",
+        "tags": [
+          "backend",
+          "api",
+          "database",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "development"
+      },
+      {
+        "id": "security-agent",
+        "name": "SecurityAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/security/security-agent.md",
+        "description": "Reviews auth, secrets, dependency risk, injection paths, webhook validation, cloud permissions, and secure defaults",
+        "tags": [
+          "security",
+          "auth",
+          "vulnerability",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "security"
+      },
+      {
         "id": "domain-analyzer",
         "name": "DomainAnalyzer",
         "type": "subagent",
@@ -335,7 +437,7 @@
         "type": "subagent",
         "path": ".opencode/agent/subagents/core/contextscout.md",
         "version": "5.1.0",
-        "description": "Get accurate context FIRST before diving deep\u2014save time, energy, and avoid rework. ContextScout intelligently discovers and retrieves the exact context files you need with precise file paths and line ranges, so you start with the right information instead of guessing. Optimized for multi-model compatibility (Claude, Gemini, GPT-4) with 20% token reduction.",
+        "description": "Get accurate context FIRST before diving deep—save time, energy, and avoid rework. ContextScout intelligently discovers and retrieves the exact context files you need with precise file paths and line ranges, so you start with the right information instead of guessing. Optimized for multi-model compatibility (Claude, Gemini, GPT-4) with 20% token reduction.",
         "tags": [
           "context",
           "search",
@@ -394,6 +496,144 @@
         "category": "core"
       },
       {
+        "id": "batch-executor",
+        "name": "BatchExecutor",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/core/batch-executor.md",
+        "description": "Executes safe parallel batches by delegating independent subtasks and verifying batch completion",
+        "tags": [
+          "batch",
+          "parallel",
+          "execution",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:coder-agent",
+          "subagent:contextscout",
+          "subagent:externalscout",
+          "skill:task-management"
+        ],
+        "category": "core"
+      },
+      {
+        "id": "stage-orchestrator",
+        "name": "StageOrchestrator",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/core/stage-orchestrator.md",
+        "description": "Coordinates complex multi-stage feature workflows from architecture through validation and learning capture",
+        "tags": [
+          "stages",
+          "orchestration",
+          "workflow",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:task-manager",
+          "subagent:batch-executor",
+          "subagent:coder-agent",
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "core"
+      },
+      {
+        "id": "swarm-orchestrator",
+        "name": "SwarmOrchestrator",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/core/swarm-orchestrator.md",
+        "description": "Internal controlled agent swarm orchestrator used by OpenAgent for complex multi-agent work with task graphs, file locks, approval gates, and validation",
+        "tags": [
+          "swarm",
+          "orchestration",
+          "parallel",
+          "coordination"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout",
+          "subagent:product-manager",
+          "subagent:system-architect",
+          "subagent:tech-lead",
+          "subagent:task-manager",
+          "subagent:batch-executor",
+          "subagent:stage-orchestrator",
+          "subagent:coder-agent",
+          "subagent:backend-developer",
+          "subagent:frontend-specialist",
+          "subagent:devops-specialist",
+          "subagent:tester",
+          "subagent:security-agent",
+          "subagent:reviewer",
+          "subagent:build-agent",
+          "subagent:documentation",
+          "subagent:merge-coordinator",
+          "subagent:integration-agent",
+          "subagent:debug-agent",
+          "context:development-swarm",
+          "context:swarm-orchestration",
+          "context:task-delegation-basics"
+        ],
+        "category": "core"
+      },
+      {
+        "id": "merge-coordinator",
+        "name": "MergeCoordinatorAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/core/merge-coordinator.md",
+        "description": "Resolves module ownership, merge conflicts, API mismatches, and integration readiness between parallel workers",
+        "tags": [
+          "merge",
+          "conflicts",
+          "contracts",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:tech-lead"
+        ],
+        "category": "core"
+      },
+      {
+        "id": "integration-agent",
+        "name": "IntegrationAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/core/integration-agent.md",
+        "description": "Wires verified swarm outputs together, runs integration checks, and coordinates validation gates",
+        "tags": [
+          "integration",
+          "validation",
+          "smoke-tests",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:merge-coordinator",
+          "subagent:tester",
+          "subagent:security-agent",
+          "subagent:reviewer",
+          "subagent:build-agent"
+        ],
+        "category": "core"
+      },
+      {
+        "id": "debug-agent",
+        "name": "DebugAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/core/debug-agent.md",
+        "description": "Isolates root causes from failed builds, tests, runtime logs, incidents, and integration failures",
+        "tags": [
+          "debugging",
+          "incident",
+          "recovery",
+          "swarm"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "core"
+      },
+      {
         "id": "simple-responder",
         "name": "Simple Responder",
         "type": "subagent",
@@ -418,6 +658,904 @@
         ],
         "dependencies": [],
         "category": "core"
+      },
+      {
+        "id": "chief-growth-officer",
+        "name": "ChiefGrowthOfficerAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/chief-growth-officer.md",
+        "description": "Sets growth KPIs, allocates channel strategy, arbitrates revenue-swarm conflicts, and owns GTM decision quality",
+        "tags": [
+          "growth",
+          "strategy",
+          "kpi",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "market-intelligence",
+        "name": "MarketIntelligenceAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/market-intelligence.md",
+        "description": "Performs competitive analysis, trend forecasting, whitespace identification, account mapping, and market-entry research",
+        "tags": [
+          "market-intel",
+          "competitive",
+          "trends",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "customer-research",
+        "name": "CustomerResearchAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/customer-research.md",
+        "description": "Refines ICPs, buyer personas, pain points, JTBD, objections, buying committees, and interview insights",
+        "tags": [
+          "icp",
+          "persona",
+          "jtbd",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "brand-strategy",
+        "name": "BrandStrategyAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/brand-strategy.md",
+        "description": "Defines positioning, messaging hierarchy, brand voice, proof pillars, and claim governance for campaigns",
+        "tags": [
+          "brand",
+          "positioning",
+          "messaging",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "lead-generation",
+        "name": "LeadGenerationAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/lead-generation.md",
+        "description": "Builds target account lists, outbound sequences, LinkedIn/email angles, routing logic, and lead qualification rules",
+        "tags": [
+          "lead-gen",
+          "outbound",
+          "pipeline",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "conversion",
+        "name": "ConversionAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/conversion.md",
+        "description": "Designs landing pages, funnels, A/B tests, lead magnets, conversion paths, and experimentation plans",
+        "tags": [
+          "conversion",
+          "funnel",
+          "ab-testing",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "pricing-strategy",
+        "name": "PricingStrategyAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/pricing-strategy.md",
+        "description": "Designs packaging, pilot-to-production ladders, discount authority, willingness-to-pay models, and expansion pricing",
+        "tags": [
+          "pricing",
+          "packaging",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "content-swarm",
+        "name": "ContentSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/content-swarm.md",
+        "description": "Orchestrates parallel content creators for blogs, whitepapers, case studies, battlecards, social variants, and campaign assets",
+        "tags": [
+          "content",
+          "campaigns",
+          "swarm",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "social-media",
+        "name": "SocialMediaAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/social-media.md",
+        "description": "Plans community engagement, LinkedIn campaigns, trend response, influencer mapping, and social distribution calendars",
+        "tags": [
+          "social",
+          "linkedin",
+          "community",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "pr-communications",
+        "name": "PRCommunicationsAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/pr-communications.md",
+        "description": "Creates PR strategy, press releases, journalist pitches, crisis responses, event submissions, and thought-leadership placement plans",
+        "tags": [
+          "pr",
+          "communications",
+          "events",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "customer-success",
+        "name": "CustomerSuccessAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/customer-success.md",
+        "description": "Designs onboarding, health scoring, expansion plays, renewal motions, training, and customer advocacy loops",
+        "tags": [
+          "customer-success",
+          "retention",
+          "expansion",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "trust-reputation",
+        "name": "TrustReputationAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/trust-reputation.md",
+        "description": "Manages reviews, testimonials, references, reputation monitoring, response strategy, and third-party trust assets",
+        "tags": [
+          "trust",
+          "reviews",
+          "testimonials",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "performance-analytics",
+        "name": "PerformanceAnalyticsAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/performance-analytics.md",
+        "description": "Defines attribution, cohort analysis, campaign dashboards, funnel metrics, experiment readouts, and performance insights",
+        "tags": [
+          "analytics",
+          "attribution",
+          "dashboard",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "predictive-revenue",
+        "name": "PredictiveRevenueAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/predictive-revenue.md",
+        "description": "Models churn risk, LTV, expansion opportunities, next-best-action recommendations, and pipeline forecasts",
+        "tags": [
+          "forecasting",
+          "ltv",
+          "churn",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "sales-coach",
+        "name": "SalesCoachAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/revenue/sales-coach.md",
+        "description": "Runs adversarial sales simulations with skeptical buyer, competitor, procurement, and coach perspectives to improve win rates",
+        "tags": [
+          "sales",
+          "coaching",
+          "objections",
+          "revenue"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "ceo-agent",
+        "name": "CEOAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/ceo-agent.md",
+        "description": "Meta-swarm executive agent that synthesizes signals across all swarms into OKRs, resource decisions, and scenarios",
+        "tags": [
+          "ceo",
+          "strategy",
+          "okr",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "customer-support-success-swarm",
+        "name": "CustomerSupportSuccessSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/customer-support-success-swarm.md",
+        "description": "Orchestrates support triage, technical escalation, customer health, expansion scouting, and voice-of-customer synthesis",
+        "tags": [
+          "support",
+          "success",
+          "retention",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "product-strategy-swarm",
+        "name": "ProductStrategySwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/product-strategy-swarm.md",
+        "description": "Orchestrates product portfolio strategy, market sizing, competitive intel, roadmap tradeoffs, partnerships, and sunset analysis",
+        "tags": [
+          "product",
+          "strategy",
+          "roadmap",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "regulatory-compliance-swarm",
+        "name": "RegulatoryComplianceSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/regulatory-compliance-swarm.md",
+        "description": "Orchestrates standards monitoring, compliance gap analysis, certification preparation, regional tracking, and customer compliance reports",
+        "tags": [
+          "regulatory",
+          "compliance",
+          "standards",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "talent-hiring-swarm",
+        "name": "TalentHiringSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/talent-hiring-swarm.md",
+        "description": "Orchestrates sourcing, technical screening, culture-fit, compensation benchmarking, and onboarding for cybersecurity talent",
+        "tags": [
+          "talent",
+          "hiring",
+          "recruiting",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "finance-ir-swarm",
+        "name": "FinanceInvestorRelationsSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/finance-ir-swarm.md",
+        "description": "Orchestrates FP&A, pricing economics, investor narratives, due diligence, and unit economics",
+        "tags": [
+          "finance",
+          "investor-relations",
+          "unit-economics",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "supply-chain-manufacturing-swarm",
+        "name": "SupplyChainManufacturingSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/supply-chain-manufacturing-swarm.md",
+        "description": "Orchestrates component scouting, BOM optimization, vendor negotiation, quality/RMA intelligence, and logistics for cybersecurity hardware",
+        "tags": [
+          "supply-chain",
+          "manufacturing",
+          "bom",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "innovation-rd-swarm",
+        "name": "InnovationRDSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/innovation-rd-swarm.md",
+        "description": "Orchestrates technology scouting, prototype ideation, patents, academic partnerships, and R&D portfolio bets",
+        "tags": [
+          "innovation",
+          "rd",
+          "patents",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "crisis-response-swarm",
+        "name": "CrisisResponseSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/crisis-response-swarm.md",
+        "description": "Orchestrates threat/product incident detection, impact assessment, response coordination, legal review, and reputation management",
+        "tags": [
+          "crisis",
+          "incident",
+          "reputation",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "partnership-ecosystem-swarm",
+        "name": "PartnershipEcosystemSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/partnership-ecosystem-swarm.md",
+        "description": "Orchestrates partner mapping, co-marketing, technical alliance integration, sponsorship ROI, and channel strategy",
+        "tags": [
+          "partnerships",
+          "ecosystem",
+          "channels",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "knowledge-management-swarm",
+        "name": "KnowledgeManagementSwarmAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/operations/knowledge-management-swarm.md",
+        "description": "Orchestrates document harvesting, living wikis, onboarding training, expert location, and documentation decay detection",
+        "tags": [
+          "knowledge",
+          "training",
+          "documentation",
+          "operations"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "hardware-architect",
+        "name": "HardwareArchitectAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/hardware-architect.md",
+        "description": "Designs schematics, PCB stackup, SI/PI, EMC, DFM/DFT, power, connectors, and hardware test constraints",
+        "tags": [
+          "hardware",
+          "pcb",
+          "emc",
+          "codesign",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "fpga-asic-agent",
+        "name": "FPGAASICAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/fpga-asic-agent.md",
+        "description": "Designs HDL, GMSL/MIPI/PCIe bridges, DMA, timestamping, timing closure, and formal checks",
+        "tags": [
+          "fpga",
+          "asic",
+          "hdl",
+          "timing",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "rtos-os-agent",
+        "name": "RTOSOSAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/rtos-os-agent.md",
+        "description": "Designs AUTOSAR, FreeRTOS, QNX, Linux BSP, Yocto, scheduling, and OS integration",
+        "tags": [
+          "rtos",
+          "autosar",
+          "linux-bsp",
+          "yocto",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "embedded-cpp-agent",
+        "name": "EmbeddedCPPCodingAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/embedded-cpp-agent.md",
+        "description": "Implements drivers, automotive stacks, MCAL-like modules, and MISRA/AUTOSAR-aligned firmware",
+        "tags": [
+          "embedded",
+          "firmware",
+          "cpp",
+          "misra",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "automotive-ethernet-agent",
+        "name": "AutomotiveEthernetAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/automotive-ethernet-agent.md",
+        "description": "Builds and validates 100/1000BASE-T1, TSN, SOME/IP, DDS, capture, injection, and diagnostics workflows",
+        "tags": [
+          "automotive-ethernet",
+          "tsn",
+          "someip",
+          "dds",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "security-firmware-agent",
+        "name": "SecurityFirmwareAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/security-firmware-agent.md",
+        "description": "Designs secure boot, HSM/TPM integration, crypto services, key lifecycle, provisioning, and anti-tamper controls",
+        "tags": [
+          "secure-boot",
+          "hsm",
+          "tpm",
+          "crypto",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "technical-python-tooling-agent",
+        "name": "TechnicalPythonToolingAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/technical-python-tooling-agent.md",
+        "description": "Builds host tooling, test automation, data analysis, protocol utilities, and report generation for technical campaigns",
+        "tags": [
+          "python",
+          "tooling",
+          "automation",
+          "reports",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "embedded-rust-agent",
+        "name": "EmbeddedRustAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/embedded-rust-agent.md",
+        "description": "Builds memory-safe protocol parsers, no_std modules, fuzzable components, and embedded Rust integrations",
+        "tags": [
+          "rust",
+          "embedded-rust",
+          "no-std",
+          "parsers",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "hil-sil-agent",
+        "name": "HILSILAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/hil-sil-agent.md",
+        "description": "Plans and operates HIL/SIL benches, CANoe, vTESTstudio, dSPACE, Vector, NI, and fault campaigns",
+        "tags": [
+          "hil",
+          "sil",
+          "canoe",
+          "validation",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "penetration-test-agent",
+        "name": "PenetrationTestAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/penetration-test-agent.md",
+        "description": "Plans and runs fuzzing, reverse engineering, side-channel, fault injection, wireless, physical, and network security tests",
+        "tags": [
+          "vapt",
+          "fuzzing",
+          "reverse-engineering",
+          "side-channel",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "technical-compliance-vv-agent",
+        "name": "TechnicalComplianceVVAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/technical-compliance-vv-agent.md",
+        "description": "Maintains ISO/SAE 21434, UN R155, EVITA/HEAVENS, TARA, requirement traceability, and evidence",
+        "tags": [
+          "compliance",
+          "tara",
+          "iso21434",
+          "un-r155",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "emc-environmental-agent",
+        "name": "EMCEnvironmentalAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/emc-environmental-agent.md",
+        "description": "Plans EMC, ESD, thermal, vibration, CISPR 25, ISO 11452, and ISO 7637 pre-compliance validation",
+        "tags": [
+          "emc",
+          "environmental",
+          "thermal",
+          "esd",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "technical-cicd-agent",
+        "name": "TechnicalCICDAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/technical-cicd-agent.md",
+        "description": "Builds Yocto, containerized toolchains, HDL/software CI, reproducible builds, and artifact signing pipelines",
+        "tags": [
+          "ci",
+          "yocto",
+          "toolchains",
+          "signing",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "technical-release-agent",
+        "name": "TechnicalReleaseAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/technical/release-agent.md",
+        "description": "Prepares SBOM, CVE/license scans, OTA packages, release notes, security advisories, and release evidence",
+        "tags": [
+          "release",
+          "sbom",
+          "ota",
+          "advisory",
+          "technical",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout",
+          "subagent:externalscout"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "investor-narrative-agent",
+        "name": "InvestorNarrativeAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/investor-narrative-agent.md",
+        "description": "Crafts funding narratives, TAM expansion stories, competitive positioning, exit paths, and due-diligence-ready investor materials",
+        "tags": [
+          "investor",
+          "narrative",
+          "fundraising",
+          "positioning",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "funding-round-simulation-agent",
+        "name": "FundingRoundSimulationAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/funding-round-simulation-agent.md",
+        "description": "Runs adversarial funding-round simulations with VC personas, skeptical questions, rebuttal matrices, and fundraising assets",
+        "tags": [
+          "funding",
+          "vc",
+          "simulation",
+          "rebuttals",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "pr-media-engine-agent",
+        "name": "PRMediaEngineAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/pr-media-engine-agent.md",
+        "description": "Orchestrates tier-1 tech, automotive, cybersecurity, business/VC, academic, podcast, webinar, and launch PR motions",
+        "tags": [
+          "pr",
+          "media",
+          "launch",
+          "coverage",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "linkedin-thought-leadership-agent",
+        "name": "LinkedInThoughtLeadershipAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/linkedin-thought-leadership-agent.md",
+        "description": "Builds founder, CTO, product, engineering, customer, advisor, comment, podcast-clip, and news-jacking LinkedIn programs",
+        "tags": [
+          "linkedin",
+          "thought-leadership",
+          "founder",
+          "cto",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "event-conference-agent",
+        "name": "EventConferenceAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/event-conference-agent.md",
+        "description": "Plans investor-relevant event presence, CFP submissions, demos, VIP dinners, awards, and conference competitive intelligence",
+        "tags": [
+          "events",
+          "conference",
+          "cfp",
+          "awards",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "analyst-relations-agent",
+        "name": "AnalystRelationsAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/analyst-relations-agent.md",
+        "description": "Builds Gartner, Forrester, IDC, Frost & Sullivan, and custom research motions for enterprise and investor credibility",
+        "tags": [
+          "analyst-relations",
+          "gartner",
+          "forrester",
+          "research",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "social-proof-validation-agent",
+        "name": "SocialProofValidationAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/social-proof-validation-agent.md",
+        "description": "Secures and packages customer logos, testimonials, partner proof, advisors, university relationships, reviews, and validation evidence",
+        "tags": [
+          "social-proof",
+          "logos",
+          "testimonials",
+          "partners",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "crisis-opportunity-agent",
+        "name": "CrisisOpportunityAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/crisis-opportunity-agent.md",
+        "description": "Converts automotive cybersecurity incidents, CVEs, recalls, regulatory fines, and public breaches into timely expert positioning and investor validation",
+        "tags": [
+          "crisis",
+          "cve",
+          "incident",
+          "investor",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "investor-metrics-agent",
+        "name": "InvestorMetricsAgent",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/investor/investor-metrics-agent.md",
+        "description": "Tracks investor-facing market, traction, efficiency, product, team, moat, and buzz metrics across business swarms",
+        "tags": [
+          "metrics",
+          "traction",
+          "moat",
+          "buzz",
+          "investor",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "subagent:contextscout"
+        ],
+        "category": "investor"
       }
     ],
     "commands": [
@@ -651,6 +1789,401 @@
           "refactoring"
         ],
         "category": "standard"
+      },
+      {
+        "id": "swarm-plan",
+        "name": "Swarm Plan",
+        "type": "command",
+        "path": ".opencode/command/swarm-plan.md",
+        "description": "Create a dependency-aware controlled agent swarm plan with file locks, batches, and validation gates",
+        "tags": [
+          "swarm",
+          "planning",
+          "parallel",
+          "task-graph"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:swarm-orchestration",
+          "context:task-delegation-basics",
+          "subagent:swarm-orchestrator"
+        ],
+        "category": "extended"
+      },
+      {
+        "id": "swarm-run",
+        "name": "Swarm Run",
+        "type": "command",
+        "path": ".opencode/command/swarm-run.md",
+        "description": "Run an approved controlled swarm using dependency batches, file locks, and validation gates",
+        "tags": [
+          "swarm",
+          "execution",
+          "parallel",
+          "validation"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:swarm-orchestration",
+          "context:standards-code",
+          "context:task-delegation-basics",
+          "subagent:swarm-orchestrator"
+        ],
+        "category": "extended"
+      },
+      {
+        "id": "swarm-status",
+        "name": "Swarm Status",
+        "type": "command",
+        "path": ".opencode/command/swarm-status.md",
+        "description": "Inspect the current OAC swarm session, task graph, event stream, blocked tasks, and validation gates",
+        "tags": [
+          "swarm",
+          "status",
+          "observability",
+          "task-graph"
+        ],
+        "dependencies": [
+          "context:swarm-orchestration"
+        ],
+        "category": "extended"
+      },
+      {
+        "id": "swarm-team",
+        "name": "Swarm Team",
+        "type": "command",
+        "path": ".opencode/command/swarm-team.md",
+        "description": "Design a self-organizing engineering team swarm with PM, Architect, Tech Lead, dev, QA, Security, DevOps, Review, and Docs roles",
+        "tags": [
+          "swarm",
+          "team",
+          "roles",
+          "planning"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:development-swarm",
+          "context:swarm-orchestration",
+          "subagent:swarm-orchestrator"
+        ],
+        "category": "extended"
+      },
+      {
+        "id": "swarm-debug",
+        "name": "Swarm Debug",
+        "type": "command",
+        "path": ".opencode/command/swarm-debug.md",
+        "description": "Spawn a debug and recovery loop for a failed swarm build, test, integration, or deployment incident",
+        "tags": [
+          "swarm",
+          "debug",
+          "incident",
+          "recovery"
+        ],
+        "dependencies": [
+          "subagent:debug-agent",
+          "context:development-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "extended"
+      },
+      {
+        "id": "revenue-swarm",
+        "name": "Revenue Swarm",
+        "type": "command",
+        "path": ".opencode/command/revenue-swarm.md",
+        "description": "Create a Marketing & Sales Agent Swarm for cybersecurity GTM, campaign, pipeline, trust, pricing, or revenue-growth work",
+        "tags": [
+          "revenue",
+          "marketing",
+          "sales",
+          "gtm"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:revenue-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "campaign-genesis",
+        "name": "Campaign Genesis",
+        "type": "command",
+        "path": ".opencode/command/campaign-genesis.md",
+        "description": "Launch a parallel campaign genesis swarm for a new market segment, cybersecurity product, or GTM offer",
+        "tags": [
+          "campaign",
+          "gtm",
+          "content",
+          "revenue"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:revenue-swarm"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "sales-coach",
+        "name": "Sales Coach",
+        "type": "command",
+        "path": ".opencode/command/sales-coach.md",
+        "description": "Run adversarial sales coaching with skeptical buyer, procurement, technical evaluator, competitor, and coach perspectives",
+        "tags": [
+          "sales",
+          "coaching",
+          "objections",
+          "revenue"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:revenue-swarm"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "operating-swarm",
+        "name": "Operating Swarm",
+        "type": "command",
+        "path": ".opencode/command/operating-swarm.md",
+        "description": "Create a business operating swarm for support, product strategy, compliance, talent, finance, supply chain, R&D, crisis, partnerships, or knowledge management",
+        "tags": [
+          "operations",
+          "swarm",
+          "ceo"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:business-operations-swarms",
+          "context:swarm-orchestration"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "ceo-brief",
+        "name": "CEO Brief",
+        "type": "command",
+        "path": ".opencode/command/ceo-brief.md",
+        "description": "Generate a CEO meta-swarm brief that synthesizes signals across development, revenue, compliance, support, product, finance, and operations",
+        "tags": [
+          "ceo",
+          "brief",
+          "strategy"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "subagent:ceo-agent",
+          "context:business-operations-swarms"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "compliance-swarm",
+        "name": "Compliance Swarm",
+        "type": "command",
+        "path": ".opencode/command/compliance-swarm.md",
+        "description": "Run a regulatory and compliance swarm for UN R155, ISO/SAE 21434, EU RED, WP.29, evidence, certification, or RFP readiness",
+        "tags": [
+          "compliance",
+          "regulatory",
+          "standards"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "subagent:regulatory-compliance-swarm",
+          "context:business-operations-swarms"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "support-swarm",
+        "name": "Support Swarm",
+        "type": "command",
+        "path": ".opencode/command/support-swarm.md",
+        "description": "Run a customer support and success swarm for ticket triage, technical escalation, health risks, expansion signals, and VOC synthesis",
+        "tags": [
+          "support",
+          "success",
+          "retention"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "subagent:customer-support-success-swarm",
+          "context:business-operations-swarms"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "technical-swarm",
+        "name": "Technical Swarm",
+        "type": "command",
+        "path": ".opencode/command/technical-swarm.md",
+        "description": "Create a deep-tech technical swarm for cybersecurity hardware/software co-design, embedded, FPGA, VAPT, HIL/SIL, compliance, and release work",
+        "tags": [
+          "technical",
+          "swarm",
+          "cybersecurity",
+          "technical"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:technical-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "hardware-codesign",
+        "name": "Hardware Codesign",
+        "type": "command",
+        "path": ".opencode/command/hardware-codesign.md",
+        "description": "Plan a hardware-software co-design swarm for CAN, GMSL2, EV charging, secure gateway, or cybersecurity test hardware products",
+        "tags": [
+          "hardware",
+          "codesign",
+          "firmware",
+          "technical"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:technical-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "vapt-campaign",
+        "name": "VAPT Campaign",
+        "type": "command",
+        "path": ".opencode/command/vapt-campaign.md",
+        "description": "Plan a parallel cybersecurity testing campaign across protocol, RE, fuzzing, side-channel, physical, wireless, network, and report tracks",
+        "tags": [
+          "vapt",
+          "pentest",
+          "fuzzing",
+          "technical"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:technical-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "living-tara",
+        "name": "Living TARA",
+        "type": "command",
+        "path": ".opencode/command/living-tara.md",
+        "description": "Create a continuous compliance and living TARA loop for ISO/SAE 21434, UN R155, threat intel, evidence, and customer posture reports",
+        "tags": [
+          "tara",
+          "compliance",
+          "iso21434",
+          "technical"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:technical-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "investor-magnet",
+        "name": "Investor Magnet",
+        "type": "command",
+        "path": ".opencode/command/investor-magnet.md",
+        "description": "Create an investor magnet swarm for cybersecurity narrative, PR, LinkedIn, analyst relations, social proof, and fundraising momentum",
+        "tags": [
+          "investor",
+          "fundraising",
+          "narrative",
+          "investor"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:investor-magnet-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "funding-round",
+        "name": "Funding Round",
+        "type": "command",
+        "path": ".opencode/command/funding-round.md",
+        "description": "Run a funding-round simulation with investor narrative, VC personas, rebuttal matrix, metrics checks, social proof, and fundraising assets",
+        "tags": [
+          "funding",
+          "vc",
+          "simulation",
+          "investor"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:investor-magnet-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "pr-engine",
+        "name": "PR Engine",
+        "type": "command",
+        "path": ".opencode/command/pr-engine.md",
+        "description": "Plan a PR and media engine for funding announcements, product launches, threat research, partnerships, analyst proof, and investor social proof",
+        "tags": [
+          "pr",
+          "media",
+          "launch",
+          "investor"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:investor-magnet-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "linkedin-thought-leadership",
+        "name": "LinkedIn Thought Leadership",
+        "type": "command",
+        "path": ".opencode/command/linkedin-thought-leadership.md",
+        "description": "Create a founder, CTO, product, engineering, customer, advisor, comment, and news-jacking LinkedIn thought-leadership program",
+        "tags": [
+          "linkedin",
+          "thought-leadership",
+          "founder",
+          "investor"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:investor-magnet-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "investor"
+      },
+      {
+        "id": "analyst-relations",
+        "name": "Analyst Relations",
+        "type": "command",
+        "path": ".opencode/command/analyst-relations.md",
+        "description": "Plan Gartner, Forrester, IDC, Frost & Sullivan, award, and custom research motions for investor and enterprise credibility",
+        "tags": [
+          "analyst-relations",
+          "gartner",
+          "forrester",
+          "investor"
+        ],
+        "dependencies": [
+          "agent:openagent",
+          "context:investor-magnet-swarm",
+          "context:swarm-orchestration"
+        ],
+        "category": "investor"
       }
     ],
     "tools": [
@@ -804,11 +2337,46 @@
         "category": "essential"
       },
       {
+        "id": "swarm-orchestration",
+        "name": "Swarm Orchestration",
+        "type": "context",
+        "path": ".opencode/context/core/swarm-orchestration.md",
+        "description": "Controlled swarm scheduling, task graph, file-lock, event stream, and validation-gate rules",
+        "tags": [
+          "swarm",
+          "orchestration",
+          "parallel",
+          "validation"
+        ],
+        "dependencies": [
+          "context:task-delegation-basics",
+          "context:standards-code"
+        ],
+        "category": "extended"
+      },
+      {
+        "id": "development-swarm",
+        "name": "Development Swarm",
+        "type": "context",
+        "path": ".opencode/context/core/development-swarm.md",
+        "description": "Self-organizing engineering-team swarm roles, execution patterns, state model, and validation rules",
+        "tags": [
+          "swarm",
+          "engineering-team",
+          "development",
+          "validation"
+        ],
+        "dependencies": [
+          "context:swarm-orchestration"
+        ],
+        "category": "extended"
+      },
+      {
         "id": "project-context",
         "name": "Project Context",
         "type": "context",
         "path": ".opencode/context/project/project-context.md",
-        "description": "\u26d4 DEPRECATED: Replaced by project-intelligence/technical-domain.md",
+        "description": "⛔ DEPRECATED: Replaced by project-intelligence/technical-domain.md",
         "tags": [
           "deprecated",
           "context",
@@ -2652,7 +4220,7 @@
         "name": "Agent Metadata",
         "type": "context",
         "path": ".opencode/context/openagents-repo/core-concepts/agent-metadata.md",
-        "description": "...\\\"               # \u2705 Valid OpenCode field",
+        "description": "...\\\"               # ✅ Valid OpenCode field",
         "tags": [
           "development",
           "coding"
@@ -3072,6 +4640,80 @@
         ],
         "dependencies": [],
         "category": "essential"
+      },
+      {
+        "id": "revenue-swarm",
+        "name": "Revenue Swarm",
+        "type": "context",
+        "path": ".opencode/context/core/revenue-swarm.md",
+        "description": "Marketing and sales swarm roles, GTM execution patterns, trust/reputation, pricing, analytics, and cybersecurity revenue defaults",
+        "tags": [
+          "revenue",
+          "marketing",
+          "sales",
+          "gtm",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "context:swarm-orchestration"
+        ],
+        "category": "revenue"
+      },
+      {
+        "id": "business-operations-swarms",
+        "name": "Business Operations Swarms",
+        "type": "context",
+        "path": ".opencode/context/core/business-operations-swarms.md",
+        "description": "CEO meta-swarm plus support, product strategy, compliance, talent, finance, supply chain, R&D, crisis, partnership, and knowledge management swarms",
+        "tags": [
+          "operations",
+          "ceo",
+          "support",
+          "compliance",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "context:swarm-orchestration"
+        ],
+        "category": "operations"
+      },
+      {
+        "id": "technical-swarm",
+        "name": "Technical Swarm",
+        "type": "context",
+        "path": ".opencode/context/core/technical-swarm.md",
+        "description": "Deep-tech R&D swarm roles and workflows for cybersecurity hardware/software co-design, embedded, FPGA, HIL/SIL, VAPT, compliance, EMC, SBOM, signing, and release evidence",
+        "tags": [
+          "technical",
+          "hardware",
+          "firmware",
+          "vapt",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "context:swarm-orchestration"
+        ],
+        "category": "technical"
+      },
+      {
+        "id": "investor-magnet-swarm",
+        "name": "Investor Magnet Swarm",
+        "type": "context",
+        "path": ".opencode/context/core/investor-magnet-swarm.md",
+        "description": "Investor magnet roles and workflows for narrative, funding simulation, PR/media, LinkedIn, analyst relations, events, social proof, crisis-to-opportunity, and investor metrics",
+        "tags": [
+          "investor",
+          "fundraising",
+          "pr",
+          "linkedin",
+          "cybersecurity"
+        ],
+        "dependencies": [
+          "context:swarm-orchestration",
+          "context:revenue-swarm",
+          "context:business-operations-swarms"
+        ],
+        "category": "investor"
       }
     ],
     "config": [
@@ -3158,14 +4800,25 @@
       "components": [
         "agent:openagent",
         "agent:opencoder",
+        "subagent:swarm-orchestrator",
+        "subagent:product-manager",
+        "subagent:system-architect",
+        "subagent:tech-lead",
         "subagent:task-manager",
         "subagent:frontend-specialist",
+        "subagent:backend-developer",
         "subagent:devops-specialist",
         "subagent:documentation",
         "subagent:coder-agent",
         "subagent:reviewer",
         "subagent:tester",
         "subagent:build-agent",
+        "subagent:batch-executor",
+        "subagent:stage-orchestrator",
+        "subagent:merge-coordinator",
+        "subagent:integration-agent",
+        "subagent:debug-agent",
+        "subagent:security-agent",
         "subagent:contextscout",
         "skill:task-management",
         "command:commit",
@@ -3176,11 +4829,17 @@
         "command:optimize",
         "command:validate-repo",
         "command:analyze-patterns",
+        "command:swarm-plan",
+        "command:swarm-run",
+        "command:swarm-status",
+        "command:swarm-team",
+        "command:swarm-debug",
         "tool:env",
         "context:essential-patterns",
         "context:project-context",
         "context:quick-start",
         "context:core/*",
+        "context:development-swarm",
         "context:project-intelligence/*",
         "context:adding-skill-basics",
         "context:ui/*",
@@ -3196,7 +4855,26 @@
         "config:env-example",
         "config:agent-metadata",
         "config:readme",
-        "context:openagents-repo/*"
+        "context:openagents-repo/*",
+        "subagent:hardware-architect",
+        "subagent:fpga-asic-agent",
+        "subagent:rtos-os-agent",
+        "subagent:embedded-cpp-agent",
+        "subagent:automotive-ethernet-agent",
+        "subagent:security-firmware-agent",
+        "subagent:technical-python-tooling-agent",
+        "subagent:embedded-rust-agent",
+        "subagent:hil-sil-agent",
+        "subagent:penetration-test-agent",
+        "subagent:technical-compliance-vv-agent",
+        "subagent:emc-environmental-agent",
+        "subagent:technical-cicd-agent",
+        "subagent:technical-release-agent",
+        "context:technical-swarm",
+        "command:technical-swarm",
+        "command:hardware-codesign",
+        "command:vapt-campaign",
+        "command:living-tara"
       ]
     },
     "business": {
@@ -3227,7 +4905,57 @@
         "context:adding-skill-basics",
         "config:env-example",
         "config:agent-metadata",
-        "config:readme"
+        "config:readme",
+        "subagent:chief-growth-officer",
+        "subagent:market-intelligence",
+        "subagent:customer-research",
+        "subagent:brand-strategy",
+        "subagent:lead-generation",
+        "subagent:conversion",
+        "subagent:pricing-strategy",
+        "subagent:content-swarm",
+        "subagent:social-media",
+        "subagent:pr-communications",
+        "subagent:customer-success",
+        "subagent:trust-reputation",
+        "subagent:performance-analytics",
+        "subagent:predictive-revenue",
+        "subagent:sales-coach",
+        "context:revenue-swarm",
+        "command:revenue-swarm",
+        "command:campaign-genesis",
+        "command:sales-coach",
+        "subagent:ceo-agent",
+        "subagent:customer-support-success-swarm",
+        "subagent:product-strategy-swarm",
+        "subagent:regulatory-compliance-swarm",
+        "subagent:talent-hiring-swarm",
+        "subagent:finance-ir-swarm",
+        "subagent:supply-chain-manufacturing-swarm",
+        "subagent:innovation-rd-swarm",
+        "subagent:crisis-response-swarm",
+        "subagent:partnership-ecosystem-swarm",
+        "subagent:knowledge-management-swarm",
+        "context:business-operations-swarms",
+        "command:operating-swarm",
+        "command:ceo-brief",
+        "command:compliance-swarm",
+        "command:support-swarm",
+        "subagent:investor-narrative-agent",
+        "subagent:funding-round-simulation-agent",
+        "subagent:pr-media-engine-agent",
+        "subagent:linkedin-thought-leadership-agent",
+        "subagent:event-conference-agent",
+        "subagent:analyst-relations-agent",
+        "subagent:social-proof-validation-agent",
+        "subagent:crisis-opportunity-agent",
+        "subagent:investor-metrics-agent",
+        "context:investor-magnet-swarm",
+        "command:investor-magnet",
+        "command:funding-round",
+        "command:pr-engine",
+        "command:linkedin-thought-leadership",
+        "command:analyst-relations"
       ]
     },
     "full": {
@@ -3236,18 +4964,29 @@
       "components": [
         "agent:openagent",
         "agent:opencoder",
+        "subagent:swarm-orchestrator",
         "agent:eval-runner",
         "agent:copywriter",
         "agent:technical-writer",
         "agent:data-analyst",
+        "subagent:product-manager",
+        "subagent:system-architect",
+        "subagent:tech-lead",
         "subagent:task-manager",
         "subagent:frontend-specialist",
+        "subagent:backend-developer",
         "subagent:devops-specialist",
         "subagent:documentation",
         "subagent:coder-agent",
         "subagent:reviewer",
         "subagent:tester",
         "subagent:build-agent",
+        "subagent:batch-executor",
+        "subagent:stage-orchestrator",
+        "subagent:merge-coordinator",
+        "subagent:integration-agent",
+        "subagent:debug-agent",
+        "subagent:security-agent",
         "subagent:contextscout",
         "skill:task-management",
         "subagent:image-specialist",
@@ -3261,6 +5000,11 @@
         "command:worktrees",
         "command:validate-repo",
         "command:analyze-patterns",
+        "command:swarm-plan",
+        "command:swarm-run",
+        "command:swarm-status",
+        "command:swarm-team",
+        "command:swarm-debug",
         "tool:env",
         "tool:gemini",
         "plugin:notify",
@@ -3268,6 +5012,7 @@
         "context:project-context",
         "context:quick-start",
         "context:core/*",
+        "context:development-swarm",
         "context:project-intelligence/*",
         "context:adding-skill-basics",
         "context:ui/*",
@@ -3283,7 +5028,76 @@
         "config:env-example",
         "config:agent-metadata",
         "config:readme",
-        "context:openagents-repo/*"
+        "context:openagents-repo/*",
+        "subagent:chief-growth-officer",
+        "subagent:market-intelligence",
+        "subagent:customer-research",
+        "subagent:brand-strategy",
+        "subagent:lead-generation",
+        "subagent:conversion",
+        "subagent:pricing-strategy",
+        "subagent:content-swarm",
+        "subagent:social-media",
+        "subagent:pr-communications",
+        "subagent:customer-success",
+        "subagent:trust-reputation",
+        "subagent:performance-analytics",
+        "subagent:predictive-revenue",
+        "subagent:sales-coach",
+        "context:revenue-swarm",
+        "command:revenue-swarm",
+        "command:campaign-genesis",
+        "command:sales-coach",
+        "subagent:ceo-agent",
+        "subagent:customer-support-success-swarm",
+        "subagent:product-strategy-swarm",
+        "subagent:regulatory-compliance-swarm",
+        "subagent:talent-hiring-swarm",
+        "subagent:finance-ir-swarm",
+        "subagent:supply-chain-manufacturing-swarm",
+        "subagent:innovation-rd-swarm",
+        "subagent:crisis-response-swarm",
+        "subagent:partnership-ecosystem-swarm",
+        "subagent:knowledge-management-swarm",
+        "context:business-operations-swarms",
+        "command:operating-swarm",
+        "command:ceo-brief",
+        "command:compliance-swarm",
+        "command:support-swarm",
+        "subagent:hardware-architect",
+        "subagent:fpga-asic-agent",
+        "subagent:rtos-os-agent",
+        "subagent:embedded-cpp-agent",
+        "subagent:automotive-ethernet-agent",
+        "subagent:security-firmware-agent",
+        "subagent:technical-python-tooling-agent",
+        "subagent:embedded-rust-agent",
+        "subagent:hil-sil-agent",
+        "subagent:penetration-test-agent",
+        "subagent:technical-compliance-vv-agent",
+        "subagent:emc-environmental-agent",
+        "subagent:technical-cicd-agent",
+        "subagent:technical-release-agent",
+        "context:technical-swarm",
+        "command:technical-swarm",
+        "command:hardware-codesign",
+        "command:vapt-campaign",
+        "command:living-tara",
+        "subagent:investor-narrative-agent",
+        "subagent:funding-round-simulation-agent",
+        "subagent:pr-media-engine-agent",
+        "subagent:linkedin-thought-leadership-agent",
+        "subagent:event-conference-agent",
+        "subagent:analyst-relations-agent",
+        "subagent:social-proof-validation-agent",
+        "subagent:crisis-opportunity-agent",
+        "subagent:investor-metrics-agent",
+        "context:investor-magnet-swarm",
+        "command:investor-magnet",
+        "command:funding-round",
+        "command:pr-engine",
+        "command:linkedin-thought-leadership",
+        "command:analyst-relations"
       ]
     },
     "advanced": {
@@ -3292,20 +5106,31 @@
       "components": [
         "agent:openagent",
         "agent:opencoder",
+        "subagent:swarm-orchestrator",
         "agent:system-builder",
         "agent:repo-manager",
         "agent:eval-runner",
         "agent:copywriter",
         "agent:technical-writer",
         "agent:data-analyst",
+        "subagent:product-manager",
+        "subagent:system-architect",
+        "subagent:tech-lead",
         "subagent:task-manager",
         "subagent:frontend-specialist",
+        "subagent:backend-developer",
         "subagent:devops-specialist",
         "subagent:documentation",
         "subagent:coder-agent",
         "subagent:reviewer",
         "subagent:tester",
         "subagent:build-agent",
+        "subagent:batch-executor",
+        "subagent:stage-orchestrator",
+        "subagent:merge-coordinator",
+        "subagent:integration-agent",
+        "subagent:debug-agent",
+        "subagent:security-agent",
         "subagent:image-specialist",
         "subagent:context-retriever",
         "subagent:contextscout",
@@ -3326,6 +5151,11 @@
         "command:build-context-system",
         "command:validate-repo",
         "command:analyze-patterns",
+        "command:swarm-plan",
+        "command:swarm-run",
+        "command:swarm-status",
+        "command:swarm-team",
+        "command:swarm-debug",
         "tool:env",
         "tool:gemini",
         "plugin:notify",
@@ -3333,6 +5163,7 @@
         "context:project-context",
         "context:quick-start",
         "context:core/*",
+        "context:development-swarm",
         "context:project-intelligence/*",
         "context:adding-skill-basics",
         "context:ui/*",
@@ -3357,7 +5188,76 @@
         "context:codebase-references",
         "config:env-example",
         "config:agent-metadata",
-        "config:readme"
+        "config:readme",
+        "subagent:chief-growth-officer",
+        "subagent:market-intelligence",
+        "subagent:customer-research",
+        "subagent:brand-strategy",
+        "subagent:lead-generation",
+        "subagent:conversion",
+        "subagent:pricing-strategy",
+        "subagent:content-swarm",
+        "subagent:social-media",
+        "subagent:pr-communications",
+        "subagent:customer-success",
+        "subagent:trust-reputation",
+        "subagent:performance-analytics",
+        "subagent:predictive-revenue",
+        "subagent:sales-coach",
+        "context:revenue-swarm",
+        "command:revenue-swarm",
+        "command:campaign-genesis",
+        "command:sales-coach",
+        "subagent:ceo-agent",
+        "subagent:customer-support-success-swarm",
+        "subagent:product-strategy-swarm",
+        "subagent:regulatory-compliance-swarm",
+        "subagent:talent-hiring-swarm",
+        "subagent:finance-ir-swarm",
+        "subagent:supply-chain-manufacturing-swarm",
+        "subagent:innovation-rd-swarm",
+        "subagent:crisis-response-swarm",
+        "subagent:partnership-ecosystem-swarm",
+        "subagent:knowledge-management-swarm",
+        "context:business-operations-swarms",
+        "command:operating-swarm",
+        "command:ceo-brief",
+        "command:compliance-swarm",
+        "command:support-swarm",
+        "subagent:hardware-architect",
+        "subagent:fpga-asic-agent",
+        "subagent:rtos-os-agent",
+        "subagent:embedded-cpp-agent",
+        "subagent:automotive-ethernet-agent",
+        "subagent:security-firmware-agent",
+        "subagent:technical-python-tooling-agent",
+        "subagent:embedded-rust-agent",
+        "subagent:hil-sil-agent",
+        "subagent:penetration-test-agent",
+        "subagent:technical-compliance-vv-agent",
+        "subagent:emc-environmental-agent",
+        "subagent:technical-cicd-agent",
+        "subagent:technical-release-agent",
+        "context:technical-swarm",
+        "command:technical-swarm",
+        "command:hardware-codesign",
+        "command:vapt-campaign",
+        "command:living-tara",
+        "subagent:investor-narrative-agent",
+        "subagent:funding-round-simulation-agent",
+        "subagent:pr-media-engine-agent",
+        "subagent:linkedin-thought-leadership-agent",
+        "subagent:event-conference-agent",
+        "subagent:analyst-relations-agent",
+        "subagent:social-proof-validation-agent",
+        "subagent:crisis-opportunity-agent",
+        "subagent:investor-metrics-agent",
+        "context:investor-magnet-swarm",
+        "command:investor-magnet",
+        "command:funding-round",
+        "command:pr-engine",
+        "command:linkedin-thought-leadership",
+        "command:analyst-relations"
       ],
       "additionalPaths": [
         ".Building/",

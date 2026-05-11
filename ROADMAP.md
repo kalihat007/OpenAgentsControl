@@ -14,6 +14,8 @@ This roadmap tracks the evolution of OpenAgents Control - an AI agent framework 
 - [ ] Improve evaluation framework reliability asd
 - [ ] Enhance documentation for new users
 - [ ] Add more example workflows
+- [ ] Harden controlled swarm execution with persisted sessions, scheduling, lock checks, and dashboard visibility
+- [ ] Expand business swarms with investor magnet workflows for narrative, PR, LinkedIn, analyst relations, events, social proof, and fundraising readiness
 
 ---
 
@@ -25,6 +27,8 @@ This roadmap tracks the evolution of OpenAgents Control - an AI agent framework 
 - [ ] Enhanced context-aware system builder
 - [ ] Multi-language template improvements
 - [ ] Community contribution guidelines
+- [ ] Promote OpenAgent Swarm Mode from prompt-level orchestration to full CLI-backed runtime execution
+- [ ] Add investor-facing dashboards for funding-round readiness, media momentum, analyst coverage, and evidence-backed claims
 
 ---
 
@@ -36,6 +40,7 @@ This roadmap tracks the evolution of OpenAgents Control - an AI agent framework 
 - [ ] Agent marketplace/registry
 - [ ] Cloud-based agent coordination
 - [ ] Integration with popular IDEs
+- [ ] Distributed worktree swarms with per-agent branches and automated merge review
 
 ---
 
@@ -82,4 +87,3 @@ gh issue view 123 --repo darrenhinde/OpenAgentsControl
 ---
 
 **Last Updated:** December 4, 2025
-

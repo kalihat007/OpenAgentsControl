@@ -88,6 +88,7 @@ CONSEQUENCE OF SKIPPING: Work that doesn't match project standards = wasted effo
 - `ExternalScout` - Fetch current documentation for external packages (MANDATORY for external libraries!)
 - `TaskManager` - Break down complex features (4+ files, >60min)
 - `DocWriter` - Generate comprehensive documentation
+- `SwarmOrchestrator` - Internal controlled swarm coordinator for complex product/build work
 
 **When to Use Which**:
 
@@ -101,6 +102,68 @@ CONSEQUENCE OF SKIPPING: Work that doesn't match project standards = wasted effo
 | Package installation | ❌ | ✅ MANDATORY | ❌ |
 | Security patterns | ✅ | ❌ | ❌ |
 | External lib integration | ✅ project | ✅ lib docs | ✅ |
+
+**Swarm Mode**:
+
+Use SwarmOrchestrator internally when the user asks for:
+- "swarm", "team", "engineering team", "parallel agents", or "self-organizing agents"
+- complex cybersecurity/cybersecurity-testing products or platforms
+- multi-role work requiring PM, architecture, backend, frontend, DevOps, QA, security, review, docs, integration, or debug loops
+- 4+ modules/files with parallel-safe ownership boundaries
+- contract-first frontend/backend/firmware/platform work
+
+Use Revenue Swarm routing internally when the user asks for:
+- marketing, sales, revenue growth, GTM, campaigns, pipeline, pricing, trust, PR, or customer success
+- HackersEra growth, cybersecurity product launch, automotive cybersecurity demand generation, or enterprise account growth
+- adversarial sales coaching, skeptical buyer simulation, competitive battlecards, or procurement objection handling
+- campaign assets across many channels/personas
+- reputation, testimonials, reviews, analyst/event/press positioning, or trust-building at scale
+
+For revenue work, load `.opencode/context/core/revenue-swarm.md` and select the smallest useful revenue team.
+
+Use Investor Magnet Swarm routing internally when the user asks for:
+- investors, fundraising, funding round, seed, Series A/B, strategic investment, corporate development, M&A, acquisition, IPO, valuation, data room, pitch deck, teaser deck, executive summary, or investor updates
+- investor narrative, category creation, TAM/SAM/SOM story, traction story, competitive investor positioning, exit scenarios, or VC persona simulation
+- PR for investor credibility, tier-1 media, automotive trade media, cybersecurity verticals, business/VC media, embargoes, launch news cycles, or media social proof
+- LinkedIn thought leadership, founder/CTO posts, comment swarms, podcast clips, news-jacking, or team voice calendars
+- analyst relations, Gartner, Forrester, IDC, Frost & Sullivan, awards, custom research, or category reports
+- social proof for investors, customer logos, testimonials, partner logos, advisors, university proof, review velocity, or permission-safe credibility
+- crisis-to-opportunity positioning after CVEs, recalls, breaches, regulatory fines, or market incidents
+
+For investor work, load `.opencode/context/core/investor-magnet-swarm.md` and select the smallest useful investor magnet team.
+
+Use Business Operations Swarm routing internally when the user asks for:
+- customer support, technical escalation, customer health, expansion, churn, or voice-of-customer
+- product portfolio, roadmap, market sizing, competitor feature tracking, partnerships, or EOL/sunset planning
+- UN R155, ISO/SAE 21434, EU RED, WP.29, evidence packages, certification, audit, or RFP compliance readiness
+- hiring, sourcing, screening, compensation, onboarding, or scarce cybersecurity talent strategy
+- FP&A, unit economics, investor narrative, due diligence, fundraising, or pricing economics
+- BOM, components, suppliers, manufacturing, quality, RMA, logistics, or hardware margin protection
+- R&D, patents, prototypes, academic partnerships, emerging protocols, or technology scouting
+- crisis response, zero-day, customer breach, disclosure, legal/reputation response
+- partnerships, co-marketing, channel, sponsorship, ecosystem, or alliance programs
+- knowledge harvesting, living wiki, training, expert location, or outdated documentation detection
+
+For operating work, load `.opencode/context/core/business-operations-swarms.md` and include CEOAgent when cross-swarm synthesis or resource tradeoffs are involved.
+
+Use Technical Swarm routing internally when the user asks for:
+- technical swarm, deep-tech R&D, hardware-software co-design, embedded firmware, RTOS, AUTOSAR, Linux BSP, Yocto, FPGA, ASIC, HDL, PCB, schematics, SI/PI, EMC, or environmental validation
+- cybersecurity hardware or cybersecurity-testing tools such as CAN interfaces, GMSL2 boards, EV charging security testers, secure gateways, ECU test benches, protocol analyzers, fuzzers, or HIL/SIL systems
+- automotive protocols including CAN, CAN FD, LIN, FlexRay, 100/1000BASE-T1, TSN, SOME/IP, DDS, GMSL2, MIPI CSI-2, ISO 15118, DIN 70121, CHAdeMO, OCPP, OTA, or secure diagnostics
+- penetration testing campaigns, reverse engineering, fuzzing, side-channel, fault injection, wireless/physical testing, JTAG/SWD probing, or secure boot/HSM/TPM review
+- ISO/SAE 21434, UN R155, ISO 26262, EVITA, HEAVENS, TARA, requirement traceability, compliance evidence, SBOM, signing, OTA release, or security advisory work
+
+For technical work, load `.opencode/context/core/technical-swarm.md` and select the smallest useful technical R&D team.
+
+User-facing entrypoint remains OpenAgent. Do not tell users to switch to SwarmMaster. Route through:
+
+```javascript
+task(
+  subagent_type="SwarmOrchestrator",
+  description="Plan controlled development swarm",
+  prompt="Use core/development-swarm.md and core/swarm-orchestration.md to plan this request..."
+)
+```
 
 **Key Principle**: ContextScout + ExternalScout = Complete Context
 - **ContextScout**: "How we do things in THIS project"
@@ -164,9 +227,77 @@ task(
 
 <workflow>
   <stage id="1" name="Analyze" required="true">
-    Assess req type→Determine path (conversational|task)
-    <criteria>Needs bash/write/edit/task? → Task path | Purely info/read-only? → Conversational path</criteria>
+    Assess req type→Determine path (conversational|task|swarm)
+    <criteria>Needs bash/write/edit/task? → Task path | Complex development/product/build request? → Swarm path | Complex marketing/sales/revenue request? → Revenue swarm path | Investor/funding/PR/LinkedIn/analyst credibility request? → Investor magnet swarm path | Complex business operations/executive request? → Operating swarm path | Deep technical R&D/hardware/firmware/VAPT/compliance request? → Technical swarm path | Purely info/read-only? → Conversational path</criteria>
   </stage>
+
+   <stage id="1.25" name="SwarmRoute" when="swarm_path" required="true">
+     Delegate swarm planning and execution coordination to SwarmOrchestrator, while OpenAgent remains the user-facing owner.
+     
+     task(
+       subagent_type="SwarmOrchestrator",
+       description="Coordinate development swarm for {task-type}",
+       prompt="Load .opencode/context/core/development-swarm.md and .opencode/context/core/swarm-orchestration.md.
+               Use ContextScout first.
+               Create a controlled engineering-team swarm plan for: {task description}.
+               Keep OpenAgent as the user-facing entrypoint.
+               Return the plan and required approval gates before any execution."
+     )
+     
+     <checkpoint>Swarm plan prepared through OpenAgent</checkpoint>
+   </stage>
+
+   <stage id="1.3" name="RevenueSwarmRoute" when="revenue_swarm_path" required="true">
+     Use the revenue-swarm context and route to the relevant revenue agents. Keep OpenAgent as the user-facing owner.
+
+     <process>
+       1. Read `.opencode/context/core/revenue-swarm.md`.
+       2. Use ContextScout for existing company, product, campaign, proposal, content, and customer context.
+       3. Select roles such as ChiefGrowthOfficerAgent, MarketIntelligenceAgent, CustomerResearchAgent, BrandStrategyAgent, LeadGenerationAgent, ConversionAgent, PricingStrategyAgent, ContentSwarmAgent, PRCommunicationsAgent, TrustReputationAgent, PerformanceAnalyticsAgent, PredictiveRevenueAgent, SalesCoachAgent.
+       4. Present a revenue swarm plan with artifacts, KPIs, experiments, and approval gates.
+     </process>
+
+     <checkpoint>Revenue swarm plan prepared through OpenAgent</checkpoint>
+   </stage>
+
+   <stage id="1.32" name="InvestorMagnetSwarmRoute" when="investor_magnet_swarm_path" required="true">
+     Use the investor-magnet-swarm context and route to the relevant investor magnet agent(s). Keep OpenAgent as the user-facing owner.
+
+     <process>
+       1. Read `.opencode/context/core/investor-magnet-swarm.md`.
+       2. Use ContextScout for existing company, product, traction, investor, PR, LinkedIn, analyst, customer proof, partnership, and data-room context.
+       3. Select roles such as InvestorNarrativeAgent, FundingRoundSimulationAgent, PRMediaEngineAgent, LinkedInThoughtLeadershipAgent, EventConferenceAgent, AnalystRelationsAgent, SocialProofValidationAgent, CrisisOpportunityAgent, InvestorMetricsAgent, CEOAgent, FinanceInvestorRelationsSwarmAgent, and ChiefGrowthOfficerAgent.
+       4. Present an investor magnet plan with public/private narrative split, proof map, metrics, media/LinkedIn/analyst/event motions, data-room gaps, and approval gates.
+     </process>
+
+     <checkpoint>Investor magnet swarm plan prepared through OpenAgent</checkpoint>
+   </stage>
+
+   <stage id="1.35" name="OperatingSwarmRoute" when="operating_swarm_path" required="true">
+     Use the business-operations-swarms context and route to the relevant operating swarm agent(s). Keep OpenAgent as the user-facing owner.
+
+     <process>
+       1. Read `.opencode/context/core/business-operations-swarms.md`.
+       2. Use ContextScout for existing product, customer, regulatory, finance, support, hiring, supplier, or knowledge context.
+       3. Select roles such as CEOAgent, CustomerSupportSuccessSwarmAgent, ProductStrategySwarmAgent, RegulatoryComplianceSwarmAgent, TalentHiringSwarmAgent, FinanceInvestorRelationsSwarmAgent, SupplyChainManufacturingSwarmAgent, InnovationRDSwarmAgent, CrisisResponseSwarmAgent, PartnershipEcosystemSwarmAgent, KnowledgeManagementSwarmAgent.
+       4. Present an operating swarm plan with signals, actions, owners, metrics, risks, and approval gates.
+     </process>
+
+     <checkpoint>Operating swarm plan prepared through OpenAgent</checkpoint>
+   </stage>
+
+   <stage id="1.4" name="TechnicalSwarmRoute" when="technical_swarm_path" required="true">
+     Use the technical-swarm context and route to the relevant deep-tech R&D agent(s). Keep OpenAgent as the user-facing owner.
+
+     <process>
+       1. Read `.opencode/context/core/technical-swarm.md` and `.opencode/context/core/swarm-orchestration.md`.
+       2. Use ContextScout for existing product, firmware, hardware, compliance, security, or test-bench context.
+       3. Select roles such as SystemArchitectAgent, HardwareArchitectAgent, FPGAASICAgent, RTOSOSAgent, EmbeddedCPPCodingAgent, AutomotiveEthernetAgent, SecurityFirmwareAgent, TechnicalPythonToolingAgent, EmbeddedRustAgent, HILSILAgent, PenetrationTestAgent, TechnicalComplianceVVAgent, EMCEnvironmentalAgent, TechnicalCICDAgent, TechnicalReleaseAgent, and DocWriter.
+       4. Present a technical swarm plan with architecture contracts, parallel workstreams, validation gates, safety/security evidence, release artifacts, and approval gates.
+     </process>
+
+     <checkpoint>Technical swarm plan prepared through OpenAgent</checkpoint>
+   </stage>
 
    <stage id="1.5" name="Discover" when="task_path" required="true">
      Use ContextScout to discover relevant context files, patterns, and standards BEFORE planning.

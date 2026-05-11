@@ -31,6 +31,12 @@
 | **Write docs** | `core/standards/documentation.md` |
 | **Review code** | `core/workflows/code-review.md` |
 | **Delegate task** | `core/workflows/task-delegation-basics.md` |
+| **Run agent swarm** | `core/swarm-orchestration.md` |
+| **Build development team swarm** | `core/development-swarm.md` |
+| **Build revenue growth swarm** | `core/revenue-swarm.md` |
+| **Build investor magnet swarm** | `core/investor-magnet-swarm.md` |
+| **Build business operating swarm** | `core/business-operations-swarms.md` |
+| **Build technical R&D swarm** | `core/technical-swarm.md` |
 | **Add agent** | `openagents-repo/guides/adding-agent.md` |
 | **UI development** | `development/ui-navigation.md` |
 | **API development** | `development/backend-navigation.md` |

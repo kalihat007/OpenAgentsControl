@@ -82,6 +82,56 @@ Use any AI model (Claude, GPT, Gemini, local). No vendor lock-in.
 
 **Full-stack development:** OAC handles both frontend and backend work. The agents coordinate to build complete features from UI to database.
 
+### Controlled Agent Swarms
+
+For bigger work, OAC now includes a controlled swarm layer:
+
+- **OpenAgent Swarm Mode** plans multi-agent work with dependencies, file ownership, and validation gates.
+- **Self-organizing engineering teams** map work to PM, Architect, Tech Lead, frontend/backend/devops, QA, Security, Review, Docs, Integration, and Debug agents.
+- **Task graphs** make every worker's reads, writes, dependencies, and acceptance criteria explicit.
+- **Safe parallel batches** run independent work together while blocking same-file write conflicts.
+- **Adversarial review** lets QA, Security, and Code Review critique independently, with Tech Lead arbitration when they disagree.
+- **Revenue Growth Swarms** coordinate CGO, market intelligence, customer research, brand, lead gen, conversion, pricing, content, PR, trust, analytics, and sales coaching agents for cybersecurity GTM.
+- **Investor Magnet Swarms** coordinate investor narrative, funding simulations, PR/media, LinkedIn thought leadership, analyst relations, events, social proof, crisis-to-opportunity, and investor metrics.
+- **Business Operating Swarms** coordinate CEO synthesis, customer support, product strategy, compliance, talent, finance, supply chain, R&D, crisis response, partnerships, and knowledge management.
+- **Technical R&D Swarms** coordinate hardware/software co-design, embedded firmware, FPGA/ASIC, automotive protocols, HIL/SIL, VAPT, compliance, EMC, SBOM, signing, and OTA release workflows.
+- **Runtime primitives** in `@nextsystems/oac-swarm-runtime` provide typed scheduling, lock checks, sessions, and events.
+
+Use:
+
+```bash
+opencode --agent OpenAgent
+> "Build this feature as a controlled swarm"
+```
+
+Or invoke the commands:
+
+```text
+/swarm-plan Build the feature
+/swarm-team Design the engineering swarm
+/swarm-run approved plan
+/swarm-status
+/swarm-debug failed CI incident
+/revenue-swarm Launch this cybersecurity product
+/campaign-genesis Enter a new automotive security segment
+/sales-coach Improve this enterprise deal pitch
+/investor-magnet Build investor narrative, PR, LinkedIn, analyst, and proof momentum
+/funding-round Simulate VC objections and prepare fundraising assets
+/pr-engine Orchestrate investor-relevant media coverage
+/linkedin-thought-leadership Create founder and CTO category leadership calendars
+/analyst-relations Plan Gartner, Forrester, IDC, and award motions
+/operating-swarm Analyze support and compliance risks
+/ceo-brief Summarize cross-swarm priorities
+/compliance-swarm Map UN R155 readiness
+/support-swarm Triage customer technical issues
+/technical-swarm Design a cybersecurity hardware/software R&D swarm
+/hardware-codesign Plan a GMSL2, CAN, EV charging, or secure gateway product
+/vapt-campaign Plan parallel cybersecurity testing across attack vectors
+/living-tara Maintain continuous ISO/SAE 21434 and UN R155 evidence
+```
+
+Read the full design: [Controlled Agent Swarm System](./docs/features/agent-swarm-system.md)
+
 ---
 
 ## 🆚 Quick Comparison
@@ -94,7 +144,7 @@ Use any AI model (Claude, GPT, Gemini, local). No vendor lock-in.
 | **Team Standards** | ✅ Shared context files | ❌ Per-user settings | ❌ No team support | ⚠️ Manual config per user |
 | **Edit Agent Behavior** | ✅ Markdown files you edit | ❌ Proprietary/baked-in | ⚠️ Limited prompts | ✅ Config files |
 | **Model Choice** | ✅ Any model, any provider | ⚠️ Limited options | ⚠️ OpenAI/Claude only | ✅ Multiple models |
-| **Execution Speed** | ⚠️ Sequential with approval | Fast | Fast | ✅ Parallel agents |
+| **Execution Speed** | ✅ Controlled parallel swarms with approval gates | Fast | Fast | ✅ Parallel agents |
 | **Error Recovery** | ✅ Human-guided validation | ⚠️ Auto-retry (can loop) | ⚠️ Auto-retry | ✅ Self-correcting |
 | **Best For** | Production code, teams | Quick prototypes | Solo developers | Power users, complex projects |
 
@@ -103,6 +153,7 @@ Use any AI model (Claude, GPT, Gemini, local). No vendor lock-in.
 - ✅ You want code that ships without refactoring
 - ✅ You need approval gates for quality control
 - ✅ You care about token efficiency and costs
+- ✅ You want an engineering-team swarm with PM, architecture, implementation, QA, security, review, integration, and debug roles
 
 **Use others when:**
 - **Cursor/Copilot:** Quick prototypes, don't care about patterns

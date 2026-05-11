@@ -1,0 +1,7 @@
+{
+  "id": "security",
+  "name": "Security",
+  "description": "Security review, threat analysis, dependency risk, and secure-default agents",
+  "type": "subagent-category",
+  "version": "1.0.0"
+}
