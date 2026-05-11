@@ -15,7 +15,10 @@
 #
 # Environment variables:
 #   OPENCODE_INSTALL_DIR                 # Override default install directory
+#   OPENCODE_REPO_OWNER                  # GitHub owner to pull from (default: kalihat007)
+#   OPENCODE_REPO_NAME                   # GitHub repo to pull from (default: OpenAgentsControl)
 #   OPENCODE_BRANCH                      # Branch to pull from (default: main)
+#   OPENCODE_RAW_URL                     # Full raw GitHub base URL override
 #############################################################################
 
 set -e
@@ -48,8 +51,11 @@ else
     NC='\033[0m'
 fi
 
+REPO_OWNER="${OPENCODE_REPO_OWNER:-kalihat007}"
+REPO_NAME="${OPENCODE_REPO_NAME:-OpenAgentsControl}"
+REPO_SLUG="${REPO_OWNER}/${REPO_NAME}"
 BRANCH="${OPENCODE_BRANCH:-main}"
-REPO_URL="https://raw.githubusercontent.com/darrenhinde/OpenAgentsControl/${BRANCH}"
+REPO_URL="${OPENCODE_RAW_URL:-https://raw.githubusercontent.com/${REPO_SLUG}/${BRANCH}}"
 
 # CLI argument for custom install dir (overrides env var)
 CUSTOM_INSTALL_DIR=""

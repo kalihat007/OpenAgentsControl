@@ -110,12 +110,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/darrenhinde/OpenAgentsControl.git"
+    "url": "https://github.com/kalihat007/OpenAgentsControl.git"
   },
   "bugs": {
-    "url": "https://github.com/darrenhinde/OpenAgentsControl/issues"
+    "url": "https://github.com/kalihat007/OpenAgentsControl/issues"
   },
-  "homepage": "https://github.com/darrenhinde/OpenAgentsControl#readme",
+  "homepage": "https://github.com/kalihat007/OpenAgentsControl#readme",
   "devDependencies": {
     "glob": "^13.0.0"
   }
