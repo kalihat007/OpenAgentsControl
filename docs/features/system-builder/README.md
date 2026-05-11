@@ -150,7 +150,7 @@ Integrates with existing agents
 - test-validator (subagent)
 - Commands: /review-code, /scan-security
 
-**Integration**: Leverages existing openagent, opencoder, reviewer, tester
+**Integration**: Leverages existing openagent, openagent, reviewer, tester
 
 ---
 
@@ -178,7 +178,7 @@ Integrates with existing agents
 
 ### Example 3: Extend Existing Project
 
-**Existing**: Dev tools (openagent, opencoder, build-agent, tester)
+**Existing**: Dev tools (openagent, openagent, build-agent, tester)
 
 **Command**: `/build-context-system "Add documentation generation"`
 
@@ -186,7 +186,7 @@ Integrates with existing agents
 1. Detects existing project
 2. User chooses: "Extend existing"
 3. Domain type: Hybrid (dev + content)
-4. Reuses: openagent, opencoder, documentation
+4. Reuses: openagent, openagent, documentation
 5. Adds: doc-orchestrator, api-doc-generator
 6. Result: Unified system with dev + docs
 
@@ -238,7 +238,7 @@ The system detects and integrates with existing agents:
 
 **Development Agents**:
 - `openagent` - Universal agent for questions and tasks
-- `opencoder` - Code analysis, file operations
+- `openagent` - Code analysis, file operations
 - `build-agent` - Build validation, type checking
 - `tester` - Test authoring, TDD
 - `reviewer` - Code review, quality assurance

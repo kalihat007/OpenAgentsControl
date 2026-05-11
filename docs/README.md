@@ -101,7 +101,7 @@ Latest updates:
 - ExternalScout subagent for fetching live library documentation (18+ libraries)
 - Enhanced ContextScout with multi-model optimization
 - Complete command and agent documentation
-- Simplified agent architecture (OpenAgent + OpenCoder)
+- Single-entrypoint architecture: start every workflow with OpenAgent
 
 ## 🤝 Community
 

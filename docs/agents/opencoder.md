@@ -1,13 +1,15 @@
-# OpenCoder - Specialized Development Agent
+# OpenAgent - Legacy Compatibility Development Agent
 
-**Your expert development partner for complex coding tasks**
+**Use `opencode --agent OpenAgent` for development work.**
+
+OpenAgent remains documented as a legacy compatibility component, but the user-facing workflow is now single-entrypoint: OpenAgent routes complex coding, architecture, refactoring, testing, review, and swarm work internally.
 
 ---
 
 ## Table of Contents
 
-- [What is OpenCoder?](#what-is-opencoder)
-- [When to Use OpenCoder](#when-to-use-opencoder)
+- [What is OpenAgent?](#what-is-openagent)
+- [When to Use OpenAgent](#when-to-use-openagent)
 - [When to Use OpenAgent Instead](#when-to-use-openagent-instead)
 - [Core Capabilities](#core-capabilities)
 - [Workflow](#workflow)
@@ -19,9 +21,9 @@
 
 ---
 
-## What is OpenCoder?
+## What is OpenAgent?
 
-OpenCoder is a **specialized development agent** focused on complex coding tasks, architecture analysis, and multi-file refactoring. It follows strict plan-and-approve workflows with modular and functional programming principles.
+OpenAgent is a **specialized development agent** focused on complex coding tasks, architecture analysis, and multi-file refactoring. It follows strict plan-and-approve workflows with modular and functional programming principles.
 
 **Key Characteristics:**
 - 🎯 **Specialized** - Deep focus on code quality and architecture
@@ -32,7 +34,9 @@ OpenCoder is a **specialized development agent** focused on complex coding tasks
 
 ---
 
-## When to Use OpenCoder
+## When OpenAgent Uses Development Routing
+
+OpenAgent handles these development workflows and may route internally to coding specialists:
 
 ✅ **Multi-file refactoring** (4+ files)
 - Refactoring an entire module
@@ -61,18 +65,21 @@ OpenCoder is a **specialized development agent** focused on complex coding tasks
 
 ---
 
-## When to Use OpenAgent Instead
+## User-Facing Entry Point
 
-Use **openagent** for:
+Use **OpenAgent** for:
 - ❓ Questions about code or concepts
 - 📝 Documentation tasks
-- 🔄 Simple 1-3 file changes
+- 🔄 Simple and complex code changes
 - 🎯 General workflow coordination
+- 🧠 Architecture and refactoring
+- 🧪 Testing, review, build, and validation
+- 🧩 Swarm and system-builder workflows
 - 💬 Exploratory conversations
 
 **Rule of thumb:** 
 - **OpenAgent** = General coordinator (questions, docs, coordination, simple tasks)
-- **OpenCoder** = Development specialist (complex coding, architecture, refactoring)
+- **OpenAgent** = Development specialist (complex coding, architecture, refactoring)
 
 ---
 
@@ -113,7 +120,7 @@ Use **openagent** for:
 
 ### Phase 1: Planning (Required)
 
-OpenCoder **always** proposes a plan first:
+OpenAgent **always** proposes a plan first:
 
 ```
 1. Analyzes the request
@@ -124,7 +131,7 @@ OpenCoder **always** proposes a plan first:
 
 **No implementation happens without approval.**
 
-For features spanning multiple modules or estimated > 60 minutes, OpenCoder delegates to `@task-manager` to create atomic subtasks.
+For features spanning multiple modules or estimated > 60 minutes, OpenAgent delegates to `@task-manager` to create atomic subtasks.
 
 ---
 
@@ -166,7 +173,7 @@ When implementation is complete:
 
 ## Multi-Language Support
 
-OpenCoder adapts to the project's language automatically:
+OpenAgent adapts to the project's language automatically:
 
 ### TypeScript/JavaScript
 - Runtime: `node`, `bun`, or `deno`
@@ -200,7 +207,7 @@ OpenCoder adapts to the project's language automatically:
 
 ## Code Standards
 
-OpenCoder follows these principles:
+OpenAgent follows these principles:
 
 ### Modular Architecture
 - Clear module boundaries
@@ -231,7 +238,7 @@ OpenCoder follows these principles:
 
 ## Subagent Delegation
 
-OpenCoder coordinates with specialized subagents:
+OpenAgent coordinates with specialized subagents:
 
 ### @task-manager
 **When:** Features spanning 4+ files or > 60 minutes
@@ -270,10 +277,10 @@ OpenCoder coordinates with specialized subagents:
 ### Example 1: Multi-File Refactoring
 
 ```bash
-opencode --agent OpenCoder
+opencode --agent OpenAgent
 > "Refactor the authentication module to use dependency injection across all 8 files"
 
-# OpenCoder will:
+# OpenAgent will:
 # 1. Analyze current structure (8 files)
 # 2. Propose refactoring plan
 # 3. Wait for approval
@@ -288,10 +295,10 @@ opencode --agent OpenCoder
 ### Example 2: Architecture Analysis
 
 ```bash
-opencode --agent OpenCoder
+opencode --agent OpenAgent
 > "Analyze the architecture of this codebase and suggest improvements"
 
-# OpenCoder will:
+# OpenAgent will:
 # 1. Scan codebase structure
 # 2. Identify patterns and anti-patterns
 # 3. Propose architectural improvements
@@ -305,10 +312,10 @@ opencode --agent OpenCoder
 ### Example 3: Pattern Implementation
 
 ```bash
-opencode --agent OpenCoder
+opencode --agent OpenAgent
 > "Implement the repository pattern for all database access across the data layer"
 
-# OpenCoder will:
+# OpenAgent will:
 # 1. Identify all database access points
 # 2. Design repository interface
 # 3. Propose implementation plan
@@ -325,10 +332,10 @@ opencode --agent OpenCoder
 ### Example 4: Complex Feature
 
 ```bash
-opencode --agent OpenCoder
+opencode --agent OpenAgent
 > "Implement user authentication with JWT, refresh tokens, and role-based access control"
 
-# OpenCoder will:
+# OpenAgent will:
 # 1. Analyze requirements (complex, multi-file)
 # 2. Design authentication architecture
 # 3. Propose implementation plan (multiple phases)
@@ -358,34 +365,34 @@ If refactoring existing code, mention:
 - Any constraints (can't change X, must maintain Y)
 
 ### 3. Review Plans Carefully
-OpenCoder will show you the plan before implementation. Take time to:
+OpenAgent will show you the plan before implementation. Take time to:
 - Verify the approach makes sense
 - Check that all files are included
 - Ensure edge cases are considered
 - Request changes if needed
 
-### 4. Let OpenCoder Delegate
-Don't manually delegate to subagents. OpenCoder knows when to:
+### 4. Let OpenAgent Delegate
+Don't manually delegate to subagents. OpenAgent knows when to:
 - Use @task-manager for breakdown
 - Call @tester for tests
 - Use @reviewer for security
 - Leverage @coder-agent for simple tasks
 
 ### 5. Use Test-Driven Development
-If a `tests/` directory exists, OpenCoder will:
+If a `tests/` directory exists, OpenAgent will:
 - Write tests first (when appropriate)
 - Validate against tests continuously
 - Ensure comprehensive coverage
 
 ### 6. Trust Incremental Implementation
-OpenCoder implements **one step at a time**, not all at once. This:
+OpenAgent implements **one step at a time**, not all at once. This:
 - Catches errors early
 - Allows for course correction
 - Maintains working code between steps
 - Makes debugging easier
 
 ### 7. Language-Specific Conventions
-OpenCoder adapts to your language:
+OpenAgent adapts to your language:
 - For TypeScript: Functional, type-first approach
 - For Python: Pythonic patterns, type hints
 - For Go: Idiomatic Go, interfaces
@@ -396,7 +403,7 @@ OpenCoder adapts to your language:
 
 ## Configuration
 
-OpenCoder is configured in `.opencode/agent/core/opencoder.md`. Default settings:
+OpenAgent is configured in `.opencode/agent/core/openagent.md`. Default settings:
 
 ```yaml
 temperature: 0.1  # Deterministic, precise
@@ -408,35 +415,32 @@ permissions:
 
 ---
 
-## Comparison: OpenAgent vs OpenCoder
+## OpenAgent Development Routing
 
-| Aspect | OpenAgent | OpenCoder |
-|--------|-----------|-----------|
-| **Primary Use** | General coordinator | Development specialist |
-| **Best For** | Questions, docs, coordination | Complex coding, architecture |
-| **Coding Tasks** | Simple (1-3 files) | Complex (4+ files) |
-| **Delegation** | Delegates coding to opencoder | Delegates testing, review |
-| **Expertise** | Broad, adaptive | Deep, technical |
-| **User Profile** | Everyone (default) | Developers |
-| **Plan Detail** | High-level | Implementation-level |
-| **Validation** | Basic | Comprehensive (type, lint, build, test) |
+| Need | OpenAgent internal route |
+|------|--------------------------|
+| Multi-file implementation | CoderAgent, TaskManager, ContextScout |
+| Architecture/refactoring | ContextScout, SystemArchitectAgent, TechLeadAgent |
+| Tests | TestEngineer |
+| Review | CodeReviewer, SecurityAgent |
+| Build validation | BuildAgent |
+| Swarm work | SwarmOrchestrator |
 
 ---
 
 ## Summary
 
-OpenCoder is your **specialized development partner** for:
+OpenAgent is your **single user-facing development partner** for:
 - ✅ Complex multi-file coding tasks
 - ✅ Architecture analysis and improvements
 - ✅ Pattern implementation and refactoring
 - ✅ Deep technical implementations
 
-**Use OpenAgent** for general tasks and coordination.
-**Use OpenCoder** when you need deep development expertise.
+OpenAgent is retained for compatibility, but new workflows should start with OpenAgent.
 
 **Start here:**
 ```bash
-opencode --agent OpenCoder
+opencode --agent OpenAgent
 > "Your complex coding task..."
 ```
 

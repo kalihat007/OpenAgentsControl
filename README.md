@@ -387,8 +387,8 @@ Before generating code, ContextScout discovers relevant patterns from your conte
 **2. Editable Agents - Full Control**  
 Unlike Cursor/Copilot where behavior is baked into plugins, OAC agents are markdown files. Edit them directly:
 ```bash
-nano .opencode/agent/core/opencoder.md  # local project install
-# Or: nano ~/.config/opencode/agent/core/opencoder.md  # global install
+nano .opencode/agent/core/openagent.md  # local project install
+# Or: nano ~/.config/opencode/agent/core/openagent.md  # global install
 # Add project rules, change workflows, customize behavior
 ```
 
@@ -423,9 +423,9 @@ Store patterns in `.opencode/context/project/`. Commit to repo. Entire team uses
 
 ## 🎯 Which Agent Should I Use?
 
-### OpenAgent (Start Here)
+### OpenAgent (Always Start Here)
 
-**Best for:** Learning the system, general tasks, quick implementations
+**Best for:** Everything: questions, coding, docs, technical swarms, revenue swarms, investor swarms, business operations, and custom AI-system design.
 
 ```bash
 opencode --agent OpenAgent
@@ -433,58 +433,25 @@ opencode --agent OpenAgent
 > "How do I implement authentication in Next.js?"  # Questions
 > "Create a README for this project"               # Documentation
 > "Explain the architecture of this codebase"      # Analysis
+> "Build this as a controlled technical swarm"      # Multi-agent swarm work
+> "Create a custom AI system for support"           # System-builder workflow
 ```
 
 **What it does:**
 - Loads your patterns via ContextScout
 - Proposes plan (you approve)
 - Executes with validation
-- Delegates to specialists when needed
+- Delegates internally to specialists when needed
+- Routes complex requests into development, technical, revenue, investor, operations, or system-builder workflows
 
-**Perfect for:** First-time users, simple features, learning the workflow
-
-### OpenCoder (Production Development)
-
-**Best for:** Complex features, multi-file refactoring, production systems
-
-```bash
-opencode --agent OpenCoder
-> "Create a user authentication system"                 # Full-stack features
-> "Refactor this codebase to use dependency injection"  # Multi-file refactoring
-> "Add real-time notifications with WebSockets"         # Complex implementations
-```
-
-**What it does:**
-- **Discover:** ContextScout finds relevant patterns
-- **Propose:** Detailed implementation plan
-- **Approve:** You review and approve
-- **Execute:** Incremental implementation with validation
-- **Validate:** Tests, type checking, code review
-- **Ship:** Production-ready code
-
-**Perfect for:** Production code, complex features, team development
-
-### SystemBuilder (Custom AI Systems)
-
-**Best for:** Building complete custom AI systems tailored to your domain
-
-```bash
-opencode --agent SystemBuilder
-> "Create a customer support AI system"
-```
-
-Interactive wizard generates orchestrators, subagents, context files, workflows, and commands.
-
-**Perfect for:** Creating domain-specific AI systems
+**Perfect for:** First-time users, production code, complex swarms, team development, and custom systems. You do not need to switch agents.
 
 ---
 
 ## 🛠️ What's Included
 
 ### 🤖 Main Agents
-- **OpenAgent** - General tasks, questions, learning (start here)
-- **OpenCoder** - Production development, complex features
-- **SystemBuilder** - Generate custom AI systems
+- **OpenAgent** - The single user-facing entrypoint for general tasks, production development, swarms, and system-builder workflows
 
 ### 🔧 Specialized Subagents (Auto-delegated)
 - **ContextScout** - Smart pattern discovery (your secret weapon)
@@ -554,7 +521,7 @@ ContextScout discovers context files using a **local-first** approach:
 ## 💻 Example Workflow
 
 ```bash
-opencode --agent OpenCoder
+opencode --agent OpenAgent
 > "Create a user dashboard with authentication and profile settings"
 ```
 
@@ -637,8 +604,8 @@ Approve? [y/n]
 
 Edit agent files directly:
 ```bash
-nano .opencode/agent/core/opencoder.md  # local project install
-# Or: nano ~/.config/opencode/agent/core/opencoder.md  # global install
+nano .opencode/agent/core/openagent.md  # local project install
+# Or: nano ~/.config/opencode/agent/core/openagent.md  # global install
 ```
 
 Change the model in the frontmatter:
@@ -766,7 +733,7 @@ A: MVI principle: Only load what's needed, when it's needed. Context files <200 
 A: Smart pattern discovery agent. Finds relevant context files before code generation. Ranks by priority. Prevents wasted work.
 
 **Q: Can I edit agent behavior?**  
-A: Yes! Agents are markdown files. Edit them directly: `nano .opencode/agent/core/opencoder.md` (local) or `nano ~/.config/opencode/agent/core/opencoder.md` (global)
+A: Yes! Agents are markdown files. Edit them directly: `nano .opencode/agent/core/openagent.md` (local) or `nano ~/.config/opencode/agent/core/openagent.md` (global)
 
 **Q: How do approval gates work?**  
 A: Agents ALWAYS request approval before execution (write/edit/bash). You review plans before implementation. No surprises.

@@ -8,7 +8,7 @@
 
 **8 Stages**: Architecture Decomposition → Story Mapping → Prioritization → Enhanced Task Breakdown → Contract Definition → Parallel Execution → Integration & Validation → Release & Learning
 
-**Key Agents**: OpenCoder (orchestrator), TaskManager, BatchExecutor, CoderAgent, ContextScout, ExternalScout
+**Key Agents**: OpenAgent (orchestrator), TaskManager, BatchExecutor, CoderAgent, ContextScout, ExternalScout
 
 **When to Use**: Complex features requiring multi-agent coordination, parallel execution, and systematic integration
 
@@ -64,7 +64,7 @@ Stage 8: Release & Learning
 
 **Goal**: Break down the system into logical components and define boundaries
 
-**Primary Agent**: OpenCoder (orchestrator)
+**Primary Agent**: OpenAgent (orchestrator)
 
 **Supporting Agents**: ContextScout (for architectural patterns)
 
@@ -110,7 +110,7 @@ Stage 8: Release & Learning
 
 **Goal**: Map user journeys and translate into user stories
 
-**Primary Agent**: OpenCoder (orchestrator)
+**Primary Agent**: OpenAgent (orchestrator)
 
 **Supporting Agents**: ContextScout (for user journey patterns)
 
@@ -156,7 +156,7 @@ Stage 8: Release & Learning
 
 **Goal**: Sequence work based on value, risk, and dependencies
 
-**Primary Agent**: OpenCoder (orchestrator)
+**Primary Agent**: OpenAgent (orchestrator)
 
 ### Process
 
@@ -287,7 +287,7 @@ Stage 8: Release & Learning
 
 **Goal**: Define interfaces and integration contracts before implementation
 
-**Primary Agent**: OpenCoder (orchestrator)
+**Primary Agent**: OpenAgent (orchestrator)
 
 **Supporting Agents**: CoderAgent (for contract implementation)
 
@@ -450,7 +450,7 @@ CoderAgent   CoderAgent   CoderAgent
 
 **Goal**: Integrate components and validate system works as a whole
 
-**Primary Agent**: OpenCoder (orchestrator)
+**Primary Agent**: OpenAgent (orchestrator)
 
 **Supporting Agents**: CoderAgent (for integration code), TestEngineer (for validation)
 
@@ -496,7 +496,7 @@ CoderAgent   CoderAgent   CoderAgent
 
 **Goal**: Deploy to production and capture insights for future iterations
 
-**Primary Agent**: OpenCoder (orchestrator)
+**Primary Agent**: OpenAgent (orchestrator)
 
 ### Process
 
@@ -539,7 +539,7 @@ CoderAgent   CoderAgent   CoderAgent
 
 ## Agent Responsibilities
 
-### OpenCoder (Orchestrator)
+### OpenAgent (Orchestrator)
 
 **Stages**: All (primary orchestrator)
 
@@ -659,19 +659,19 @@ CoderAgent   CoderAgent   CoderAgent
 
 ┌──────────────────────────────────────────────────────────────────────┐
 │ Stage 1: Architecture Decomposition                                  │
-│ Agent: OpenCoder + ContextScout                                      │
+│ Agent: OpenAgent + ContextScout                                      │
 │ Output: Component boundaries, integration points                     │
 └──────────────────────────────────────────────────────────────────────┘
                               ↓
 ┌──────────────────────────────────────────────────────────────────────┐
 │ Stage 2: Story Mapping                                               │
-│ Agent: OpenCoder                                                     │
+│ Agent: OpenAgent                                                     │
 │ Output: User journeys, story backlog                                 │
 └──────────────────────────────────────────────────────────────────────┘
                               ↓
 ┌──────────────────────────────────────────────────────────────────────┐
 │ Stage 3: Prioritization                                              │
-│ Agent: OpenCoder                                                     │
+│ Agent: OpenAgent                                                     │
 │ Output: Sequenced work, dependency graph, execution plan             │
 └──────────────────────────────────────────────────────────────────────┘
                               ↓
@@ -683,7 +683,7 @@ CoderAgent   CoderAgent   CoderAgent
                               ↓
 ┌──────────────────────────────────────────────────────────────────────┐
 │ Stage 5: Contract Definition                                         │
-│ Agent: OpenCoder + CoderAgent                                        │
+│ Agent: OpenAgent + CoderAgent                                        │
 │ Output: TypeScript interfaces, API contracts, schemas                │
 └──────────────────────────────────────────────────────────────────────┘
                               ↓
@@ -702,13 +702,13 @@ CoderAgent   CoderAgent   CoderAgent
                               ↓
 ┌──────────────────────────────────────────────────────────────────────┐
 │ Stage 7: Integration & Validation                                    │
-│ Agent: OpenCoder + CoderAgent + TestEngineer                        │
+│ Agent: OpenAgent + CoderAgent + TestEngineer                        │
 │ Output: Integrated system, test results, validation report           │
 └──────────────────────────────────────────────────────────────────────┘
                               ↓
 ┌──────────────────────────────────────────────────────────────────────┐
 │ Stage 8: Release & Learning                                          │
-│ Agent: OpenCoder                                                     │
+│ Agent: OpenAgent                                                     │
 │ Output: Deployed feature, insights, updated standards                │
 └──────────────────────────────────────────────────────────────────────┘
 ```

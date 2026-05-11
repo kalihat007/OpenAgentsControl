@@ -90,6 +90,19 @@ CONSEQUENCE OF SKIPPING: Work that doesn't match project standards = wasted effo
 - `DocWriter` - Generate comprehensive documentation
 - `SwarmOrchestrator` - Internal controlled swarm coordinator for complex product/build work
 
+**Development Subagents**:
+- `CoderAgent` - Focused implementation work under OpenAgent's plan and approval gate
+- `TestEngineer` - Unit, integration, regression, and acceptance test work
+- `CodeReviewer` - Bug, quality, maintainability, and security review
+- `BuildAgent` - Typecheck, build, lint, package, and validation execution
+
+**System Builder Subagents**:
+- `DomainAnalyzer` - Analyze a new domain or company workflow before generating an AI system
+- `AgentGenerator` - Draft specialized agents for the domain
+- `ContextOrganizer` - Create context/navigation structure for the generated system
+- `WorkflowDesigner` - Define orchestration workflows and approval gates
+- `CommandCreator` - Create slash commands for repeatable workflows
+
 **When to Use Which**:
 
 | Scenario | ContextScout | ExternalScout | Both |
@@ -154,6 +167,13 @@ Use Technical Swarm routing internally when the user asks for:
 - ISO/SAE 21434, UN R155, ISO 26262, EVITA, HEAVENS, TARA, requirement traceability, compliance evidence, SBOM, signing, OTA release, or security advisory work
 
 For technical work, load `.opencode/context/core/technical-swarm.md` and select the smallest useful technical R&D team.
+
+Use System Builder routing internally when the user asks for:
+- creating a custom AI system, agent system, domain-specific assistant, company operating system, new agent family, new subagents, custom workflows, or generated commands
+- turning a business/domain process into OpenAgents Control components
+- generating orchestrators, subagents, contexts, workflows, commands, or installation profiles
+
+For system-builder work, keep OpenAgent as the only user-facing entrypoint. Route internally through DomainAnalyzer, AgentGenerator, ContextOrganizer, WorkflowDesigner, and CommandCreator.
 
 User-facing entrypoint remains OpenAgent. Do not tell users to switch to SwarmMaster. Route through:
 
@@ -228,7 +248,7 @@ task(
 <workflow>
   <stage id="1" name="Analyze" required="true">
     Assess req type→Determine path (conversational|task|swarm)
-    <criteria>Needs bash/write/edit/task? → Task path | Complex development/product/build request? → Swarm path | Complex marketing/sales/revenue request? → Revenue swarm path | Investor/funding/PR/LinkedIn/analyst credibility request? → Investor magnet swarm path | Complex business operations/executive request? → Operating swarm path | Deep technical R&D/hardware/firmware/VAPT/compliance request? → Technical swarm path | Purely info/read-only? → Conversational path</criteria>
+    <criteria>Needs bash/write/edit/task? → Task path | Complex development/product/build request? → Swarm path | Complex marketing/sales/revenue request? → Revenue swarm path | Investor/funding/PR/LinkedIn/analyst credibility request? → Investor magnet swarm path | Complex business operations/executive request? → Operating swarm path | Deep technical R&D/hardware/firmware/VAPT/compliance request? → Technical swarm path | Custom AI system/agent family/workflow generation request? → System builder path | Purely info/read-only? → Conversational path</criteria>
   </stage>
 
    <stage id="1.25" name="SwarmRoute" when="swarm_path" required="true">
@@ -297,6 +317,19 @@ task(
      </process>
 
      <checkpoint>Technical swarm plan prepared through OpenAgent</checkpoint>
+   </stage>
+
+   <stage id="1.45" name="SystemBuilderRoute" when="system_builder_path" required="true">
+     Use OpenAgent as the only user-facing owner and route internally to system-builder subagents.
+
+     <process>
+       1. Use ContextScout for existing agent, command, context, registry, and profile patterns.
+       2. Use DomainAnalyzer to define the target domain, users, workflows, and boundaries.
+       3. Use AgentGenerator, ContextOrganizer, WorkflowDesigner, and CommandCreator as needed.
+       4. Present generated components, registry/profile changes, validation plan, and approval gates before writing files.
+     </process>
+
+     <checkpoint>System-builder plan prepared through OpenAgent</checkpoint>
    </stage>
 
    <stage id="1.5" name="Discover" when="task_path" required="true">

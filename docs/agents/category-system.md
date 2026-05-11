@@ -90,7 +90,7 @@ npm run eval:sdk -- --agent=TestEngineer
 **Core Agents** - Direct invocation:
 ```bash
 opencode --agent core/openagent
-opencode --agent core/opencoder
+opencode --agent OpenAgent
 ```
 
 **Category Agents** - Direct invocation:
@@ -246,11 +246,11 @@ The old flat structure is still supported:
 ```bash
 # Old format (still works)
 npm run eval:sdk -- --agent=openagent
-npm run eval:sdk -- --agent=opencoder
+npm run eval:sdk -- --agent=openagent
 
 # New format (recommended)
 npm run eval:sdk -- --agent=core/openagent
-npm run eval:sdk -- --agent=core/opencoder
+npm run eval:sdk -- --agent=core/openagent
 ```
 
 ### Path Resolution

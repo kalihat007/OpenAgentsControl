@@ -92,7 +92,8 @@ Quality Insights:
 ## Implementation
 
 ### Delegation
-- Delegates to: **opencoder** (primary)
+- User-facing entrypoint: **OpenAgent**
+- OpenAgent may route internally to ContextScout, CoderAgent, or review specialists for deeper analysis
 - Uses context search capabilities for pattern matching
 - Returns structured pattern analysis results
 
@@ -186,7 +187,8 @@ Formatted for documentation + sharing:
   "type": "command",
   "category": "analysis",
   "description": "Analyze codebase for patterns and similar implementations",
-  "delegates_to": ["opencoder"],
+  "entrypoint": "OpenAgent",
+  "internal_routes": ["ContextScout", "CoderAgent", "CodeReviewer"],
   "parameters": ["pattern", "language", "depth", "output"]
 }
 ```

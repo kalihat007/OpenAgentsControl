@@ -37,7 +37,7 @@ Think of OpenAgent as a **smart project coordinator** who:
 - Executes the plan (directly or via delegation)
 - Confirms everything is done right
 
-**Note:** For complex multi-file coding work, architecture analysis, or deep refactoring, use **opencoder** instead. OpenAgent is optimized for general tasks and coordination, while opencoder specializes in development work.
+**Note:** Use **OpenAgent** for every workflow. For complex multi-file coding work, architecture analysis, deep refactoring, or swarm execution, OpenAgent routes internally to the right coding, review, build, system-builder, or swarm specialists.
 
 ---
 
@@ -74,11 +74,11 @@ OpenAgent is a **universal coordinator** - it handles general tasks directly:
 
 **Default**: Execute directly for general tasks, fetch context files as needed (lazy), keep it simple, don't over-delegate
 
-**Delegate to opencoder when**: Complex multi-file coding, architecture analysis, deep refactoring, pattern implementation
+**Delegate internally when**: Complex multi-file coding, architecture analysis, deep refactoring, pattern implementation, swarm planning, testing, review, build validation, or comprehensive documentation.
 
-**Delegate to specialists when**: Testing needed (@tester), review needed (@reviewer), complex task breakdown (@task-manager), comprehensive documentation (@documentation)
+**Delegate to specialists when**: Testing needed (@tester), review needed (@reviewer), complex task breakdown (@task-manager), comprehensive documentation (@documentation), coding implementation (@coder-agent), or swarm coordination (@swarm-orchestrator).
 
-This means OpenAgent is your go-to coordinator for general tasks and questions. For deep coding work, use **opencoder**.
+This means OpenAgent is your single go-to coordinator for general tasks, deep coding work, business workflows, and swarm execution.
 
 ---
 
@@ -1179,7 +1179,7 @@ OpenAgent is your **intelligent universal agent** that:
 ✅ **Preserves context** - Remembers information across multiple steps
 ✅ **Executes directly** - Handles most tasks itself, delegates only when needed
 ✅ **Keeps you in control** - Always confirms before cleanup (Critical Rule)
-✅ **Handles general tasks** - Questions, docs, coordination, simple updates (delegates complex coding to opencoder)
+✅ **Handles all user workflows** - Questions, docs, coordination, coding, swarms, and custom-system design through internal specialist routing
 ✅ **Reports before fixing** - Never auto-fixes issues without approval (Critical Rule)
 
 **Key Takeaways**:

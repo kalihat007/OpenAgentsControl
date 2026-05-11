@@ -22,12 +22,14 @@
         "name": "OpenSystemBuilder",
         "type": "agent",
         "path": ".opencode/agent/meta/system-builder.md",
-        "description": "Generates complete context-aware AI systems from user requirements",
+        "description": "Legacy compatibility system-builder entrypoint; prefer OpenAgent, which routes internally to system-builder subagents",
         "tags": [
           "system-generation",
           "architecture",
           "orchestration",
-          "meta"
+          "meta",
+          "legacy",
+          "compatibility"
         ],
         "dependencies": [
           "subagent:domain-analyzer",
@@ -95,11 +97,13 @@
         "name": "OpenCoder",
         "type": "agent",
         "path": ".opencode/agent/core/opencoder.md",
-        "description": "Orchestration agent for complex coding, architecture, and multi-file refactoring",
+        "description": "Legacy compatibility coding orchestrator; prefer OpenAgent as the single user-facing entrypoint for all development work",
         "tags": [
           "development",
           "coding",
-          "implementation"
+          "implementation",
+          "legacy",
+          "compatibility"
         ],
         "dependencies": [
           "subagent:documentation",
@@ -121,11 +125,14 @@
         "name": "OpenAgent",
         "type": "agent",
         "path": ".opencode/agent/core/openagent.md",
-        "description": "Universal agent for answering queries, executing tasks, and coordinating workflows across any domain",
+        "description": "Single user-facing entrypoint for answering queries, coding, documentation, swarms, business workflows, investor workflows, technical R&D, and custom system generation",
         "tags": [
           "universal",
           "coordination",
-          "primary"
+          "primary",
+          "single-entrypoint",
+          "swarm",
+          "system-builder"
         ],
         "dependencies": [
           "subagent:task-manager",
@@ -4764,7 +4771,7 @@
   "profiles": {
     "essential": {
       "name": "Essential (Minimal)",
-      "description": "Minimal starter kit - universal agent with core subagents. Great for learning the system or lightweight tasks. Upgrade to Developer or Business for full features.",
+      "description": "Minimal starter kit centered on one command: opencode --agent OpenAgent. Great for learning the system or lightweight tasks. Upgrade to Developer, Business, Full, or Advanced for specialized swarms.",
       "components": [
         "agent:openagent",
         "subagent:task-manager",
@@ -4795,11 +4802,10 @@
     },
     "developer": {
       "name": "Developer",
-      "description": "Complete software development environment with code generation, testing, review, and build tools. Includes UI/UX patterns, development principles, and design systems. Use OpenAgent for general tasks (1-4 files) or OpenCoder for complex architecture (4+ files). Recommended for most developers.",
+      "description": "Complete software development and technical-swarm environment under one command: opencode --agent OpenAgent. Includes code generation, testing, review, build tools, UI/UX patterns, development principles, and controlled swarm routing. Recommended for most developers.",
       "badge": "RECOMMENDED",
       "components": [
         "agent:openagent",
-        "agent:opencoder",
         "subagent:swarm-orchestrator",
         "subagent:product-manager",
         "subagent:system-architect",
@@ -4879,12 +4885,9 @@
     },
     "business": {
       "name": "Business",
-      "description": "Business process automation, content creation, and visual workflows. Includes image generation, notifications, and documentation tools.",
+      "description": "Business, revenue, investor, operations, content, and visual workflows under one command: opencode --agent OpenAgent. Includes revenue swarms, investor magnet swarms, support, compliance, finance, partnerships, and knowledge-management workflows.",
       "components": [
         "agent:openagent",
-        "agent:copywriter",
-        "agent:technical-writer",
-        "agent:data-analyst",
         "subagent:task-manager",
         "subagent:contextscout",
         "subagent:documentation",
@@ -4960,15 +4963,10 @@
     },
     "full": {
       "name": "Full",
-      "description": "Everything included - all agents, subagents, tools, and plugins for maximum functionality. Includes UI/UX patterns, development principles, and design systems.",
+      "description": "Everything included under one user-facing command: opencode --agent OpenAgent. Includes development, technical, revenue, investor, business operations, tools, plugins, and complete context coverage.",
       "components": [
         "agent:openagent",
-        "agent:opencoder",
         "subagent:swarm-orchestrator",
-        "agent:eval-runner",
-        "agent:copywriter",
-        "agent:technical-writer",
-        "agent:data-analyst",
         "subagent:product-manager",
         "subagent:system-architect",
         "subagent:tech-lead",
@@ -5102,17 +5100,10 @@
     },
     "advanced": {
       "name": "Advanced (Meta-Level)",
-      "description": "Full installation plus System Builder for creating custom AI architectures. Includes comprehensive context system, system builder templates, and repository management tools. For power users and contributors.",
+      "description": "Full single-entrypoint OpenAgent installation plus meta/system-builder subagents for creating custom AI architectures, agent families, workflows, contexts, commands, and installation profiles. For power users and contributors.",
       "components": [
         "agent:openagent",
-        "agent:opencoder",
         "subagent:swarm-orchestrator",
-        "agent:system-builder",
-        "agent:repo-manager",
-        "agent:eval-runner",
-        "agent:copywriter",
-        "agent:technical-writer",
-        "agent:data-analyst",
         "subagent:product-manager",
         "subagent:system-architect",
         "subagent:tech-lead",
