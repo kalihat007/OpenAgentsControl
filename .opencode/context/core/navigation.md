@@ -14,6 +14,7 @@ core/
 ├── context-system.md
 ├── business-operations-swarms.md
 ├── essential-patterns.md
+├── experts-mode.md
 ├── hackersera-master-swarm.md
 ├── development-swarm.md
 ├── revenue-swarm.md
@@ -77,6 +78,7 @@ core/
 | **Security patterns** | `standards/security-patterns.md` |
 | **Review code** | `workflows/code-review.md` |
 | **Delegate task** | `workflows/task-delegation-basics.md` |
+| **Run Experts Mode** | `experts-mode.md` + `swarm-orchestration.md` |
 | **Run agent swarm** | `swarm-orchestration.md` |
 | **Run HackersEra master swarm** | `hackersera-master-swarm.md` |
 | **Run scale-out organizational swarm** | `hackersera-master-swarm.md` + `swarm-orchestration.md` |
@@ -97,6 +99,7 @@ core/
 
 **Standards** → Code quality, testing, docs, security (critical priority)
 **Workflows** → Review, delegation, task breakdown (high priority)
+**Experts Mode** → Team Lead planning, dynamic experts, task progress, parallel execution, validation, review, and self-evolution (critical priority)
 **Swarm** → Task graph, file locks, safe parallel batches, validation gates (critical priority)
 **HackersEra Master Swarm** → Trusted fast OpenAgent routing plus scale-out organizational AI across technical, development, revenue, investor, operations, support, compliance, and CEO tracks (critical priority)
 **Development Swarm** → PM, architect, tech lead, dev, QA, security, review, docs, integration, debug roles (critical priority)

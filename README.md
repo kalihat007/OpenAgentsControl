@@ -4,13 +4,14 @@
 
 # OpenAgents Control (OAC)
 
-### Trusted fast OpenAgent with HackersEra master swarm and scale-out organizational AI.
+### Trusted fast OpenAgent with Experts Mode, HackersEra master swarm, and scale-out organizational AI.
 
 **AI agents that learn YOUR coding patterns and generate matching code every time.**
 
 🎯 **Pattern Control** - Define your patterns once, AI uses them forever  
 ⚡ **Trusted Fast Mode** - Safe local work executes by default
 🧠 **Scale-Out Swarms** - OpenAgent self-organizes specialist teams by default
+🧑‍💻 **Experts Mode** - Team Lead plans, experts build/test/review in parallel
 🔁 **Repeatable Results** - Same patterns = Same quality code  
 📝 **Editable Agents** - Full control over AI behavior  
 👥 **Team-Ready** - Everyone uses the same patterns
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
 
 ## The Solution
 
-**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, self-organizes specialist swarms for large tasks, distributes context across roles, and keeps high-risk actions behind approval gates.
+**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, auto-enters Experts Mode for serious engineering tasks, self-organizes specialist swarms for large work, distributes context across roles, and keeps high-risk actions behind approval gates.
 
 **The result:** Production-ready code that ships without heavy rework.
 
@@ -75,6 +76,9 @@ OpenAgent executes safe local work directly. It asks approval only for destructi
 **🧠 Scale-Out Organizational AI**
 OpenAgent acts like the CEO of a temporary expert organization. It dynamically assigns researchers, analysts, builders, reviewers, fact-checkers, and domain specialists, then reconciles disagreement instead of forcing one assistant to think through everything sequentially.
 
+**🧑‍💻 Experts Mode by Default**
+For medium-to-large engineering work, OpenAgent becomes the Team Lead: it plans requirements, creates a task list, assigns frontend/backend/QA/review/research/DevOps/UX experts, runs safe work in parallel, validates the result, and records reusable lessons.
+
 **⚡ Token Efficient (MVI Principle)**  
 Minimal Viable Information design. Only load what's needed, when it's needed. Context files <200 lines, lazy loading, faster responses.
 
@@ -91,6 +95,7 @@ Use any AI model (Claude, GPT, Gemini, local). No vendor lock-in.
 For bigger work, OAC now includes a controlled swarm layer:
 
 - **HackersEra Master Swarm** is the default OpenAgent routing layer for cybersecurity product, technical R&D, revenue, investor, operations, compliance, support, and CEO work.
+- **Experts Mode** is the default for medium-to-large engineering tasks with Team Lead planning, dynamic expert assignment, task progress, browser verification, code review, QA, research, DevOps, UX, and self-evolution.
 - **OpenAgent Swarm Mode** plans multi-agent work with dependencies, file ownership, and validation gates.
 - **Scale-out architecture** targets up to 100 subagents and hundreds to 1,500+ tool calls for long-horizon deployments when the runtime, task boundaries, and validation capacity support it.
 - **Dynamic role assignment** lets OpenAgent auto-hire the needed specialists instead of making the user manually choose every role.
@@ -120,6 +125,7 @@ Or invoke the commands:
 /swarm-run approved plan
 /swarm-status
 /swarm-debug failed CI incident
+/experts Build this full-stack feature with expert planning, implementation, testing, review, and browser verification
 /hackersera-swarm Build a cross-functional cybersecurity product/company swarm
 /revenue-swarm Launch this cybersecurity product
 /campaign-genesis Enter a new automotive security segment
@@ -154,6 +160,7 @@ Read the full design: [Controlled Agent Swarm System](./docs/features/agent-swar
 | **Edit Agent Behavior** | ✅ Markdown files you edit | ❌ Proprietary/baked-in | ⚠️ Limited prompts | ✅ Config files |
 | **Model Choice** | ✅ Any model, any provider | ⚠️ Limited options | ⚠️ OpenAI/Claude only | ✅ Multiple models |
 | **Scale-Out Organization** | ✅ Dynamic roles, distributed context, adversarial reconciliation | ❌ No | ❌ No | ⚠️ Broad autonomy |
+| **Experts Mode** | ✅ Team Lead, expert task list, parallel build/test/review | ❌ No | ❌ No | ⚠️ Manual agent setup |
 | **Execution Speed** | ✅ Trusted fast mode + controlled swarms | Fast | Fast | ✅ Parallel agents |
 | **Error Recovery** | ✅ Human-guided validation | ⚠️ Auto-retry (can loop) | ⚠️ Auto-retry | ✅ Self-correcting |
 | **Best For** | Production code, teams | Quick prototypes | Solo developers | Power users, complex projects |
@@ -164,6 +171,7 @@ Read the full design: [Controlled Agent Swarm System](./docs/features/agent-swar
 - ✅ You want fast trusted execution with approval gates only for high-risk actions
 - ✅ You care about token efficiency and costs
 - ✅ You want OpenAgent to self-organize researchers, analysts, builders, reviewers, and domain specialists without micromanagement
+- ✅ You want Experts Mode with Team Lead planning, frontend/backend/QA/review/research/DevOps/UX experts, and progress tracking
 - ✅ You want an engineering-team swarm with PM, architecture, implementation, QA, security, review, integration, and debug roles
 - ✅ You want long-horizon work with distributed context, adversarial disagreement, and forced reconciliation
 
@@ -253,6 +261,7 @@ Add a login endpoint
 **Features:**
 - ✅ Trusted Fast Mode with high-risk approval gates
 - ✅ Scale-out organizational AI with dynamic role assignment
+- ✅ Experts Mode for medium-to-large engineering work
 - ✅ Context-aware code generation
 - ✅ 7 specialized subagents (task-manager, context-scout, context-manager, coder-agent, test-engineer, code-reviewer, external-scout)
 - ✅ 9 workflow skills + 6 user commands

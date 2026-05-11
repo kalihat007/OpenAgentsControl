@@ -7,6 +7,7 @@ OpenAgents Control swarm mode turns the existing context-first agent system into
 OAC now has a formal swarm layer:
 
 - `OpenAgent` as the single user-facing entrypoint for swarm planning and execution
+- `core/experts-mode.md` default OpenAgent Team Lead workflow for medium-to-large engineering tasks with dynamic experts, task progress, validation, review, and self-evolution
 - `SwarmOrchestrator` internal subagent for controlled swarm coordination
 - `core/hackersera-master-swarm.md` default OpenAgent routing standard for Trusted Fast Mode and HackersEra cybersecurity product/company workflows
 - `/swarm-plan`, `/swarm-run`, and `/swarm-status` commands
@@ -25,6 +26,7 @@ Swarm mode is powerful because it is constrained:
 
 - ContextScout discovers project reality before any plan.
 - OpenAgent runs in Trusted Fast Mode: safe local work executes directly, while destructive, credential, production, legal/payment, public external, and irreversible data actions require approval.
+- OpenAgent enters Experts Mode by default for medium-to-large engineering tasks: TeamLeadAgent plans, assembles experts, tracks task progress, integrates output, and validates results.
 - HackersEra Master Swarm is the default cross-functional router for cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO requests.
 - OpenAgent uses scale-out organizational AI: it self-organizes the needed team, assigns roles dynamically, and distributes cognitive load across specialists.
 - Large deployments may target up to 100 subagents and hundreds to 1,500+ tool calls when task boundaries, runtime support, and validation capacity allow.
@@ -35,6 +37,7 @@ Swarm mode is powerful because it is constrained:
 - File write locks block same-file parallel edits.
 - StageOrchestrator coordinates long architecture-to-release workflows.
 - ProductManagerAgent, SystemArchitectAgent, and TechLeadAgent define scope, contracts, and arbitration before build work starts.
+- Experts Mode uses FrontendExpert, BackendExpert, QAExpert, CodeReviewExpert, ResearchExpert, DevOpsExpert, and UXDesigner as the default engineering team, adding domain experts only when needed.
 - BackendDeveloperAgent, OpenFrontendSpecialist, and OpenDevopsSpecialist own implementation slices after contracts are stable.
 - SecurityAgent, TestEngineer, and CodeReviewer perform adversarial review independently.
 - MergeCoordinatorAgent, IntegrationAgent, and DebugAgent handle convergence, validation, and recovery.
@@ -80,6 +83,7 @@ Swarm mode is powerful because it is constrained:
 ```text
 User request
   -> OpenAgent
+  -> Experts Mode when medium/large engineering
   -> HackersEra Master Swarm when cybersecurity/HackersEra/cross-functional
   -> SwarmOrchestrator
   -> ProductManagerAgent / SystemArchitectAgent / TechLeadAgent
@@ -116,6 +120,7 @@ Use swarm mode for:
 
 - multi-file features
 - architecture plus implementation work
+- Qoder-style Experts Mode requests with Team Lead planning, parallel experts, task progress, browser verification, custom experts, or self-evolution
 - parallel-safe module creation
 - test, review, docs, and build pipelines
 - migrations where sequencing matters

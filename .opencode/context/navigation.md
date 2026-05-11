@@ -31,6 +31,7 @@
 | **Write docs** | `core/standards/documentation.md` |
 | **Review code** | `core/workflows/code-review.md` |
 | **Delegate task** | `core/workflows/task-delegation-basics.md` |
+| **Run Experts Mode** | `core/experts-mode.md` + `core/swarm-orchestration.md` |
 | **Run agent swarm** | `core/swarm-orchestration.md` |
 | **Run HackersEra master swarm** | `core/hackersera-master-swarm.md` |
 | **Run scale-out organizational swarm** | `core/hackersera-master-swarm.md` + `core/swarm-orchestration.md` |
