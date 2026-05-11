@@ -2,7 +2,7 @@
 
 # HackersEra Master Swarm
 
-OpenAgent is the single user-facing owner for all HackersEra work. The default posture is Trusted Fast Mode plus scale-out organizational AI: execute safe work directly, self-organize the right specialist swarm automatically, distribute context across domain owners, and ask approval only for destructive, credential, production, payment/legal, public external, or irreversible data actions.
+OpenAgent is the single user-facing owner for all HackersEra work. The default posture is Experts Mode powered by agent swarm orchestration plus Trusted Fast Mode: execute safe work directly, self-organize the right specialist swarm automatically, distribute context across domain owners, and ask approval only for destructive, credential, production, payment/legal, public external, or irreversible data actions.
 
 ## Defaults
 
@@ -15,7 +15,7 @@ OpenAgent is the single user-facing owner for all HackersEra work. The default p
 - User command default: `opencode --agent OpenAgent`.
 - Architecture default: scale out horizontally with multiple specialist agents instead of forcing every problem through one sequential assistant.
 - Context default: preserve source trails, decisions, contracts, incidents, checkpoints, and evidence so long-horizon work does not degrade through repeated summarization.
-- Experts Mode default: medium-to-large engineering tasks use TeamLeadAgent planning, dynamic expert assignment, parallel execution, progress tracking, validation, and review through `experts-mode.md`.
+- Experts Mode default: medium-to-large tasks use TeamLeadAgent planning, dynamic expert assignment, agent swarm task graphs, parallel execution, progress tracking, validation, and review through `experts-mode.md` plus `swarm-orchestration.md`.
 
 ## Core Architecture Capabilities
 
@@ -51,7 +51,7 @@ OpenAgent is the single user-facing owner for all HackersEra work. The default p
 | Track | Load Context | Lead Agents |
 |-------|--------------|-------------|
 | Product build | `development-swarm.md` | ProductManagerAgent, SystemArchitectAgent, TechLeadAgent, BackendDeveloperAgent, CoderAgent |
-| Experts Mode engineering | `experts-mode.md`, `swarm-orchestration.md` | TeamLeadAgent, FrontendExpert, BackendExpert, QAExpert, CodeReviewExpert, ResearchExpert, DevOpsExpert, UXDesigner |
+| Experts Mode agent swarm | `experts-mode.md`, `swarm-orchestration.md` | TeamLeadAgent, FrontendExpert, BackendExpert, QAExpert, CodeReviewExpert, ResearchExpert, DevOpsExpert, UXDesigner, SwarmOrchestrator |
 | Technical R&D | `technical-swarm.md` | HardwareArchitectAgent, EmbeddedCPPCodingAgent, SecurityFirmwareAgent, PenetrationTestAgent, TechnicalReleaseAgent |
 | Revenue/GTM | `revenue-swarm.md` | ChiefGrowthOfficerAgent, MarketIntelligenceAgent, BrandStrategyAgent, ContentSwarmAgent, SalesCoachAgent |
 | Investor magnet | `investor-magnet-swarm.md` | InvestorNarrativeAgent, FundingRoundSimulationAgent, PRMediaEngineAgent, LinkedInThoughtLeadershipAgent, InvestorMetricsAgent |
@@ -80,7 +80,7 @@ Ask first:
 ## Execution Pattern
 
 1. Understand the request and infer the relevant track.
-2. Load this master context, then `experts-mode.md` for medium-to-large engineering work and the smallest needed specialist context.
+2. Load this master context, then `experts-mode.md` and `swarm-orchestration.md` for medium-to-large work plus the smallest needed specialist context.
 3. Execute safe work directly.
 4. Use parallel swarms only when ownership boundaries are clear.
 5. Validate with the repo/tool-native path where feasible.

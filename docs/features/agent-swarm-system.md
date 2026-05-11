@@ -7,7 +7,7 @@ OpenAgents Control swarm mode turns the existing context-first agent system into
 OAC now has a formal swarm layer:
 
 - `OpenAgent` as the single user-facing entrypoint for swarm planning and execution
-- `core/experts-mode.md` default OpenAgent Team Lead workflow for medium-to-large engineering tasks with dynamic experts, task progress, validation, review, and self-evolution
+- `core/experts-mode.md` default OpenAgent Team Lead workflow powered by agent swarm orchestration for medium-to-large tasks with dynamic experts, task progress, validation, review, and self-evolution
 - `SwarmOrchestrator` internal subagent for controlled swarm coordination
 - `core/hackersera-master-swarm.md` default OpenAgent routing standard for Trusted Fast Mode and HackersEra cybersecurity product/company workflows
 - `/swarm-plan`, `/swarm-run`, and `/swarm-status` commands
@@ -26,7 +26,7 @@ Swarm mode is powerful because it is constrained:
 
 - ContextScout discovers project reality before any plan.
 - OpenAgent runs in Trusted Fast Mode: safe local work executes directly, while destructive, credential, production, legal/payment, public external, and irreversible data actions require approval.
-- OpenAgent enters Experts Mode by default for medium-to-large engineering tasks: TeamLeadAgent plans, assembles experts, tracks task progress, integrates output, and validates results.
+- OpenAgent uses Experts Mode by default; for medium-to-large tasks, TeamLeadAgent plans, assembles experts, creates the swarm task graph, tracks progress, integrates output, and validates results.
 - HackersEra Master Swarm is the default cross-functional router for cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO requests.
 - OpenAgent uses scale-out organizational AI: it self-organizes the needed team, assigns roles dynamically, and distributes cognitive load across specialists.
 - Large deployments may target up to 100 subagents and hundreds to 1,500+ tool calls when task boundaries, runtime support, and validation capacity allow.
@@ -83,7 +83,8 @@ Swarm mode is powerful because it is constrained:
 ```text
 User request
   -> OpenAgent
-  -> Experts Mode when medium/large engineering
+  -> Experts Mode by default
+  -> Agent swarm task graph when medium/large work
   -> HackersEra Master Swarm when cybersecurity/HackersEra/cross-functional
   -> SwarmOrchestrator
   -> ProductManagerAgent / SystemArchitectAgent / TechLeadAgent

@@ -2,7 +2,7 @@
 
 # OpenAgent Experts Mode
 
-Experts Mode is OpenAgent's default multi-agent collaboration layer for medium-to-large engineering work. The user states the goal; OpenAgent acts as Team Lead, decomposes the work, assembles the expert team, executes safe work in parallel, tracks progress, integrates outputs, and validates the final result.
+Experts Mode is OpenAgent's default operating mode, and agent swarm orchestration is its default execution engine for medium-to-large work. The user states the goal; OpenAgent acts as Team Lead, decomposes the work, assembles the expert team, executes safe work in parallel through the swarm task graph, tracks progress, integrates outputs, and validates the final result.
 
 This mode is always routed through `opencode --agent OpenAgent`. Do not tell the user to switch to a different primary agent.
 
@@ -19,7 +19,7 @@ Activate Experts Mode automatically when a request includes:
 - UI/UX plus backend/API/database work
 - HackersEra cybersecurity product, hardware, firmware, VAPT, compliance, GTM, investor, or operations work
 
-For simple one-file edits, direct explanations, or tiny formatting changes, stay in Trusted Fast Mode without assembling a large team.
+For simple one-file edits, direct explanations, or tiny formatting changes, keep the Experts Mode decision logic but execute directly in Trusted Fast Mode without assembling a large team.
 
 ## Core Team
 
@@ -60,11 +60,11 @@ Represent expert work with explicit status:
 }
 ```
 
-Use `.tmp/swarm/{session-id}/task-graph.json`, `events.jsonl`, `incidents.jsonl`, and `checkpoints.jsonl` for long-running tasks. Summaries should report pending, in-progress, completed, blocked, and failed work.
+Use the agent swarm state model for medium-to-large work: `.tmp/swarm/{session-id}/task-graph.json`, `module-claims.json`, `contracts.json`, `events.jsonl`, `incidents.jsonl`, and `checkpoints.jsonl`. Summaries should report pending, in-progress, completed, blocked, and failed work.
 
 ## Parallel Execution Rules
 
-Experts should not block each other when:
+Experts should run through swarm batches and should not block each other when:
 
 - dependencies are complete
 - write sets do not overlap
@@ -111,6 +111,7 @@ Experts Mode learns through repo artifacts rather than hidden memory:
 Experts Mode is complete only when:
 
 - the Team Lead plan and expert lineup are clear
+- the swarm task graph, ownership boundaries, and validation gates are clear for medium-to-large work
 - safe parallel work has executed where useful
 - task statuses are summarized
 - code, tests, docs, review, and deployment implications are addressed for the request scope

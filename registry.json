@@ -125,7 +125,7 @@
         "name": "OpenAgent",
         "type": "agent",
         "path": ".opencode/agent/core/openagent.md",
-        "description": "Trusted fast OpenAgent entrypoint with Experts Mode, HackersEra master swarm, and scale-out organizational AI for coding, cybersecurity products, technical R&D, revenue, investor, operations, compliance, support, and custom workflows",
+        "description": "Trusted fast OpenAgent entrypoint that defaults to Experts Mode powered by agent swarm orchestration for coding, cybersecurity products, technical R&D, revenue, investor, operations, compliance, support, and custom workflows",
         "tags": [
           "universal",
           "coordination",
@@ -2208,7 +2208,7 @@
         "name": "Experts Mode",
         "type": "command",
         "path": ".opencode/command/experts.md",
-        "description": "Run OpenAgent Experts Mode with Team Lead planning, dynamic experts, task progress, parallel execution, validation, and review",
+        "description": "Run OpenAgent's default Experts Mode powered by agent swarm task graphs, Team Lead planning, dynamic experts, task progress, parallel execution, validation, and review",
         "tags": [
           "experts-mode",
           "team-lead",
@@ -4777,7 +4777,7 @@
         "name": "OpenAgent Experts Mode",
         "type": "context",
         "path": ".opencode/context/core/experts-mode.md",
-        "description": "Default OpenAgent Team Lead workflow for medium-to-large engineering tasks with dynamic experts, task progress, parallel execution, browser verification, code review, QA, research, DevOps, UX, and self-evolution",
+        "description": "Default OpenAgent Team Lead workflow powered by agent swarm orchestration for medium-to-large tasks with dynamic experts, task progress, parallel execution, browser verification, code review, QA, research, DevOps, UX, and self-evolution",
         "tags": [
           "experts-mode",
           "team-lead",
@@ -4799,7 +4799,7 @@
         "name": "HackersEra Master Swarm",
         "type": "context",
         "path": ".opencode/context/core/hackersera-master-swarm.md",
-        "description": "Default OpenAgent master routing context for Trusted Fast Mode plus scale-out organizational AI across HackersEra cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO tracks",
+        "description": "Default OpenAgent master routing context for Experts Mode powered by agent swarm orchestration, Trusted Fast Mode, and scale-out organizational AI across HackersEra cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO tracks",
         "tags": [
           "hackersera",
           "master-swarm",
@@ -4872,7 +4872,7 @@
   "profiles": {
     "essential": {
       "name": "Essential (Minimal)",
-      "description": "Minimal starter kit centered on one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, Experts Mode defaults, scale-out organizational AI, and HackersEra Master Swarm routing for lightweight cybersecurity/product tasks.",
+      "description": "Minimal starter kit centered on one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, and HackersEra Master Swarm routing for lightweight cybersecurity/product tasks.",
       "components": [
         "agent:openagent",
         "subagent:task-manager",
@@ -4907,7 +4907,7 @@
     },
     "developer": {
       "name": "Developer",
-      "description": "Complete software development and technical-swarm environment under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, Experts Mode, scale-out organizational AI, HackersEra Master Swarm routing, code generation, testing, review, build tools, UI/UX patterns, and controlled swarm execution.",
+      "description": "Complete software development and technical-swarm environment under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm routing, code generation, testing, review, build tools, UI/UX patterns, and controlled swarm execution.",
       "badge": "RECOMMENDED",
       "components": [
         "agent:openagent",
@@ -4994,7 +4994,7 @@
     },
     "business": {
       "name": "Business",
-      "description": "Business, revenue, investor, operations, content, and visual workflows under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, Experts Mode, scale-out organizational AI, HackersEra Master Swarm routing, revenue swarms, investor magnet swarms, support, compliance, finance, partnerships, and knowledge management.",
+      "description": "Business, revenue, investor, operations, content, and visual workflows under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm routing, revenue swarms, investor magnet swarms, support, compliance, finance, partnerships, and knowledge management.",
       "components": [
         "agent:openagent",
         "subagent:task-manager",
@@ -5076,7 +5076,7 @@
     },
     "full": {
       "name": "Full",
-      "description": "Everything included under one user-facing command: opencode --agent OpenAgent. Includes Trusted Fast Mode, Experts Mode, scale-out organizational AI, HackersEra Master Swarm, development, technical, revenue, investor, business operations, tools, plugins, and complete context coverage.",
+      "description": "Everything included under one user-facing command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm, development, technical, revenue, investor, business operations, tools, plugins, and complete context coverage.",
       "components": [
         "agent:openagent",
         "subagent:swarm-orchestrator",
@@ -5217,7 +5217,7 @@
     },
     "advanced": {
       "name": "Advanced (Meta-Level)",
-      "description": "Full Trusted Fast OpenAgent installation plus Experts Mode, scale-out organizational AI, HackersEra Master Swarm, and meta/system-builder subagents for creating custom AI architectures, agent families, workflows, contexts, commands, and installation profiles.",
+      "description": "Full Trusted Fast OpenAgent installation plus default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm, and meta/system-builder subagents for creating custom AI architectures, agent families, workflows, contexts, commands, and installation profiles.",
       "components": [
         "agent:openagent",
         "subagent:swarm-orchestrator",
