@@ -754,6 +754,15 @@ A: MVI principle: Only load what's needed, when it's needed. Context files <200 
 **Q: What's ContextScout?**  
 A: Smart pattern discovery agent. Finds relevant context files before code generation. Ranks by priority. Prevents wasted work.
 
+**Q: Can I modify requirements during Experts Mode execution?**
+A: Yes. Add information, correct direction, or change priorities at any time. TeamLeadAgent updates the plan, reallocates experts, revises the swarm task graph, and continues from validated work.
+
+**Q: What about cost and time for Experts Mode?**
+A: Experts Mode is best for medium-to-high complexity tasks. It may use more tool calls than direct execution, but improves quality through planning, parallel specialists, QA, review, and validation. Simple tasks stay direct under Trusted Fast Mode.
+
+**Q: How does terminal execution work in Experts Mode?**
+A: Safe local terminal commands run automatically for routine reads, tests, builds, linting, and local validation. High-risk terminal actions require approval or a sandboxed/isolated execution plan before proceeding.
+
 **Q: Can I edit agent behavior?**  
 A: Yes! Agents are markdown files. Edit them directly: `nano .opencode/agent/core/openagent.md` (local) or `nano ~/.config/opencode/agent/core/openagent.md` (global)
 

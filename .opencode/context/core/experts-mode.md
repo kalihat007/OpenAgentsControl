@@ -106,6 +106,17 @@ Experts Mode learns through repo artifacts rather than hidden memory:
 - Incident memory: preserve build/test/security failures in `incidents.jsonl` during long tasks so experts avoid repeating broken patterns.
 - Context updates: propose or create updates to reusable context when a new durable convention is discovered.
 
+## FAQ
+
+**Can the user modify requirements during execution?**
+Yes. The user can add information, correct direction, or change priorities at any time. TeamLeadAgent must update the plan, reassign experts, revise the task graph, and continue without discarding completed validated work.
+
+**What about cost and time for Experts Mode?**
+Experts Mode is best for medium-to-high complexity tasks where quality, coverage, and integration matter. It may use more tool calls and wall-clock time than a single direct agent, but it should deliver better quality through planning, parallel specialist work, QA, review, and validation. For simple one-file changes or direct explanations, OpenAgent keeps the Experts Mode decision layer but executes directly in Trusted Fast Mode.
+
+**How does terminal execution work in Experts Mode?**
+Safe local terminal commands run automatically under Trusted Fast Mode so the user is not interrupted for routine reads, tests, builds, linting, and local validation. High-risk commands are gated: destructive operations, secrets, production deploys, payment/legal actions, public external actions, irreversible data changes, and risky hardware actions require approval or a sandboxed/isolated execution plan before proceeding.
+
 ## Completion Standard
 
 Experts Mode is complete only when:

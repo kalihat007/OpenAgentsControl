@@ -78,6 +78,14 @@ Swarm mode is powerful because it is constrained:
 | Dynamic control of parallel width | Bounded by runtime/tool support, task independence, file ownership safety, and validation capacity. |
 | Architecture hardening | Ongoing; completion reports should separate proven validation from operating targets. |
 
+## Experts Mode FAQ
+
+| Question | OAC Answer |
+|----------|------------|
+| Can I modify requirements during execution? | Yes. Add information, correct direction, or change priorities at any time; TeamLeadAgent updates the plan, reallocates experts, revises the task graph, and continues from validated work. |
+| What about cost and time for Experts Mode? | Experts Mode is for medium-to-high complexity tasks. It may use more tool calls than direct execution, but improves quality through planning, parallel specialists, QA, review, and validation. Simple tasks stay direct under Trusted Fast Mode. |
+| How does terminal execution work in Experts Mode? | Safe local commands run automatically. High-risk terminal actions require approval or a sandboxed/isolated execution plan before proceeding. |
+
 ## Runtime Model
 
 ```text
