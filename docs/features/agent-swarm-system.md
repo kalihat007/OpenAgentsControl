@@ -1,6 +1,6 @@
 # Controlled Agent Swarm System
 
-OpenAgents Control swarm mode turns the existing context-first agent system into a dependency-aware multi-agent execution model.
+OpenAgents Control swarm mode turns the existing context-first agent system into a dependency-aware, scale-out organizational AI model.
 
 ## What Changed
 
@@ -26,6 +26,10 @@ Swarm mode is powerful because it is constrained:
 - ContextScout discovers project reality before any plan.
 - OpenAgent runs in Trusted Fast Mode: safe local work executes directly, while destructive, credential, production, legal/payment, public external, and irreversible data actions require approval.
 - HackersEra Master Swarm is the default cross-functional router for cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO requests.
+- OpenAgent uses scale-out organizational AI: it self-organizes the needed team, assigns roles dynamically, and distributes cognitive load across specialists.
+- Large deployments may target up to 100 subagents and hundreds to 1,500+ tool calls when task boundaries, runtime support, and validation capacity allow.
+- Long-horizon context is kept in source trails, task graphs, module claims, contracts, incidents, checkpoints, artifacts, and evidence reports instead of relying only on compressed summaries.
+- Structural disagreement is required for important decisions: independent agents can disagree, then TechLeadAgent, CEOAgent, or the relevant arbiter reconciles the result.
 - TaskManager creates atomic tasks with dependencies.
 - BatchExecutor runs only safe independent work in parallel.
 - File write locks block same-file parallel edits.
@@ -39,6 +43,37 @@ Swarm mode is powerful because it is constrained:
 - Business operating swarms use CEOAgent plus support, product strategy, regulatory/compliance, talent, finance, supply chain, innovation/R&D, crisis response, partnership, and knowledge management swarm agents.
 - Technical swarms use HardwareArchitectAgent, FPGAASICAgent, RTOSOSAgent, EmbeddedCPPCodingAgent, AutomotiveEthernetAgent, SecurityFirmwareAgent, TechnicalPythonToolingAgent, EmbeddedRustAgent, HILSILAgent, PenetrationTestAgent, TechnicalComplianceVVAgent, EMCEnvironmentalAgent, TechnicalCICDAgent, and TechnicalReleaseAgent for HackersEra-style cybersecurity R&D.
 - Test, build, review, and documentation gates happen before completion.
+
+## Core Architecture Capabilities
+
+| Capability | OpenAgent Default |
+|------------|-------------------|
+| Self-organization | Auto-hires researchers, analysts, fact-checkers, builders, reviewers, and specialists with defined roles. |
+| Dynamic role assignment | CEO-like routing finds the right specialists for the task instead of requiring human micromanagement. |
+| Parallel execution | Runs independent discovery, implementation, review, test, documentation, and synthesis tracks in parallel. |
+| Massive tool orchestration | Coordinates large tool-call budgets for repo search, current docs, builds, tests, scanners, evidence, and publishing flows. |
+| Speed advantage | Scales out horizontally so safe parallel work can finish materially faster than sequential single-agent execution. |
+| Lossless context management | Stores decisions, contracts, incidents, checkpoints, artifacts, and evidence outside a single shrinking prompt. |
+| Structural disagreement | Forces adversarial perspectives and reconciliation to reduce groupthink. |
+| On-demand expertise | Instantly creates domain specialists for cybersecurity, automotive, embedded, firmware, Go, Node, compliance, GTM, investor, and operations work. |
+
+## Execution Patterns
+
+| Pattern | What It Does |
+|---------|--------------|
+| Discovery at scale | Parallel searching, downloading, categorizing, summarizing, compatibility checks, and evidence mapping. |
+| Output at scale | Consumes massive document sets and coordinates expert personas for long-form production, code, tests, proposals, and reports. |
+| Perspective at scale | Deploys contradictory viewpoints simultaneously for adversarial analysis. |
+| Creative variation | Produces many independent options before selection, merge, or stress-test. |
+| Long-horizon synthesis | Combines outputs from many investigations while preserving caveats and validation state. |
+
+## Current Boundaries
+
+| Limitation | Status |
+|------------|--------|
+| Direct subagent-to-subagent communication | Planned architecture direction; current coordination flows through OpenAgent, task graphs, session files, artifacts, and summaries. |
+| Dynamic control of parallel width | Bounded by runtime/tool support, task independence, file ownership safety, and validation capacity. |
+| Architecture hardening | Ongoing; completion reports should separate proven validation from operating targets. |
 
 ## Runtime Model
 

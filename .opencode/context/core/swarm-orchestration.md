@@ -13,8 +13,25 @@ OAC swarm mode is trusted controlled parallelism:
 - a task graph controls ordering
 - file locks prevent destructive overlap
 - validation gates block premature completion
+- OpenAgent self-organizes the team shape instead of requiring the user to micromanage roles
+- parallel width scales with dependency safety, runtime capacity, and validation capacity
+- distributed context preserves source trails, contracts, checkpoints, incidents, and evidence instead of relying on lossy prompt compression
+- independent review roles are expected to disagree before a final arbiter reconciles the result
 
 This is not uncontrolled autonomy. OpenAgent executes safe local work directly in Trusted Fast Mode and asks approval only for destructive, credential, production, payment/legal, public external, or irreversible data actions.
+
+## Scale Targets
+
+| Dimension | Default Target |
+|-----------|----------------|
+| Parallel workers | Up to 100 subagents when runtime support and task boundaries allow |
+| Tool calls | Hundreds to 1,500+ coordinated calls for large swarm deployments |
+| Execution model | Parallel plus orchestrated, with dependency-aware batches |
+| Context handling | Distributed by role, artifact, contract, incident, and checkpoint |
+| Viewpoints | Multiple independent and adversarial perspectives |
+| Task horizon | Long-horizon work that exceeds single-agent context or time limits |
+
+These are architecture targets, not permission to ignore safety. Reduce parallel width when write sets overlap, contracts are unstable, validation is failing, or the environment cannot support the requested fan-out.
 
 ## Required Session Files
 

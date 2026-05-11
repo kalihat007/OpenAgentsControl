@@ -9,7 +9,7 @@ description: "Route any HackersEra cybersecurity product, technical, revenue, in
 
 # HackersEra Master Swarm
 
-Use OpenAgent as the only user-facing entrypoint. Classify the request, load the smallest relevant specialist context, and execute in Trusted Fast Mode.
+Use OpenAgent as the only user-facing entrypoint. Classify the request, self-organize the smallest effective specialist team, load the smallest relevant context, distribute long-horizon state across artifacts, execute in Trusted Fast Mode, and reconcile independent disagreement.
 
 ## Routing Tracks
 
@@ -30,6 +30,7 @@ Objective:
 Primary track:
 Supporting tracks:
 Trusted Fast Mode: active
+Scale-Out Organizational AI: active
 Approval needed: yes/no, with reason
 
 ## Actions

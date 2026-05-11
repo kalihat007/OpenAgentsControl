@@ -33,6 +33,7 @@
 | **Delegate task** | `core/workflows/task-delegation-basics.md` |
 | **Run agent swarm** | `core/swarm-orchestration.md` |
 | **Run HackersEra master swarm** | `core/hackersera-master-swarm.md` |
+| **Run scale-out organizational swarm** | `core/hackersera-master-swarm.md` + `core/swarm-orchestration.md` |
 | **Build development team swarm** | `core/development-swarm.md` |
 | **Build revenue growth swarm** | `core/revenue-swarm.md` |
 | **Build investor magnet swarm** | `core/investor-magnet-swarm.md` |

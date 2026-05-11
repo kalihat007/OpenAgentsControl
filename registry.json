@@ -125,7 +125,7 @@
         "name": "OpenAgent",
         "type": "agent",
         "path": ".opencode/agent/core/openagent.md",
-        "description": "Trusted fast HackersEra master swarm entrypoint for coding, cybersecurity products, technical R&D, revenue, investor, operations, compliance, support, and custom workflows",
+        "description": "Trusted fast HackersEra master swarm entrypoint with scale-out organizational AI for coding, cybersecurity products, technical R&D, revenue, investor, operations, compliance, support, and custom workflows",
         "tags": [
           "universal",
           "coordination",
@@ -134,6 +134,10 @@
           "swarm",
           "system-builder",
           "trusted-fast",
+          "scale-out",
+          "organizational-ai",
+          "dynamic-roles",
+          "adversarial-reconciliation",
           "hackersera",
           "master-swarm",
           "cybersecurity"
@@ -4751,11 +4755,16 @@
         "name": "HackersEra Master Swarm",
         "type": "context",
         "path": ".opencode/context/core/hackersera-master-swarm.md",
-        "description": "Default OpenAgent master routing context for Trusted Fast Mode across HackersEra cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO tracks",
+        "description": "Default OpenAgent master routing context for Trusted Fast Mode plus scale-out organizational AI across HackersEra cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO tracks",
         "tags": [
           "hackersera",
           "master-swarm",
           "trusted-fast",
+          "scale-out",
+          "organizational-ai",
+          "dynamic-roles",
+          "distributed-context",
+          "adversarial-reconciliation",
           "cybersecurity",
           "openagent"
         ],
@@ -4818,7 +4827,7 @@
   "profiles": {
     "essential": {
       "name": "Essential (Minimal)",
-      "description": "Minimal starter kit centered on one command: opencode --agent OpenAgent. Includes Trusted Fast Mode and HackersEra Master Swarm routing for lightweight cybersecurity/product tasks.",
+      "description": "Minimal starter kit centered on one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, scale-out organizational AI defaults, and HackersEra Master Swarm routing for lightweight cybersecurity/product tasks.",
       "components": [
         "agent:openagent",
         "subagent:task-manager",
@@ -4851,7 +4860,7 @@
     },
     "developer": {
       "name": "Developer",
-      "description": "Complete software development and technical-swarm environment under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, HackersEra Master Swarm routing, code generation, testing, review, build tools, UI/UX patterns, and controlled swarm execution.",
+      "description": "Complete software development and technical-swarm environment under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, scale-out organizational AI, HackersEra Master Swarm routing, code generation, testing, review, build tools, UI/UX patterns, and controlled swarm execution.",
       "badge": "RECOMMENDED",
       "components": [
         "agent:openagent",
@@ -4936,7 +4945,7 @@
     },
     "business": {
       "name": "Business",
-      "description": "Business, revenue, investor, operations, content, and visual workflows under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, HackersEra Master Swarm routing, revenue swarms, investor magnet swarms, support, compliance, finance, partnerships, and knowledge management.",
+      "description": "Business, revenue, investor, operations, content, and visual workflows under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, scale-out organizational AI, HackersEra Master Swarm routing, revenue swarms, investor magnet swarms, support, compliance, finance, partnerships, and knowledge management.",
       "components": [
         "agent:openagent",
         "subagent:task-manager",
@@ -5016,7 +5025,7 @@
     },
     "full": {
       "name": "Full",
-      "description": "Everything included under one user-facing command: opencode --agent OpenAgent. Includes Trusted Fast Mode, HackersEra Master Swarm, development, technical, revenue, investor, business operations, tools, plugins, and complete context coverage.",
+      "description": "Everything included under one user-facing command: opencode --agent OpenAgent. Includes Trusted Fast Mode, scale-out organizational AI, HackersEra Master Swarm, development, technical, revenue, investor, business operations, tools, plugins, and complete context coverage.",
       "components": [
         "agent:openagent",
         "subagent:swarm-orchestrator",
@@ -5155,7 +5164,7 @@
     },
     "advanced": {
       "name": "Advanced (Meta-Level)",
-      "description": "Full Trusted Fast OpenAgent installation plus HackersEra Master Swarm and meta/system-builder subagents for creating custom AI architectures, agent families, workflows, contexts, commands, and installation profiles.",
+      "description": "Full Trusted Fast OpenAgent installation plus scale-out organizational AI, HackersEra Master Swarm, and meta/system-builder subagents for creating custom AI architectures, agent families, workflows, contexts, commands, and installation profiles.",
       "components": [
         "agent:openagent",
         "subagent:swarm-orchestrator",
