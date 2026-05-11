@@ -8,6 +8,7 @@ OAC now has a formal swarm layer:
 
 - `OpenAgent` as the single user-facing entrypoint for swarm planning and execution
 - `SwarmOrchestrator` internal subagent for controlled swarm coordination
+- `core/hackersera-master-swarm.md` default OpenAgent routing standard for Trusted Fast Mode and HackersEra cybersecurity product/company workflows
 - `/swarm-plan`, `/swarm-run`, and `/swarm-status` commands
 - `/swarm-team` and `/swarm-debug` commands for self-organizing engineering teams and incident recovery
 - `core/swarm-orchestration.md` context standard
@@ -23,6 +24,8 @@ OAC now has a formal swarm layer:
 Swarm mode is powerful because it is constrained:
 
 - ContextScout discovers project reality before any plan.
+- OpenAgent runs in Trusted Fast Mode: safe local work executes directly, while destructive, credential, production, legal/payment, public external, and irreversible data actions require approval.
+- HackersEra Master Swarm is the default cross-functional router for cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO requests.
 - TaskManager creates atomic tasks with dependencies.
 - BatchExecutor runs only safe independent work in parallel.
 - File write locks block same-file parallel edits.
@@ -42,6 +45,7 @@ Swarm mode is powerful because it is constrained:
 ```text
 User request
   -> OpenAgent
+  -> HackersEra Master Swarm when cybersecurity/HackersEra/cross-functional
   -> SwarmOrchestrator
   -> ProductManagerAgent / SystemArchitectAgent / TechLeadAgent
   -> ContextScout / ExternalScout

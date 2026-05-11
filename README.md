@@ -4,12 +4,12 @@
 
 # OpenAgents Control (OAC)
 
-### Control your AI patterns. Get repeatable results.
+### Trusted fast OpenAgent with HackersEra master swarm.
 
 **AI agents that learn YOUR coding patterns and generate matching code every time.**
 
 🎯 **Pattern Control** - Define your patterns once, AI uses them forever  
-✋ **Approval Gates** - Review and approve before execution  
+⚡ **Trusted Fast Mode** - Safe local work executes by default
 🔁 **Repeatable Results** - Same patterns = Same quality code  
 📝 **Editable Agents** - Full control over AI behavior  
 👥 **Team-Ready** - Everyone uses the same patterns
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
 ## The Solution
 
-**OpenAgentsControl teaches agents your patterns upfront.** They understand your coding standards, your architecture, your security requirements. They propose plans before implementing. They execute incrementally with validation.
+**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, routes complex work through specialist swarms, and keeps high-risk actions behind approval gates.
 
 **The result:** Production-ready code that ships without heavy rework.
 
@@ -68,8 +68,8 @@ Agents load YOUR patterns before generating code. Code matches your project from
 **📝 Editable Agents (Not Baked-In Plugins)**  
 Full control over agent behavior. Edit markdown files directly—no compilation, no vendor lock-in. Change workflows, add constraints, customize for your team.
 
-**✋ Approval Gates (Human-Guided AI)**  
-Agents ALWAYS request approval before execution. Propose → Approve → Execute. You stay in control. No "oh no, what did the AI just do?" moments.
+**⚡ Trusted Fast Mode (Fast by Default)**
+OpenAgent executes safe local work directly. It asks approval only for destructive commands, secrets/credentials, production deploys, payment/legal actions, public external communication, or irreversible data operations.
 
 **⚡ Token Efficient (MVI Principle)**  
 Minimal Viable Information design. Only load what's needed, when it's needed. Context files <200 lines, lazy loading, faster responses.
@@ -86,6 +86,7 @@ Use any AI model (Claude, GPT, Gemini, local). No vendor lock-in.
 
 For bigger work, OAC now includes a controlled swarm layer:
 
+- **HackersEra Master Swarm** is the default OpenAgent routing layer for cybersecurity product, technical R&D, revenue, investor, operations, compliance, support, and CEO work.
 - **OpenAgent Swarm Mode** plans multi-agent work with dependencies, file ownership, and validation gates.
 - **Self-organizing engineering teams** map work to PM, Architect, Tech Lead, frontend/backend/devops, QA, Security, Review, Docs, Integration, and Debug agents.
 - **Task graphs** make every worker's reads, writes, dependencies, and acceptance criteria explicit.
@@ -112,6 +113,7 @@ Or invoke the commands:
 /swarm-run approved plan
 /swarm-status
 /swarm-debug failed CI incident
+/hackersera-swarm Build a cross-functional cybersecurity product/company swarm
 /revenue-swarm Launch this cybersecurity product
 /campaign-genesis Enter a new automotive security segment
 /sales-coach Improve this enterprise deal pitch
@@ -139,19 +141,19 @@ Read the full design: [Controlled Agent Swarm System](./docs/features/agent-swar
 | Feature | OpenAgentsControl | Cursor/Copilot | Aider | Oh My OpenCode |
 |---------|-------------------|----------------|-------|----------------|
 | **Learn Your Patterns** | ✅ Built-in context system | ❌ No pattern learning | ❌ No pattern learning | ⚠️ Manual setup |
-| **Approval Gates** | ✅ Always required | ⚠️ Optional (default off) | ❌ Auto-executes | ❌ Fully autonomous |
+| **Approval Gates** | ✅ High-risk actions only | ⚠️ Optional (default off) | ❌ Auto-executes | ❌ Fully autonomous |
 | **Token Efficiency** | ✅ MVI principle (80% reduction) | ❌ Full context loaded | ❌ Full context loaded | ❌ High token usage |
 | **Team Standards** | ✅ Shared context files | ❌ Per-user settings | ❌ No team support | ⚠️ Manual config per user |
 | **Edit Agent Behavior** | ✅ Markdown files you edit | ❌ Proprietary/baked-in | ⚠️ Limited prompts | ✅ Config files |
 | **Model Choice** | ✅ Any model, any provider | ⚠️ Limited options | ⚠️ OpenAI/Claude only | ✅ Multiple models |
-| **Execution Speed** | ✅ Controlled parallel swarms with approval gates | Fast | Fast | ✅ Parallel agents |
+| **Execution Speed** | ✅ Trusted fast mode + controlled swarms | Fast | Fast | ✅ Parallel agents |
 | **Error Recovery** | ✅ Human-guided validation | ⚠️ Auto-retry (can loop) | ⚠️ Auto-retry | ✅ Self-correcting |
 | **Best For** | Production code, teams | Quick prototypes | Solo developers | Power users, complex projects |
 
 **Use OAC when:**
 - ✅ You have established coding patterns
 - ✅ You want code that ships without refactoring
-- ✅ You need approval gates for quality control
+- ✅ You want fast trusted execution with approval gates only for high-risk actions
 - ✅ You care about token efficiency and costs
 - ✅ You want an engineering-team swarm with PM, architecture, implementation, QA, security, review, integration, and debug roles
 
@@ -239,7 +241,7 @@ Add a login endpoint
 ```
 
 **Features:**
-- ✅ 6-stage workflow with approval gates
+- ✅ Trusted Fast Mode with high-risk approval gates
 - ✅ Context-aware code generation
 - ✅ 7 specialized subagents (task-manager, context-scout, context-manager, coder-agent, test-engineer, code-reviewer, external-scout)
 - ✅ 9 workflow skills + 6 user commands
@@ -399,12 +401,12 @@ Working with external libraries? ExternalScout fetches current documentation:
 - Automatically triggered when agents detect external dependencies
 - Supports frameworks, APIs, libraries, and more
 
-**4. Approval Gates - No Surprises**  
-Agents ALWAYS request approval before:
-- Writing/editing files
-- Running bash commands
-- Delegating to subagents
-- Making any changes
+**4. Trusted Fast Mode - Fast Without Surprises**
+OpenAgent executes safe local work immediately and asks approval before:
+- destructive deletes or irreversible data operations
+- secrets, credentials, keys, tokens, or production config changes
+- production deploys, paid cloud actions, payment/legal actions, or public external communication
+- hardware actions that can damage a device or violate authorization
 
 You stay in control. Review plans before execution.
 
@@ -573,7 +575,7 @@ Approve? [y/n]
 - No refactoring needed
 - Ready to commit and deploy
 
-**Total time: ~15-25 minutes** for a complete feature (guided, with approval gates)
+**Total time: faster for safe local work, with approval only for high-risk actions**
 
 ### 💡 Pro Tips
 
@@ -650,13 +652,13 @@ Agents automatically use updated patterns.
 - Work in a team with established coding standards
 - Want control over agent behavior (not black-box plugins)
 - Care about token efficiency and cost savings
-- Need approval gates for quality assurance
+- Want fast local execution with approval gates for destructive, credential, production, or public actions
 - Want repeatable, consistent results
 - Use multiple AI models (no vendor lock-in)
 
 ### ⚠️ Skip OAC if you:
-- Want fully autonomous execution without approval gates
-- Prefer "just do it" mode over human-guided workflows
+- Want fully unmanaged execution with no high-risk approval gates
+- Prefer unstructured "just do anything" mode over trusted swarm workflows
 - Don't have established coding patterns yet
 - Need multi-agent parallelization (use Oh My OpenCode instead)
 - Want plug-and-play with zero configuration
@@ -736,7 +738,7 @@ A: Smart pattern discovery agent. Finds relevant context files before code gener
 A: Yes! Agents are markdown files. Edit them directly: `nano .opencode/agent/core/openagent.md` (local) or `nano ~/.config/opencode/agent/core/openagent.md` (global)
 
 **Q: How do approval gates work?**  
-A: Agents ALWAYS request approval before execution (write/edit/bash). You review plans before implementation. No surprises.
+A: OpenAgent runs in Trusted Fast Mode. Safe local reads, edits, tests, builds, and subagent routing execute directly. It asks first for destructive, credential, production, payment/legal, public external, or irreversible actions.
 
 **Q: How do I update my context?**  
 A: Run `/add-context --update` anytime your patterns change. Agents automatically use updated patterns.
@@ -744,16 +746,16 @@ A: Run `/add-context --update` anytime your patterns change. Agents automaticall
 ### Comparison
 
 **Q: How is this different from Cursor/Copilot?**  
-A: OAC has editable agents (not baked-in), approval gates (not auto-execute), context system (YOUR patterns), and MVI token efficiency.
+A: OAC has editable agents (not baked-in), Trusted Fast Mode with high-risk approval gates, context system (YOUR patterns), HackersEra master swarm routing, and MVI token efficiency.
 
 **Q: How is this different from Aider?**  
-A: OAC has team patterns, context system, approval workflow, and smart pattern discovery. Aider is file-based only.
+A: OAC has team patterns, context system, swarm routing, high-risk approval workflow, and smart pattern discovery. Aider is file-based only.
 
 **Q: How does this compare to Oh My OpenCode?**  
-A: Both are built on OpenCode. OAC focuses on **control & repeatability** (approval gates, pattern control, team standards). Oh My OpenCode focuses on **autonomy & speed** (parallel agents, auto-execution). [Read detailed comparison →](https://github.com/kalihat007/OpenAgentsControl/discussions/116)
+A: Both are built on OpenCode. OAC focuses on **trusted speed plus repeatability** (pattern control, team standards, high-risk approval gates, and swarms). Oh My OpenCode focuses on broad autonomy and speed. [Read detailed comparison →](https://github.com/kalihat007/OpenAgentsControl/discussions/116)
 
 **Q: When should I NOT use OAC?**  
-A: If you want fully autonomous execution without approval gates, or if you don't have established coding patterns yet.
+A: If you want a completely unmanaged agent with no high-risk approval gates, or if you do not want project-specific patterns and standards.
 
 ### Setup
 

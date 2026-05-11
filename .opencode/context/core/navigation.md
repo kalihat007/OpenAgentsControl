@@ -14,6 +14,7 @@ core/
 ├── context-system.md
 ├── business-operations-swarms.md
 ├── essential-patterns.md
+├── hackersera-master-swarm.md
 ├── development-swarm.md
 ├── revenue-swarm.md
 ├── investor-magnet-swarm.md
@@ -77,6 +78,7 @@ core/
 | **Review code** | `workflows/code-review.md` |
 | **Delegate task** | `workflows/task-delegation-basics.md` |
 | **Run agent swarm** | `swarm-orchestration.md` |
+| **Run HackersEra master swarm** | `hackersera-master-swarm.md` |
 | **Build development team swarm** | `development-swarm.md` |
 | **Build revenue growth swarm** | `revenue-swarm.md` |
 | **Build investor magnet swarm** | `investor-magnet-swarm.md` |
@@ -95,6 +97,7 @@ core/
 **Standards** → Code quality, testing, docs, security (critical priority)
 **Workflows** → Review, delegation, task breakdown (high priority)
 **Swarm** → Task graph, file locks, safe parallel batches, validation gates (critical priority)
+**HackersEra Master Swarm** → Trusted fast OpenAgent routing across technical, development, revenue, investor, operations, support, compliance, and CEO tracks (critical priority)
 **Development Swarm** → PM, architect, tech lead, dev, QA, security, review, docs, integration, debug roles (critical priority)
 **Revenue Swarm** → CGO, market intel, customer research, brand, lead gen, conversion, pricing, content, PR, trust, analytics, sales coaching (critical priority)
 **Investor Magnet Swarm** → investor narrative, funding simulation, PR/media, LinkedIn thought leadership, analyst relations, events, social proof, crisis-to-opportunity, investor metrics (critical priority)

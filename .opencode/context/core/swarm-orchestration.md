@@ -6,7 +6,7 @@ Use this context when a task needs multiple agents, parallel execution, or a dep
 
 ## Core Idea
 
-OAC swarm mode is controlled parallelism:
+OAC swarm mode is trusted controlled parallelism:
 
 - one orchestrator owns the plan
 - workers own isolated tasks
@@ -14,7 +14,7 @@ OAC swarm mode is controlled parallelism:
 - file locks prevent destructive overlap
 - validation gates block premature completion
 
-This is not uncontrolled autonomy. Human approval remains mandatory before execution.
+This is not uncontrolled autonomy. OpenAgent executes safe local work directly in Trusted Fast Mode and asks approval only for destructive, credential, production, payment/legal, public external, or irreversible data actions.
 
 ## Required Session Files
 
