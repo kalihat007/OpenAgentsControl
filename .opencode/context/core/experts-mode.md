@@ -6,9 +6,13 @@ Experts Mode is OpenAgent's default operating mode for all work, and agent swarm
 
 This mode is always routed through `opencode --agent OpenAgent`. Do not tell the user to switch to a different primary agent.
 
+Mandatory invariant: there is no separate non-expert mode for OpenAgent. Conversational answers, direct terminal commands, one-file edits, multi-file builds, research, review, and HackersEra swarm work all pass through Experts Mode. The only difference is team size and state overhead.
+
 ## Always Active
 
 Activate Experts Mode for every `opencode --agent OpenAgent` request.
+
+Never skip Experts Mode because the task is small. Small tasks use TeamLeadAgent-only execution.
 
 Use the lightweight single-expert path when the request is:
 
