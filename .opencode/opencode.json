@@ -1,5 +1,4 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "agent": "OpenAgent",
-  "model": "claude-sonnet-4-5"
+  "agent": "OpenAgent"
 }
