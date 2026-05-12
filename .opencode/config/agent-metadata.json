@@ -10,7 +10,7 @@
       "type": "agent",
       "version": "1.0.0",
       "author": "opencode",
-      "tags": ["universal", "coordination", "primary"],
+      "tags": ["universal", "coordination", "primary", "experts-mode", "swarm", "master-swarm"],
       "dependencies": [
         "subagent:task-manager",
         "subagent:batch-executor",
@@ -22,7 +22,16 @@
         "context:standards-tests",
         "context:review-ref",
         "context:delegation-ref",
-        "context:external-libraries-workflow"
+        "context:external-libraries-workflow",
+        "context:experts-mode",
+        "subagent:swarm-orchestrator",
+        "context:development-swarm",
+        "context:swarm-orchestration",
+        "context:revenue-swarm",
+        "context:business-operations-swarms",
+        "context:technical-swarm",
+        "context:investor-magnet-swarm",
+        "context:hackersera-master-swarm"
       ]
     },
     "opencoder": {
