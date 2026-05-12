@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
 ## The Solution
 
-**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, runs Experts Mode by default, uses agent swarm orchestration for larger work, distributes context across roles, and keeps high-risk actions behind approval gates.
+**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, runs Experts Mode for all work by default, uses agent swarm orchestration for larger work, distributes context across roles, and keeps high-risk actions behind approval gates.
 
 **The result:** Production-ready code that ships without heavy rework.
 
@@ -77,7 +77,7 @@ OpenAgent executes safe local work directly. It asks approval only for destructi
 OpenAgent acts like the CEO of a temporary expert organization. It dynamically assigns researchers, analysts, builders, reviewers, fact-checkers, and domain specialists, then reconciles disagreement instead of forcing one assistant to think through everything sequentially.
 
 **🧑‍💻 Experts Mode + Agent Swarm by Default**
-OpenAgent always starts with Experts Mode decision-making. For simple work it executes directly; for medium-to-large work it becomes the Team Lead, creates a swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, runs safe work in parallel, validates the result, and records reusable lessons.
+OpenAgent always starts in Experts Mode. For tiny work it uses a lightweight single-expert path; for larger work it becomes the Team Lead, creates a swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, runs safe work in parallel, validates the result, and records reusable lessons.
 
 **⚡ Token Efficient (MVI Principle)**  
 Minimal Viable Information design. Only load what's needed, when it's needed. Context files <200 lines, lazy loading, faster responses.
@@ -758,7 +758,7 @@ A: Smart pattern discovery agent. Finds relevant context files before code gener
 A: Yes. Add information, correct direction, or change priorities at any time. TeamLeadAgent updates the plan, reallocates experts, revises the swarm task graph, and continues from validated work.
 
 **Q: What about cost and time for Experts Mode?**
-A: Experts Mode is best for medium-to-high complexity tasks. It may use more tool calls than direct execution, but improves quality through planning, parallel specialists, QA, review, and validation. Simple tasks stay direct under Trusted Fast Mode.
+A: Experts Mode is always on, but it scales itself. Tiny tasks use a lightweight single-expert path with minimal overhead. Larger tasks may use more tool calls, but improve quality through planning, parallel specialists, QA, review, and validation.
 
 **Q: How does terminal execution work in Experts Mode?**
 A: Safe local terminal commands run automatically for routine reads, tests, builds, linting, and local validation. High-risk terminal actions require approval or a sandboxed/isolated execution plan before proceeding.

@@ -2,13 +2,23 @@
 
 # OpenAgent Experts Mode
 
-Experts Mode is OpenAgent's default operating mode, and agent swarm orchestration is its default execution engine for medium-to-large work. The user states the goal; OpenAgent acts as Team Lead, decomposes the work, assembles the expert team, executes safe work in parallel through the swarm task graph, tracks progress, integrates outputs, and validates the final result.
+Experts Mode is OpenAgent's default operating mode for all work, and agent swarm orchestration is its default execution engine. The user states the goal; OpenAgent acts as Team Lead, decomposes the work, assembles the smallest useful expert team, executes safe work through a lightweight single-expert path or parallel swarm task graph, tracks progress, integrates outputs, and validates the final result.
 
 This mode is always routed through `opencode --agent OpenAgent`. Do not tell the user to switch to a different primary agent.
 
-## When It Activates
+## Always Active
 
-Activate Experts Mode automatically when a request includes:
+Activate Experts Mode for every `opencode --agent OpenAgent` request.
+
+Use the lightweight single-expert path when the request is:
+
+- a simple explanation
+- a tiny one-file edit
+- a direct local command
+- a straightforward question
+- a narrow documentation or formatting fix
+
+Use the full agent swarm path when a request includes:
 
 - full-stack feature work
 - complex bug diagnosis or performance work
@@ -19,7 +29,7 @@ Activate Experts Mode automatically when a request includes:
 - UI/UX plus backend/API/database work
 - HackersEra cybersecurity product, hardware, firmware, VAPT, compliance, GTM, investor, or operations work
 
-For simple one-file edits, direct explanations, or tiny formatting changes, keep the Experts Mode decision logic but execute directly in Trusted Fast Mode without assembling a large team.
+Simple work still remains inside Experts Mode; it just uses TeamLeadAgent only and executes directly in Trusted Fast Mode without assembling a large team or creating session files.
 
 ## Core Team
 
@@ -60,7 +70,7 @@ Represent expert work with explicit status:
 }
 ```
 
-Use the agent swarm state model for medium-to-large work: `.tmp/swarm/{session-id}/task-graph.json`, `module-claims.json`, `contracts.json`, `events.jsonl`, `incidents.jsonl`, and `checkpoints.jsonl`. Summaries should report pending, in-progress, completed, blocked, and failed work.
+Use the agent swarm state model whenever work needs multiple experts, durable tracking, or validation gates: `.tmp/swarm/{session-id}/task-graph.json`, `module-claims.json`, `contracts.json`, `events.jsonl`, `incidents.jsonl`, and `checkpoints.jsonl`. Summaries should report pending, in-progress, completed, blocked, and failed work.
 
 ## Parallel Execution Rules
 
@@ -112,7 +122,7 @@ Experts Mode learns through repo artifacts rather than hidden memory:
 Yes. The user can add information, correct direction, or change priorities at any time. TeamLeadAgent must update the plan, reassign experts, revise the task graph, and continue without discarding completed validated work.
 
 **What about cost and time for Experts Mode?**
-Experts Mode is best for medium-to-high complexity tasks where quality, coverage, and integration matter. It may use more tool calls and wall-clock time than a single direct agent, but it should deliver better quality through planning, parallel specialist work, QA, review, and validation. For simple one-file changes or direct explanations, OpenAgent keeps the Experts Mode decision layer but executes directly in Trusted Fast Mode.
+Experts Mode is always active, but it scales itself. Simple tasks use a lightweight single-expert path with minimal overhead. Larger or higher-risk tasks may use more tool calls and wall-clock time than a single direct agent, but they should deliver better quality through planning, parallel specialist work, QA, review, and validation.
 
 **How does terminal execution work in Experts Mode?**
 Safe local terminal commands run automatically under Trusted Fast Mode so the user is not interrupted for routine reads, tests, builds, linting, and local validation. High-risk commands are gated: destructive operations, secrets, production deploys, payment/legal actions, public external actions, irreversible data changes, and risky hardware actions require approval or a sandboxed/isolated execution plan before proceeding.
@@ -122,7 +132,7 @@ Safe local terminal commands run automatically under Trusted Fast Mode so the us
 Experts Mode is complete only when:
 
 - the Team Lead plan and expert lineup are clear
-- the swarm task graph, ownership boundaries, and validation gates are clear for medium-to-large work
+- the swarm task graph, ownership boundaries, and validation gates are clear whenever multi-expert execution is used
 - safe parallel work has executed where useful
 - task statuses are summarized
 - code, tests, docs, review, and deployment implications are addressed for the request scope

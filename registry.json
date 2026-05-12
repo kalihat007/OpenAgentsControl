@@ -2208,7 +2208,7 @@
         "name": "Experts Mode",
         "type": "command",
         "path": ".opencode/command/experts.md",
-        "description": "Run OpenAgent's default Experts Mode powered by agent swarm task graphs, Team Lead planning, dynamic experts, task progress, parallel execution, validation, and review",
+        "description": "Run OpenAgent's always-on Experts Mode powered by agent swarm task graphs, Team Lead planning, dynamic experts, task progress, parallel execution, validation, and review",
         "tags": [
           "experts-mode",
           "team-lead",
@@ -4777,7 +4777,7 @@
         "name": "OpenAgent Experts Mode",
         "type": "context",
         "path": ".opencode/context/core/experts-mode.md",
-        "description": "Default OpenAgent Team Lead workflow powered by agent swarm orchestration for medium-to-large tasks with dynamic experts, task progress, parallel execution, browser verification, code review, QA, research, DevOps, UX, and self-evolution",
+        "description": "Always-on OpenAgent Team Lead workflow powered by agent swarm orchestration, with lightweight single-expert handling for tiny tasks and dynamic experts, task progress, parallel execution, browser verification, code review, QA, research, DevOps, UX, and self-evolution for larger work",
         "tags": [
           "experts-mode",
           "team-lead",

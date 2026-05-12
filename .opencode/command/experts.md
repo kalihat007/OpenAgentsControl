@@ -1,5 +1,5 @@
 ---
-description: "Run OpenAgent's default Experts Mode powered by agent swarm orchestration with Team Lead planning, parallel experts, task progress, validation, and review"
+description: "Run OpenAgent's always-on Experts Mode powered by agent swarm orchestration with Team Lead planning, parallel experts, task progress, validation, and review"
 ---
 
 <request>$ARGUMENTS</request>
@@ -9,7 +9,7 @@ description: "Run OpenAgent's default Experts Mode powered by agent swarm orches
 
 # OpenAgent Experts Mode
 
-Use OpenAgent as TeamLeadAgent and the only user-facing entrypoint. Decompose the request, assemble the smallest effective expert team, create the swarm task graph for medium-to-large work, execute safe independent work in parallel, track task progress, validate results, and reconcile review findings.
+Use OpenAgent as TeamLeadAgent and the only user-facing entrypoint. Decompose the request, assemble the smallest effective expert team, use a lightweight single-expert path for tiny tasks, create the swarm task graph for larger work, execute safe independent work in parallel when useful, track task progress, validate results, and reconcile review findings.
 
 ## Default Experts
 
