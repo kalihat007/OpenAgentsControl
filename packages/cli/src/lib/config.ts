@@ -7,6 +7,8 @@ export const OacPreferencesSchema = z.object({
   autoBackup: z.boolean(),
   expertMode: z.boolean(),
   useAgentSwarm: z.boolean(),
+  maxParallelAgents: z.number().int().min(1).max(20),
+  maxApiCallsPerSession: z.number().int().min(10).max(10000),
 });
 export const OacConfigSchema = z.object({
   version: z.literal("1"),
@@ -26,6 +28,8 @@ export const createDefaultConfig = (): OacConfig => ({
     autoBackup: true,
     expertMode: true,
     useAgentSwarm: true,
+    maxParallelAgents: 4,
+    maxApiCallsPerSession: 500,
   },
 });
 
@@ -44,6 +48,12 @@ export const isExpertMode = (config: OacConfig): boolean =>
 
 export const isAgentSwarmEnabled = (config: OacConfig): boolean =>
   config.preferences.expertMode && config.preferences.useAgentSwarm;
+
+export const getMaxParallelAgents = (config: OacConfig): number =>
+  config.preferences.maxParallelAgents;
+
+export const getMaxApiCallsPerSession = (config: OacConfig): number =>
+  config.preferences.maxApiCallsPerSession;
 
 export async function readConfig(projectRoot: string): Promise<OacConfig | null> {
   const configPath = getConfigPath(projectRoot);

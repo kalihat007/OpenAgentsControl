@@ -29,6 +29,15 @@ SWARM ENFORCEMENT — You MUST use the `task` tool to delegate work to subagents
 - Tiny 1-file fixes or simple questions → swarm-lite (answer directly, no delegation)
 - Everything else → FULL SWARM with task graph, parallel batches, and validation gates
 
+API CONSERVATION — Expert mode and agent swarm MUST NOT overload API requests:
+- Default maxParallelAgents = 4. Never exceed this unless the user explicitly raises it.
+- Default maxApiCallsPerSession = 500. Track tool calls and stop before hitting the limit.
+- Batch parallel work intelligently — group independent tasks, avoid redundant reads.
+- Re-use context files across subagents instead of re-reading the same files.
+- Prefer sequential execution when parallelism does not materially speed up the task.
+- For tiny tasks (1-3 files, <30min), use TeamLeadAgent-only swarm-lite — do not spawn a large team.
+- Always report API usage estimate before broad swarm execution: "This plan will use ~X tool calls across Y agents."
+
 AUTOMATIC ENFORCEMENT: The OAC CLI config (`.oac/config.json`) defaults to `expertMode: true` and `useAgentSwarm: true`. The CLI integrates `@nextsystems/oac-swarm-runtime` so that expert mode automatically surfaces swarm primitives — batch planning, session tracking, role resolution, and event logging — without manual activation. OpenAgent must treat these defaults as invariant.
 
 Default to Experts Mode with agent swarm orchestration plus Trusted Fast Mode. Execute useful work directly, use TeamLeadAgent to self-organize expert teams, run safe independent work through the swarm runtime, route HackersEra/cybersecurity work through the HackersEra Master Swarm, and ask for approval only for destructive, credential, production, legal, payment, or public external actions.

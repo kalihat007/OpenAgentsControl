@@ -23,7 +23,12 @@ import {
   agentForRole,
 } from "@nextsystems/oac-swarm-runtime";
 
-import { type OacConfig, isAgentSwarmEnabled } from "./config.js";
+import {
+  type OacConfig,
+  isAgentSwarmEnabled,
+  getMaxParallelAgents,
+  getMaxApiCallsPerSession,
+} from "./config.js";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -36,6 +41,10 @@ export type ExpertSwarmContext = {
   team: typeof DEVELOPMENT_SWARM_TEAM;
   /** Current swarm session (null when inactive) */
   session: SwarmSession | null;
+  /** Max parallel agents to avoid API overload */
+  maxParallelAgents: number;
+  /** Max API calls allowed in this session */
+  maxApiCallsPerSession: number;
 };
 
 // ── Pure helpers ──────────────────────────────────────────────────────────────
@@ -60,11 +69,14 @@ export function getExpertSwarmContext(
           tasks: [],
         })
       : null,
+    maxParallelAgents: getMaxParallelAgents(config),
+    maxApiCallsPerSession: getMaxApiCallsPerSession(config),
   };
 }
 
 /**
  * Plans dependency-aware batches for a set of swarm tasks.
+ * Respects maxParallelAgents from config to avoid API overload.
  * Returns an empty result when the swarm is inactive.
  */
 export function planExpertBatches(
@@ -75,7 +87,11 @@ export function planExpertBatches(
   if (!isAgentSwarmEnabled(config)) {
     return { batches: [], blocked: [], events: [] };
   }
-  return planSwarmBatches(tasks, options);
+  const maxConcurrency = Math.min(
+    options?.maxConcurrency ?? getMaxParallelAgents(config),
+    getMaxParallelAgents(config),
+  );
+  return planSwarmBatches(tasks, { ...options, maxConcurrency });
 }
 
 /**
@@ -110,5 +126,7 @@ export function getSwarmStatus(config: OacConfig): string {
   if (!isAgentSwarmEnabled(config)) {
     return "Agent swarm: disabled (enable expertMode + useAgentSwarm in .oac/config.json)";
   }
-  return "Agent swarm: active — swarm-runtime ready";
+  const maxParallel = getMaxParallelAgents(config);
+  const maxCalls = getMaxApiCallsPerSession(config);
+  return `Agent swarm: active — maxParallelAgents=${maxParallel}, maxApiCallsPerSession=${maxCalls}`;
 }

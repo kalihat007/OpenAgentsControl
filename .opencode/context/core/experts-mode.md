@@ -19,8 +19,22 @@ Never skip Experts Mode or agent swarm orchestration because the task is small. 
 The OAC CLI config (`.oac/config.json`) now defaults to:
 - `expertMode: true`
 - `useAgentSwarm: true`
+- `maxParallelAgents: 4`
+- `maxApiCallsPerSession: 500`
 
 These defaults are enforced automatically on `oac init`. Expert mode and agent swarm orchestration are always active unless the user explicitly disables them in config.
+
+## API Conservation
+
+Expert mode and agent swarm MUST NOT overload API requests or model token budgets:
+
+- **Max parallel agents**: Default is 4. Never exceed this ceiling unless the user explicitly raises it in `.oac/config.json`.
+- **Max API calls per session**: Default is 500. Track cumulative tool calls and stop before hitting the limit. Report usage: `"This swarm used ~X tool calls."`
+- **Intelligent batching**: Group independent tasks into the smallest number of parallel batches. Do not spawn agents for work that can be done sequentially without penalty.
+- **Context reuse**: Pass loaded context files to subagents in delegation prompts instead of letting each subagent re-read the same files.
+- **Swarm-lite by default**: For tiny tasks (1-3 files, <30min), use TeamLeadAgent-only execution. Do not spawn FrontendExpert, BackendExpert, QAExpert, CodeReviewExpert, ResearchExpert, DevOpsExpert, and UXDesigner for trivial work.
+- **Estimate before executing**: Before launching a full swarm, give the user an API usage estimate: `"This plan will use ~X tool calls across Y agents. Proceed?"`
+- **Sequential fallback**: When validation is failing, recovery must converge first — do not add more parallel agents to a broken pipeline.
 
 Use swarm-lite routing when the request is:
 

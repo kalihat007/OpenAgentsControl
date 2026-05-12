@@ -168,6 +168,42 @@ const checkAgentSwarm = async (projectRoot: string): Promise<CheckResult> => {
   };
 };
 
+/** Check 3d: API rate limits are configured. */
+const checkApiLimits = async (projectRoot: string): Promise<CheckResult> => {
+  const config = await readConfig(projectRoot);
+  if (config === null) {
+    return {
+      name: 'API limits',
+      status: 'warn',
+      message: 'No config found — defaults to maxParallelAgents=4, maxApiCallsPerSession=500',
+    };
+  }
+  const maxParallel = config.preferences.maxParallelAgents;
+  const maxCalls = config.preferences.maxApiCallsPerSession;
+
+  if (maxParallel <= 0 || maxCalls <= 0) {
+    return {
+      name: 'API limits',
+      status: 'error',
+      message: `Invalid limits: maxParallelAgents=${maxParallel}, maxApiCallsPerSession=${maxCalls}`,
+    };
+  }
+
+  if (maxParallel > 10) {
+    return {
+      name: 'API limits',
+      status: 'warn',
+      message: `maxParallelAgents=${maxParallel} is high — may overload API/model requests`,
+    };
+  }
+
+  return {
+    name: 'API limits',
+    status: 'ok',
+    message: `maxParallelAgents=${maxParallel}, maxApiCallsPerSession=${maxCalls}`,
+  };
+};
+
 /** Check 4: .oac/manifest.json exists and is valid JSON. */
 const checkManifest = async (projectRoot: string): Promise<CheckResult> => {
   try {
@@ -385,11 +421,12 @@ export async function doctorCommand(options: DoctorOptions): Promise<void> {
   const projectRoot = process.cwd();
 
   // Run all independent async checks in parallel for speed
-  const [configResult, expertModeResult, agentSwarmResult, manifestResult, filesResult, modifiedResult, ideResults, versionResult] =
+  const [configResult, expertModeResult, agentSwarmResult, apiLimitsResult, manifestResult, filesResult, modifiedResult, ideResults, versionResult] =
     await Promise.all([
       checkConfig(projectRoot),
       checkExpertMode(projectRoot),
       checkAgentSwarm(projectRoot),
+      checkApiLimits(projectRoot),
       checkManifest(projectRoot),
       checkFilesOnDisk(projectRoot),
       checkModifiedFiles(projectRoot),
@@ -402,6 +439,7 @@ export async function doctorCommand(options: DoctorOptions): Promise<void> {
     configResult,
     expertModeResult,
     agentSwarmResult,
+    apiLimitsResult,
     manifestResult,
     filesResult,
     modifiedResult,

@@ -11,6 +11,8 @@ import {
   isAutoBackup,
   isExpertMode,
   isAgentSwarmEnabled,
+  getMaxParallelAgents,
+  getMaxApiCallsPerSession,
   getConfigPath,
 } from './config.js';
 
@@ -69,6 +71,18 @@ describe('createDefaultConfig', () => {
     expect(config.preferences.useAgentSwarm).toBe(true);
   });
 
+  // ✅ Positive: maxParallelAgents defaults to 4
+  test('maxParallelAgents defaults to 4', () => {
+    const config = createDefaultConfig();
+    expect(config.preferences.maxParallelAgents).toBe(4);
+  });
+
+  // ✅ Positive: maxApiCallsPerSession defaults to 500
+  test('maxApiCallsPerSession defaults to 500', () => {
+    const config = createDefaultConfig();
+    expect(config.preferences.maxApiCallsPerSession).toBe(500);
+  });
+
   // ❌ Negative: two calls return independent objects (no shared reference)
   test('returns a new object on each call', () => {
     const a = createDefaultConfig();
@@ -115,11 +129,15 @@ describe('mergeConfig', () => {
       autoBackup: false,
       expertMode: false,
       useAgentSwarm: false,
+      maxParallelAgents: 8,
+      maxApiCallsPerSession: 1000,
     });
     expect(merged.preferences.yoloMode).toBe(true);
     expect(merged.preferences.autoBackup).toBe(false);
     expect(merged.preferences.expertMode).toBe(false);
     expect(merged.preferences.useAgentSwarm).toBe(false);
+    expect(merged.preferences.maxParallelAgents).toBe(8);
+    expect(merged.preferences.maxApiCallsPerSession).toBe(1000);
   });
 
   // ❌ Negative: does not mutate the base config
@@ -137,6 +155,8 @@ describe('mergeConfig', () => {
     expect(merged.preferences.autoBackup).toBe(base.preferences.autoBackup);
     expect(merged.preferences.expertMode).toBe(base.preferences.expertMode);
     expect(merged.preferences.useAgentSwarm).toBe(base.preferences.useAgentSwarm);
+    expect(merged.preferences.maxParallelAgents).toBe(base.preferences.maxParallelAgents);
+    expect(merged.preferences.maxApiCallsPerSession).toBe(base.preferences.maxApiCallsPerSession);
   });
 });
 
@@ -254,6 +274,8 @@ describe('readConfig / writeConfig', () => {
     expect(read?.preferences.autoBackup).toBe(true);
     expect(read?.preferences.expertMode).toBe(true);
     expect(read?.preferences.useAgentSwarm).toBe(true);
+    expect(read?.preferences.maxParallelAgents).toBe(4);
+    expect(read?.preferences.maxApiCallsPerSession).toBe(500);
   });
 
   // ✅ Positive: round-trip preserves non-default preference values
@@ -265,6 +287,8 @@ describe('readConfig / writeConfig', () => {
       autoBackup: false,
       expertMode: false,
       useAgentSwarm: false,
+      maxParallelAgents: 8,
+      maxApiCallsPerSession: 1000,
     });
     // Act
     await writeConfig(projectRoot, config);
@@ -274,6 +298,8 @@ describe('readConfig / writeConfig', () => {
     expect(read?.preferences.autoBackup).toBe(false);
     expect(read?.preferences.expertMode).toBe(false);
     expect(read?.preferences.useAgentSwarm).toBe(false);
+    expect(read?.preferences.maxParallelAgents).toBe(8);
+    expect(read?.preferences.maxApiCallsPerSession).toBe(1000);
   });
 
   // ✅ Positive: writeConfig is idempotent — second write overwrites first
@@ -329,6 +355,8 @@ describe('readConfig / writeConfig', () => {
           autoBackup: 1,
           expertMode: 'yes',
           useAgentSwarm: 1,
+          maxParallelAgents: 'eight',
+          maxApiCallsPerSession: 'many',
         },
       }),
     );
@@ -381,5 +409,37 @@ describe('isAgentSwarmEnabled', () => {
       useAgentSwarm: false,
     });
     expect(isAgentSwarmEnabled(config)).toBe(false);
+  });
+});
+
+// ── getMaxParallelAgents ──────────────────────────────────────────────────────
+
+describe('getMaxParallelAgents', () => {
+  // ✅ Positive: returns default value (4)
+  test('returns default maxParallelAgents (4)', () => {
+    const config = createDefaultConfig();
+    expect(getMaxParallelAgents(config)).toBe(4);
+  });
+
+  // ✅ Positive: returns overridden value
+  test('returns overridden maxParallelAgents', () => {
+    const config = mergeConfig(createDefaultConfig(), { maxParallelAgents: 8 });
+    expect(getMaxParallelAgents(config)).toBe(8);
+  });
+});
+
+// ── getMaxApiCallsPerSession ──────────────────────────────────────────────────
+
+describe('getMaxApiCallsPerSession', () => {
+  // ✅ Positive: returns default value (500)
+  test('returns default maxApiCallsPerSession (500)', () => {
+    const config = createDefaultConfig();
+    expect(getMaxApiCallsPerSession(config)).toBe(500);
+  });
+
+  // ✅ Positive: returns overridden value
+  test('returns overridden maxApiCallsPerSession', () => {
+    const config = mergeConfig(createDefaultConfig(), { maxApiCallsPerSession: 1000 });
+    expect(getMaxApiCallsPerSession(config)).toBe(1000);
   });
 });
