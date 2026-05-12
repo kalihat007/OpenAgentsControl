@@ -9,6 +9,8 @@ import {
   mergeConfig,
   isYoloMode,
   isAutoBackup,
+  isExpertMode,
+  isAgentSwarmEnabled,
   getConfigPath,
 } from './config.js';
 
@@ -55,6 +57,18 @@ describe('createDefaultConfig', () => {
     expect(config.preferences.autoBackup).toBe(true);
   });
 
+  // ✅ Positive: expertMode defaults to true
+  test('expertMode defaults to true', () => {
+    const config = createDefaultConfig();
+    expect(config.preferences.expertMode).toBe(true);
+  });
+
+  // ✅ Positive: useAgentSwarm defaults to true
+  test('useAgentSwarm defaults to true', () => {
+    const config = createDefaultConfig();
+    expect(config.preferences.useAgentSwarm).toBe(true);
+  });
+
   // ❌ Negative: two calls return independent objects (no shared reference)
   test('returns a new object on each call', () => {
     const a = createDefaultConfig();
@@ -93,12 +107,19 @@ describe('mergeConfig', () => {
     expect(merged.preferences.autoBackup).toBe(false);
   });
 
-  // ✅ Positive: overrides both fields simultaneously
-  test('overrides both fields when both are provided', () => {
+  // ✅ Positive: overrides all fields simultaneously
+  test('overrides all fields when all are provided', () => {
     const base = createDefaultConfig();
-    const merged = mergeConfig(base, { yoloMode: true, autoBackup: false });
+    const merged = mergeConfig(base, {
+      yoloMode: true,
+      autoBackup: false,
+      expertMode: false,
+      useAgentSwarm: false,
+    });
     expect(merged.preferences.yoloMode).toBe(true);
     expect(merged.preferences.autoBackup).toBe(false);
+    expect(merged.preferences.expertMode).toBe(false);
+    expect(merged.preferences.useAgentSwarm).toBe(false);
   });
 
   // ❌ Negative: does not mutate the base config
@@ -114,6 +135,8 @@ describe('mergeConfig', () => {
     const merged = mergeConfig(base, {});
     expect(merged.preferences.yoloMode).toBe(base.preferences.yoloMode);
     expect(merged.preferences.autoBackup).toBe(base.preferences.autoBackup);
+    expect(merged.preferences.expertMode).toBe(base.preferences.expertMode);
+    expect(merged.preferences.useAgentSwarm).toBe(base.preferences.useAgentSwarm);
   });
 });
 
@@ -229,19 +252,28 @@ describe('readConfig / writeConfig', () => {
     expect(read?.version).toBe('1');
     expect(read?.preferences.yoloMode).toBe(false);
     expect(read?.preferences.autoBackup).toBe(true);
+    expect(read?.preferences.expertMode).toBe(true);
+    expect(read?.preferences.useAgentSwarm).toBe(true);
   });
 
   // ✅ Positive: round-trip preserves non-default preference values
   test('writeConfig then readConfig round-trips a modified config', async () => {
     // Arrange
     const projectRoot = join(tmpDir, 'roundtrip-modified');
-    const config = mergeConfig(createDefaultConfig(), { yoloMode: true, autoBackup: false });
+    const config = mergeConfig(createDefaultConfig(), {
+      yoloMode: true,
+      autoBackup: false,
+      expertMode: false,
+      useAgentSwarm: false,
+    });
     // Act
     await writeConfig(projectRoot, config);
     const read = await readConfig(projectRoot);
     // Assert
     expect(read?.preferences.yoloMode).toBe(true);
     expect(read?.preferences.autoBackup).toBe(false);
+    expect(read?.preferences.expertMode).toBe(false);
+    expect(read?.preferences.useAgentSwarm).toBe(false);
   });
 
   // ✅ Positive: writeConfig is idempotent — second write overwrites first
@@ -290,9 +322,64 @@ describe('readConfig / writeConfig', () => {
     await mkdir(dirname(configPath), { recursive: true });
     await Bun.write(
       configPath,
-      JSON.stringify({ version: '1', preferences: { yoloMode: 'yes', autoBackup: 1 } }),
+      JSON.stringify({
+        version: '1',
+        preferences: {
+          yoloMode: 'yes',
+          autoBackup: 1,
+          expertMode: 'yes',
+          useAgentSwarm: 1,
+        },
+      }),
     );
     // Act & Assert
     await expect(readConfig(projectRoot)).rejects.toThrow();
+  });
+});
+
+// ── isExpertMode ──────────────────────────────────────────────────────────────
+
+describe('isExpertMode', () => {
+  // ✅ Positive: returns true when expertMode preference is true
+  test('returns true when config.preferences.expertMode is true', () => {
+    const config = createDefaultConfig(); // expertMode: true
+    expect(isExpertMode(config)).toBe(true);
+  });
+
+  // ❌ Negative: returns false when expertMode preference is false
+  test('returns false when config.preferences.expertMode is false', () => {
+    const config = mergeConfig(createDefaultConfig(), { expertMode: false });
+    expect(isExpertMode(config)).toBe(false);
+  });
+});
+
+// ── isAgentSwarmEnabled ───────────────────────────────────────────────────────
+
+describe('isAgentSwarmEnabled', () => {
+  // ✅ Positive: returns true when both expertMode and useAgentSwarm are true
+  test('returns true when both expertMode and useAgentSwarm are true', () => {
+    const config = createDefaultConfig(); // both true by default
+    expect(isAgentSwarmEnabled(config)).toBe(true);
+  });
+
+  // ❌ Negative: returns false when expertMode is false
+  test('returns false when expertMode is false', () => {
+    const config = mergeConfig(createDefaultConfig(), { expertMode: false });
+    expect(isAgentSwarmEnabled(config)).toBe(false);
+  });
+
+  // ❌ Negative: returns false when useAgentSwarm is false
+  test('returns false when useAgentSwarm is false', () => {
+    const config = mergeConfig(createDefaultConfig(), { useAgentSwarm: false });
+    expect(isAgentSwarmEnabled(config)).toBe(false);
+  });
+
+  // ❌ Negative: returns false when both are false
+  test('returns false when both expertMode and useAgentSwarm are false', () => {
+    const config = mergeConfig(createDefaultConfig(), {
+      expertMode: false,
+      useAgentSwarm: false,
+    });
+    expect(isAgentSwarmEnabled(config)).toBe(false);
   });
 });

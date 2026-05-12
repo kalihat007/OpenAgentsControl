@@ -15,7 +15,7 @@ OpenAgent is the single user-facing owner for all HackersEra work. The default p
 - User command default: `opencode --agent OpenAgent`.
 - Architecture default: scale out horizontally with multiple specialist agents instead of forcing every problem through one sequential assistant.
 - Context default: preserve source trails, decisions, contracts, incidents, checkpoints, and evidence so long-horizon work does not degrade through repeated summarization.
-- Experts Mode default: all OpenAgent work uses TeamLeadAgent planning. Tiny tasks use a lightweight single-expert path; larger tasks use dynamic expert assignment, agent swarm task graphs, parallel execution, progress tracking, validation, and review through `experts-mode.md` plus `swarm-orchestration.md`.
+- Experts Mode default: all OpenAgent work uses TeamLeadAgent planning and agent swarm orchestration. Tiny tasks use TeamLeadAgent-only swarm-lite routing; larger tasks use dynamic expert assignment, agent swarm task graphs, parallel execution, progress tracking, validation, and review through `experts-mode.md` plus `swarm-orchestration.md`.
 
 ## Core Architecture Capabilities
 

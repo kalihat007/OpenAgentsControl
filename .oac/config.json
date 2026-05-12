@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "preferences": {
+    "yoloMode": false,
+    "autoBackup": true,
+    "expertMode": true,
+    "useAgentSwarm": true
+  }
+}

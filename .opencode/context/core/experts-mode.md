@@ -14,6 +14,14 @@ Activate Experts Mode for every `opencode --agent OpenAgent` request.
 
 Never skip Experts Mode or agent swarm orchestration because the task is small. Small tasks use TeamLeadAgent-only swarm-lite execution.
 
+### System Defaults
+
+The OAC CLI config (`.oac/config.json`) now defaults to:
+- `expertMode: true`
+- `useAgentSwarm: true`
+
+These defaults are enforced automatically on `oac init`. Expert mode and agent swarm orchestration are always active unless the user explicitly disables them in config.
+
 Use swarm-lite routing when the request is:
 
 - a simple explanation

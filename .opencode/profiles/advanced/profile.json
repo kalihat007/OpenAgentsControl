@@ -1,6 +1,7 @@
 {
   "name": "Advanced (Meta-Level)",
-  "description": "Full installation plus System Builder for creating custom AI architectures. For power users and contributors.",
+  "description": "Recommended default full OpenAgent installation plus System Builder for creating custom AI architectures, agent swarms, workflows, contexts, commands, and installation profiles.",
+  "badge": "RECOMMENDED DEFAULT",
   "components": [
     "agent:openagent",
     "agent:opencoder",

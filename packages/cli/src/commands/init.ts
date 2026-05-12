@@ -88,7 +88,7 @@ const printSummary = (
     info(`Skipped ${skipped} file${skipped !== 1 ? 's' : ''} (already modified — use --yolo to overwrite).`);
   }
   success(
-    `Done! ${installed} file${installed !== 1 ? 's' : ''} installed. Run \`oac doctor\` to verify.`,
+    `Done! ${installed} file${installed !== 1 ? 's' : ''} installed. Expert mode + agent swarm are active by default. Run \`oac doctor\` to verify.`,
   );
   log('');
 };

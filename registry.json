@@ -4908,7 +4908,6 @@
     "developer": {
       "name": "Developer",
       "description": "Complete software development and technical-swarm environment under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm routing, code generation, testing, review, build tools, UI/UX patterns, and controlled swarm execution.",
-      "badge": "RECOMMENDED",
       "components": [
         "agent:openagent",
         "subagent:swarm-orchestrator",
@@ -5218,6 +5217,7 @@
     "advanced": {
       "name": "Advanced (Meta-Level)",
       "description": "Full Trusted Fast OpenAgent installation plus default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm, and meta/system-builder subagents for creating custom AI architectures, agent families, workflows, contexts, commands, and installation profiles.",
+      "badge": "RECOMMENDED DEFAULT",
       "components": [
         "agent:openagent",
         "subagent:swarm-orchestrator",

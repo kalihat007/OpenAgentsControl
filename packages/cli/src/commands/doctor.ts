@@ -4,7 +4,8 @@ import semver from 'semver';
 
 import { readCliVersion } from '../lib/version.js';
 import { readManifest } from '../lib/manifest.js';
-import { readConfig } from '../lib/config.js';
+import { readConfig, isExpertMode, isAgentSwarmEnabled } from '../lib/config.js';
+import { getSwarmStatus } from '../lib/swarm.js';
 import { computeFileHash, hashesMatch } from '../lib/sha256.js';
 import { detectIdes, getIdeDisplayName, getIdeOutputFile } from '../lib/ide-detect.js';
 import { log, info, warn, error, success, dim, bold, setVerbose } from '../ui/logger.js';
@@ -117,6 +118,54 @@ const checkConfig = async (projectRoot: string): Promise<CheckResult> => {
       message: `.oac/config.json invalid — ${msg}`,
     };
   }
+};
+
+/** Check 3b: Expert mode is enabled by default. */
+const checkExpertMode = async (projectRoot: string): Promise<CheckResult> => {
+  const config = await readConfig(projectRoot);
+  if (config === null) {
+    return {
+      name: 'Expert mode',
+      status: 'warn',
+      message: 'No config found — expert mode defaults to true after running oac init',
+    };
+  }
+  if (isExpertMode(config)) {
+    return {
+      name: 'Expert mode',
+      status: 'ok',
+      message: 'Expert mode is enabled (default)',
+    };
+  }
+  return {
+    name: 'Expert mode',
+    status: 'warn',
+    message: 'Expert mode is disabled — set expertMode: true in .oac/config.json to enable',
+  };
+};
+
+/** Check 3c: Agent swarm is available when expert mode is on. */
+const checkAgentSwarm = async (projectRoot: string): Promise<CheckResult> => {
+  const config = await readConfig(projectRoot);
+  if (config === null) {
+    return {
+      name: 'Agent swarm',
+      status: 'warn',
+      message: 'No config found — swarm defaults to active after running oac init',
+    };
+  }
+  if (isAgentSwarmEnabled(config)) {
+    return {
+      name: 'Agent swarm',
+      status: 'ok',
+      message: getSwarmStatus(config),
+    };
+  }
+  return {
+    name: 'Agent swarm',
+    status: 'warn',
+    message: getSwarmStatus(config),
+  };
 };
 
 /** Check 4: .oac/manifest.json exists and is valid JSON. */
@@ -336,9 +385,11 @@ export async function doctorCommand(options: DoctorOptions): Promise<void> {
   const projectRoot = process.cwd();
 
   // Run all independent async checks in parallel for speed
-  const [configResult, manifestResult, filesResult, modifiedResult, ideResults, versionResult] =
+  const [configResult, expertModeResult, agentSwarmResult, manifestResult, filesResult, modifiedResult, ideResults, versionResult] =
     await Promise.all([
       checkConfig(projectRoot),
+      checkExpertMode(projectRoot),
+      checkAgentSwarm(projectRoot),
       checkManifest(projectRoot),
       checkFilesOnDisk(projectRoot),
       checkModifiedFiles(projectRoot),
@@ -349,6 +400,8 @@ export async function doctorCommand(options: DoctorOptions): Promise<void> {
   const allResults: CheckResult[] = [
     checkBunVersion(), // synchronous — call directly
     configResult,
+    expertModeResult,
+    agentSwarmResult,
     manifestResult,
     filesResult,
     modifiedResult,

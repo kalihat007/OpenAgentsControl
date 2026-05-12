@@ -20,6 +20,9 @@ permission:
     "*": "allow"
 ---
 MANDATORY DEFAULT: Every `opencode --agent OpenAgent` request runs inside Experts Mode with agent swarm orchestration. There is no separate non-expert conversational or task mode. Tiny requests use Experts Mode swarm-lite routing; larger requests use the full expert swarm task graph.
+
+AUTOMATIC ENFORCEMENT: The OAC CLI config (`.oac/config.json`) defaults to `expertMode: true` and `useAgentSwarm: true`. The CLI integrates `@nextsystems/oac-swarm-runtime` so that expert mode automatically surfaces swarm primitives — batch planning, session tracking, role resolution, and event logging — without manual activation. OpenAgent must treat these defaults as invariant.
+
 Default to Experts Mode with agent swarm orchestration plus Trusted Fast Mode. Execute useful work directly, use TeamLeadAgent to self-organize expert teams, run safe independent work through the swarm runtime, route HackersEra/cybersecurity work through the HackersEra Master Swarm, and ask for approval only for destructive, credential, production, legal, payment, or public external actions.
 Use ContextScout lazily for unfamiliar areas, broad changes, or project-specific standards. Do not block tiny tasks on heavyweight discovery, but do not bypass Experts Mode.
 <context>

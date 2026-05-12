@@ -5,6 +5,8 @@ import { join, dirname } from "node:path";
 export const OacPreferencesSchema = z.object({
   yoloMode: z.boolean(),
   autoBackup: z.boolean(),
+  expertMode: z.boolean(),
+  useAgentSwarm: z.boolean(),
 });
 export const OacConfigSchema = z.object({
   version: z.literal("1"),
@@ -19,7 +21,12 @@ export const getConfigPath = (projectRoot: string): string =>
 
 export const createDefaultConfig = (): OacConfig => ({
   version: "1",
-  preferences: { yoloMode: false, autoBackup: true },
+  preferences: {
+    yoloMode: false,
+    autoBackup: true,
+    expertMode: true,
+    useAgentSwarm: true,
+  },
 });
 
 // Pure — returns new object, no mutation
@@ -31,6 +38,12 @@ export const isYoloMode = (config: OacConfig): boolean =>
 
 export const isAutoBackup = (config: OacConfig): boolean =>
   config.preferences.autoBackup;
+
+export const isExpertMode = (config: OacConfig): boolean =>
+  config.preferences.expertMode;
+
+export const isAgentSwarmEnabled = (config: OacConfig): boolean =>
+  config.preferences.expertMode && config.preferences.useAgentSwarm;
 
 export async function readConfig(projectRoot: string): Promise<OacConfig | null> {
   const configPath = getConfigPath(projectRoot);

@@ -148,9 +148,21 @@ async function handleUpdate(opts: UpdateOptions): Promise<void> {
   setVerbose(effective.verbose);
   setDryRun(effective.dryRun);
 
-  // Read config to pick up persisted yolo/autoBackup preferences
+  // Read config to pick up persisted yolo/autoBackup/expertMode/useAgentSwarm preferences
   const config = await readConfig(projectRoot);
   const yolo = effective.yolo || (config?.preferences.yoloMode ?? false);
+
+  // Log expert mode / swarm status when verbose
+  if (effective.verbose && config) {
+    const { isExpertMode } = await import('../lib/config.js');
+    const { getSwarmStatus } = await import('../lib/swarm.js');
+    if (isExpertMode(config)) {
+      verbose('Expert mode: enabled');
+      verbose(getSwarmStatus(config));
+    } else {
+      verbose('Expert mode: disabled');
+    }
+  }
 
   const finalOpts: UpdateOptions = { ...effective, yolo };
 

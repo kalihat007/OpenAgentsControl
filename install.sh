@@ -65,6 +65,7 @@ else
 fi
 
 INSTALL_DIR="${OPENCODE_INSTALL_DIR:-.opencode}"  # Allow override via environment variable
+DEFAULT_PROFILE="${OPENCODE_DEFAULT_PROFILE:-advanced}"  # Default quick/non-interactive profile
 TEMP_DIR="/tmp/opencode-installer-$$"
 
 # Cleanup temp directory on exit (success or failure)
@@ -506,10 +507,10 @@ check_interactive_mode() {
         echo "Or use a profile directly:"
         echo ""
         echo -e "${CYAN}# Quick install with profile${NC}"
-        echo "curl -fsSL ${RAW_URL}/install.sh | bash -s developer"
+        echo "curl -fsSL ${RAW_URL}/install.sh | bash -s advanced"
         echo ""
         echo "Available profiles: essential, developer, business, full, advanced"
-        echo "Recommended: developer (OpenAgent Experts Mode + agent swarm defaults)"
+        echo "Recommended/default: advanced (complete OpenAgent Experts Mode + agent swarm setup)"
         echo ""
         cleanup_and_exit 1
     fi
@@ -544,7 +545,8 @@ show_install_location_menu() {
     echo ""
     echo "  4) Back / Exit"
     echo ""
-    read -r -p "Enter your choice [1-4]: " location_choice
+    read -r -p "Enter your choice [1-4, default 1]: " location_choice
+    location_choice="${location_choice:-1}"
     
     case $location_choice in
         1)
@@ -610,12 +612,13 @@ show_main_menu() {
     print_header
     
     echo -e "${BOLD}Choose installation mode:${NC}\n"
-    echo "  1) Quick Install (Choose a profile)"
+    echo "  1) Quick Install (Advanced profile — OpenAgent Experts Mode + Agent Swarm)"
     echo "  2) Custom Install (Pick individual components)"
     echo "  3) List Available Components"
     echo "  4) Exit"
     echo ""
-    read -r -p "Enter your choice [1-4]: " choice
+    read -r -p "Enter your choice [1-4, default 1]: " choice
+    choice="${choice:-1}"
     
     case $choice in
         1) INSTALL_MODE="profile" ;;
@@ -691,13 +694,20 @@ show_profile_menu() {
     adv_desc=$(jq_exec '.profiles.advanced.description' "$TEMP_DIR/registry.json")
     local adv_count
     adv_count=$(jq_exec '.profiles.advanced.components | length' "$TEMP_DIR/registry.json")
-    echo -e "  ${YELLOW}5) ${adv_name}${NC}"
+    local adv_badge
+    adv_badge=$(jq_exec '.profiles.advanced.badge // ""' "$TEMP_DIR/registry.json")
+    if [ -n "$adv_badge" ]; then
+        echo -e "  ${YELLOW}5) ${adv_name} ${GREEN}[${adv_badge}]${NC}"
+    else
+        echo -e "  ${YELLOW}5) ${adv_name}${NC}"
+    fi
     echo -e "     ${adv_desc}"
     echo -e "     Components: ${adv_count}\n"
     
     echo "  6) Back to main menu"
     echo ""
-    read -r -p "Enter your choice [1-6]: " choice
+    read -r -p "Enter your choice [1-6, default 5]: " choice
+    choice="${choice:-5}"
     
     case $choice in
         1) PROFILE="essential" ;;
@@ -923,7 +933,7 @@ show_installation_preview() {
     
     # Skip confirmation if profile was provided via command line
     if [ "$NON_INTERACTIVE" = true ]; then
-        print_info "Installing automatically (profile specified)..."
+        print_info "Installing automatically (profile selected)..."
         perform_installation
     else
         read -r -p "Proceed with installation? [Y/n]: " confirm
@@ -1402,10 +1412,10 @@ main() {
                 echo ""
                 echo -e "${BOLD}Profiles:${NC}"
                 echo "  essential, --essential    Minimal OpenAgent setup with Experts Mode defaults"
-                echo "  developer, --developer    Recommended coding setup with Experts Mode + swarm"
+                echo "  developer, --developer    Coding setup with Experts Mode + swarm"
                 echo "  business, --business      Business/revenue/investor workflows under OpenAgent"
                 echo "  full, --full              Everything under one OpenAgent entrypoint"
-                echo "  advanced, --advanced      Full system plus meta/system-builder components"
+                echo "  advanced, --advanced      Recommended/default full system plus meta/system-builder components"
                 echo ""
                 echo -e "${BOLD}Options:${NC}"
                 echo "  --install-dir PATH        Custom installation directory"
@@ -1423,23 +1433,23 @@ main() {
                 echo "  $0"
                 echo ""
                 echo -e "  ${CYAN}# Quick install with default location (.opencode/)${NC}"
-                echo "  $0 developer"
+                echo "  $0 advanced"
                 echo ""
                 echo -e "  ${CYAN}# Install to global location (Linux/macOS)${NC}"
-                echo "  $0 developer --install-dir ~/.config/opencode"
+                echo "  $0 advanced --install-dir ~/.config/opencode"
                 echo ""
                 echo -e "  ${CYAN}# Install to global location (Windows Git Bash)${NC}"
-                echo "  $0 developer --install-dir ~/.config/opencode"
+                echo "  $0 advanced --install-dir ~/.config/opencode"
                 echo ""
                 echo -e "  ${CYAN}# Install to custom location${NC}"
                 echo "  $0 essential --install-dir ~/my-agents"
                 echo ""
                 echo -e "  ${CYAN}# Using environment variable${NC}"
                 echo "  export OPENCODE_INSTALL_DIR=~/.config/opencode"
-                echo "  $0 developer"
+                echo "  $0 advanced"
                 echo ""
                 echo -e "  ${CYAN}# Install from URL (non-interactive)${NC}"
-                echo "  curl -fsSL ${RAW_URL}/install.sh | bash -s developer"
+                echo "  curl -fsSL ${RAW_URL}/install.sh | bash -s advanced"
                 echo ""
                 echo -e "${BOLD}Platform Support:${NC}"
                 echo "  ✓ Linux (bash 3.2+)"
@@ -1474,6 +1484,13 @@ main() {
     check_bash_version
     check_dependencies
     fetch_registry
+
+    if [ -z "$PROFILE" ] && [ ! -t 0 ]; then
+        INSTALL_MODE="profile"
+        PROFILE="$DEFAULT_PROFILE"
+        NON_INTERACTIVE=true
+        print_info "No profile provided in non-interactive mode; defaulting to ${PROFILE}"
+    fi
     
     if [ -n "$PROFILE" ]; then
         # Non-interactive mode (compatible with bash 3.2+)
@@ -1506,7 +1523,33 @@ main() {
         show_main_menu
         
         if [ "$INSTALL_MODE" = "profile" ]; then
-            show_profile_menu
+            # Always install the advanced profile (5th option)
+            PROFILE="advanced"
+            print_info "Auto-selecting advanced profile (OpenAgent Experts Mode + Agent Swarm)..."
+            
+            SELECTED_COMPONENTS=()
+            local temp_file="$TEMP_DIR/components.tmp"
+            get_profile_components "$PROFILE" > "$temp_file"
+            while IFS= read -r component; do
+                [ -n "$component" ] && SELECTED_COMPONENTS+=("$component")
+            done < "$temp_file"
+
+            expand_selected_components
+
+            # Resolve dependencies for profile installs
+            print_step "Resolving dependencies..."
+            local original_count=${#SELECTED_COMPONENTS[@]}
+            for comp in "${SELECTED_COMPONENTS[@]}"; do
+                resolve_dependencies "$comp"
+            done
+
+            local new_count=${#SELECTED_COMPONENTS[@]}
+            if [ "$new_count" -gt "$original_count" ]; then
+                local added=$((new_count - original_count))
+                print_info "Added $added dependencies"
+            fi
+
+            show_installation_preview
         elif [ "$INSTALL_MODE" = "custom" ]; then
             show_custom_menu
         fi

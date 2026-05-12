@@ -14,7 +14,7 @@ The OpenAgents Control installer is designed to work across multiple platforms a
 curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash
 
 # Profile-based installation
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s core
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 ```
 
 **Dependencies:**
@@ -35,7 +35,7 @@ brew install curl jq
 curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash
 
 # Profile-based installation
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s developer
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 ```
 
 **Dependencies:**
@@ -93,7 +93,7 @@ apk add curl jq bash
 curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash
 
 # Profile-based installation
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s full
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 ```
 
 #### Option 2: WSL (Windows Subsystem for Linux)
@@ -233,7 +233,7 @@ The test checks:
 **Solution:** Update to the latest installer:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh > install.sh
-bash install.sh developer
+bash install.sh advanced
 ```
 
 **Technical Details:**
@@ -247,7 +247,7 @@ bash install.sh developer
 **Solution:** This should be fixed in the latest version. Update the installer:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh > install.sh
-bash install.sh developer
+bash install.sh advanced
 ```
 
 ### "curl: command not found"
@@ -335,10 +335,10 @@ git clone https://github.com/kalihat007/OpenAgentsControl.git
 cd OpenAgentsControl
 
 # 2a. Install locally (recommended - in your project directory):
-bash install.sh developer
+bash install.sh advanced
 
 # 2b. Or install globally (available to all projects):
-bash install.sh developer --install-dir ~/.config/opencode
+bash install.sh advanced --install-dir ~/.config/opencode
 
 # 2c. Or copy manually to global location:
 mkdir -p ~/.config/opencode

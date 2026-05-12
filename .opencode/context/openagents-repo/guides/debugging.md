@@ -222,13 +222,13 @@ File exists: .opencode/agent/core/openagent.md
 **Fix**:
 ```bash
 # Skip all collisions
-./install.sh developer --skip-existing
+./install.sh advanced --skip-existing
 
 # Overwrite all collisions
-./install.sh developer --force
+./install.sh advanced --force
 
 # Backup all collisions
-./install.sh developer --backup
+./install.sh advanced --backup
 ```
 
 ---

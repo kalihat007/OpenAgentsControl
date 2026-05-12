@@ -12,8 +12,8 @@ Complete guide to installing OpenAgents Control components using the automated i
 # Interactive mode - choose components
 bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh)
 
-# Quick install with profile
-bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) developer
+# Quick install with the default Advanced profile
+bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) advanced
 ```
 
 Installs to `.opencode/` in your current directory.
@@ -51,23 +51,22 @@ curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/i
 
 ### 2. Profile-Based Installation (Quick Setup)
 
-Install a pre-configured set of components:
+Install a pre-configured set of components. For HackersEra/OpenAgent usage, use **Advanced** by default.
 
 ```bash
+# Advanced - Recommended default complete system with OpenAgent Experts Mode + swarm
+bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) advanced
+
 # Essential - Minimal setup with core agents
 bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) essential
 
-# Developer - Code-focused development tools
-bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) developer
+# Developer - Narrow code-focused development tools
 
 # Business - Content and business-focused tools
 bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) business
 
 # Full - Everything except system-builder
 bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) full
-
-# Advanced - Complete system with all components
-bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) advanced
 ```
 
 ### 3. Download & Run (For Offline or Repeated Use)
@@ -83,7 +82,7 @@ chmod +x install.sh
 ./install.sh
 
 # Or with a profile
-./install.sh developer
+./install.sh advanced
 ```
 
 ---
@@ -101,10 +100,10 @@ Installs to `.opencode/` in your current directory.
 
 ```bash
 # Default behavior
-./install.sh developer
+./install.sh advanced
 
 # Explicit local installation
-./install.sh developer --install-dir .opencode
+./install.sh advanced --install-dir .opencode
 ```
 
 **Result:**
@@ -129,11 +128,11 @@ Installs to `~/.config/opencode/` for user-wide access.
 
 ```bash
 # Using CLI argument
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 
 # Using environment variable
 export OPENCODE_INSTALL_DIR=~/.config/opencode
-./install.sh developer
+./install.sh advanced
 ```
 
 **Result:**
@@ -157,13 +156,13 @@ Install to any directory you choose.
 
 ```bash
 # Custom path
-./install.sh developer --install-dir ~/my-agents
+./install.sh advanced --install-dir ~/my-agents
 
 # Path with spaces (use quotes)
-./install.sh developer --install-dir "~/My Agents/opencode"
+./install.sh advanced --install-dir "~/My Agents/opencode"
 
 # Absolute path
-./install.sh developer --install-dir /opt/opencode
+./install.sh advanced --install-dir /opt/opencode
 ```
 
 ---
@@ -176,10 +175,10 @@ Use `--install-dir` to specify installation directory:
 
 ```bash
 # Format 1: --install-dir=PATH
-./install.sh developer --install-dir=~/.config/opencode
+./install.sh advanced --install-dir=~/.config/opencode
 
 # Format 2: --install-dir PATH
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 ```
 
 ### Environment Variable
@@ -191,7 +190,7 @@ Set `OPENCODE_INSTALL_DIR` for persistent configuration:
 export OPENCODE_INSTALL_DIR=~/.config/opencode
 
 # Now all installations use this directory
-./install.sh developer
+./install.sh advanced
 ./install.sh --list
 ```
 
@@ -239,49 +238,49 @@ Installation directory is determined by (highest to lowest priority):
 
 ```bash
 # Standard installation
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s developer
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 
 # Global installation
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 
 # System-wide (requires sudo)
-sudo ./install.sh developer --install-dir /opt/opencode
+sudo ./install.sh advanced --install-dir /opt/opencode
 ```
 
 ### macOS
 
 ```bash
 # Standard installation
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s developer
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 
 # Global installation (XDG standard)
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 
 # macOS native location
-./install.sh developer --install-dir ~/Library/Application\ Support/opencode
+./install.sh advanced --install-dir ~/Library/Application\ Support/opencode
 ```
 
 ### Windows (Git Bash)
 
 ```bash
 # Standard installation
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s developer
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 
 # Global installation
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 
 # Windows-style path
-./install.sh developer --install-dir C:/Users/username/opencode
+./install.sh advanced --install-dir C:/Users/username/opencode
 ```
 
 ### Windows (WSL)
 
 ```bash
 # Same as Linux
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s developer
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 
 # Global installation
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 ```
 
 ---
@@ -310,7 +309,8 @@ Components:
 - Development tools and contexts
 
 ```bash
-./install.sh developer
+# HackersEra/OpenAgent default remains Advanced.
+./install.sh advanced
 ```
 
 ### Business
@@ -421,7 +421,7 @@ When installing into an existing directory, the installer detects file collision
 
 ```bash
 # Run installer again with "Skip existing" option
-./install.sh developer
+./install.sh advanced
 
 # When prompted for collision handling, choose:
 # Option 1: Skip existing
@@ -433,7 +433,7 @@ Only new components will be installed, existing files remain unchanged.
 
 ```bash
 # Run installer with "Backup & overwrite" option
-./install.sh developer
+./install.sh advanced
 
 # When prompted for collision handling, choose:
 # Option 3: Backup & overwrite
@@ -448,7 +448,7 @@ All components updated, backup created for safety.
 mv .opencode ~/.config/opencode
 
 # Option 2: Fresh install to new location
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 ```
 
 ---
@@ -481,11 +481,11 @@ sudo pacman -S curl jq
 **Solution:**
 ```bash
 # Install to a directory you own
-./install.sh developer --install-dir ~/opencode
+./install.sh advanced --install-dir ~/opencode
 
 # Or create parent directory first
 mkdir -p ~/.config
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 ```
 
 ### Path with Spaces
@@ -495,7 +495,7 @@ mkdir -p ~/.config
 **Solution:**
 ```bash
 # Quote the path
-./install.sh developer --install-dir "~/My Agents/opencode"
+./install.sh advanced --install-dir "~/My Agents/opencode"
 ```
 
 ### Parent Directory Doesn't Exist
@@ -508,7 +508,7 @@ mkdir -p ~/.config
 mkdir -p ~/.config
 
 # Then install
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 ```
 
 ### Bash Version Too Old
@@ -550,7 +550,7 @@ sudo apt-get update && sudo apt-get upgrade bash
 ```bash
 # Install from a different branch
 export OPENCODE_BRANCH=develop
-./install.sh developer
+./install.sh advanced
 ```
 
 ### Non-Interactive Installation (CI/CD)
@@ -561,7 +561,7 @@ export OPENCODE_INSTALL_DIR=/opt/opencode
 export OPENCODE_BRANCH=main
 
 # Run with profile (no prompts)
-./install.sh developer
+./install.sh advanced
 ```
 
 ---
@@ -580,7 +580,7 @@ export OPENCODE_BRANCH=main
 ### Example 1: First-Time Local Installation
 ```bash
 # Download and run installer
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s developer
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 
 # Result: Installs to .opencode/ in current directory
 ```
@@ -588,7 +588,7 @@ curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/i
 ### Example 2: Global Installation for All Projects
 ```bash
 # Install to global config directory
-./install.sh developer --install-dir ~/.config/opencode
+./install.sh advanced --install-dir ~/.config/opencode
 
 # Now available to all projects
 ```
@@ -605,7 +605,7 @@ sudo ./install.sh full --install-dir /opt/opencode
 ```bash
 # Project A - local installation
 cd ~/projects/project-a
-./install.sh developer
+./install.sh advanced
 
 # Project B - different local installation
 cd ~/projects/project-b
@@ -617,7 +617,7 @@ cd ~/projects/project-b
 ### Example 5: Update Existing Installation
 ```bash
 # Run installer again
-./install.sh developer
+./install.sh advanced
 
 # Choose "Skip existing" to add only new components
 # Or "Backup & overwrite" to update everything

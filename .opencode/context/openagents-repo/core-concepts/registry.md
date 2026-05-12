@@ -282,14 +282,14 @@ The install system uses the registry to distribute components.
 REGISTRY_URL="file://$(pwd)/registry.json" ./install.sh --list
 
 # Install with local registry
-REGISTRY_URL="file://$(pwd)/registry.json" ./install.sh developer
+REGISTRY_URL="file://$(pwd)/registry.json" ./install.sh advanced
 ```
 
 ### Remote Registry (Production)
 
 ```bash
 # Install from GitHub
-./install.sh developer
+./install.sh advanced
 
 # List available components
 ./install.sh --list
@@ -355,13 +355,13 @@ File exists: .opencode/agent/core/openagent.md
 
 ```bash
 # Skip all collisions
-./install.sh developer --skip-existing
+./install.sh advanced --skip-existing
 
 # Overwrite all collisions
-./install.sh developer --force
+./install.sh advanced --force
 
 # Backup all collisions
-./install.sh developer --backup
+./install.sh advanced --backup
 ```
 
 ---

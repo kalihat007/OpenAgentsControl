@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@openagents-control/compatibility-layer": "*",
+    "@nextsystems/oac-swarm-runtime": "*",
     "commander": "^12.0.0",
     "chalk": "^5.3.0",
     "ora": "^8.0.0",

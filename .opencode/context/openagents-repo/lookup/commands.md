@@ -89,13 +89,13 @@ REGISTRY_URL="file://$(pwd)/registry.json" ./install.sh --list
 
 ```bash
 # Skip existing files
-./install.sh developer --skip-existing
+./install.sh advanced --skip-existing
 
 # Overwrite all
-./install.sh developer --force
+./install.sh advanced --force
 
 # Backup existing
-./install.sh developer --backup
+./install.sh advanced --backup
 ```
 
 ---
@@ -362,7 +362,7 @@ cat registry.json | jq '.components.agents | length'
 REGISTRY_URL="file://$(pwd)/registry.json" ./install.sh --list
 
 # Install locally
-REGISTRY_URL="file://$(pwd)/registry.json" ./install.sh developer
+REGISTRY_URL="file://$(pwd)/registry.json" ./install.sh advanced
 ```
 
 ---

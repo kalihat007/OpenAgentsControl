@@ -193,7 +193,7 @@ Read the full design: [Controlled Agent Swarm System](./docs/features/agent-swar
 **One command:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s developer
 ```
 
 <sub>The installer will set up OpenCode CLI if you don't have it yet.</sub>
@@ -532,7 +532,7 @@ ContextScout discovers context files using a **local-first** approach:
 
 | Setup | Core files from | Project intelligence from |
 |-------|----------------|--------------------------|
-| Local install (`bash install.sh advanced`) | `.opencode/context/core/` | `.opencode/context/project-intelligence/` |
+| Local install (`bash install.sh developer`) | `.opencode/context/core/` | `.opencode/context/project-intelligence/` |
 | Global install + `/add-context` | `~/.config/opencode/context/core/` | `.opencode/context/project-intelligence/` |
 | Both local and global | `.opencode/context/core/` (local wins) | `.opencode/context/project-intelligence/` |
 

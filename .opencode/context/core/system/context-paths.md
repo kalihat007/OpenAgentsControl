@@ -51,7 +51,7 @@ The installer supports `OPENCODE_INSTALL_DIR` to override the install location:
 
 ```bash
 export OPENCODE_INSTALL_DIR=~/custom/path
-bash install.sh developer
+bash install.sh advanced
 ```
 
 OpenCode itself supports `OPENCODE_CONFIG_DIR` for a custom config directory (see [OpenCode docs](https://opencode.ai/docs/config/)). If set, context files in that directory are loaded alongside global and local configs.
@@ -69,12 +69,12 @@ This copies `project-intelligence/` from global (`~/.config/opencode/context/`) 
 ## Common Scenarios
 
 ### Scenario 1: Everything Local (Development / Repo Maintainer)
-- OAC installed locally via `bash install.sh developer`
+- OAC installed locally via `bash install.sh advanced`
 - All context in `.opencode/context/`
 - Committed to git, team shares everything
 
 ### Scenario 2: Global Install + Local Project Intelligence
-- OAC installed globally via `bash install.sh developer --install-dir ~/.config/opencode`
+- OAC installed globally via `bash install.sh advanced --install-dir ~/.config/opencode`
 - Core standards at `~/.config/opencode/context/core/`
 - Run `/add-context` in project → creates `.opencode/context/project-intelligence/` locally
 - Project intelligence committed to git, core standards come from global
