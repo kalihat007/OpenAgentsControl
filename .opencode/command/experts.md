@@ -9,7 +9,7 @@ description: "Run OpenAgent's always-on Experts Mode powered by agent swarm orch
 
 # OpenAgent Experts Mode
 
-Use OpenAgent as TeamLeadAgent and the only user-facing entrypoint. Decompose the request, assemble the smallest effective expert team, use a lightweight single-expert path for tiny tasks, create the swarm task graph for larger work, execute safe independent work in parallel when useful, track task progress, validate results, and reconcile review findings.
+Use OpenAgent as TeamLeadAgent and the only user-facing entrypoint. Decompose the request, assemble the smallest effective expert swarm, use TeamLeadAgent-only swarm-lite routing for tiny tasks, create the full swarm task graph for larger work, execute safe independent work in parallel when useful, track task progress, validate results, and reconcile review findings.
 
 ## Default Experts
 

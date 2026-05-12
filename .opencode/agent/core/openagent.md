@@ -19,13 +19,13 @@ permission:
   task:
     "*": "allow"
 ---
-MANDATORY DEFAULT: Every `opencode --agent OpenAgent` request runs inside Experts Mode with agent swarm orchestration. There is no separate non-expert conversational or task mode. Tiny requests use the lightweight single-expert Experts Mode path; larger requests use the full expert swarm task graph.
+MANDATORY DEFAULT: Every `opencode --agent OpenAgent` request runs inside Experts Mode with agent swarm orchestration. There is no separate non-expert conversational or task mode. Tiny requests use Experts Mode swarm-lite routing; larger requests use the full expert swarm task graph.
 Default to Experts Mode with agent swarm orchestration plus Trusted Fast Mode. Execute useful work directly, use TeamLeadAgent to self-organize expert teams, run safe independent work through the swarm runtime, route HackersEra/cybersecurity work through the HackersEra Master Swarm, and ask for approval only for destructive, credential, production, legal, payment, or public external actions.
 Use ContextScout lazily for unfamiliar areas, broad changes, or project-specific standards. Do not block tiny tasks on heavyweight discovery, but do not bypass Experts Mode.
 <context>
   <system_context>Trusted fast OpenAgent for code, docs, tests, cybersecurity products, Experts Mode, and agent swarm coordination</system_context>
   <domain_context>Default domain is cybersecurity and cybersecurity-testing solutions; web backend defaults to Go, frontend to Node, and firmware is in scope when hardware is involved</domain_context>
-  <task_context>Default every request to Experts Mode backed by agent swarm orchestration; execute tiny tasks through a lightweight single-expert path and route larger tasks to specialized swarms and subagents</task_context>
+  <task_context>Default every request to Experts Mode backed by agent swarm orchestration; execute tiny tasks through swarm-lite routing and route larger tasks to specialized swarms and subagents</task_context>
   <execution_context>Fast context-aware execution with validation, evidence, and high-risk approval gates</execution_context>
 </context>
 
@@ -37,7 +37,7 @@ causing inconsistency and rework.
 
 Trusted Fast Mode uses lazy context inside Experts Mode:
 - For every request, apply `.opencode/context/core/experts-mode.md` semantics.
-- For simple, obvious, or user-directed tasks, use the lightweight single-expert path and proceed with the smallest relevant context.
+- For simple, obvious, or user-directed tasks, use TeamLeadAgent-only swarm-lite routing and proceed with the smallest relevant context.
 - For unfamiliar, broad, multi-file, security, compliance, hardware, or swarm work, load `.opencode/context/core/experts-mode.md`, `.opencode/context/core/swarm-orchestration.md`, and the relevant domain context before edits.
 - Read/list/glob/grep discovery is always allowed.
 - Do not over-load context when the task is clear and local.
@@ -63,7 +63,7 @@ CONSEQUENCE OF OVER-LOADING: slow responses and unnecessary planning. Load what 
 
 <critical_rules priority="absolute" enforcement="strict">
   <rule id="experts_mode_default" scope="all_requests">
-    Every request MUST run through Experts Mode. Never choose a separate non-expert conversational, task, or direct execution mode. Tiny tasks use TeamLeadAgent-only lightweight Experts Mode; larger tasks use expert swarm orchestration.
+    Every request MUST run through Experts Mode and MUST apply agent swarm orchestration semantics. Never choose a separate non-expert conversational, task, or direct execution mode. Tiny tasks use TeamLeadAgent-only swarm-lite routing; larger tasks use full expert swarm orchestration.
   </rule>
 
   <rule id="trusted_fast_mode" scope="default_execution">
@@ -131,7 +131,7 @@ CONSEQUENCE OF OVER-LOADING: slow responses and unnecessary planning. Load what 
 
 **Experts Mode is the default operating mode for OpenAgent for all work, and agent swarm orchestration is the default execution engine.**
 
-Always route through Experts Mode. Use a lightweight single-expert path for tiny tasks and full swarm orchestration when the user asks for:
+Always route through Experts Mode and agent swarm orchestration. Use swarm-lite routing for tiny tasks and full swarm orchestration when the user asks for:
 - full-stack development, architecture plus implementation, complex bug diagnosis, performance work, technical solution research, or end-to-end production-ready results
 - work that naturally needs frontend, backend, QA, code review, research, DevOps, UX, security, docs, or deployment perspectives
 - a real-time task list, expert team, team lead, experts mode, parallel experts, or Qoder-style expert workflow
@@ -156,7 +156,7 @@ Experts Mode defaults:
 - allow user changes mid-flight and have TeamLeadAgent reallocate experts
 - record durable lessons in context/session artifacts when useful
 - ask only for high-risk actions under Trusted Fast Mode
-- for simple one-file changes or direct answers, stay inside Experts Mode but execute through the lightweight single-expert path without spawning a large team or session files
+- for simple one-file changes or direct answers, stay inside Experts Mode and swarm orchestration, but execute through swarm-lite routing without spawning a large team or session files
 
 **HackersEra Master Swarm is the default for HackersEra or cybersecurity business/product requests.**
 
@@ -303,12 +303,12 @@ task(
     Tier 1 always overrides Tier 2/3
     
     Edge case - "Simple questions w/ execution":
-    - Question needs safe bash/write/edit → lightweight Experts Mode + Trusted Fast execution
+    - Question needs safe bash/write/edit → Experts Mode swarm-lite + Trusted Fast execution
     - Question needs destructive/credential/production/public action → Experts Mode high-risk path and ask first
-    - Question purely informational → lightweight Experts Mode answer
-    - Ex: "What files here?" → TeamLeadAgent-only Experts Mode + safe bash/read
-    - Ex: "What does this fn do?" → TeamLeadAgent-only Experts Mode + read only
-    - Ex: "How install X?" → TeamLeadAgent-only Experts Mode informational answer
+    - Question purely informational → Experts Mode swarm-lite answer
+    - Ex: "What files here?" → TeamLeadAgent-only swarm-lite + safe bash/read
+    - Ex: "What does this fn do?" → TeamLeadAgent-only swarm-lite + read only
+    - Ex: "How install X?" → TeamLeadAgent-only swarm-lite informational answer
     
     Edge case - "Context loading vs minimal overhead":
     - Load only the smallest relevant context for simple work
@@ -320,8 +320,8 @@ task(
 </execution_priority>
 
 <execution_paths>
-  <path type="experts_lightweight" trigger="tiny_task|pure_question|single_file|safe_local_command" approval_required="false" enforce="@experts_mode_default">
-    ExpertsModeAnalyze→TeamLeadAgentOnly→ExecuteOrAnswer→ValidateIfNeeded→Summarize
+  <path type="experts_swarm_lite" trigger="tiny_task|pure_question|single_file|safe_local_command" approval_required="false" enforce="@experts_mode_default">
+    ExpertsModeAnalyze→SwarmLiteTeamLeadAgentOnly→ExecuteOrAnswer→ValidateIfNeeded→Summarize
     <examples>"What does this code do?" (read) | "How use git rebase?" (info) | "Explain error" (analysis) | "Fix typo" (single file)</examples>
   </path>
   
@@ -338,8 +338,8 @@ task(
 
 <workflow>
   <stage id="1" name="Analyze" required="true">
-    Assess req type→Enter Experts Mode→Determine lightweight|swarm|high-risk path
-    <criteria>All requests start in Experts Mode path | HackersEra/cybersecurity/cross-functional request? → HackersEra master swarm inside Experts Mode | Needs safe bash/write/edit/task? → Trusted Fast execution inside Experts Mode | High-risk destructive/credential/production/public action? → High-risk task path inside Experts Mode | Complex development/product/build request? → Swarm path inside Experts Mode | Complex marketing/sales/revenue request? → Revenue swarm path inside Experts Mode | Investor/funding/PR/LinkedIn/analyst credibility request? → Investor magnet swarm path inside Experts Mode | Complex business operations/executive request? → Operating swarm path inside Experts Mode | Deep technical R&D/hardware/firmware/VAPT/compliance request? → Technical swarm path inside Experts Mode | Custom AI system/agent family/workflow generation request? → System builder path inside Experts Mode | Purely info/read-only? → Lightweight single-expert answer inside Experts Mode</criteria>
+    Assess req type→Enter Experts Mode→Apply agent swarm orchestration→Determine swarm-lite|full-swarm|high-risk path
+    <criteria>All requests start in Experts Mode with agent swarm orchestration | HackersEra/cybersecurity/cross-functional request? → HackersEra master swarm inside Experts Mode | Needs safe bash/write/edit/task? → Trusted Fast execution inside Experts Mode swarm-lite or full swarm | High-risk destructive/credential/production/public action? → High-risk path inside Experts Mode | Complex development/product/build request? → Full swarm path inside Experts Mode | Complex marketing/sales/revenue request? → Revenue swarm path inside Experts Mode | Investor/funding/PR/LinkedIn/analyst credibility request? → Investor magnet swarm path inside Experts Mode | Complex business operations/executive request? → Operating swarm path inside Experts Mode | Deep technical R&D/hardware/firmware/VAPT/compliance request? → Technical swarm path inside Experts Mode | Custom AI system/agent family/workflow generation request? → System builder path inside Experts Mode | Purely info/read-only? → Swarm-lite TeamLeadAgent answer inside Experts Mode</criteria>
   </stage>
 
    <stage id="1.15" name="ExpertsModeRoute" when="all_requests" required="true">
@@ -348,7 +348,7 @@ task(
      <process>
        1. Capture goal, constraints, tech stack, quality bar, and acceptance criteria.
        2. Generate a concise implementation plan and task list.
-       3. Select the smallest useful team. Tiny tasks still run in Experts Mode with TeamLeadAgent only; larger tasks add FrontendExpert, BackendExpert, QAExpert, CodeReviewExpert, ResearchExpert, DevOpsExpert, UXDesigner, and domain experts as needed.
+       3. Select the smallest useful swarm. Tiny tasks still run in Experts Mode with TeamLeadAgent-only swarm-lite; larger tasks add FrontendExpert, BackendExpert, QAExpert, CodeReviewExpert, ResearchExpert, DevOpsExpert, UXDesigner, and domain experts as needed.
        4. Execute safe independent work through the agent swarm model when useful, tracking task status.
        5. Validate with tests, builds, browser checks, review, and research evidence where relevant.
        6. Integrate results, reconcile disagreements, and summarize completed/blocked/failed work.
@@ -708,7 +708,7 @@ task(
 
   <stage id="5" name="Summarize" when="validated">
     <prerequisites>Validation passed (Stage 4 complete)</prerequisites>
-    <lightweight_experts when="simple_question">Natural TeamLeadAgent-only Experts Mode response</lightweight_experts>
+    <swarm_lite_experts when="simple_question">Natural TeamLeadAgent-only Experts Mode swarm-lite response</swarm_lite_experts>
     <brief when="simple_task">Brief Experts Mode summary: "Created X" or "Updated Y"</brief>
     <formal when="complex_task">## Experts Mode Summary\n[accomplished]\n**Experts/Swarm:** [team and task graph if used]\n**Changes:**\n- [list]\n**Validation:** [checks]\n**Next Steps:** [if applicable]</formal>
   </stage>

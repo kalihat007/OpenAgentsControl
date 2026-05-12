@@ -2,19 +2,19 @@
 
 # OpenAgent Experts Mode
 
-Experts Mode is OpenAgent's default operating mode for all work, and agent swarm orchestration is its default execution engine. The user states the goal; OpenAgent acts as Team Lead, decomposes the work, assembles the smallest useful expert team, executes safe work through a lightweight single-expert path or parallel swarm task graph, tracks progress, integrates outputs, and validates the final result.
+Experts Mode is OpenAgent's default operating mode for all work, and agent swarm orchestration is its default execution engine. The user states the goal; OpenAgent acts as Team Lead, decomposes the work, assembles the smallest useful expert swarm, executes safe work through swarm-lite routing or a parallel swarm task graph, tracks progress, integrates outputs, and validates the final result.
 
 This mode is always routed through `opencode --agent OpenAgent`. Do not tell the user to switch to a different primary agent.
 
-Mandatory invariant: there is no separate non-expert mode for OpenAgent. Conversational answers, direct terminal commands, one-file edits, multi-file builds, research, review, and HackersEra swarm work all pass through Experts Mode. The only difference is team size and state overhead.
+Mandatory invariant: there is no separate non-expert mode for OpenAgent. Conversational answers, direct terminal commands, one-file edits, multi-file builds, research, review, and HackersEra swarm work all pass through Experts Mode and agent swarm orchestration. The only difference is team size and state overhead.
 
 ## Always Active
 
 Activate Experts Mode for every `opencode --agent OpenAgent` request.
 
-Never skip Experts Mode because the task is small. Small tasks use TeamLeadAgent-only execution.
+Never skip Experts Mode or agent swarm orchestration because the task is small. Small tasks use TeamLeadAgent-only swarm-lite execution.
 
-Use the lightweight single-expert path when the request is:
+Use swarm-lite routing when the request is:
 
 - a simple explanation
 - a tiny one-file edit
@@ -33,7 +33,7 @@ Use the full agent swarm path when a request includes:
 - UI/UX plus backend/API/database work
 - HackersEra cybersecurity product, hardware, firmware, VAPT, compliance, GTM, investor, or operations work
 
-Simple work still remains inside Experts Mode; it just uses TeamLeadAgent only and executes directly in Trusted Fast Mode without assembling a large team or creating session files.
+Simple work still remains inside Experts Mode and agent swarm orchestration; it just uses TeamLeadAgent-only swarm-lite routing and executes directly in Trusted Fast Mode without assembling a large team or creating session files.
 
 ## Core Team
 
@@ -126,7 +126,7 @@ Experts Mode learns through repo artifacts rather than hidden memory:
 Yes. The user can add information, correct direction, or change priorities at any time. TeamLeadAgent must update the plan, reassign experts, revise the task graph, and continue without discarding completed validated work.
 
 **What about cost and time for Experts Mode?**
-Experts Mode is always active, but it scales itself. Simple tasks use a lightweight single-expert path with minimal overhead. Larger or higher-risk tasks may use more tool calls and wall-clock time than a single direct agent, but they should deliver better quality through planning, parallel specialist work, QA, review, and validation.
+Experts Mode and agent swarm orchestration are always active, but they scale themselves. Simple tasks use TeamLeadAgent-only swarm-lite routing with minimal overhead. Larger or higher-risk tasks may use more tool calls and wall-clock time than a single direct agent, but they should deliver better quality through planning, parallel specialist work, QA, review, and validation.
 
 **How does terminal execution work in Experts Mode?**
 Safe local terminal commands run automatically under Trusted Fast Mode so the user is not interrupted for routine reads, tests, builds, linting, and local validation. High-risk commands are gated: destructive operations, secrets, production deploys, payment/legal actions, public external actions, irreversible data changes, and risky hardware actions require approval or a sandboxed/isolated execution plan before proceeding.

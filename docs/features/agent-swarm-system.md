@@ -7,7 +7,7 @@ OpenAgents Control swarm mode turns the existing context-first agent system into
 OAC now has a formal swarm layer:
 
 - `OpenAgent` as the single user-facing entrypoint for swarm planning and execution
-- `core/experts-mode.md` always-on OpenAgent Team Lead workflow powered by agent swarm orchestration, with lightweight single-expert handling for tiny tasks and full dynamic experts for larger work
+- `core/experts-mode.md` always-on OpenAgent Team Lead workflow powered by agent swarm orchestration, with TeamLeadAgent-only swarm-lite routing for tiny tasks and full dynamic expert swarms for larger work
 - `SwarmOrchestrator` internal subagent for controlled swarm coordination
 - `core/hackersera-master-swarm.md` default OpenAgent routing standard for Trusted Fast Mode and HackersEra cybersecurity product/company workflows
 - `/swarm-plan`, `/swarm-run`, and `/swarm-status` commands
@@ -26,7 +26,7 @@ Swarm mode is powerful because it is constrained:
 
 - ContextScout discovers project reality before any plan.
 - OpenAgent runs in Trusted Fast Mode: safe local work executes directly, while destructive, credential, production, legal/payment, public external, and irreversible data actions require approval.
-- OpenAgent uses Experts Mode for all work; tiny tasks use a lightweight single-expert path, while larger tasks use TeamLeadAgent planning, dynamic experts, swarm task graphs, progress tracking, integration, and validation.
+- OpenAgent uses Experts Mode and agent swarm orchestration for all work; tiny tasks use TeamLeadAgent-only swarm-lite routing, while larger tasks use TeamLeadAgent planning, dynamic experts, swarm task graphs, progress tracking, integration, and validation.
 - HackersEra Master Swarm is the default cross-functional router for cybersecurity product, technical, revenue, investor, operations, support, compliance, and CEO requests.
 - OpenAgent uses scale-out organizational AI: it self-organizes the needed team, assigns roles dynamically, and distributes cognitive load across specialists.
 - Large deployments may target up to 100 subagents and hundreds to 1,500+ tool calls when task boundaries, runtime support, and validation capacity allow.
@@ -83,7 +83,7 @@ Swarm mode is powerful because it is constrained:
 | Question | OAC Answer |
 |----------|------------|
 | Can I modify requirements during execution? | Yes. Add information, correct direction, or change priorities at any time; TeamLeadAgent updates the plan, reallocates experts, revises the task graph, and continues from validated work. |
-| What about cost and time for Experts Mode? | Experts Mode is always on but scales itself. Tiny tasks use a lightweight single-expert path; larger tasks may use more tool calls but improve quality through planning, parallel specialists, QA, review, and validation. |
+| What about cost and time for Experts Mode? | Experts Mode and agent swarm orchestration are always on but scale themselves. Tiny tasks use TeamLeadAgent-only swarm-lite routing; larger tasks may use more tool calls but improve quality through planning, parallel specialists, QA, review, and validation. |
 | How does terminal execution work in Experts Mode? | Safe local commands run automatically. High-risk terminal actions require approval or a sandboxed/isolated execution plan before proceeding. |
 
 ## Runtime Model
@@ -92,7 +92,7 @@ Swarm mode is powerful because it is constrained:
 User request
   -> OpenAgent
   -> Experts Mode by default
-  -> Lightweight single-expert path for tiny work
+  -> Swarm-lite TeamLeadAgent path for tiny work
   -> Agent swarm task graph for larger work
   -> HackersEra Master Swarm when cybersecurity/HackersEra/cross-functional
   -> SwarmOrchestrator

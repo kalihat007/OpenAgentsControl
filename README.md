@@ -77,7 +77,7 @@ OpenAgent executes safe local work directly. It asks approval only for destructi
 OpenAgent acts like the CEO of a temporary expert organization. It dynamically assigns researchers, analysts, builders, reviewers, fact-checkers, and domain specialists, then reconciles disagreement instead of forcing one assistant to think through everything sequentially.
 
 **🧑‍💻 Experts Mode + Agent Swarm by Default**
-OpenAgent always starts in Experts Mode. For tiny work it uses a lightweight single-expert path; for larger work it becomes the Team Lead, creates a swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, runs safe work in parallel, validates the result, and records reusable lessons.
+OpenAgent always starts in Experts Mode and always applies agent swarm orchestration. For tiny work it uses TeamLeadAgent-only swarm-lite routing; for larger work it becomes the Team Lead, creates a full swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, runs safe work in parallel, validates the result, and records reusable lessons.
 
 **⚡ Token Efficient (MVI Principle)**  
 Minimal Viable Information design. Only load what's needed, when it's needed. Context files <200 lines, lazy loading, faster responses.
@@ -758,7 +758,7 @@ A: Smart pattern discovery agent. Finds relevant context files before code gener
 A: Yes. Add information, correct direction, or change priorities at any time. TeamLeadAgent updates the plan, reallocates experts, revises the swarm task graph, and continues from validated work.
 
 **Q: What about cost and time for Experts Mode?**
-A: Experts Mode is always on, but it scales itself. Tiny tasks use a lightweight single-expert path with minimal overhead. Larger tasks may use more tool calls, but improve quality through planning, parallel specialists, QA, review, and validation.
+A: Experts Mode and agent swarm orchestration are always on, but they scale themselves. Tiny tasks use TeamLeadAgent-only swarm-lite routing with minimal overhead. Larger tasks may use more tool calls, but improve quality through planning, parallel specialists, QA, review, and validation.
 
 **Q: How does terminal execution work in Experts Mode?**
 A: Safe local terminal commands run automatically for routine reads, tests, builds, linting, and local validation. High-risk terminal actions require approval or a sandboxed/isolated execution plan before proceeding.
