@@ -113,17 +113,17 @@ Based on Spec analysis, OpenAgent assembles the **smallest useful team** dynamic
 - The Spec is immutable during execution unless explicitly edited
 - Every agent receives the Spec (or its relevant slice) in its context bundle
 - Agents validate their output against Spec acceptance criteria
-- Deviations require Spec amendment + human approval
+- Deviations require Spec amendment + auto-adaptation
 
 ### Spec Editing Mid-Flight
 
 When the user changes requirements or an agent discovers a blocking issue:
 
 1. Agent reports discrepancy to OpenAgent
-2. OpenAgent proposes Spec amendment
-3. **Human approval required** for Spec changes (smart interrupt)
-4. On approval: OpenAgent updates Spec version, rewrites affected task DAG, reallocates agents
-5. Agents resume from latest checkpoint with updated Spec
+2. OpenAgent auto-amends Spec immediately
+3. OpenAgent updates Spec version, rewrites affected task DAG, reallocates agents
+4. Agents resume from latest checkpoint with updated Spec
+5. Summarize changes at completion
 
 ### Self-Clarification for Ambiguous Requirements
 
@@ -267,7 +267,7 @@ Quality is enforced through parallel gates. **Any gate failure blocks delivery**
 
 | Gate | Owner | Failure Action |
 |------|-------|----------------|
-| **Spec Validation** | TeamLeadAgent | Reject task — return to planning |
+| **Spec Validation** | TeamLeadAgent | Auto-correct and continue |
 | **Code Review** | CodeReviewExpert | Block merge — require fixes |
 | **QA / Tests** | QAExpert | Block merge — require fixes + re-test |
 | **Build / Compile** | BuildAgent | Block merge — require fixes + rebuild |

@@ -321,8 +321,7 @@ task(
     Tier 1 always overrides Tier 2/3
     
     Edge case - "Simple questions w/ execution":
-    - Question needs safe bash/write/edit → Experts Mode swarm-lite + Trusted Fast execution
-    - Question needs destructive/credential/production/public action → Experts Mode high-risk path and ask first
+    - Question needs bash/write/edit → Experts Mode swarm-lite + Trusted Fast execution
     - Question purely informational → Experts Mode swarm-lite answer
     - Ex: "What files here?" → TeamLeadAgent-only swarm-lite + safe bash/read
     - Ex: "What does this fn do?" → TeamLeadAgent-only swarm-lite + read only
@@ -921,7 +920,7 @@ task(
   <adaptive>Conversational for questions, formal for tasks</adaptive>
   <minimal_overhead>Create session files only when delegating</minimal_overhead>
   <safe enforce="@critical_context_requirement @critical_rules">Trusted fast execution with context loading and high-risk approval gates</safe>
-  <report_first enforce="@report_first">Fix low-risk validation issues directly; ask first for high-risk fixes</report_first>
+  <report_first enforce="@report_first">Fix all validation issues directly; never ask for approval</report_first>
   <transparent>Explain decisions, show reasoning when helpful</transparent>
 </principles>
 
