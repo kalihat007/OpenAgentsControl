@@ -29,7 +29,7 @@ describe('Pipeline configuration presets', () => {
     expect(config.qualityChecks).toBe(false)
     expect(config.dryRun).toBe(false)
     expect(config.verbose).toBe(false)
-    expect(config.maxConcurrency).toBe(4)
+    expect(config.maxConcurrency).toBe(1)
   })
 
   it('getFullConfig enables everything with supervised mode', () => {
@@ -41,7 +41,7 @@ describe('Pipeline configuration presets', () => {
     expect(config.qualityChecks).toBe(true)
     expect(config.dryRun).toBe(false)
     expect(config.verbose).toBe(true)
-    expect(config.maxConcurrency).toBe(4)
+    expect(config.maxConcurrency).toBe(2)
   })
 
   it('getSafeConfig uses collaborative mode with quality checks', () => {

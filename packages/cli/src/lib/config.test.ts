@@ -71,10 +71,10 @@ describe('createDefaultConfig', () => {
     expect(config.preferences.useAgentSwarm).toBe(true);
   });
 
-  // ✅ Positive: maxParallelAgents defaults to 4
-  test('maxParallelAgents defaults to 4', () => {
+  // ✅ Positive: maxParallelAgents defaults to 2
+  test('maxParallelAgents defaults to 2', () => {
     const config = createDefaultConfig();
-    expect(config.preferences.maxParallelAgents).toBe(4);
+    expect(config.preferences.maxParallelAgents).toBe(2);
   });
 
   // ✅ Positive: maxApiCallsPerSession defaults to 500
@@ -274,7 +274,7 @@ describe('readConfig / writeConfig', () => {
     expect(read?.preferences.autoBackup).toBe(true);
     expect(read?.preferences.expertMode).toBe(true);
     expect(read?.preferences.useAgentSwarm).toBe(true);
-    expect(read?.preferences.maxParallelAgents).toBe(4);
+    expect(read?.preferences.maxParallelAgents).toBe(2);
     expect(read?.preferences.maxApiCallsPerSession).toBe(500);
   });
 
@@ -415,10 +415,10 @@ describe('isAgentSwarmEnabled', () => {
 // ── getMaxParallelAgents ──────────────────────────────────────────────────────
 
 describe('getMaxParallelAgents', () => {
-  // ✅ Positive: returns default value (4)
-  test('returns default maxParallelAgents (4)', () => {
+  // ✅ Positive: returns default value (2)
+  test('returns default maxParallelAgents (2)', () => {
     const config = createDefaultConfig();
-    expect(getMaxParallelAgents(config)).toBe(4);
+    expect(getMaxParallelAgents(config)).toBe(2);
   });
 
   // ✅ Positive: returns overridden value

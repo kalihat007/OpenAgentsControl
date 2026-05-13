@@ -98,7 +98,7 @@ For bigger work, OAC now includes a controlled swarm layer:
 - **HackersEra Master Swarm** is the default routing layer for cybersecurity product, technical R&D, revenue, investor, operations, compliance, support, and CEO work.
 - **OpenAgent Swarm Mode** plans multi-agent work with dependencies, file ownership, and validation gates behind Experts Mode.
 - **Chunked ToDo execution** keeps large work fast by splitting broad goals into small specialist-owned chunks, syncing after each batch, and scheduling the next chunk set from the latest checkpoint.
-- **Scale-out architecture** targets up to 100 subagents and hundreds to 1,500+ tool calls for long-horizon deployments when the runtime, task boundaries, and validation capacity support it.
+- **Overload-safe scale-out** defaults to two parallel agents, uses small sequential chunks for large work, and expands only when the user raises the limit and the selected model is healthy.
 - **Dynamic role assignment** lets OpenAgent auto-hire the needed specialists instead of making the user manually choose every role.
 - **Lossless context management** preserves task graphs, module claims, contracts, incidents, checkpoints, artifacts, and evidence reports rather than relying only on compressed chat summaries.
 - **Self-organizing engineering teams** map work to PM, Architect, Tech Lead, frontend/backend/devops, QA, Security, Review, Docs, Integration, and Debug agents.
@@ -324,11 +324,21 @@ bash install.sh
 
 ### Keep Updated
 
+For existing installations, run the updater from the project where `.opencode/` is installed:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/update.sh | bash
 ```
 
-> Use `--install-dir PATH` if you installed to a custom location (e.g. `~/.config/opencode`).
+The updater refreshes existing OpenAgent files, creates `.opencode/opencode.json` when missing, preserves the user's selected OpenCode model, and updates the old default `maxParallelAgents: 4` to the overload-safe default of `2`.
+
+Use `--install-dir PATH` if you installed to a custom location:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/update.sh | bash -s -- --install-dir ~/.config/opencode
+```
+
+For a full reinstall or overwrite of every component, download `install.sh` and choose `Backup & overwrite` when prompted.
 
 ### Step 2: Start Building
 
@@ -734,7 +744,45 @@ Approve? [y/n]
 
 ### Model Configuration (Optional)
 
-**By default, all agents use your OpenCode default model.** Configure models per agent only if you want different agents to use different models.
+OAC installs `.opencode/opencode.json` with `OpenAgent` as the default agent and leaves model choice to the user-selected OpenCode model:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "OpenAgent"
+}
+```
+
+OpenAgent should not silently switch from Kimi, Claude, OpenAI, or any other model to a different provider. If you want to pin a model for a project, choose it explicitly in OpenCode:
+
+```bash
+opencode --agent OpenAgent --model provider/model-id
+```
+
+Or persist that explicit choice:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "OpenAgent",
+  "model": "provider/model-id",
+  "small_model": "provider/model-id"
+}
+```
+
+**Provider overload recovery:** `429 rate_limit_error` / `engine is currently overloaded` means the selected provider/model is at capacity before OpenAgent can respond. OpenAgent keeps the selected model, retries with backoff, reduces parallel work, and splits large coding tasks into smaller sequential expert steps. To change providers, pass a different model explicitly:
+
+```bash
+opencode --agent OpenAgent --model provider/model-id
+```
+
+**Install-time explicit model pin:**
+
+```bash
+OPENAGENT_MODEL=provider/model-id bash install.sh advanced
+```
+
+Configure models per agent only if you want different experts to use different models.
 
 **When to configure:**
 - You want faster agents to use cheaper models (e.g., Haiku/Flash)

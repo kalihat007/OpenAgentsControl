@@ -19,6 +19,7 @@
 #   OPENCODE_REPO_NAME                   # GitHub repo to pull from (default: OpenAgentsControl)
 #   OPENCODE_BRANCH                      # Branch to pull from (default: main)
 #   OPENCODE_RAW_URL                     # Full raw GitHub base URL override
+#   OPENAGENT_MODEL                      # Optional explicit model to pin when creating opencode.json
 #############################################################################
 
 set -e
@@ -56,6 +57,8 @@ REPO_NAME="${OPENCODE_REPO_NAME:-OpenAgentsControl}"
 REPO_SLUG="${REPO_OWNER}/${REPO_NAME}"
 BRANCH="${OPENCODE_BRANCH:-main}"
 REPO_URL="${OPENCODE_RAW_URL:-https://raw.githubusercontent.com/${REPO_SLUG}/${BRANCH}}"
+OPENAGENT_SELECTED_MODEL="${OPENAGENT_MODEL:-${OPENAGENT_DEFAULT_MODEL:-}}"
+OPENAGENT_SMALL_MODEL="${OPENAGENT_SMALL_MODEL:-$OPENAGENT_SELECTED_MODEL}"
 
 # CLI argument for custom install dir (overrides env var)
 CUSTOM_INSTALL_DIR=""
@@ -104,6 +107,7 @@ print_usage() {
     echo "Environment variables:"
     echo "  OPENCODE_INSTALL_DIR   Override the default installation directory"
     echo "  OPENCODE_BRANCH        Branch to pull updates from (default: main)"
+    echo "  OPENAGENT_MODEL        Optional explicit model to pin only when creating opencode.json"
     echo ""
     echo "Examples:"
     echo "  # Auto-detect and update"
@@ -343,6 +347,91 @@ update_all_components() {
     print_info "Updated: $updated file(s), failed: $failed file(s)"
 }
 
+ensure_opencode_config() {
+    local install_dir="$1"
+    local opencode_config="${install_dir}/opencode.json"
+    local legacy_config="${install_dir}/config.json"
+
+    if [ -f "$opencode_config" ]; then
+        print_info "OpenCode config already exists: ${opencode_config} (preserving user's selected model)"
+    else
+        if [ -n "$OPENAGENT_SELECTED_MODEL" ]; then
+            cat > "$opencode_config" << EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "default_agent": "OpenAgent",
+  "model": "${OPENAGENT_SELECTED_MODEL}",
+  "small_model": "${OPENAGENT_SMALL_MODEL}"
+}
+EOF
+            print_success "Created OpenCode config: ${opencode_config} (model: ${OPENAGENT_SELECTED_MODEL})"
+        else
+            cat > "$opencode_config" << EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "default_agent": "OpenAgent"
+}
+EOF
+            print_success "Created OpenCode config: ${opencode_config} (model stays user-selected)"
+        fi
+    fi
+
+    if [ -f "$legacy_config" ]; then
+        print_info "Legacy OpenAgent config already exists: ${legacy_config}"
+    else
+        cat > "$legacy_config" << EOF
+{
+  "agent": "OpenAgent"
+}
+EOF
+        print_success "Created legacy OpenAgent config: ${legacy_config}"
+    fi
+}
+
+ensure_oac_config() {
+    local install_dir="$1"
+    local base_name
+    base_name="$(basename "$install_dir")"
+
+    if [ "$base_name" != ".opencode" ]; then
+        print_info "Skipping project .oac config update for non-local install directory: ${install_dir}"
+        return 0
+    fi
+
+    local project_root
+    project_root="$(dirname "$install_dir")"
+    local oac_dir="${project_root}/.oac"
+    local oac_config="${oac_dir}/config.json"
+
+    if [ ! -f "$oac_config" ]; then
+        mkdir -p "$oac_dir"
+        cat > "$oac_config" << 'EOF'
+{
+  "version": "1",
+  "preferences": {
+    "yoloMode": false,
+    "autoBackup": true,
+    "expertMode": true,
+    "useAgentSwarm": true,
+    "maxParallelAgents": 2,
+    "maxApiCallsPerSession": 500
+  }
+}
+EOF
+        print_success "Created OAC config: ${oac_config} (maxParallelAgents=2)"
+        return 0
+    fi
+
+    if grep -q '"maxParallelAgents"[[:space:]]*:[[:space:]]*4' "$oac_config"; then
+        local tmp_file="${oac_config}.tmp.$$"
+        sed 's/"maxParallelAgents"[[:space:]]*:[[:space:]]*4/"maxParallelAgents": 2/' "$oac_config" > "$tmp_file"
+        mv "$tmp_file" "$oac_config"
+        print_success "Updated OAC config: maxParallelAgents 4 → 2"
+    else
+        print_info "OAC config already customized or current: ${oac_config}"
+    fi
+}
+
 #############################################################################
 # Argument Parsing
 #############################################################################
@@ -419,6 +508,11 @@ main() {
     print_step "Updating components..."
 
     update_all_components "$install_dir"
+
+    print_step "Ensuring latest OpenAgent runtime config..."
+
+    ensure_opencode_config "$install_dir"
+    ensure_oac_config "$install_dir"
 
     if [ "$WITH_CLAUDE" = true ]; then
         install_claude_integration

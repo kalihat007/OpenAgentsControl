@@ -176,7 +176,7 @@ const checkApiLimits = async (projectRoot: string): Promise<CheckResult> => {
     return {
       name: 'API limits',
       status: 'warn',
-      message: 'No config found — defaults to maxParallelAgents=4, maxApiCallsPerSession=500',
+      message: 'No config found — defaults to maxParallelAgents=2, maxApiCallsPerSession=500',
     };
   }
   const maxParallel = config.preferences.maxParallelAgents;
@@ -190,11 +190,11 @@ const checkApiLimits = async (projectRoot: string): Promise<CheckResult> => {
     };
   }
 
-  if (maxParallel > 10) {
+  if (maxParallel > 4) {
     return {
       name: 'API limits',
       status: 'warn',
-      message: `maxParallelAgents=${maxParallel} is high — may overload API/model requests`,
+      message: `maxParallelAgents=${maxParallel} is high — may overload API/model requests on the selected model`,
     };
   }
 

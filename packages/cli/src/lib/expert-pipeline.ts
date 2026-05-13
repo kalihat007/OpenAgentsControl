@@ -50,6 +50,7 @@ import {
   loadCustomExperts,
   type ExpertDefinition,
 } from './expert-definitions.js'
+import { DEFAULT_MAX_PARALLEL_AGENTS } from './config.js'
 import {
   createInteractiveSession,
   reachGate,
@@ -130,7 +131,7 @@ export function getQuickConfig(): PipelineConfig {
     qualityChecks: false,
     dryRun: false,
     verbose: false,
-    maxConcurrency: 4,
+    maxConcurrency: 1,
   }
 }
 
@@ -143,7 +144,7 @@ export function getFullConfig(): PipelineConfig {
     qualityChecks: true,
     dryRun: false,
     verbose: true,
-    maxConcurrency: 4,
+    maxConcurrency: DEFAULT_MAX_PARALLEL_AGENTS,
   }
 }
 
@@ -156,7 +157,7 @@ export function getSafeConfig(): PipelineConfig {
     qualityChecks: true,
     dryRun: false,
     verbose: false,
-    maxConcurrency: 2,
+    maxConcurrency: DEFAULT_MAX_PARALLEL_AGENTS,
   }
 }
 

@@ -20,6 +20,7 @@ import {
   type SubTask,
   type TaskDependency,
 } from './task-decomposer.js'
+import { DEFAULT_MAX_PARALLEL_AGENTS } from './config.js'
 
 const log = createLogger('swarm-executor')
 import type {
@@ -199,19 +200,19 @@ export function planExecution(
   log.debug('Creating swarm session', {
     sessionId,
     taskCount: tasks.length,
-    maxConcurrency: options.maxConcurrency ?? 4,
+    maxConcurrency: options.maxConcurrency ?? DEFAULT_MAX_PARALLEL_AGENTS,
   })
 
   const session = createSwarmSession({
     id: sessionId,
     objective: routerResult.objective,
     tasks,
-    maxConcurrency: options.maxConcurrency ?? 4,
+    maxConcurrency: options.maxConcurrency ?? DEFAULT_MAX_PARALLEL_AGENTS,
     createdAt,
   })
 
   const schedulerResult = planSwarmBatches(tasks, {
-    maxConcurrency: options.maxConcurrency ?? 4,
+    maxConcurrency: options.maxConcurrency ?? DEFAULT_MAX_PARALLEL_AGENTS,
   })
 
   log.debug('Execution plan ready', {

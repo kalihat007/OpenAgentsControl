@@ -39,7 +39,7 @@ TechLeadAgent is always included for coordination. Domain specialists are added 
 The OAC CLI config (`.oac/config.json`) now defaults to:
 - `expertMode: true`
 - `useAgentSwarm: true`
-- `maxParallelAgents: 4`
+- `maxParallelAgents: 2`
 - `maxApiCallsPerSession: 500`
 
 These defaults are enforced automatically on `oac init`. Expert mode and agent swarm orchestration are always active unless the user explicitly disables them in config.
@@ -48,7 +48,7 @@ These defaults are enforced automatically on `oac init`. Expert mode and agent s
 
 Expert mode and agent swarm MUST NOT overload API requests or model token budgets:
 
-- **Max parallel agents**: Default is 4. Never exceed this ceiling unless the user explicitly raises it in `.oac/config.json`.
+- **Max parallel agents**: Default is 2. Never exceed this ceiling unless the user explicitly raises it in `.oac/config.json`.
 - **Max API calls per session**: Default is 500. Track cumulative tool calls and stop before hitting the limit. Report usage: `"This swarm used ~X tool calls."`
 - **Intelligent batching**: Group independent tasks into the smallest number of parallel batches. Do not spawn agents for work that can be done sequentially without penalty.
 - **Sequential large-task default**: For larger agentic coding work, split the objective into small subtasks and run them sequence-by-sequence unless the dependencies, file ownership, and provider capacity clearly support safe parallelism.
@@ -56,7 +56,8 @@ Expert mode and agent swarm MUST NOT overload API requests or model token budget
 - **Swarm-lite by default**: For tiny tasks (1-3 files, <30min), use TechLeadAgent-only execution. Do not spawn OpenFrontendSpecialist, BackendDeveloperAgent, TestEngineer, CodeReviewer, ExternalScout, and OpenDevopsSpecialist for trivial work.
 - **Estimate before executing**: Before launching a full swarm, give the user an API usage estimate: `"This plan will use ~X tool calls across Y agents."`
 - **Sequential fallback**: When validation is failing, recovery must converge first — do not add more parallel agents to a broken pipeline.
-- **Provider overload fallback**: If a model provider returns rate-limit or overload errors, reduce prompt/tool scope, continue with the next smallest sequential chunk, and only widen the swarm after the provider is healthy again.
+- **Model loyalty**: Use the user's selected OpenCode model exactly as selected. Never silently switch from Kimi, Claude, OpenAI, or any other provider/model to a fallback model.
+- **Provider overload recovery**: If the selected model returns rate-limit or overload errors, pause, retry the same selected model with backoff, reduce prompt/tool scope, drop to one sequential chunk at a time, and only widen the swarm after the provider is healthy again. Ask the user before changing models.
 
 Use swarm-lite routing when the request is:
 

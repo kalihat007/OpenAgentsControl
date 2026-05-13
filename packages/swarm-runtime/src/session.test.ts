@@ -48,13 +48,13 @@ describe("createSwarmSession", () => {
     expect(session.createdAt <= after).toBe(true);
   });
 
-  test("defaults maxConcurrency to 4", () => {
+  test("defaults maxConcurrency to 2", () => {
     const session = createSwarmSession({
       id: "sess-1",
       objective: "test",
       tasks: [],
     });
-    expect(session.maxConcurrency).toBe(4);
+    expect(session.maxConcurrency).toBe(2);
   });
 
   test("uses provided maxConcurrency", () => {

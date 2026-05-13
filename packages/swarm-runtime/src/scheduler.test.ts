@@ -410,13 +410,13 @@ describe("planSwarmBatches", () => {
     }
   });
 
-  test("default maxConcurrency is 4", () => {
+  test("default maxConcurrency is 2", () => {
     const tasks = Array.from({ length: 6 }, (_, i) =>
       makeTask({ id: `t-${i}`, writes: [`file-${i}.ts`] }),
     );
     const result = planSwarmBatches(tasks);
-    expect(result.batches[0]!.tasks).toHaveLength(4);
-    expect(result.batches[0]!.blockedTaskIds).toHaveLength(2);
+    expect(result.batches[0]!.tasks).toHaveLength(2);
+    expect(result.batches[0]!.blockedTaskIds).toHaveLength(4);
   });
 
   test("diamond dependency graph produces correct batch ordering", () => {

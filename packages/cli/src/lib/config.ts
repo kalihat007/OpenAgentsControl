@@ -18,6 +18,8 @@ export const OacConfigSchema = z.object({
 export type OacPreferences = z.infer<typeof OacPreferencesSchema>;
 export type OacConfig = z.infer<typeof OacConfigSchema>;
 
+export const DEFAULT_MAX_PARALLEL_AGENTS = 2;
+
 export const getConfigPath = (projectRoot: string): string =>
   join(projectRoot, ".oac", "config.json");
 
@@ -28,7 +30,7 @@ export const createDefaultConfig = (): OacConfig => ({
     autoBackup: true,
     expertMode: true,
     useAgentSwarm: true,
-    maxParallelAgents: 4,
+    maxParallelAgents: DEFAULT_MAX_PARALLEL_AGENTS,
     maxApiCallsPerSession: 500,
   },
 });

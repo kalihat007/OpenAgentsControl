@@ -66,6 +66,8 @@ fi
 
 INSTALL_DIR="${OPENCODE_INSTALL_DIR:-.opencode}"  # Allow override via environment variable
 DEFAULT_PROFILE="${OPENCODE_DEFAULT_PROFILE:-advanced}"  # Default quick/non-interactive profile
+OPENAGENT_SELECTED_MODEL="${OPENAGENT_MODEL:-${OPENAGENT_DEFAULT_MODEL:-}}"
+OPENAGENT_SMALL_MODEL="${OPENAGENT_SMALL_MODEL:-$OPENAGENT_SELECTED_MODEL}"
 TEMP_DIR="/tmp/opencode-installer-$$"
 
 # Cleanup temp directory on exit (success or failure)
@@ -1373,7 +1375,7 @@ create_oac_config() {
     "autoBackup": true,
     "expertMode": true,
     "useAgentSwarm": true,
-    "maxParallelAgents": 4,
+    "maxParallelAgents": 2,
     "maxApiCallsPerSession": 500
   }
 }
@@ -1382,19 +1384,55 @@ EOF
 }
 
 create_opencode_config() {
-    local opencode_config=".opencode/config.json"
-    
+    local opencode_dir=".opencode"
+    local opencode_config="${opencode_dir}/opencode.json"
+    local legacy_config="${opencode_dir}/config.json"
+
+    mkdir -p "$opencode_dir"
+
     if [ -f "$opencode_config" ]; then
         print_info "OpenCode config already exists: ${opencode_config}"
-        return 0
+    else
+        if [ -n "$OPENAGENT_SELECTED_MODEL" ]; then
+            cat > "$opencode_config" << EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "default_agent": "OpenAgent",
+  "model": "${OPENAGENT_SELECTED_MODEL}",
+  "small_model": "${OPENAGENT_SMALL_MODEL}"
+}
+EOF
+            print_success "Created OpenCode config: ${opencode_config} (default agent: OpenAgent, model: ${OPENAGENT_SELECTED_MODEL})"
+        else
+            cat > "$opencode_config" << EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "default_agent": "OpenAgent"
+}
+EOF
+            print_success "Created OpenCode config: ${opencode_config} (default agent: OpenAgent; model: user-selected OpenCode default)"
+        fi
     fi
-    
-    cat > "$opencode_config" << 'EOF'
+
+    if [ -f "$legacy_config" ]; then
+        print_info "OAC legacy OpenCode config already exists: ${legacy_config}"
+    else
+        if [ -n "$OPENAGENT_SELECTED_MODEL" ]; then
+            cat > "$legacy_config" << EOF
+{
+  "agent": "OpenAgent",
+  "model": "${OPENAGENT_SELECTED_MODEL}"
+}
+EOF
+        else
+            cat > "$legacy_config" << EOF
 {
   "agent": "OpenAgent"
 }
 EOF
-    print_success "Created OpenCode config: ${opencode_config} (default agent: OpenAgent)"
+        fi
+        print_success "Created OAC legacy config: ${legacy_config}"
+    fi
 }
 
 #############################################################################
@@ -1424,12 +1462,19 @@ show_post_install() {
     echo "${step_num}. Start using OpenCode agents:"
     echo -e "   ${CYAN}opencode${NC}"
     echo "   (OpenAgent is the default agent; Experts Mode + Agent Swarm are active by default)"
+    echo "   If a provider is overloaded, retry the same selected model after a pause or choose another model explicitly:"
+    echo -e "   ${CYAN}opencode --agent OpenAgent --model <provider/model>${NC}"
     echo ""
     
     # Show installation location info
     print_info "Installation directory: ${CYAN}${INSTALL_DIR}${NC}"
     print_info "OAC config: ${CYAN}.oac/config.json${NC} (expertMode + useAgentSwarm enabled)"
-    print_info "OpenCode config: ${CYAN}.opencode/config.json${NC} (default agent: OpenAgent)"
+    if [ -n "$OPENAGENT_SELECTED_MODEL" ]; then
+        print_info "OpenCode config: ${CYAN}.opencode/opencode.json${NC} (default agent: OpenAgent, model: ${OPENAGENT_SELECTED_MODEL})"
+    else
+        print_info "OpenCode config: ${CYAN}.opencode/opencode.json${NC} (default agent: OpenAgent; model stays user-selected)"
+    fi
+    print_info "OAC legacy config: ${CYAN}.opencode/config.json${NC} (OpenAgent compatibility metadata)"
     
     # Check for backup directories
     local has_backup=0
@@ -1583,6 +1628,10 @@ main() {
                 echo -e "${BOLD}Environment Variables:${NC}"
                 echo "  OPENCODE_INSTALL_DIR      Installation directory"
                 echo "  OPENCODE_BRANCH           Git branch to install from (default: main)"
+                echo "  OPENAGENT_MODEL           Optional explicit model to pin in .opencode/opencode.json"
+                echo "                            (default: unset; use the user's OpenCode-selected model)"
+                echo "  OPENAGENT_SMALL_MODEL     Optional small model for lightweight OpenCode tasks"
+                echo "                            (default: same as OPENAGENT_MODEL when set)"
                 echo ""
                 echo -e "${BOLD}Examples:${NC}"
                 echo ""
@@ -1607,6 +1656,9 @@ main() {
                 echo -e "  ${CYAN}# Using environment variable${NC}"
                 echo "  export OPENCODE_INSTALL_DIR=~/.config/opencode"
                 echo "  $0 advanced"
+                echo ""
+                echo -e "  ${CYAN}# Install with a custom default model${NC}"
+                echo "  OPENAGENT_MODEL=provider/model-id $0 advanced"
                 echo ""
                 echo -e "  ${CYAN}# Install from URL (non-interactive)${NC}"
                 echo "  curl -fsSL ${RAW_URL}/install.sh | bash -s advanced"

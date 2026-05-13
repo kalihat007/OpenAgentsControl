@@ -7,7 +7,7 @@ import type {
   SwarmTask,
 } from "./types.js";
 
-const DEFAULT_MAX_CONCURRENCY = 4;
+const DEFAULT_MAX_CONCURRENCY = 2;
 
 export interface SwarmTaskChunkInput {
   id: string;

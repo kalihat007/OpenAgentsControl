@@ -12,7 +12,7 @@ export function createSwarmSession(input: {
     id: input.id,
     objective: input.objective,
     createdAt,
-    maxConcurrency: input.maxConcurrency ?? 4,
+    maxConcurrency: input.maxConcurrency ?? 2,
     tasks: input.tasks,
     moduleClaims: [],
     contracts: [],

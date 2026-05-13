@@ -37,6 +37,7 @@ import {
 import { CommandUsageError } from '../lib/errors.js'
 import { createLogger } from '../lib/logger.js'
 import type { InteractiveMode } from '../lib/interactive-mode.js'
+import { DEFAULT_MAX_PARALLEL_AGENTS } from '../lib/config.js'
 
 const cmdLog = createLogger('cmd:experts')
 
@@ -423,7 +424,7 @@ export function registerExpertsCommand(program: Command): void {
     .option('--quality', 'Enable quality checks on results', false)
     .option('--no-save', 'Do not persist plan/run artifacts under .oac/runs')
     .option('--verbose', 'Show expert descriptions, keywords, and event logs', false)
-    .option('--concurrency <n>', 'Max parallel tasks per batch', (v) => parseInt(v, 10), 4)
+    .option('--concurrency <n>', 'Max parallel tasks per batch', (v) => parseInt(v, 10), DEFAULT_MAX_PARALLEL_AGENTS)
     .addHelpText(
       'after',
       `
@@ -454,7 +455,7 @@ Examples:
         list: Boolean(opts['list']),
         save: opts['save'] !== false,
         verbose: Boolean(opts['verbose']),
-        concurrency: typeof opts['concurrency'] === 'number' && Number.isFinite(opts['concurrency']) ? opts['concurrency'] : 4,
+        concurrency: typeof opts['concurrency'] === 'number' && Number.isFinite(opts['concurrency']) ? opts['concurrency'] : DEFAULT_MAX_PARALLEL_AGENTS,
         decompose: opts['decompose'] !== false,
         mode,
         full: Boolean(opts['full']),

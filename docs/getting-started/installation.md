@@ -431,6 +431,22 @@ Only new components will be installed, existing files remain unchanged.
 
 ### Update All Components
 
+For an existing install, use the updater from the project where `.opencode/` is installed:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/update.sh | bash
+```
+
+The updater refreshes existing files, creates `.opencode/opencode.json` if missing, preserves the user's selected OpenCode model, and moves old default swarm parallelism from `4` to `2`.
+
+For custom install locations:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/update.sh | bash -s -- --install-dir ~/.config/opencode
+```
+
+For a full overwrite:
+
 ```bash
 # Run installer with "Backup & overwrite" option
 ./install.sh advanced
