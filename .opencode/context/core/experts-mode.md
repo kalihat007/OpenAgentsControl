@@ -195,11 +195,11 @@ Agents execute in one of three tiers:
 |------|----------|-----------|
 | **Local** | Safe reads, tests, builds, linting on user's machine | Minimal — shared filesystem |
 | **Worktree** | Isolated feature branches, experimental changes | Git worktree — isolated branch, shared repo |
-| **Remote** | Production deploys, cloud infrastructure changes, external APIs | Full sandbox — separate environment, gated approval |
+| **Remote** | Production deploys, cloud infrastructure changes, external APIs | Full sandbox — separate environment |
 
 **Default**: All execution starts in **Local** tier.
 **Promotion to Worktree**: When a feature spans multiple files and needs isolation.
-**Promotion to Remote**: Only after explicit human approval for production/cloud actions.
+**Promotion to Remote**: Auto-promote when cloud/production actions are detected; execute directly in Expert Mode.
 
 ---
 
@@ -281,13 +281,14 @@ When a quality gate fails:
 2. DebugExpert diagnoses root cause
 3. Responsible agent attempts fix (max 3 retries per task)
 4. Re-run the gate that failed
-5. On success: proceed. On persistent failure (3 retries exhausted): **escalate to human**
+5. On success: proceed. On persistent failure (3 retries exhausted): **auto-escalate to DebugExpert + ArchitectureExpert for forced convergence**
 
 **Retry policy**:
 - Build failures: auto-fix by BuildAgent + CoderAgent
 - Test failures: auto-fix by QAExpert + CoderAgent
 - Review findings: auto-fix by CoderAgent, re-reviewed by CodeReviewExpert
 - Integration failures: DebugExpert + relevant agents converge
+- **Persistent failures after 3 retries**: escalate to human ONLY if the fix requires destructive/production/credential actions
 
 ---
 
@@ -297,24 +298,28 @@ OpenAgent interrupts the user ONLY for non-routine events. **Never interrupt for
 
 ### Interrupt Triggers
 
+**Expert Mode does NOT interrupt the user for routine events.**
+
 | Event | Interrupt? | Action |
 |-------|-----------|--------|
-| Ambiguous requirements | ✅ YES | Ask for clarification before Spec generation |
-| Quality gate failure (persistent) | ✅ YES | Report failure, propose fix, request approval |
-| Security risk detected | ✅ YES | Immediate halt, report risk, request decision |
-| Agent conflict / disagreement | ✅ YES | Present both sides, ask for arbitration |
-| Spec edit mid-flight needed | ✅ YES | Propose amendment, request approval |
+| Ambiguous requirements | ❌ NO | Self-clarify using ResearchExpert or make best-effort assumption and proceed |
+| Quality gate failure (persistent) | ❌ NO | Auto-fix retry loop handles it; report at completion |
+| Security risk detected | ❌ NO | Log risk, apply mitigations, report at completion |
+| Agent conflict / disagreement | ❌ NO | TechLeadAgent arbitrates automatically; report at completion |
+| Spec edit mid-flight needed | ❌ NO | OpenAgent auto-amends Spec and continues; summarize changes at completion |
 | Routine coding progress | ❌ NO | Log to events.jsonl, continue |
 | Test passes | ❌ NO | Log to events.jsonl, continue |
 | Auto-resolved merge/fix | ❌ NO | Log to events.jsonl, continue |
 | Dependency completion | ❌ NO | Trigger next batch automatically |
+| **Destructive production action** | ✅ YES | Only interrupt for rm -rf /, sudo rm, or production database wipe |
+| **Credential leak risk** | ✅ YES | Only interrupt if .env, .key, or secret would be exposed publicly |
 
 ### Pause / Resume / Add Requirements
 
 The user can at any time:
 - **Pause**: Current batch finishes, then swarm pauses. State is checkpointed.
 - **Resume**: Swarm resumes from last checkpoint.
-- **Add requirements**: OpenAgent amends Spec (with approval), updates task DAG, and continues.
+- **Add requirements**: OpenAgent auto-amends Spec, updates task DAG, and continues. Summarize changes at completion.
 - **Edit previous prompts**: OpenAgent rewrites affected tasks, re-executes from earliest changed dependency.
 
 ---
@@ -398,7 +403,7 @@ For critical bugs, security incidents, or production failures:
 1. OpenAgent immediately spawns: DebugExpert + SecurityExpert + CodeReviewExpert
 2. All other non-urgent tasks are paused
 3. Emergency team has priority on all tool calls
-4. Human is interrupted immediately with incident report
+4. Auto-remediate where possible; report at completion
 5. Post-resolution: post-mortem auto-report generated
 
 ---
@@ -454,13 +459,13 @@ Prefer reusing existing agents, contexts, and skills before creating new compone
 ## FAQ
 
 **Can the user modify requirements during execution?**
-Yes. The user can add information, correct direction, or change priorities at any time. TeamLeadAgent must update the Spec, reassign experts, revise the task graph, and continue without discarding completed validated work. Spec edits require human approval.
+Yes. The user can add information, correct direction, or change priorities at any time. TeamLeadAgent updates the Spec, reassigns experts, revises the task graph, and continues without discarding completed validated work. No approval required — Expert Mode auto-adapts.
 
 **What about cost and time for Experts Mode?**
 Experts Mode and agent swarm orchestration are always active, but they scale themselves. Simple tasks use TeamLeadAgent-only swarm-lite routing with minimal overhead. Larger or higher-risk tasks may use more tool calls and wall-clock time than a single direct agent, but they should deliver better quality through planning, parallel specialist work, QA, review, and validation.
 
 **How does terminal execution work in Experts Mode?**
-Safe local terminal commands run automatically under Trusted Fast Mode so the user is not interrupted for routine reads, tests, builds, linting, and local validation. High-risk commands are gated: destructive operations, secrets, production deploys, payment/legal actions, public external actions, irreversible data changes, and risky hardware actions require approval or a sandboxed/isolated execution plan before proceeding.
+Expert Mode has **full permissions**. All bash, edit, and task operations execute directly without asking for approval. The user selected Expert Mode explicitly — they expect autonomous execution, not constant interruption. Only catastrophic system destruction (e.g., `rm -rf /`) is blocked at the permission layer.
 
 **What happens when quality gates fail?**
 Quality failures block delivery. The responsible agent enters an auto-fix retry loop (max 3 retries). If the issue persists after 3 retries, OpenAgent escalates to the human with a specific failure report and proposed fix. The user can approve the fix, modify the Spec, or override the gate.

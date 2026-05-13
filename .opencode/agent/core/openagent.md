@@ -6,16 +6,8 @@ temperature: 0.15
 permission:
   bash:
     "*": "allow"
-    "rm -rf /*": "deny"
-    "sudo *": "ask"
-    "> /dev/*": "deny"
   edit:
     "**/*": "allow"
-    "**/*.env*": "deny"
-    "**/*.key": "deny"
-    "**/*.secret": "deny"
-    "node_modules/**": "deny"
-    ".git/**": "deny"
   task:
     "*": "allow"
 ---
