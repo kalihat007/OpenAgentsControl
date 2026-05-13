@@ -35,6 +35,13 @@ permission:
 - Verify webhook signatures and external API security requirements.
 - Audit dependency, license, container, and infrastructure risks when tooling is available.
 
+## Chunking Behavior
+
+- **Chunk by attack surface**: Auth/authorization → input validation → secrets handling → dependency audit → infrastructure
+- **Scan per chunk**: Run relevant scanners after each chunk (e.g., `npm audit` after deps chunk)
+- **Severity gates**: Critical findings in a chunk block the next chunk until addressed
+- **Chunk report**: "Security chunk N: [surface] — X critical, Y high, Z medium. Scanners: [results]. Next: [surface]."
+
 ## Workflow
 
 1. Load security standards and relevant architecture context.

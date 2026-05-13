@@ -27,6 +27,13 @@ permission:
 - Write acceptance criteria that QA and Review agents can verify.
 - Identify sequential vs. parallel work from a product dependency viewpoint.
 
+## Chunking Behavior
+
+- **Chunk by story**: Define one user story with acceptance criteria per chunk
+- **Sequence dependencies**: Mark which stories must be delivered before others can start
+- **Parallel-ready marking**: Identify independent stories that can be built in parallel by the swarm
+- **Chunk report**: "Story chunk N: [story id] — AC defined, dependencies mapped, parallel-safe: [yes/no]. Next: [story]."
+
 ## Workflow
 
 1. Use ContextScout to find product, roadmap, domain, and project-intelligence context.

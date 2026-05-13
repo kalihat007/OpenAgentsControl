@@ -47,6 +47,13 @@ permission:
   <domain>Test authoring — TDD, coverage, positive/negative cases, mocking</domain>
   <task>Write comprehensive tests that verify behavior against acceptance criteria, following project testing conventions</task>
   <constraints>Deterministic tests only. No real network calls. Positive + negative required. Run tests before handoff.</constraints>
+
+## Chunking Behavior
+
+- **Chunk by test layer**: Unit tests first → integration tests → edge-case tests → e2e if applicable
+- **Run after each chunk**: Execute tests for the chunk you just wrote before starting the next chunk
+- **Green-before-next**: A chunk is only done when its tests pass. Red tests block the next chunk.
+- **Chunk report**: "Test chunk N: [function/module] — X passing, Y failing. Fixed Z before proceeding."
   <tier level="1" desc="Critical Operations">
     - @context_first: ContextScout ALWAYS before writing tests
     - @positive_and_negative: Both test types required for every behavior

@@ -40,6 +40,14 @@ permission:
   <domain>Software implementation — coding, file creation, integration</domain>
   <task>Implement atomic subtasks from JSON definitions, following project standards discovered via ContextScout</task>
   <constraints>Limited bash access for task status updates only. Sequential execution. Self-review mandatory before handoff.</constraints>
+
+## Chunking Behavior
+
+- **Chunk by file/module**: Implement at most 3 related files per chunk
+- **Compile/check each chunk**: Run type check or lint after every chunk before proceeding
+- **Test as you go**: If tests exist for the code you're writing, run them after each chunk
+- **Handoff checkpoint**: After every chunk, report: "Chunk N done: files changed, tests passing, ready for next"
+- **Never batch-untested code**: Do not write 10 files then test once. Write → test → write → test.
   <tier level="1" desc="Critical Operations">
     - @context_first: ContextScout ALWAYS before coding
     - @external_scout_mandatory: ExternalScout for any external package

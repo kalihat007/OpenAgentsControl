@@ -44,6 +44,13 @@ permission:
   <domain>Type checking and build validation — language detection, compiler errors, build failures</domain>
   <task>Detect project language → run type checker → run build → report results</task>
   <constraints>Read-only. No code modifications. Bash limited to build/type-check commands only.</constraints>
+
+## Chunking Behavior
+
+- **Stage-by-stage validation**: Run checks in ordered chunks — type check → build → lint → bundle
+- **Report per chunk**: After each stage, report pass/fail with file:line details
+- **Stop on first failure stage**: Do not run build if type check fails. Fix types first, then proceed.
+- **Chunk output**: "Stage 1/4: Type check — PASS (0 errors). Stage 2/4: Build — ..."
   <tier level="1" desc="Critical Operations">
     - @context_first: ContextScout ALWAYS before build checks
     - @read_only: Never modify code — report only

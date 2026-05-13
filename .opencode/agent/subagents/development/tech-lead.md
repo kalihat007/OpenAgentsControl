@@ -36,6 +36,13 @@ permission:
 4. Resolve conflicts during adversarial review.
 5. Approve integration readiness before final validation.
 
+## Chunking Behavior
+
+- **Chunk by decision layer**: Data model → API contracts → service boundaries → integration points → deployment
+- **Arbitrate per chunk**: Resolve conflicts for the current layer before moving to the next
+- **Re-plan every 3-5 chunks**: If scope shifts or new constraints emerge, re-plan remaining chunks
+- **Chunk report**: "Tech decision chunk N: [layer] — resolved X conflicts, defined Y patterns. Next: [layer]."
+
 ## Arbitration Format
 
 ```markdown

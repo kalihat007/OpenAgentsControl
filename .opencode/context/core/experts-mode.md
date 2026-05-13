@@ -216,6 +216,34 @@ Agents execute in one of three tiers:
 
 ---
 
+## Fast Chunked ToDo Execution
+
+OpenAgent must stay fast by decomposing larger work into small, bounded ToDo chunks before broad execution. The TeamLeadAgent owns this queue and keeps specialists synchronized throughout the run.
+
+### Chunking Rules
+
+- Split large requests into chunks that a specialist can finish independently in one focused pass.
+- Target 5-15 minute chunks for most work, with 30 minutes as the maximum for isolated implementation chunks.
+- Each chunk must have one owner, clear reads, clear writes, explicit dependencies, and acceptance criteria.
+- Prefer many small chunks over one broad specialist assignment when the work spans multiple files, layers, or stages.
+- Do not spawn a full team for every chunk. Batch compatible chunks and keep the expert set as small as possible.
+- Keep each specialist on the current chunk only. Do not give workers the full conversation when a role-specific task slice is enough.
+
+### Expert Sync Loop
+
+The TeamLeadAgent runs a lightweight sync loop:
+
+1. Plan the next ToDo chunk set.
+2. Assign chunks to the smallest useful expert group.
+3. Let independent chunks run in parallel when locks and dependencies allow.
+4. Collect checkpoints, changed files, open questions, and quality signals after each chunk or batch.
+5. Reconcile expert outputs into the shared task graph.
+6. Re-plan the next chunk set from the latest checkpoint.
+
+Sync after every stage boundary, every failed quality gate, every contract/API change, and every 3-5 completed chunks in long runs. Sync must be quiet and automatic unless an interrupt trigger applies.
+
+---
+
 ## Task List And Progress
 
 Represent expert work with explicit status:
@@ -225,6 +253,12 @@ Represent expert work with explicit status:
   "id": "backend-api-01",
   "expert": "BackendExpert",
   "status": "pending|in_progress|completed|blocked|failed",
+  "stage": "implementation",
+  "parent_task_id": "auth-feature",
+  "chunk_index": 2,
+  "chunk_total": 5,
+  "max_chunk_minutes": 15,
+  "sync_after_task_ids": ["auth-contract-01"],
   "reads": ["..."],
   "writes": ["..."],
   "acceptance_criteria": ["..."],

@@ -77,7 +77,7 @@ OpenAgent executes safe local work directly. It asks approval only for destructi
 OpenAgent acts like the CEO of a temporary expert organization. It dynamically assigns researchers, analysts, builders, reviewers, fact-checkers, and domain specialists, then reconciles disagreement instead of forcing one assistant to think through everything sequentially.
 
 **🧑‍💻 Experts Mode + Agent Swarm by Default**
-OpenAgent always starts in Experts Mode and always applies agent swarm orchestration. For tiny work it uses TeamLeadAgent-only swarm-lite routing; for larger work it becomes the Team Lead, creates a full swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, runs safe work in parallel, validates the result, and records reusable lessons.
+OpenAgent always starts in Experts Mode and always applies agent swarm orchestration. For tiny work it uses TeamLeadAgent-only swarm-lite routing; for larger work it becomes the Team Lead, splits the objective into small ToDo chunks, creates a full swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, syncs completed chunks back into the plan, runs safe work in parallel, validates the result, and records reusable lessons.
 
 **⚡ Token Efficient (MVI Principle)**  
 Minimal Viable Information design. Only load what's needed, when it's needed. Context files <200 lines, lazy loading, faster responses.
@@ -97,6 +97,7 @@ For bigger work, OAC now includes a controlled swarm layer:
 - **Experts Mode + Agent Swarm** is the default OpenAgent operating layer: Team Lead planning, dynamic expert assignment, swarm task graph, task progress, browser verification, code review, QA, research, DevOps, UX, and self-evolution.
 - **HackersEra Master Swarm** is the default routing layer for cybersecurity product, technical R&D, revenue, investor, operations, compliance, support, and CEO work.
 - **OpenAgent Swarm Mode** plans multi-agent work with dependencies, file ownership, and validation gates behind Experts Mode.
+- **Chunked ToDo execution** keeps large work fast by splitting broad goals into small specialist-owned chunks, syncing after each batch, and scheduling the next chunk set from the latest checkpoint.
 - **Scale-out architecture** targets up to 100 subagents and hundreds to 1,500+ tool calls for long-horizon deployments when the runtime, task boundaries, and validation capacity support it.
 - **Dynamic role assignment** lets OpenAgent auto-hire the needed specialists instead of making the user manually choose every role.
 - **Lossless context management** preserves task graphs, module claims, contracts, incidents, checkpoints, artifacts, and evidence reports rather than relying only on compressed chat summaries.
@@ -262,6 +263,7 @@ Add a login endpoint
 - ✅ Trusted Fast Mode with high-risk approval gates
 - ✅ Scale-out organizational AI with dynamic role assignment
 - ✅ Experts Mode + agent swarm by default
+- ✅ Chunked ToDo execution for fast large-work delivery
 - ✅ Context-aware code generation
 - ✅ 7 specialized subagents (task-manager, context-scout, context-manager, coder-agent, test-engineer, code-reviewer, external-scout)
 - ✅ 9 workflow skills + 6 user commands
@@ -758,7 +760,7 @@ A: Smart pattern discovery agent. Finds relevant context files before code gener
 A: Yes. Add information, correct direction, or change priorities at any time. TeamLeadAgent updates the plan, reallocates experts, revises the swarm task graph, and continues from validated work.
 
 **Q: What about cost and time for Experts Mode?**
-A: Experts Mode and agent swarm orchestration are always on, but they scale themselves. Tiny tasks use TeamLeadAgent-only swarm-lite routing with minimal overhead. Larger tasks may use more tool calls, but improve quality through planning, parallel specialists, QA, review, and validation.
+A: Experts Mode and agent swarm orchestration are always on, but they scale themselves. Tiny tasks use TeamLeadAgent-only swarm-lite routing with minimal overhead. Larger tasks are split into small ToDo chunks so experts can work quickly, sync after each batch, and avoid wasting context or tool calls.
 
 **Q: How does terminal execution work in Experts Mode?**
 A: Safe local terminal commands run automatically for routine reads, tests, builds, linting, and local validation. High-risk terminal actions require approval or a sandboxed/isolated execution plan before proceeding.

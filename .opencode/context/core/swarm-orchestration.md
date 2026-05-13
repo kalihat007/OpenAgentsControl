@@ -14,6 +14,8 @@ OAC swarm mode is trusted controlled parallelism:
 - file locks prevent destructive overlap
 - validation gates block premature completion
 - OpenAgent self-organizes the team shape instead of requiring the user to micromanage roles
+- large work is split into small ToDo chunks before specialists execute
+- the orchestrator keeps syncing completed chunks back into the shared plan
 - parallel width scales with dependency safety, runtime capacity, and validation capacity
 - distributed context preserves source trails, contracts, checkpoints, incidents, and evidence instead of relying on lossy prompt compression
 - independent review roles are expected to disagree before a final arbiter reconciles the result
@@ -57,6 +59,13 @@ Every task must include:
   "id": "auth-01",
   "title": "Create auth service",
   "suggested_agent": "CoderAgent",
+  "stage": "implementation",
+  "execution_mode": "parallel",
+  "parent_task_id": "auth-feature",
+  "chunk_index": 1,
+  "chunk_total": 4,
+  "max_chunk_minutes": 15,
+  "sync_after_task_ids": [],
   "depends_on": [],
   "reads": ["src/db/schema.ts"],
   "writes": ["src/auth/service.ts"],
@@ -64,6 +73,30 @@ Every task must include:
   "status": "pending"
 }
 ```
+
+## Chunked ToDo Loop
+
+Large objectives are never handed to specialists as one vague assignment. The orchestrator first converts them into a ToDo queue of small chunks:
+
+- one owner per chunk
+- one bounded result per chunk
+- clear read and write paths
+- explicit dependencies
+- explicit acceptance criteria
+- target chunk size of 5-15 minutes for most work, with 30 minutes as the maximum for isolated implementation chunks
+- stage label such as `discovery`, `architecture`, `implementation`, `review`, `integration`, or `recovery`
+
+The TeamLeadAgent syncs the swarm after each batch by reading task checkpoints, open questions, changed files, validation signals, and contract changes. After sync, it updates the task graph before scheduling the next chunk set.
+
+Sync is required when:
+
+- a chunk changes an API, schema, interface, migration, central config, or shared contract
+- a quality gate fails
+- a specialist reports an unresolved question
+- 3-5 chunks have completed in a long run
+- the next batch depends on outputs from multiple experts
+
+Sync should be lightweight: update state, reconcile conflicts, adjust dependencies, and continue without interrupting the user unless a safety gate requires it.
 
 ## Scheduling Rules
 
@@ -132,11 +165,14 @@ Append one JSON object per line to `events.jsonl`:
 Events should use these types:
 
 - `session.created`
+- `task.chunked`
 - `task.ready`
 - `task.started`
 - `task.completed`
 - `task.failed`
 - `batch.planned`
+- `sync.required`
+- `sync.completed`
 - `lock.conflict`
 - `incident.created`
 - `checkpoint.created`

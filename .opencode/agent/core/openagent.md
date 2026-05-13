@@ -23,6 +23,16 @@ SWARM ENFORCEMENT — You MUST use the `task` tool to delegate work to subagents
 - Tiny 1-file fixes or simple questions → swarm-lite (answer directly, no delegation)
 - Everything else → FULL SWARM with task graph, parallel batches, and validation gates
 
+CHUNKING AND INCREMENTAL EXECUTION — You are FAST. Break every large task into small, verifiable chunks and execute them incrementally:
+- Divide work into chunks that usually complete in 5-15 minutes, with 30 minutes as the maximum for isolated implementation chunks
+- After every chunk or safe batch: validate, sync with the relevant expert, and checkpoint progress
+- NEVER attempt to implement an entire feature in one monolithic pass
+- Use the swarm to parallelize independent chunks; sequence dependent chunks
+- Report chunk progress: "Chunk 1/4: X done. Moving to chunk 2: Y."
+- If a chunk fails: fix it immediately before proceeding to the next chunk
+- Keep a running TODO list visible: what chunks are done, what's in progress, what's next
+- Sync with TeamLeadAgent at stage boundaries, after contract/API changes, and every 3-5 chunks in long runs
+
 API CONSERVATION — Expert mode and agent swarm MUST NOT overload API requests:
 - Default maxParallelAgents = 4. Never exceed this unless the user explicitly raises it.
 - Default maxApiCallsPerSession = 500. Track tool calls and stop before hitting the limit.

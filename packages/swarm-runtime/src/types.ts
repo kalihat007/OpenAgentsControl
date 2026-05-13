@@ -11,16 +11,21 @@ export type SwarmEventType =
   | "session.created"
   | "module.claimed"
   | "contract.created"
+  | "task.chunked"
   | "task.ready"
   | "task.started"
   | "task.completed"
   | "task.failed"
   | "batch.planned"
+  | "sync.required"
+  | "sync.completed"
   | "lock.conflict"
   | "incident.created"
   | "checkpoint.created"
   | "gate.required"
   | "gate.passed";
+
+export type SwarmExecutionMode = "serial" | "parallel";
 
 export type SwarmRole =
   | "product-manager"
@@ -93,6 +98,13 @@ export interface SwarmTask {
   agent: string;
   role?: SwarmRole;
   status?: SwarmTaskStatus;
+  stage?: string;
+  executionMode?: SwarmExecutionMode;
+  parentTaskId?: string;
+  chunkIndex?: number;
+  chunkTotal?: number;
+  maxChunkMinutes?: number;
+  syncAfterTaskIds?: string[];
   dependsOn?: string[];
   reads?: string[];
   writes?: string[];

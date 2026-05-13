@@ -19,10 +19,13 @@ Run only after the user has approved a swarm plan.
 3. Before every batch:
    - verify dependencies are complete
    - verify no write-lock conflicts
+   - verify each broad task has been split into small ToDo chunks
    - ask for approval if the batch changes scope
 4. Delegate independent tasks in the same assistant turn.
-5. Stop on any failure and propose a recovery task.
-6. Run validation agents and commands before final summary.
+5. Sync with experts after each completed batch: collect checkpoints, changed files, open questions, and validation signals.
+6. Update the task graph before scheduling the next ToDo chunk set.
+7. Stop on any failure and propose a recovery task.
+8. Run validation agents and commands before final summary.
 
 ## Worker Prompt Contract
 
@@ -30,6 +33,8 @@ Each worker must receive:
 
 - swarm session path
 - exact task id
+- parent task id, chunk index, and chunk total
+- stage and sync expectations
 - allowed `reads`
 - allowed `writes`
 - acceptance criteria
@@ -40,6 +45,8 @@ Each worker must receive:
 Report:
 
 - batches run
+- chunks completed
+- expert sync checkpoints
 - agents used
 - changed files
 - validation results

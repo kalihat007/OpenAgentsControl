@@ -9,6 +9,43 @@ import type {
 
 const DEFAULT_MAX_CONCURRENCY = 4;
 
+export interface SwarmTaskChunkInput {
+  id: string;
+  title: string;
+  reads?: string[];
+  writes?: string[];
+  dependsOn?: string[];
+  acceptanceCriteria?: string[];
+  metadata?: Record<string, unknown>;
+}
+
+export function chunkSwarmTask(
+  parent: SwarmTask,
+  chunks: SwarmTaskChunkInput[],
+): SwarmTask[] {
+  const chunkTotal = chunks.length;
+  return chunks.map((chunk, index) => ({
+    ...parent,
+    ...chunk,
+    id: chunk.id,
+    title: chunk.title,
+    parentTaskId: parent.id,
+    chunkIndex: index + 1,
+    chunkTotal,
+    stage: parent.stage,
+    executionMode: parent.executionMode,
+    status: "pending",
+    dependsOn: unique([...(parent.dependsOn ?? []), ...(chunk.dependsOn ?? [])]),
+    reads: chunk.reads ?? parent.reads ?? [],
+    writes: chunk.writes ?? [],
+    acceptanceCriteria: chunk.acceptanceCriteria ?? parent.acceptanceCriteria ?? [],
+    metadata: {
+      ...(parent.metadata ?? {}),
+      ...(chunk.metadata ?? {}),
+    },
+  }));
+}
+
 export function planSwarmBatches(
   tasks: SwarmTask[],
   options: SchedulerOptions = {},
@@ -181,6 +218,7 @@ function normalizeTask(task: SwarmTask): SwarmTask {
     writes: task.writes ?? [],
     moduleClaims: task.moduleClaims ?? [],
     contracts: task.contracts ?? [],
+    syncAfterTaskIds: task.syncAfterTaskIds ?? [],
     priority: task.priority ?? 0,
   };
 }

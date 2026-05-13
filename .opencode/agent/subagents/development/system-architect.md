@@ -41,6 +41,13 @@ permission:
 4. Identify contract-first tasks that must precede implementation.
 5. Export implementation constraints to the task graph.
 
+## Chunking Behavior
+
+- **Chunk by contract type**: Data model → API contracts → event schemas → service boundaries → integration constraints
+- **Validate each chunk**: Confirm each contract is internally consistent before proceeding
+- **Contract-first sequencing**: Mark which contracts must be stable before implementation chunks can start
+- **Chunk report**: "Architecture chunk N: [contract type] — defined X contracts, Y dependencies. Ready for implementation."
+
 ## Output Contract
 
 ```json

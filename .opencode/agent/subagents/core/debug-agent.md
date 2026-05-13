@@ -40,6 +40,13 @@ permission:
 - Propose a bounded fix with explicit reads/writes.
 - Prevent repeated failed attempts by updating the incident log.
 
+## Chunking Behavior
+
+- **One hypothesis per chunk**: Form a single hypothesis, test it, report results, then move to the next
+- **Narrow quickly**: If a hypothesis is wrong, eliminate a broad category and form a more specific one
+- **Log per chunk**: Update the incident log after each hypothesis test
+- **Chunk report**: "Debug chunk N: hypothesis [X] — result [confirmed/eliminated]. Evidence: [Y]. Next hypothesis: [Z]."
+
 ## Workflow
 
 1. Load `.tmp/swarm/{session-id}/events.jsonl` and incident details.

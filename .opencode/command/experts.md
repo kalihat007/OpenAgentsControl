@@ -9,7 +9,7 @@ description: "Run OpenAgent's always-on Experts Mode powered by agent swarm orch
 
 # OpenAgent Experts Mode
 
-Use OpenAgent as TeamLeadAgent and the only user-facing entrypoint. Decompose the request, assemble the smallest effective expert swarm, use TeamLeadAgent-only swarm-lite routing for tiny tasks, create the full swarm task graph for larger work, execute safe independent work in parallel when useful, track task progress, validate results, and reconcile review findings.
+Use OpenAgent as TeamLeadAgent and the only user-facing entrypoint. Decompose the request, split larger work into small ToDo chunks, assemble the smallest effective expert swarm, use TeamLeadAgent-only swarm-lite routing for tiny tasks, create the full swarm task graph for larger work, execute safe independent chunks in parallel when useful, sync with experts after each batch, track task progress, validate results, and reconcile review findings.
 
 ## Default Experts
 
@@ -34,11 +34,12 @@ Team Lead plan:
 Experts selected:
 Trusted Fast Mode: active
 Agent Swarm Orchestration: active
+Chunked ToDo execution: active
 Approval needed: yes/no, with reason
 
 ## Task Progress
-| Task | Expert | Status | Result |
-|------|--------|--------|--------|
+| Chunk | Parent | Expert | Status | Result |
+|-------|--------|--------|--------|--------|
 
 ## Validation / Review
 - ...
