@@ -34,6 +34,37 @@ export type { ContextDefinition, LoadedContext, AgentPermissions } from './conte
 export { executeAbility, formatExecutionResult } from './executor/index.js'
 export { ExecutionManager } from './executor/execution-manager.js'
 
+// Lifecycle Hooks
+export {
+  HookManager,
+  getHookManager,
+  registerHook,
+  removeHook,
+  resetHookManager,
+} from './hooks.js'
+export type {
+  HookEvent,
+  HookHandler,
+  HookRegistration,
+  HookPayloadMap,
+  TaskExecutionContext,
+  TaskExecutionResult,
+  TaskErrorContext,
+  PluginLoadContext,
+  PluginUnloadContext,
+} from './hooks.js'
+
+// Plugin Registry
+export {
+  PluginRegistry,
+  getPluginRegistry,
+  resetPluginRegistry,
+} from './registry.js'
+export type {
+  PluginMetadata,
+  PluginEntry,
+} from './registry.js'
+
 // Plugin
 export { AbilitiesPlugin } from './opencode-plugin.js'
 export { default } from './opencode-plugin.js'

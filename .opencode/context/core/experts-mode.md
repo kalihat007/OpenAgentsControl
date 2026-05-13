@@ -12,7 +12,27 @@ Mandatory invariant: there is no separate non-expert mode for OpenAgent. Convers
 
 Activate Experts Mode for every `opencode --agent OpenAgent` request.
 
-Never skip Experts Mode or agent swarm orchestration because the task is small. Small tasks use TeamLeadAgent-only swarm-lite execution.
+Never skip Experts Mode or agent swarm orchestration because the task is small. Small tasks use TechLeadAgent-only swarm-lite execution.
+
+## Dynamic Expert Selection
+
+OpenAgent automatically selects experts based on task content — no manual user selection required:
+
+- **Frontend/UI** → OpenFrontendSpecialist + CoderAgent
+- **Backend/API** → BackendDeveloperAgent + CoderAgent
+- **Security** → SecurityAgent + CodeReviewer
+- **Testing** → TestEngineer + CoderAgent
+- **Architecture** → SystemArchitectAgent + TechLeadAgent
+- **DevOps** → OpenDevopsSpecialist + CoderAgent
+- **Docs** → DocWriter
+- **Debug** → DebugAgent + CoderAgent
+- **Product** → ProductManagerAgent
+- **Hardware/Firmware** → HardwareArchitectAgent + EmbeddedCPPCodingAgent
+- **Compliance** → TechnicalComplianceVVAgent + SecurityAgent
+- **Revenue/GTM** → ChiefGrowthOfficerAgent + ContentSwarmAgent
+- **Investor** → InvestorNarrativeAgent + FundingRoundSimulationAgent
+
+TechLeadAgent is always included for coordination. Domain specialists are added only when the task clearly needs them. The `oac experts` CLI command can preview the auto-selected team for any objective.
 
 ### System Defaults
 
@@ -32,8 +52,8 @@ Expert mode and agent swarm MUST NOT overload API requests or model token budget
 - **Max API calls per session**: Default is 500. Track cumulative tool calls and stop before hitting the limit. Report usage: `"This swarm used ~X tool calls."`
 - **Intelligent batching**: Group independent tasks into the smallest number of parallel batches. Do not spawn agents for work that can be done sequentially without penalty.
 - **Context reuse**: Pass loaded context files to subagents in delegation prompts instead of letting each subagent re-read the same files.
-- **Swarm-lite by default**: For tiny tasks (1-3 files, <30min), use TeamLeadAgent-only execution. Do not spawn FrontendExpert, BackendExpert, QAExpert, CodeReviewExpert, ResearchExpert, DevOpsExpert, and UXDesigner for trivial work.
-- **Estimate before executing**: Before launching a full swarm, give the user an API usage estimate: `"This plan will use ~X tool calls across Y agents. Proceed?"`
+- **Swarm-lite by default**: For tiny tasks (1-3 files, <30min), use TechLeadAgent-only execution. Do not spawn OpenFrontendSpecialist, BackendDeveloperAgent, TestEngineer, CodeReviewer, ExternalScout, and OpenDevopsSpecialist for trivial work.
+- **Estimate before executing**: Before launching a full swarm, give the user an API usage estimate: `"This plan will use ~X tool calls across Y agents."`
 - **Sequential fallback**: When validation is failing, recovery must converge first — do not add more parallel agents to a broken pipeline.
 
 Use swarm-lite routing when the request is:
@@ -55,7 +75,7 @@ Use the full agent swarm path when a request includes:
 - UI/UX plus backend/API/database work
 - HackersEra cybersecurity product, hardware, firmware, VAPT, compliance, GTM, investor, or operations work
 
-Simple work still remains inside Experts Mode and agent swarm orchestration; it just uses TeamLeadAgent-only swarm-lite routing and executes directly in Trusted Fast Mode without assembling a large team or creating session files.
+Simple work still remains inside Experts Mode and agent swarm orchestration; it just uses TechLeadAgent-only swarm-lite routing and executes directly in Trusted Fast Mode without assembling a large team or creating session files.
 
 ---
 
@@ -83,8 +103,8 @@ OpenAgent (as Orchestrator Lead) converts natural language input into a structur
     "data_models": ["User", "RefreshToken"]
   },
   "agents": [
-    { "role": "BackendExpert", "task": "Auth service implementation", "model_preference": "claude-sonnet-4" },
-    { "role": "QAExpert", "task": "Auth test suite", "depends_on": ["BackendExpert"] }
+    { "role": "BackendDeveloperAgent", "task": "Auth service implementation", "model_preference": "claude-sonnet-4" },
+    { "role": "TestEngineer", "task": "Auth test suite", "depends_on": ["BackendDeveloperAgent"] }
   ],
   "environments": ["local"],
   "acceptance_criteria": ["..."],
@@ -98,13 +118,13 @@ Based on Spec analysis, OpenAgent assembles the **smallest useful team** dynamic
 
 | Spec Signal | Agents Spawned |
 |-------------|----------------|
-| API + database work | BackendExpert, QAExpert |
-| UI + state management | FrontendExpert, UXDesigner |
-| Auth/security | SecurityExpert, BackendExpert |
-| Deployment/CI | DevOpsExpert, BuildAgent |
-| Research needed | ResearchExpert |
-| Complex bug | DebugExpert, CodeReviewExpert |
-| Architecture unclear | ArchitectureExpert, TechLeadAgent |
+| API + database work | BackendDeveloperAgent, TestEngineer |
+| UI + state management | OpenFrontendSpecialist |
+| Auth/security | SecurityAgent, BackendDeveloperAgent |
+| Deployment/CI | OpenDevopsSpecialist, BuildAgent |
+| Research needed | ExternalScout |
+| Complex bug | DebugAgent, CodeReviewer |
+| Architecture unclear | SystemArchitectAgent, TechLeadAgent |
 
 **Lean startup**: Only agents with explicit tasks in the Spec are spawned. No idle agents.
 
@@ -130,7 +150,7 @@ When the user changes requirements or an agent discovers a blocking issue:
 Before generating the Spec, OpenAgent MUST resolve ambiguity:
 
 - Ask the user for missing constraints (stack, scope, quality bar)
-- Use ResearchExpert to investigate unclear technical terms
+- Use ExternalScout to investigate unclear technical terms
 - Do NOT proceed to execution with ambiguous requirements
 
 ---
@@ -139,20 +159,20 @@ Before generating the Spec, OpenAgent MUST resolve ambiguity:
 
 | Expert | Responsibility | Tool Access |
 |--------|----------------|-------------|
-| TeamLeadAgent / Orchestrator Lead | Understands goals, generates Spec, assembles team, schedules experts, tracks progress, resolves blockers, ensures quality. | All orchestration tools |
-| ArchitectureExpert | Defines service boundaries, data models, API contracts, component topology, tech stack decisions. | Design, doc tools |
-| FrontendExpert | Implements UI, interaction logic, state management, accessibility. | Frontend build tools |
-| BackendExpert | Designs APIs, database models, service boundaries, business logic, integrations. | Backend build, DB tools |
-| QAExpert / QA Automation Expert | Writes tests, covers edge cases, validates acceptance criteria, tracks regressions. | Test runners, coverage tools |
-| CodeReviewExpert | Reviews correctness, standards, security, maintainability, performance risks. | Read-only code analysis |
-| ResearchExpert | Evaluates libraries, current docs, tradeoffs, compatibility, best practices. | Web search, doc fetch |
-| DevOpsExpert | Plans build, deployment, monitoring, scaling, CI/CD, containers, release checks. | Infrastructure tools |
-| UXDesigner | Proposes user flows, layout, interaction states, prototypes, usability improvements. | Design tools |
-| DebugExpert | Diagnoses failures, root-causes bugs, proposes fixes, validates corrections. | Debugger, log analysis |
+| TechLeadAgent / Orchestrator Lead | Understands goals, generates Spec, assembles team, schedules experts, tracks progress, resolves blockers, ensures quality. | All orchestration tools |
+| SystemArchitectAgent | Defines service boundaries, data models, API contracts, component topology, tech stack decisions. | Design, doc tools |
+| OpenFrontendSpecialist | Implements UI, interaction logic, state management, accessibility. | Frontend build tools |
+| BackendDeveloperAgent | Designs APIs, database models, service boundaries, business logic, integrations. | Backend build, DB tools |
+| TestEngineer / QA Automation Expert | Writes tests, covers edge cases, validates acceptance criteria, tracks regressions. | Test runners, coverage tools |
+| CodeReviewer | Reviews correctness, standards, security, maintainability, performance risks. | Read-only code analysis |
+| ExternalScout | Evaluates libraries, current docs, tradeoffs, compatibility, best practices. | Web search, doc fetch |
+| OpenDevopsSpecialist | Plans build, deployment, monitoring, scaling, CI/CD, containers, release checks. | Infrastructure tools |
+| ProductManagerAgent | Proposes user flows, scope boundaries, acceptance criteria, and usability tradeoffs. | Product and planning tools |
+| DebugAgent | Diagnoses failures, root-causes bugs, proposes fixes, validates corrections. | Debugger, log analysis |
 
-Add domain experts on demand: SecurityExpert, FirmwareExpert, HardwareExpert, ComplianceExpert, DataExpert, RevenueExpert, InvestorExpert, SupportExpert, or any project-specific specialist required by the task.
+Add domain experts on demand: SecurityAgent, EmbeddedCPPCodingAgent, HardwareArchitectAgent, TechnicalComplianceVVAgent, OpenDataAnalyst, ChiefGrowthOfficerAgent, InvestorNarrativeAgent, CustomerSupportSuccessSwarmAgent, or any project-specific specialist required by the task.
 
-**Role-relevant tool access only**: Each agent receives only the tools relevant to its role. CodeReviewExpert gets read-only tools. DevOpsExpert gets infrastructure tools. No agent gets universal tool access unless explicitly required.
+**Role-relevant tool access only**: Each agent receives only the tools relevant to its role. CodeReviewer gets read-only tools. OpenDevopsSpecialist gets infrastructure tools. No agent gets universal tool access unless explicitly required.
 
 ---
 
@@ -169,12 +189,12 @@ The user already selected their default model as their preferred cost/quality ba
 **Rules**:
 1. Every agent role runs on the default model.
 2. No downgrades for "cheap" tasks — the default model is already the user's chosen baseline.
-3. No upgrades for "hard" tasks — use validation gates, CodeReviewExpert, and DebugExpert to catch errors instead of buying a bigger model.
+3. No upgrades for "hard" tasks — use validation gates, CodeReviewer, and DebugAgent to catch errors instead of buying a bigger model.
 4. If the user wants a different model, they change their OpenCode default model. The swarm follows automatically.
 
 **Why this works**:
 - The default model is validated by the user for their use case
-- Parallel expert validation (CodeReviewExpert + QAExpert + BuildAgent) catches more errors than a single stronger model
+- Parallel expert validation (CodeReviewer + TestEngineer + BuildAgent) catches more errors than a single stronger model
 - Automated validation (tests, builds, linters) is cheaper and more reliable than model upgrades
 - Consistency: all agents think at the same capability level, reducing integration mismatches
 
@@ -212,13 +232,13 @@ Agents execute in one of three tiers:
 5. Generate a structured implementation plan and dependency-aware task DAG before broad execution.
 6. For safe local work, proceed directly after a brief plan.
 7. Ask for user confirmation only when the plan includes destructive, credential, production, payment/legal, public external, irreversible data, or risky hardware actions.
-8. Keep the plan adjustable; when the user changes direction, TeamLeadAgent reallocates experts and updates the task graph.
+8. Keep the plan adjustable; when the user changes direction, TechLeadAgent reallocates experts and updates the task graph.
 
 ---
 
 ## Fast Chunked ToDo Execution
 
-OpenAgent must stay fast by decomposing larger work into small, bounded ToDo chunks before broad execution. The TeamLeadAgent owns this queue and keeps specialists synchronized throughout the run.
+OpenAgent must stay fast by decomposing larger work into small, bounded ToDo chunks before broad execution. The TechLeadAgent owns this queue and keeps specialists synchronized throughout the run.
 
 ### Chunking Rules
 
@@ -231,7 +251,7 @@ OpenAgent must stay fast by decomposing larger work into small, bounded ToDo chu
 
 ### Expert Sync Loop
 
-The TeamLeadAgent runs a lightweight sync loop:
+The TechLeadAgent runs a lightweight sync loop:
 
 1. Plan the next ToDo chunk set.
 2. Assign chunks to the smallest useful expert group.
@@ -251,7 +271,7 @@ Represent expert work with explicit status:
 ```json
 {
   "id": "backend-api-01",
-  "expert": "BackendExpert",
+  "expert": "BackendDeveloperAgent",
   "status": "pending|in_progress|completed|blocked|failed",
   "stage": "implementation",
   "parent_task_id": "auth-feature",
@@ -301,9 +321,9 @@ Quality is enforced through parallel gates. **Any gate failure blocks delivery**
 
 | Gate | Owner | Failure Action |
 |------|-------|----------------|
-| **Spec Validation** | TeamLeadAgent | Auto-correct and continue |
-| **Code Review** | CodeReviewExpert | Block merge — require fixes |
-| **QA / Tests** | QAExpert | Block merge — require fixes + re-test |
+| **Spec Validation** | TechLeadAgent | Auto-correct and continue |
+| **Code Review** | CodeReviewer | Block merge — require fixes |
+| **QA / Tests** | TestEngineer | Block merge — require fixes + re-test |
 | **Build / Compile** | BuildAgent | Block merge — require fixes + rebuild |
 | **Integration** | IntegrationAgent | Block delivery — fix integration issues |
 
@@ -312,16 +332,16 @@ Quality is enforced through parallel gates. **Any gate failure blocks delivery**
 When a quality gate fails:
 
 1. Gate owner reports failure with specific error/context
-2. DebugExpert diagnoses root cause
+2. DebugAgent diagnoses root cause
 3. Responsible agent attempts fix (max 3 retries per task)
 4. Re-run the gate that failed
-5. On success: proceed. On persistent failure (3 retries exhausted): **auto-escalate to DebugExpert + ArchitectureExpert for forced convergence**
+5. On success: proceed. On persistent failure (3 retries exhausted): **auto-escalate to DebugAgent + SystemArchitectAgent for forced convergence**
 
 **Retry policy**:
 - Build failures: auto-fix by BuildAgent + CoderAgent
-- Test failures: auto-fix by QAExpert + CoderAgent
-- Review findings: auto-fix by CoderAgent, re-reviewed by CodeReviewExpert
-- Integration failures: DebugExpert + relevant agents converge
+- Test failures: auto-fix by TestEngineer + CoderAgent
+- Review findings: auto-fix by CoderAgent, re-reviewed by CodeReviewer
+- Integration failures: DebugAgent + relevant agents converge
 - **Persistent failures after 3 retries**: escalate to human ONLY if the fix requires destructive/production/credential actions
 
 ---
@@ -336,7 +356,7 @@ OpenAgent interrupts the user ONLY for non-routine events. **Never interrupt for
 
 | Event | Interrupt? | Action |
 |-------|-----------|--------|
-| Ambiguous requirements | ❌ NO | Self-clarify using ResearchExpert or make best-effort assumption and proceed |
+| Ambiguous requirements | ❌ NO | Self-clarify using ExternalScout or make best-effort assumption and proceed |
 | Quality gate failure (persistent) | ❌ NO | Auto-fix retry loop handles it; report at completion |
 | Security risk detected | ❌ NO | Log risk, apply mitigations, report at completion |
 | Agent conflict / disagreement | ❌ NO | TechLeadAgent arbitrates automatically; report at completion |
@@ -366,7 +386,7 @@ Each agent builds a preference profile during execution:
 
 ```json
 {
-  "agent": "BackendExpert",
+  "agent": "BackendDeveloperAgent",
   "coding_style": "prefers functional patterns, explicit error handling",
   "common_fixes": ["add null checks", "wrap db calls in transactions"],
   "preferences": ["uses early returns", "avoids nested callbacks"]
@@ -382,7 +402,7 @@ Record optimal team configurations per task type:
 ```json
 {
   "task_type": "full-stack-auth",
-  "optimal_team": ["BackendExpert", "FrontendExpert", "QAExpert", "CodeReviewExpert"],
+  "optimal_team": ["BackendDeveloperAgent", "OpenFrontendSpecialist", "TestEngineer", "CodeReviewer"],
   "avg_tool_calls": 180,
   "common_pitfalls": ["forgetting refresh token rotation"]
 }
@@ -420,11 +440,11 @@ When complexity exceeds current team capacity:
 
 | Trigger | New Agent Spawned |
 |---------|-------------------|
-| Bug persists after 2 retries | DebugExpert |
-| Architecture disagreement | ArchitectureExpert + TechLeadAgent |
-| Security concern | SecurityExpert |
-| Performance bottleneck | ResearchExpert + DevOpsExpert |
-| Integration failure | IntegrationAgent + DebugExpert |
+| Bug persists after 2 retries | DebugAgent |
+| Architecture disagreement | SystemArchitectAgent + TechLeadAgent |
+| Security concern | SecurityAgent |
+| Performance bottleneck | ExternalScout + OpenDevopsSpecialist |
+| Integration failure | IntegrationAgent + DebugAgent |
 
 ### Auto-Scale Down
 
@@ -434,7 +454,7 @@ Agents are released when their task is complete and no downstream dependencies n
 
 For critical bugs, security incidents, or production failures:
 
-1. OpenAgent immediately spawns: DebugExpert + SecurityExpert + CodeReviewExpert
+1. OpenAgent immediately spawns: DebugAgent + SecurityAgent + CodeReviewer
 2. All other non-urgent tasks are paused
 3. Emergency team has priority on all tool calls
 4. Auto-remediate where possible; report at completion
@@ -482,7 +502,7 @@ After a swarm task completes:
 
 Create or route to custom experts when the repo or company needs repeatable specialization:
 
-- technology specialists such as GoBackendExpert, NodeFrontendExpert, EmbeddedFirmwareExpert, AutomotiveEthernetExpert
+- technology specialists such as BackendDeveloperAgent, OpenFrontendSpecialist, EmbeddedCPPCodingAgent, SecurityFirmwareAgent, and AutomotiveEthernetAgent
 - business specialists such as HackersEraGTMExpert, InvestorNarrativeExpert, ComplianceEvidenceExpert
 - team-standard specialists that enforce local coding, proposal, security, or release rules
 
@@ -493,10 +513,10 @@ Prefer reusing existing agents, contexts, and skills before creating new compone
 ## FAQ
 
 **Can the user modify requirements during execution?**
-Yes. The user can add information, correct direction, or change priorities at any time. TeamLeadAgent updates the Spec, reassigns experts, revises the task graph, and continues without discarding completed validated work. No approval required — Expert Mode auto-adapts.
+Yes. The user can add information, correct direction, or change priorities at any time. TechLeadAgent updates the Spec, reassigns experts, revises the task graph, and continues without discarding completed validated work. No approval required — Expert Mode auto-adapts.
 
 **What about cost and time for Experts Mode?**
-Experts Mode and agent swarm orchestration are always active, but they scale themselves. Simple tasks use TeamLeadAgent-only swarm-lite routing with minimal overhead. Larger or higher-risk tasks may use more tool calls and wall-clock time than a single direct agent, but they should deliver better quality through planning, parallel specialist work, QA, review, and validation.
+Experts Mode and agent swarm orchestration are always active, but they scale themselves. Simple tasks use TechLeadAgent-only swarm-lite routing with minimal overhead. Larger or higher-risk tasks may use more tool calls and wall-clock time than a single direct agent, but they should deliver better quality through planning, parallel specialist work, QA, review, and validation.
 
 **How does terminal execution work in Experts Mode?**
 Expert Mode has **full permissions**. All bash, edit, and task operations execute directly without asking for approval. The user selected Expert Mode explicitly — they expect autonomous execution, not constant interruption. Only catastrophic system destruction (e.g., `rm -rf /`) is blocked at the permission layer.

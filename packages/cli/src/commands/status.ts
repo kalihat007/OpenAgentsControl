@@ -183,15 +183,14 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
     const msg = err instanceof Error ? err.message : String(err);
     log(`  OAC manifest is invalid: ${msg}`);
     log(`  Run 'oac init' to reset, or fix .oac/manifest.json manually.`);
-    process.exit(0);
-    return; // unreachable — satisfies TypeScript
+    return;
   }
 
   if (manifest === null) {
     log('');
     log('  OAC not initialized. Run \'oac init\' to get started.');
     log('');
-    process.exit(0);
+    return;
   }
 
   // Step 2: count components
@@ -209,8 +208,6 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
   if (options.verbose) {
     printVerboseModified(modified);
   }
-
-  process.exit(0);
 }
 
 // ── Commander registration ────────────────────────────────────────────────────

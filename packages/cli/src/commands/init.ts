@@ -6,8 +6,9 @@ import { getPackageRoot, listBundledFiles } from '../lib/bundled.js';
 import { writeManifest } from '../lib/manifest.js';
 import { readConfig, writeConfig, createDefaultConfig } from '../lib/config.js';
 import { detectIdes } from '../lib/ide-detect.js';
-import { log, info, warn, error, success, setVerbose, verbose } from '../ui/logger.js';
+import { log, info, warn, success, setVerbose, verbose } from '../ui/logger.js';
 import { createSpinner } from '../ui/spinner.js';
+import { NotProjectRootError, BundledFilesError, InstallError } from '../lib/errors.js';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -95,15 +96,11 @@ const printSummary = (
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
-/** Validates we are in a project root. Exits with code 1 if not. */
+/** Validates we are in a project root. Throws if not. */
 const assertProjectRoot = async (cwd: string): Promise<void> => {
   const isRoot = await isProjectRoot(cwd);
   if (!isRoot) {
-    error(
-      'Not a project root — no package.json or .git found in the current directory.',
-    );
-    error('Fix: run `oac init` from your project root (where package.json lives).');
-    process.exit(1);
+    throw new NotProjectRootError();
   }
 };
 
@@ -158,16 +155,11 @@ export async function initCommand(options: InitOptions): Promise<void> {
     bundledFiles = await listBundledFiles(packageRoot);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    error(`Could not locate bundled files: ${msg}`);
-    error('Fix: ensure @nextsystems/oac is installed correctly (try reinstalling).');
-    process.exit(1);
-    return;
+    throw new BundledFilesError(`Could not locate bundled files: ${msg}`);
   }
 
   if (bundledFiles.length === 0) {
-    warn('No bundled files found — nothing to install.');
-    warn('Fix: the @nextsystems/oac package may be missing its bundled assets.');
-    process.exit(1);
+    throw new BundledFilesError('No bundled files found — the @nextsystems/oac package may be missing its bundled assets.');
   }
 
   // Step 3: detect IDEs and print plan
@@ -190,10 +182,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
   } catch (err) {
     spinner.fail('Installation failed.');
     const msg = err instanceof Error ? err.message : String(err);
-    error(`Installation failed: ${msg}`);
-    error('Fix: check file permissions in your project directory.');
-    process.exit(1);
-    return;
+    throw new InstallError(`Installation failed: ${msg}`);
   }
   const { result, updatedManifest } = installResult;
 
@@ -213,9 +202,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
 
     await writeManifest(projectRoot, finalManifest).catch((err: unknown) => {
       const msg = err instanceof Error ? err.message : String(err);
-      error(`Failed to write manifest: ${msg}`);
-      error('Fix: check write permissions for the .oac/ directory.');
-      process.exit(1) as never;
+      throw new InstallError(`Failed to write manifest: ${msg}`);
     });
     verbose('Wrote .oac/manifest.json');
   }
@@ -223,9 +210,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
   // Step 6: write config (only if absent)
   await ensureConfig(projectRoot, effectiveOptions.dryRun).catch((err: unknown) => {
     const msg = err instanceof Error ? err.message : String(err);
-    error(`Failed to write config: ${msg}`);
-    error('Fix: check write permissions for the .oac/ directory.');
-    process.exit(1) as never;
+    throw new InstallError(`Failed to write config: ${msg}`);
   });
 
   // Step 7: print summary
@@ -235,9 +220,6 @@ export async function initCommand(options: InitOptions): Promise<void> {
     result.errors.length,
     effectiveOptions.dryRun,
   );
-
-  // Exit 0 on success (explicit for clarity)
-  process.exit(0);
 }
 
 // ── Commander registration ────────────────────────────────────────────────────

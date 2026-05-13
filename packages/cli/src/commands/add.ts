@@ -18,6 +18,7 @@ import { log, info, warn, error, success, verbose } from '../ui/logger.js';
 import { createSpinner } from '../ui/spinner.js';
 import { computeFileHash } from '../lib/sha256.js';
 import { readCliVersion } from '../lib/version.js';
+import { ComponentNotFoundError, CommandUsageError } from '../lib/errors.js';
 import type { RegistryComponent } from '../lib/registry.js';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -107,8 +108,7 @@ const resolveOrFail = async (
   const component = resolveComponent(registry, ref);
 
   if (component === null) {
-    error(`Component '${ref}' not found. Run 'oac add' to see available components.`);
-    process.exit(1);
+    throw new ComponentNotFoundError(ref);
   }
 
   return { component, packageRoot };
@@ -210,7 +210,7 @@ export async function addCommand(
     spinner.fail();
     const msg = err instanceof Error ? err.message : String(err);
     error(`Failed to add '${ref}': ${msg}`);
-    process.exit(1);
+    throw err;
   }
 }
 
@@ -225,8 +225,7 @@ export async function removeCommand(
   const projectRoot = process.cwd();
 
   if (ref === undefined) {
-    error('Please specify a component to remove. Example: oac remove context:react-patterns');
-    process.exit(1);
+    throw new CommandUsageError('Please specify a component to remove. Example: oac remove context:react-patterns');
   }
 
   const spinner = createSpinner(`Resolving ${ref}…`, { dryRun: options.dryRun });
@@ -264,7 +263,7 @@ export async function removeCommand(
     spinner.fail();
     const msg = err instanceof Error ? err.message : String(err);
     error(`Failed to remove '${ref}': ${msg}`);
-    process.exit(1);
+    throw err;
   }
 }
 

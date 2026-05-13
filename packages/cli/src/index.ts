@@ -2,6 +2,8 @@
 
 import { Command } from 'commander'
 import { readCliVersion } from './lib/version.js'
+import { CliError, ExitCodeError } from './lib/errors.js'
+import { configureFromFlags, createLogger } from './lib/logger.js'
 
 const program = new Command()
 
@@ -9,6 +11,10 @@ program
   .name('oac')
   .description('OpenAgents Control — install, manage, and update AI agents and context files')
   .version(readCliVersion(), '-v, --version', 'Print version and exit')
+  .option('--verbose', 'Enable verbose logging (DEBUG level)')
+  .option('--debug', 'Enable debug logging (TRACE level — most detailed)')
+
+const cliLog = createLogger('cli')
 
 // Lazy-load command modules in parallel — keeps startup < 100ms
 async function main(): Promise<void> {
@@ -30,6 +36,7 @@ async function main(): Promise<void> {
     { registerDoctorCommand },
     { registerListCommand },
     { registerStatusCommand },
+    { registerExpertsCommand },
   ] = await Promise.all([
     import('./commands/init.js'),
     import('./commands/update.js'),
@@ -38,6 +45,7 @@ async function main(): Promise<void> {
     import('./commands/doctor.js'),
     import('./commands/list.js'),
     import('./commands/status.js'),
+    import('./commands/experts.js'),
   ])
 
   registerInitCommand(program)
@@ -47,12 +55,20 @@ async function main(): Promise<void> {
   registerDoctorCommand(program)
   registerListCommand(program)
   registerStatusCommand(program)
+  registerExpertsCommand(program)
 
   // Unknown commands: print a helpful error and exit 1
   program.on('command:*', (operands: string[]) => {
     console.error(`error: unknown command '${operands[0]}'\n`)
     console.error(`Run 'oac --help' to see available commands.`)
     process.exitCode = 1
+  })
+
+  // Configure log level from global flags before commands execute
+  program.hook('preAction', () => {
+    const opts = program.opts<{ verbose?: boolean; debug?: boolean }>()
+    configureFromFlags({ verbose: opts.verbose, debug: opts.debug })
+    cliLog.debug('Log level configured', { verbose: opts.verbose, debug: opts.debug })
   })
 
   await program.parseAsync(process.argv)
@@ -64,6 +80,15 @@ async function main(): Promise<void> {
 }
 
 main().catch((err: unknown) => {
+  if (err instanceof ExitCodeError) {
+    process.exitCode = err.exitCode
+    return
+  }
+  if (err instanceof CliError) {
+    console.error(err.message)
+    process.exitCode = err.exitCode
+    return
+  }
   console.error('Fatal error:', err instanceof Error ? err.message : String(err))
   process.exitCode = 1
 })

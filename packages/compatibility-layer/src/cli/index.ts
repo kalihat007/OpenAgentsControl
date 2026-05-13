@@ -81,8 +81,7 @@ const createProgram = (): Command => {
   program.hook("preAction", (thisCommand) => {
     const opts = thisCommand.opts();
     if (opts.verbose && opts.quiet) {
-      console.error("Error: --verbose and --quiet are mutually exclusive");
-      process.exit(1);
+      throw new Error("--verbose and --quiet are mutually exclusive");
     }
   });
 
@@ -201,7 +200,7 @@ Examples:
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logError({ verbose: false, quiet: false, outputFormat: "text" }, message);
-    process.exit(1);
+    process.exitCode = 1;
   }
 };
 

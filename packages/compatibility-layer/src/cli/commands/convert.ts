@@ -430,7 +430,7 @@ export const createConvertAction = (): ((
     }
 
     if (!result.success) {
-      process.exit(1);
+      process.exitCode = 1;
     }
   };
 };

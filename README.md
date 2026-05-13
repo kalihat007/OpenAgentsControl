@@ -150,6 +150,123 @@ Read the full design: [Controlled Agent Swarm System](./docs/features/agent-swar
 
 ---
 
+## 🏗️ Architecture Overview
+
+OpenAgentsControl is a TypeScript monorepo built with Bun and npm workspaces. The core framework lives in four packages that can be used independently or together:
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                         oac CLI                                  │
+│  (packages/cli — install, manage, doctor, apply, experts)        │
+├──────────────┬──────────────────┬────────────────────────────────┤
+│              │                  │                                 │
+│  swarm-runtime         compatibility-layer        plugin-abilities│
+│  (scheduler,           (Cursor / Claude /         (abilities,     │
+│   sessions,             Windsurf adapter           workflows,     │
+│   resilience,           registry, mappers)         permissions,   │
+│   team roles)                                      plugin hooks)  │
+│              │                  │                                 │
+├──────────────┴──────────────────┴────────────────────────────────┤
+│                     .opencode/                                    │
+│  (agent definitions, context files, commands, skills, tools)      │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Package Details
+
+| Package | npm Name | Description |
+|---------|----------|-------------|
+| **`packages/cli`** | `@nextsystems/oac-cli` | The `oac` command-line tool. Commands: `init` (scaffold a project), `add`/`remove` (manage components from the registry), `update` (pull latest), `doctor` (health checks), `apply` (generate IDE-specific files), `list` (browse registry), `status` (show install state), `experts` (inspect swarm routing). Built with Commander, Chalk, and Ora. |
+| **`packages/swarm-runtime`** | `@nextsystems/oac-swarm-runtime` | Typed primitives that power agent swarm orchestration. Includes the **scheduler** (dependency-aware batch planning with write-lock conflict detection), **sessions** (immutable swarm session state with event streams), **team definitions** (development, revenue, business-ops, technical R&D, and investor-magnet role rosters), and **resilience** utilities (retry with exponential backoff, circuit breaker, timeout wrapper, dead-letter queue). |
+| **`packages/compatibility-layer`** | `@openagents-control/compatibility-layer` | Translates OAC agent definitions to and from other AI coding tools. Ships adapters for **Cursor**, **Claude Code**, and **Windsurf**, plus mappers for tools, permissions, models, and context paths. Includes a `TranslationEngine` for full agent conversion and a `CapabilityMatrix` for feature-gap analysis. |
+| **`packages/plugin-abilities`** | `@openagents/plugin-abilities` | The plugin system for OpenCode. Defines **abilities** (multi-step validated workflows with script, agent, skill, approval, and workflow steps), an **execution manager** with strict/normal/loose enforcement, a **permission validator**, **context discovery**, and a plugin hook interface (`chat.message`, `tool.execute.before/after`, `session.idle`, `event`). |
+
+### Additional Directories
+
+- **`evals/`** — Agent evaluation framework and test suites (YAML-defined scenarios, SDK-driven runner)
+- **`.opencode/`** — Agent definitions, context files, commands, skills, tools, and configs (the content OAC installs into your projects)
+- **`plugins/claude-code/`** — Claude Code plugin (session hooks, subagent registration)
+- **`scripts/`** — Versioning, registry validation, prompt management, and testing utilities
+- **`docs/`** — Extended documentation, feature designs, and contributor guides
+
+---
+
+## 🛠️ Development
+
+### Prerequisites
+
+- **Bun** >= 1.0.0 (primary runtime and test runner for `cli`, `swarm-runtime`, `plugin-abilities`)
+- **Node.js** >= 18.0.0 (required for `compatibility-layer` which uses vitest/eslint)
+- **npm** (workspace orchestration at the root level)
+
+### Getting Started
+
+```bash
+# Clone the repo
+git clone https://github.com/kalihat007/OpenAgentsControl.git
+cd OpenAgentsControl
+
+# Install root dependencies (also links workspaces)
+npm install
+
+# Install per-package dependencies
+cd packages/cli && bun install && cd ../..
+cd packages/swarm-runtime && bun install && cd ../..
+cd packages/compatibility-layer && npm ci && cd ../..
+cd packages/plugin-abilities && bun install && cd ../..
+```
+
+### Building
+
+```bash
+# CLI (Bun bundler)
+cd packages/cli && bun run build
+
+# Swarm runtime (TypeScript compiler)
+cd packages/swarm-runtime && bun run build
+
+# Compatibility layer (TypeScript compiler)
+cd packages/compatibility-layer && npm run build
+
+# Plugin abilities (TypeScript compiler)
+cd packages/plugin-abilities && bun run build
+```
+
+### Testing
+
+```bash
+# Run ALL package unit tests (matches CI)
+cd packages/cli && bun test
+cd packages/swarm-runtime && bun test
+cd packages/compatibility-layer && npx vitest run
+cd packages/plugin-abilities && bun test
+
+# Type-checking only (no emit)
+cd packages/cli && bun run typecheck
+cd packages/swarm-runtime && bun run typecheck
+
+# Agent eval tests (requires API keys)
+npm run test:ci              # smoke tests
+npm run test:openagent       # full OpenAgent suite
+```
+
+### Linting & Validation
+
+```bash
+# Lint compatibility-layer
+cd packages/compatibility-layer && npm run lint
+
+# Validate the component registry
+bun run validate:registry
+
+# Validate context file links
+bun run validate:context-links
+```
+
+> **Full contributor guide:** See [CONTRIBUTING.md](./CONTRIBUTING.md) for code style, conventions, how to add CLI commands and plugins, and PR guidelines.
+
+---
+
 ## 🆚 Quick Comparison
 
 | Feature | OpenAgentsControl | Cursor/Copilot | Aider | Oh My OpenCode |
@@ -835,14 +952,14 @@ We'd love to hear from you!
 
 ## 🤝 Contributing
 
-We welcome contributions!
+We welcome contributions! Start here:
 
-1. Follow the established naming conventions and coding standards
-2. Write comprehensive tests for new features
-3. Update documentation for any changes
-4. Ensure security best practices are followed
+1. Read the **[Contributing Guide](./CONTRIBUTING.md)** — prerequisites, setup, code style, PR guidelines
+2. Follow the established naming conventions and coding standards
+3. Write comprehensive tests for new features
+4. Update documentation for any changes
 
-See: [Contributing Guide](docs/contributing/CONTRIBUTING.md) • [Code of Conduct](docs/contributing/CODE_OF_CONDUCT.md)
+See also: [Legacy Contributing Docs](docs/contributing/CONTRIBUTING.md) • [Code of Conduct](docs/contributing/CODE_OF_CONDUCT.md)
 
 ---
 

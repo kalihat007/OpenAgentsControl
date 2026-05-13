@@ -267,8 +267,9 @@ export const handleError = (
 };
 
 /**
- * Exit with appropriate code based on result
+ * Set the process exit code based on result (without forcibly terminating).
+ * The process will exit with this code when the event loop drains.
  */
-export const exitWithResult = <T>(result: CommandResult<T>): never => {
-  process.exit(result.success ? 0 : 1);
+export const exitWithResult = <T>(result: CommandResult<T>): void => {
+  process.exitCode = result.success ? 0 : 1;
 };

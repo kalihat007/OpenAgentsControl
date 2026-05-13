@@ -5,6 +5,7 @@ import { readManifest, writeManifest } from '../lib/manifest.js';
 import { readConfig } from '../lib/config.js';
 import { log, info, warn, error, success, dim, bold, verbose, setVerbose } from '../ui/logger.js';
 import { createSpinner, setDryRun } from '../ui/spinner.js';
+import { CliError, ExitCodeError } from '../lib/errors.js';
 import type { InstallResult } from '../lib/installer.js';
 import type { ManifestFile } from '../lib/manifest.js';
 
@@ -22,13 +23,12 @@ export type UpdateOptions = {
 
 /**
  * Validates that a manifest exists before running the update.
- * Returns the project root (cwd) or exits with code 1.
+ * Throws if no manifest is found.
  */
 async function assertManifestExists(projectRoot: string): Promise<void> {
   const manifest = await readManifest(projectRoot);
   if (manifest === null) {
-    error('No manifest found. Run \'oac init\' first.');
-    process.exit(1);
+    throw new CliError("No manifest found. Run 'oac init' first.");
   }
 }
 
@@ -118,10 +118,7 @@ async function runUpdate(projectRoot: string, opts: UpdateOptions): Promise<Inst
   } catch (err: unknown) {
     spinner.fail('Update failed.');
     const msg = err instanceof Error ? err.message : String(err);
-    error(`Update failed: ${msg}`);
-    error('Check that @nextsystems/oac is installed correctly and try again.');
-    process.exit(1);
-    return {} as InstallResult; // unreachable — satisfies TypeScript
+    throw new CliError(`Update failed: ${msg}`);
   }
 
   spinner.succeed('Scan complete.');
@@ -180,7 +177,7 @@ async function handleUpdate(opts: UpdateOptions): Promise<void> {
 
   // Exit non-zero only on hard errors (skipped files are not errors)
   if (result.errors.length > 0) {
-    process.exit(1);
+    throw new ExitCodeError(1);
   }
 }
 

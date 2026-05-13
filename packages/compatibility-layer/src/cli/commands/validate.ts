@@ -422,6 +422,6 @@ export const createValidateAction = (): ((
 
     // Exit with appropriate code
     const exitCode = getValidationExitCode(result);
-    process.exit(exitCode);
+    if (exitCode !== 0) process.exitCode = exitCode;
   };
 };

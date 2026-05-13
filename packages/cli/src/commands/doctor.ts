@@ -9,6 +9,7 @@ import { getSwarmStatus } from '../lib/swarm.js';
 import { computeFileHash, hashesMatch } from '../lib/sha256.js';
 import { detectIdes, getIdeDisplayName, getIdeOutputFile } from '../lib/ide-detect.js';
 import { log, info, warn, error, success, dim, bold, setVerbose } from '../ui/logger.js';
+import { ExitCodeError } from '../lib/errors.js';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -458,7 +459,7 @@ export async function doctorCommand(options: DoctorOptions): Promise<void> {
       summary,
     };
     log(JSON.stringify(output, null, 2));
-    process.exit(summary.errors > 0 ? 1 : 0);
+    if (summary.errors > 0) throw new ExitCodeError(1);
     return;
   }
 
@@ -473,7 +474,7 @@ export async function doctorCommand(options: DoctorOptions): Promise<void> {
 
   printFinalResult(summary);
 
-  process.exit(summary.errors > 0 ? 1 : 0);
+  if (summary.errors > 0) throw new ExitCodeError(1);
 }
 
 // ── Commander registration ────────────────────────────────────────────────────

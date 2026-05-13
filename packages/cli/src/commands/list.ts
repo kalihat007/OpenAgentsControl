@@ -211,15 +211,13 @@ export async function listCommand(options: ListOptions): Promise<void> {
     const msg = err instanceof Error ? err.message : String(err);
     warn(`Could not read manifest: ${msg}`);
     warn('Fix: run `oac doctor` to diagnose, or `oac init` to reset.');
-    process.exit(0);
-    return; // unreachable — satisfies TypeScript
+    return;
   }
 
   if (manifest === null) {
     log('');
     info('No components installed. Run `oac init` to get started.');
     log('');
-    process.exit(0);
     return;
   }
 
@@ -227,7 +225,6 @@ export async function listCommand(options: ListOptions): Promise<void> {
     log('');
     info('No components installed.');
     log('');
-    process.exit(0);
     return;
   }
 
@@ -237,8 +234,6 @@ export async function listCommand(options: ListOptions): Promise<void> {
   const activeTypes = resolveActiveTypes(options);
 
   printList(groups, activeTypes, options.verbose);
-
-  process.exit(0);
 }
 
 // ── Commander registration ────────────────────────────────────────────────────
