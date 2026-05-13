@@ -1245,6 +1245,12 @@ perform_installation() {
         fi
     fi
     
+    # Create OAC config if it doesn't exist
+    create_oac_config
+    
+    # Create OpenCode agent default config if it doesn't exist
+    create_opencode_config
+    
     echo ""
     print_success "Installation complete!"
     echo -e "  Installed: ${GREEN}${installed}${NC}"
@@ -1252,6 +1258,52 @@ perform_installation() {
     [ $failed -gt 0 ] && echo -e "  Failed: ${RED}${failed}${NC}"
     
     show_post_install
+}
+
+#############################################################################
+# Config Creation
+#############################################################################
+
+create_oac_config() {
+    local oac_dir=".oac"
+    local oac_config="${oac_dir}/config.json"
+    
+    if [ -f "$oac_config" ]; then
+        print_info "OAC config already exists: ${oac_config}"
+        return 0
+    fi
+    
+    mkdir -p "$oac_dir"
+    cat > "$oac_config" << 'EOF'
+{
+  "version": "1",
+  "preferences": {
+    "yoloMode": false,
+    "autoBackup": true,
+    "expertMode": true,
+    "useAgentSwarm": true,
+    "maxParallelAgents": 4,
+    "maxApiCallsPerSession": 500
+  }
+}
+EOF
+    print_success "Created OAC config: ${oac_config} (expertMode + agent swarm enabled by default)"
+}
+
+create_opencode_config() {
+    local opencode_config=".opencode/config.json"
+    
+    if [ -f "$opencode_config" ]; then
+        print_info "OpenCode config already exists: ${opencode_config}"
+        return 0
+    fi
+    
+    cat > "$opencode_config" << 'EOF'
+{
+  "agent": "OpenAgent"
+}
+EOF
+    print_success "Created OpenCode config: ${opencode_config} (default agent: OpenAgent)"
 }
 
 #############################################################################
@@ -1265,19 +1317,22 @@ show_post_install() {
     echo "1. Review the installed components in ${CYAN}${INSTALL_DIR}/${NC}"
     
     # Check if env.example was installed
+    local step_num=2
     if [ -f "${INSTALL_DIR}/env.example" ] || [ -f "env.example" ]; then
-        echo "2. Copy env.example to .env and configure:"
+        echo "${step_num}. Copy env.example to .env and configure:"
         echo -e "   ${CYAN}cp env.example .env${NC}"
-        echo "3. Start using OpenCode agents:"
-    else
-        echo "2. Start using OpenCode agents:"
+        step_num=$((step_num + 1))
     fi
-    echo -e "   ${CYAN}opencode --agent OpenAgent${NC}"
-    echo "   OpenAgent defaults to Experts Mode powered by agent swarm orchestration."
+    
+    echo "${step_num}. Start using OpenCode agents:"
+    echo -e "   ${CYAN}opencode${NC}"
+    echo "   (OpenAgent is the default agent; Experts Mode + Agent Swarm are active by default)"
     echo ""
     
     # Show installation location info
     print_info "Installation directory: ${CYAN}${INSTALL_DIR}${NC}"
+    print_info "OAC config: ${CYAN}.oac/config.json${NC} (expertMode + useAgentSwarm enabled)"
+    print_info "OpenCode config: ${CYAN}.opencode/config.json${NC} (default agent: OpenAgent)"
     
     # Check for backup directories
     local has_backup=0
