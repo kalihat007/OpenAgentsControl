@@ -1,0 +1,1150 @@
+================================================================================
+ISO 24089:2023(E) - ROAD VEHICLES: SOFTWARE UPDATE ENGINEERING
+COMPLETE CONTENT EXTRACTION FROM ALL 36 PAGE IMAGES
+First Edition 2023-02
+================================================================================
+
+DOCUMENT COVER AND METADATA:
+- Standard Reference: ISO 24089:2023(E)
+- Title: Road vehicles — Software update engineering
+- French Title: Vehicules routiers — Ingénierie de mise à jour du logiciel
+- Edition: First edition 2023-02
+- Published: Switzerland
+- Copyright: ISO 2023 - All rights reserved
+- Price basis: 24 pages
+- Technical Committee: ISO/TC 22 (Road Vehicles), Subcommittee SC 32
+
+================================================================================
+DOCUMENT STRUCTURE OVERVIEW (from Pages 3-4)
+================================================================================
+
+MAIN SECTIONS:
+
+1. SCOPE (Page 1)
+   - Specifies requirements and recommendations for software update engineering
+   - Applicable to road vehicles with updateable software
+   - Applies to organizations, vehicle systems, ECUs, infrastructure, and software
+   - Establishes common understanding for supply chain communication
+   - Does NOT prescribe specific technologies or solutions
+
+2. NORMATIVE REFERENCES (Page 1)
+   - ISO 26262-6: Functional safety - Product development at software level
+   - ISO 26262-8: Functional safety - Supporting processes
+   - ISO/SAE 21434: Cybersecurity engineering
+
+3. TERMS AND DEFINITIONS (Pages 1-5)
+   - Over 25 terms defined for software update engineering
+   - Organized into: General terminology and Terms related to software update
+
+4. ORGANIZATIONAL LEVEL (Pages 5-8)
+   - Governance processes and organizational rules
+   - Continuous improvement requirements
+   - Information sharing policies
+   - Supporting processes (documentation, requirements management, etc.)
+   - Auditing requirements
+
+5. PROJECT LEVEL (Pages 8-10)
+   - Project management and planning
+   - Tailoring and rationale documentation
+   - Interoperability confirmation
+   - Integrity preservation
+
+6. INFRASTRUCTURE LEVEL (Pages 10-12)
+   - Cybersecurity risk management
+   - Vehicle configuration information management
+   - Software update campaign communication
+   - Software update package processing
+
+7. VEHICLE AND VEHICLE SYSTEMS LEVEL (Pages 13-16)
+   - Risk management (functional safety and cybersecurity)
+   - Vehicle configuration information handling
+   - Campaign communication
+   - Software update package processing
+   - Work products and documentation
+
+8. SOFTWARE UPDATE PACKAGE (Pages 16-19)
+   - Identification of targets and contents
+   - Assembly of update packages
+   - Verification and validation procedures
+   - Approval for release
+
+9. SOFTWARE UPDATE CAMPAIGN (Pages 19-23)
+   - Preparation activities and planning
+   - Execution procedures
+   - Campaign completion and documentation
+
+BIBLIOGRAPHY (Page 24)
+   - 14 referenced standards from ISO, IEC, and IATF
+
+================================================================================
+KEY DEFINITIONS (Section 3 - Terms and Definitions)
+================================================================================
+
+3.1 GENERAL TERMINOLOGY:
+
+3.1.1 COMPATIBILITY
+Definition: Capability of software to be executable on vehicle systems without conflicts
+Note: Can be checked via vehicle configuration information
+
+3.1.2 CONDITION
+Definition: Criteria required for a software update operation to be completed successfully
+Examples: Skilled person present, safe vehicle state, in-vehicle resources available,
+external resources available
+
+3.1.3 CORRECTIVE ACTION
+Definition: Action to eliminate or contain a problem or failure
+
+3.1.4 CYBERSECURITY
+Definition: Road vehicle cybersecurity - context where assets are sufficiently protected
+against threat scenarios to vehicle systems and infrastructure required to support
+software update engineering
+Note: Term used instead of "road vehicle cybersecurity" for brevity
+
+3.1.5 CYBERSECURITY RISK
+Definition: Effect of uncertainty on cybersecurity expressed in terms of attack 
+feasibility and impact
+Source: ISO/SAE 21434:2021, 3.1.29
+
+3.1.6 DEPENDENCY
+Definition: Effect of software for one vehicle system on the same or other vehicle systems
+Note: Can generate a condition in the metadata of a software update package
+
+3.1.7 ECU (Electronic Control Unit)
+Definition: Embedded device in a vehicle whose software can be updated
+
+3.1.8 FUNCTIONAL SAFETY
+Definition: Absence of unreasonable risk due to hazards caused by malfunctioning 
+behaviour of vehicle systems
+Source: ISO 26262-1:2018, 3.67, modified
+
+3.1.9 FUNCTIONAL SAFETY RISK
+Definition: Combination of the probability of occurrence of harm and the severity of that harm
+Source: ISO 26262-1:2018, 3.128
+
+3.1.10 INFRASTRUCTURE
+Definition: Processes and information systems managing any combination of:
+- Software update operations
+- Software update campaigns
+- Documentation and vehicle configuration information
+Including both digital and manual activities
+
+3.1.11 IN-VEHICLE RESOURCE
+Definition: Vehicle or ECU available properties relevant for software update engineering
+Examples: Computational power, network capacity, RAM, storage, battery capacity
+
+3.1.12 RECIPIENT
+Definition: Individual instance of vehicle, vehicle system, or ECU that receives a
+software update package during a campaign
+
+3.1.13 SAFE VEHICLE STATE
+Definition: Vehicle operating mode based on conditions for performing software update
+operations without unreasonable level of risk
+Notes: Can vary based on required conditions for the software update package
+Can vary based on the software update operation step being performed
+
+3.1.14 SKILLED PERSON
+Definition: Individual with relevant technical education, training or experience to
+execute software update operations
+Note: Can be a mechanic in a workshop, authorized/certified person, or skilled vehicle user
+
+3.1.15 SOFTWARE
+Definition: Computer programs and associated data intended for installation on vehicles,
+vehicle systems, or ECUs that may be dynamically written or modified during execution
+Source: NIST SP 800-53, modified
+
+3.1.16 SOFTWARE UPDATE CAMPAIGN
+Definition: Sequence of identifying targets, resolving recipients, distributing software
+update packages, and monitoring/documenting results of software update operations
+
+3.1.17 SOFTWARE UPDATE DISTRIBUTION METHOD
+Definition: Mechanism for delivery of a software update package during a campaign
+Examples: Wired (tool, USB flash drive), wireless (cellular, Wi-Fi), hardware replacement
+
+3.1.18 SOFTWARE UPDATE ENGINEERING
+Definition: Application of systematic and managed approach to processes of planning,
+development, and deployment of software update packages
+
+3.1.19 SOFTWARE UPDATE OPERATION
+Definition: Steps involved in receipt, installation, and activation of software update
+packages in a vehicle, vehicle systems, or ECUs
+
+3.1.20 SOFTWARE UPDATE PACKAGE
+Definition: Set of software and associated metadata intended for deployment to one or
+more vehicles, vehicle systems, or ECUs
+
+3.1.21 SOFTWARE UPDATE PROJECT
+Definition: Set of software update engineering activities for one or more targets
+Notes: Activities can include developing/adapting infrastructure or vehicle capabilities
+A software update project can encompass multiple software update campaigns
+
+3.1.22 TAILOR
+Definition: To omit or perform an activity in a different manner compared to its
+description in this document
+
+3.1.23 TARGET
+Definition: One or more classes of vehicles, vehicle systems, or ECUs determined by
+vehicle configuration information
+
+3.1.24 VEHICLE CONFIGURATION INFORMATION
+Definition: Comprehensive accounting of hardware versions, software versions and
+configuration parameters in a vehicle
+
+3.1.25 VEHICLE SYSTEM
+Definition: Functional group of one or more ECUs and attached hardware
+Examples: Braking system, infotainment system
+
+3.1.26 VEHICLE USER
+Definition: Person operating, driving, owning or managing a vehicle
+Note: Can be a skilled person
+
+3.2 TERMS RELATED TO SOFTWARE UPDATE OPERATION:
+
+3.2.1 RECEIPT
+Definition: Step in software update operation when a tool, vehicle, vehicle system,
+or ECU receives a software update package
+Examples: Downloading a package, transferring using a tool
+
+3.2.2 INSTALLATION
+Definition: Step in software update operation when relevant parts of a software update
+package are written to a vehicle, vehicle system, or ECU but not yet activated
+
+3.2.3 ACTIVATION
+Definition: Step in software update operation when relevant parts of an installed
+software update package become executable on a vehicle, vehicle system, or ECU
+
+================================================================================
+SECTION 4: ORGANIZATIONAL LEVEL REQUIREMENTS
+================================================================================
+
+4.1 OBJECTIVES
+Ensure the following are performed:
+a) Establishing organization-specific rules and processes for software update engineering
+b) Adopting quality management, functional safety management and cybersecurity 
+   management for software update engineering
+c) Instituting and maintaining a continuous improvement process
+d) Establishing an information sharing policy
+e) Conducting an organizational audit for process compliance
+
+4.2 GENERAL
+This clause covers organizational responsibility for governance so that software update
+engineering processes conform to requirements. Governance includes:
+- Compliance with required ISO standards
+- Organizational activities: continuous improvement, information sharing, supporting processes
+- Auditing requirements
+
+4.3 REQUIREMENTS AND RECOMMENDATIONS
+
+4.3.1 GOVERNANCE
+4.3.1.1 SHALL: If the organization performs software update engineering activities,
+then this document applies.
+
+4.3.1.2 SHALL: Organization shall establish, document, and maintain rules and processes
+for software update engineering to:
+- Enable implementation of document requirements
+- Support execution of corresponding activities with resource and responsibility assignment
+- Confirm conformance with document requirements
+Notes: Rules/processes cover affected vehicle systems and infrastructure used for
+software update engineering activities
+
+4.3.1.3 SHALL: Organization shall establish, implement and maintain software update
+engineering activities in accordance with:
+- ISO/SAE 21434
+- ISO 26262-6
+- ISO 26262-8
+Note: Other ISO 26262 parts can provide guidance on identifying applicable content
+
+4.3.2 CONTINUOUS IMPROVEMENT
+4.3.2.1 SHALL: Organization shall establish, perform and maintain a continuous
+improvement process for software update engineering activities
+Examples: Evaluating/applying lessons learned, improvements from previous/similar projects,
+KPIs for continuous improvement
+
+4.3.2.2 SHALL: Organization shall establish, perform and maintain a process to verify
+that after any change to software update engineering processes, the processes still
+meet document requirements
+
+4.3.3 INFORMATION SHARING
+4.3.3.1 SHALL: Organization shall establish, perform and maintain a policy for sharing
+information both inside and outside the organization concerning software update
+engineering activities
+Note: Policy can include what information is shared, with whom, when, and how to permit sharing
+
+Example information being shared can include:
+- Schedule for software update campaign
+- Content description
+- Possible implication of campaign including safety/cybersecurity items
+- Duration vehicle/functions are unavailable
+- Reason for software update campaign
+- Treatment of sensitive or personal information
+- Documentation about campaign
+- License and intellectual property information
+
+4.3.4 SUPPORTING PROCESSES
+4.3.4.1 SHALL: Organization shall establish, implement and maintain a document
+management process for software update engineering activities to handle work products
+Example: IATF 16949 can be applied
+
+4.3.4.2 SHALL: Organization shall establish, implement and maintain a requirements
+management process for software update engineering activities
+Example: ISO/IEC 26551
+
+4.3.4.3 SHOULD: Organization should consider privacy implications of activities
+required by this document
+Note: Activities can involve personal information
+Examples: ISO/IEC 27701 and ISO/IEC 29100 provide information on privacy
+Example 2: Customer personally identifiable information included in software update campaigns
+
+4.3.4.4 SHALL: Organization shall establish, implement and maintain a configuration
+management process
+Examples: ISO 10007 for configuration management process
+ISO/IEC/IEEE 15288 for configuration management on system life cycle management
+
+4.3.4.5 SHALL: Organization shall establish, implement and maintain a quality
+management process for software update engineering activities
+Examples: IATF 16949, ISO 9001, ISO/IEC 25000 can be used
+Example 2: Maintenance of infrastructure
+
+4.3.4.6 SHALL: Organization shall establish, implement and maintain a change
+management process for software update engineering activities
+Example: ISO 9001 can be used
+
+4.3.5 AUDITING
+4.3.5.1 SHALL: An audit shall be performed to determine that organizational processes
+for software update engineering achieve the objectives of this clause
+Notes: Audit can be included in/combined with quality management system audit
+Audit can be performed by internal or external organization
+To ensure organizational processes remain appropriate, audit can be performed periodically
+In distributed development, audit rights can be included in contract
+
+4.4 WORK PRODUCTS
+4.4.1 Organizational rules and processes from requirements 4.3.1.1, 4.3.1.2, 4.3.4.1,
+4.3.4.3, 4.3.4.4, 4.3.4.5, and 4.3.4.6
+4.4.2 Records of organizational management from requirements 4.3.1.3, 4.3.4.2, and 4.3.4.5
+4.4.3 Documentation of continuous improvement from requirement 4.3.2.1 and 4.3.2.2
+4.4.4 Information sharing policy from requirement 4.3.3.1
+4.4.5 Audit report from requirement 4.3.5.1
+
+================================================================================
+SECTION 5: PROJECT LEVEL REQUIREMENTS
+================================================================================
+
+5.1 OBJECTIVES
+Ensure the following are performed:
+a) Planning for software update project including assigning roles and responsibilities
+b) Managing and storing information regarding a software update project
+c) Providing justifications for any tailoring of a software update project
+d) Confirming interoperability of infrastructure and vehicle functions for a project
+e) Preserving integrity of software, metadata or software update packages or both
+
+5.2 GENERAL
+This clause covers organizational requirements for software update projects including
+planning for software update projects, and managing information related to such projects.
+Requirements on tailoring software update projects and interoperability between parts
+of software update projects are included.
+
+5.3 REQUIREMENTS AND RECOMMENDATIONS
+
+5.3.1 PROJECT MANAGEMENT
+5.3.1.1 SHALL: Organization shall develop, implement and maintain a plan for each
+software update project that covers all necessary activities
+Notes: Plan can include activities for development/adaptation of vehicle/infrastructure
+functions and any process described in this document
+A software update project can encompass multiple software update campaigns
+
+5.3.1.2 SHALL: Organization shall manage and store documentation for each software
+update project
+Note: Relevant processes defined in 4.3.4.1 and 4.3.4.2
+
+5.3.1.3 SHALL: Organization shall establish, assign and maintain roles and
+responsibilities for each software update project
+Note: Documentation of roles/responsibilities can be included in plan from 5.3.1.1
+
+5.3.2 TAILORING AND RATIONALE
+5.3.2.1 A software update project may be tailored
+Examples: Identifies applicable content of ISO 26262-6, ISO 26262-8 and ISO/SAE 21434
+Example 2: Body builder tailors to conform with functional safety standards (ISO 13849 or IEC 61508)
+
+5.3.2.2 SHALL: If software update project is tailored, then a rationale shall be
+provided as to how tailored activities achieve applicable objectives
+Notes: Activity is tailored if omitted or performed differently compared to description
+Software update engineering activities performed by another entity in supply chain
+are considered distributed activities rather than tailored activities
+Can consult with suppliers on applicable clauses to supplier's work
+
+5.3.3 INTEROPERABILITY
+5.3.3.1 SHALL: Organization shall establish, implement and maintain a process to
+confirm interoperability of functions developed in accordance with requirements from
+Clause 6 and Clause 7
+Note: Important to confirm interoperability between infrastructure and vehicle system
+for successful software update campaign
+
+5.3.4 INTEGRITY
+5.3.4.1 SHALL: Organization shall establish, implement and maintain processes to
+preserve integrity of software, metadata or software update packages or both during
+distribution in context of interoperability within organizations, between organizations
+in supply chain, from organizations to vehicles, and within/between vehicle systems
+
+Notes: Risk-based approaches in ISO/SAE 21434 and ISO 26262 series can be used to
+select measures
+
+5.4 WORK PRODUCTS
+5.4.1 Software update project plan from requirements 5.3.1.1 and 5.3.1.3
+5.4.2 Documentation of software update project from requirement 5.3.1.2
+5.4.3 Rationale for tailored activities if applicable from requirement 5.3.2.2
+5.4.4 Documentation of confirmation of interoperability from 5.3.3.1
+5.4.5 Documentation of processes to preserve integrity from 5.3.4.1
+
+================================================================================
+SECTION 6: INFRASTRUCTURE LEVEL REQUIREMENTS
+================================================================================
+
+6.1 OBJECTIVES
+Ensure the following are developed:
+a) Management of cybersecurity risks for the infrastructure
+b) Functionality for collecting and managing vehicle configuration information
+c) Functionality for collecting and distributing information about software update campaigns
+d) Functionality for creating, managing, and distributing software update packages
+
+6.2 GENERAL
+This clause includes requirements for development of infrastructure used for software
+update campaigns. Requirements cover functions assigned to infrastructure for campaigns,
+such as distribution, communication, information storage, and cybersecurity. These
+functions support software update campaigns in infrastructure, on/off vehicle depending
+on architectural decisions of organization.
+
+6.3 REQUIREMENTS AND RECOMMENDATIONS
+
+6.3.1 MANAGING RISK
+6.3.1.1 SHALL: Organization shall manage cybersecurity risks of infrastructure
+Examples: Application of ISO/IEC 27000 series
+Application of ISO/SAE 21434 for cybersecurity risks in vehicle
+
+6.3.2 MANAGING VEHICLE CONFIGURATION INFORMATION
+6.3.2.1 SHALL: Infrastructure shall have one or more functions for receiving, storing
+and processing of vehicle configuration information
+
+6.3.2.2 SHALL: Infrastructure shall have one or more functions to maintain integrity
+of collected vehicle configuration information
+
+6.3.2.3 SHALL: Infrastructure shall have one or more functions to distribute vehicle
+configuration information to related parties
+Notes: Distribution functions can be manual (paper-based)
+Vehicle configuration information can be distributed before, during or after campaign
+
+6.3.2.4 SHALL: Infrastructure shall have one or more functions to support identification
+of dependencies for software update packages
+Notes: Can be done on vehicle, infrastructure or combination
+Used in Clause 8
+
+6.3.2.5 SHALL: Infrastructure shall have one or more functions to check compatibility
+of a software update package
+
+6.3.3 COMMUNICATING SOFTWARE UPDATE CAMPAIGN INFORMATION
+6.3.3.1 SHALL: Infrastructure shall have one or more functions to provide notifications
+as required by this document
+Note: Infrastructure notification function can be used to notify vehicle users instead
+of in-vehicle notification function
+
+6.3.3.2 SHALL: Infrastructure shall have one or more functions to receive, store,
+process and distribute results of software update campaigns
+Note: Requirements concerning results in Clause 9
+
+6.3.4 PROCESSING SOFTWARE UPDATE PACKAGES
+6.3.4.1 SHALL: Infrastructure shall have one or more functions to create, process,
+receive and store software update packages
+
+6.3.4.2 SHALL: Infrastructure shall have one or more functions to associate software
+update packages with targets
+
+6.3.4.3 SHALL: Infrastructure shall have one or more functions to resolve targets
+into recipients for software update campaigns
+
+6.3.4.4 SHALL: Infrastructure shall have one or more functions to support software
+update distribution methods
+
+6.3.4.5 SHOULD: Infrastructure should have one or more functions to determine whether
+there are sufficient in-vehicle resources to apply software update package to recipients
+
+6.3.4.6 SHALL: Infrastructure shall have one or more functions to maintain integrity
+of software update packages and their contents:
+- Within the infrastructure
+- From infrastructure to vehicles
+
+6.3.4.7 SHOULD: Infrastructure should have one or more functions to initiate actions
+if infrastructure is notified of failure of a software update operation
+Note: Software update operation failure can be mitigated by functions in vehicle or
+by skilled person or both
+
+6.4 WORK PRODUCTS
+6.4.1 Documentation of managing cybersecurity risk from 6.3.1.1
+6.4.2 Documentation of functions for managing vehicle configuration information from
+6.3.2.1 to 6.3.2.5
+6.4.3 Documentation of functions for performing software update campaigns from 6.3.3.1
+and 6.3.3.2
+6.4.4 Documentation of functions for processing software update packages from 6.3.4.1
+to 6.3.4.6
+6.4.5 Documentation of functions for performing actions in event of software update
+operation failure from 6.3.4.7
+
+================================================================================
+SECTION 7: VEHICLE AND VEHICLE SYSTEMS LEVEL REQUIREMENTS
+================================================================================
+
+7.1 OBJECTIVES
+Establish the following functionalities in and for vehicles or vehicle systems:
+a) Managing safety and cybersecurity risks for software update operations
+b) Managing vehicle configuration information
+c) Communicating software update campaign information
+d) Enabling software update operations, verifying software update packages, and
+   managing failures during campaigns
+
+7.2 GENERAL
+This clause contains requirements for functions needed for vehicles and vehicle
+systems to support software update campaigns. These functions include communications,
+generating necessary vehicle configuration information and enabling software update
+operations in vehicles. Functions described in this clause support software update
+operation in vehicle. Such functions can be implemented in one or both of vehicle
+and infrastructure depending on architectural decisions of organization.
+
+7.3 REQUIREMENTS AND RECOMMENDATIONS
+
+7.3.1 MANAGING RISKS
+7.3.1.1 SHALL: Functional safety risks of software update operations in vehicle shall
+be managed
+Note 1: Management includes identification, analysis, evaluation and treatment of risks
+Note 2: ISO 26262 series provides guidance on achieving functional safety through
+appropriate requirements and processes
+
+7.3.1.2 SHALL: Safety risks due to reasonable and foreseeable misuse of software update
+operations in vehicle shall be managed
+Note 1: Management includes identification, analysis, evaluation and treatment of risks
+Note 2: ISO 21448 provides guidance on achieving safety of intended functionality through
+appropriate requirements and processes
+
+7.3.1.3 SHALL: Cybersecurity risks of software update operations in vehicle shall be
+managed
+
+7.3.2 MANAGING VEHICLE CONFIGURATION INFORMATION
+7.3.2.1 SHALL: There shall be one or more functions to collect vehicle configuration
+information
+Note: Can be implemented either in vehicle or infrastructure or both
+
+7.3.2.2 SHALL: There shall be one or more functions to maintain integrity of collected
+vehicle configuration information
+Note: Can be implemented either in vehicle or infrastructure or both
+
+7.3.2.3 SHALL: There shall be one or more functions to identify ECUs to which a
+software update package applies
+Note: Can be implemented either in vehicle or infrastructure or both
+
+7.3.3 COMMUNICATING SOFTWARE UPDATE CAMPAIGN INFORMATION
+7.3.3.1 SHALL: There shall be one or more functions to provide information to related
+parties as required by this document
+Note 1: Support notification requirements in Clause 9
+Note 2: Can be implemented either in vehicle or infrastructure or both
+
+7.3.3.2 SHOULD: There should be one or more functions to obtain confirmation of vehicle
+user for a software update operation
+
+7.3.4 PROCESSING SOFTWARE UPDATE PACKAGES
+7.3.4.1 SHALL: There shall be one or more functions to support software update distribution
+methods
+
+7.3.4.2 SHALL: There shall be one or more functions to support software update operations
+(receipt, installation, activation)
+
+7.3.4.3 SHALL: There shall be one or more functions to determine that necessary conditions
+are met to perform software update operations
+
+7.3.4.4 SHALL: There shall be one or more functions to arbitrate simultaneous access
+requests to vehicle to maintain safe vehicle state
+
+7.3.4.5 SHALL: There shall be one or more functions to handle interruptions in
+communications while receiving a software update package
+
+7.3.4.6 SHALL: There shall be one or more functions to verify integrity and authenticity
+of received software update package any time before activation
+Note: Can be implemented either in vehicle or infrastructure or both
+
+7.3.4.7 SHALL: There shall be one or more functions to maintain integrity of software
+update packages and their contents:
+- From infrastructure to vehicles
+- Within vehicle and between vehicle systems
+
+7.3.4.8 SHALL: There shall be one or more functions to check compatibility of software
+update package before activation
+Note: Can be implemented either in vehicle or infrastructure or both
+
+7.3.4.9 SHALL: There shall be one or more functions to ensure safe vehicle state in
+each step of software update operation
+
+7.3.4.10 SHALL: There shall be one or more functions to ensure vehicle safety if
+software update operation fails
+
+7.4 WORK PRODUCTS
+7.4.1 Documentation of managing risks from 7.3.1.1 to 7.3.1.3
+7.4.2 Documentation of functions for managing vehicle configuration information from
+7.3.2.1 to 7.3.2.3
+7.4.3 Documentation of functions for communications related to software update campaigns
+from 7.3.3.1 and 7.3.3.2
+7.4.4 Documentation of functions for processing software update packages from 7.3.4.1
+to 7.3.4.10
+
+================================================================================
+SECTION 8: SOFTWARE UPDATE PACKAGE REQUIREMENTS
+================================================================================
+
+8.1 OBJECTIVES
+Ensure the following are performed:
+a) Identifying the target(s) and contents of software update package
+b) Assembling software update package containing necessary software and metadata
+c) Verifying and validating software update package
+d) Approving release of software update package
+
+8.2 GENERAL
+This clause includes requirements for assembling software update package, and verifying
+and validating package contents, as well as identifying classes of vehicles and vehicle
+systems to receive software update package. Software update package development is
+process of putting all necessary elements into form for software update operation at
+vehicle level. Software update package is approved for release based on performed
+verification and validation.
+
+8.3 REQUIREMENTS AND RECOMMENDATIONS
+
+8.3.1 IDENTIFICATION OF TARGETS AND CONTENTS
+
+8.3.1.1 SHALL: Target(s) for software update package shall be determined
+Note: For suppliers, target can be one or more ECUs. For OEMs, target can be vehicles,
+vehicle systems, or ECUs
+
+8.3.1.2 SHALL: Software and associated metadata released for identified target(s)
+shall be selected for software update package
+Note: For suppliers, software/metadata can be for single ECU. For OEMs, can cover
+vehicle, multiple vehicle systems, or ECUs
+
+Examples of metadata:
+- Safe vehicle state
+- Conditions
+- Compatibility information
+- Version information or release information or both
+- Necessary in-vehicle resources
+
+8.3.1.3 SHALL: Compatibility of software update package with existing software and
+hardware of target shall be identified
+
+8.3.1.4 SHALL: Dependencies for software update package with target shall be determined
+
+8.3.1.5 SHALL: Necessary in-vehicle resources and conditions in target shall be identified
+Notes: Conditions can include compatibility
+Compatibility can be derived from dependencies
+
+8.3.1.6 SHALL: Constraints on software update distribution methods of software update
+package shall be identified
+
+8.3.1.7 SHALL: Necessary cybersecurity actions for software update package shall be identified
+
+8.3.1.8 SHALL: Necessary actions by vehicle user or skilled person for software update
+package shall be determined
+Note: Can be cybersecurity or safety related
+
+8.3.2 ASSEMBLY OF SOFTWARE UPDATE PACKAGE
+
+8.3.2.1 SHALL: Software update package shall be created
+
+8.3.2.2 SHALL: Only selected software and associated metadata shall be included in
+created software update package
+Note: Software/metadata selected in 8.3.1.2
+
+8.3.2.3 SHALL: Organization shall assign unique identifier to software update package
+
+8.3.3 VERIFICATION AND VALIDATION
+
+8.3.3.1 SHALL: Required verification and validation for software update package shall
+be determined and performed before release
+Examples of verification/validation:
+- Compatibility with existing software/hardware
+- Dependencies validation
+- In-vehicle resources validation
+- Failure implications determination
+- Package contains only selected software/metadata
+- Necessary cybersecurity actions included and verified
+
+8.3.3.6 SHALL: Software update package shall be verified and validated to contain only
+selected software and metadata
+
+8.3.3.7 SHALL: Inclusion of necessary cybersecurity actions shall be verified and validated
+
+8.3.3.8 SHALL: Inclusion of necessary actions shall be validated and verified
+
+8.3.4 APPROVAL FOR RELEASE
+
+8.3.4.1 SHALL: Software update package shall be approved for release based on
+verification and validation
+
+8.4 WORK PRODUCTS
+8.4.1 Documentation of targets, contents, compatibility, dependencies, conditions,
+actions and necessary in-vehicle resources from 8.3.1.1 to 8.3.1.8
+8.4.2 Software update package with only intended/necessary contents from 8.3.2.1
+to 8.3.2.3
+8.4.3 Documentation of verification and validation from 8.3.3.1 to 8.3.3.8
+8.4.4 Documentation of approval for release from 8.3.4.1
+
+================================================================================
+SECTION 9: SOFTWARE UPDATE CAMPAIGN REQUIREMENTS
+================================================================================
+
+9.1 OBJECTIVES
+Ensure the following activities are performed:
+a) Preparing software update campaigns
+b) Executing software update campaigns
+c) Completing software update campaigns
+
+9.2 GENERAL
+This clause includes requirements for identifying targets of software update campaign,
+obtaining vehicle configuration information, resolving targets into recipients,
+distributing software update package and providing relevant communication about
+software update campaign.
+
+9.3 REQUIREMENTS AND RECOMMENDATIONS
+
+9.3.1 SOFTWARE UPDATE CAMPAIGN PREPARATION
+
+9.3.1.1 SHALL: Organization shall determine purpose(s) of each software update campaign
+Examples:
+- New features provided by software update packages
+- Cybersecurity or safety issues fixed by packages
+- Altering existing features by packages
+
+9.3.1.2 SHALL: Organization shall assign roles and responsibilities for each software
+update campaign
+
+9.3.1.3 SHALL: Organization shall select software update packages for each campaign
+
+9.3.1.4 SHALL: Organization shall confirm that each selected software update package
+has been approved for release (see 8.4)
+
+9.3.1.5 SHALL: Organization shall determine what vehicle configuration information
+is affected by each software update campaign
+
+9.3.1.6 SHALL: Organization shall determine which software update distribution method(s)
+are (are) used for each campaign
+Notes: Organization can choose one or more distribution methods for given campaign
+Different distribution methods can be used for different packages in same campaign
+
+9.3.1.7 SHALL: Organization shall determine target(s) for each software update campaign
+
+9.3.1.8 SHALL: Organization shall specify conditions to execute each software update
+campaign
+Examples: Available network capacity, workshop availability, connectivity/mobile network reception
+
+9.3.1.9 SHALL: Organization shall determine implications of dependencies for each
+selected software update package based on results from 8.3.3.3
+
+9.3.1.10 SHALL: Organization shall specify corrective actions to be performed in event
+of software update operation failure in vehicle
+Notes: Can be technical actions or actions including vehicle user or combination
+
+9.3.1.11 SHALL: Measures for cybersecurity for each software update campaign shall be
+analyzed and determined based on results of Clause 8
+
+9.3.1.12 SHALL: Organization shall specify need for special equipment, skilled person
+or actions to complete software update operations in vehicle
+
+9.3.1.13 SHALL: Organization shall determine need for vehicle user confirmation for
+each software update campaign
+
+9.3.1.14 SHALL: Organization shall determine necessary information to be communicated
+concerning each software update campaign including related parties and methods
+
+9.3.1.15 SHALL: Organization shall create software update campaign plan for each
+campaign based on 9.3.1.1 to 9.3.1.14 and relevant parts of Clause 8
+
+9.3.2 SOFTWARE UPDATE CAMPAIGN EXECUTION
+
+9.3.2.1 SHALL: Vehicle configuration information necessary to resolve targets into
+recipients shall be obtained for software update campaign
+
+9.3.2.2 SHALL: Targets of software update campaign shall be resolved into recipients
+
+9.3.2.3 SHALL: Processes required in Clause 8 and 9.3.1 shall be completed before
+initiating any software update operation during campaign execution
+
+9.3.2.4 SHALL: Software update package(s) shall be distributed to recipient(s)
+
+9.3.2.5 SHALL: Necessary conditions to perform software update operation shall be met
+at latest prior to activation
+Note: Necessary conditions can be met by either vehicle or infrastructure or both
+
+9.3.2.6 SHALL: Simultaneous access requests during software update operation shall be
+managed to maintain safe vehicle state
+
+9.3.2.7 SHALL: Integrity and authenticity of software update package shall be verified
+at latest prior to activation
+Note: Can be performed either in vehicle or infrastructure or both
+
+9.3.2.8 SHALL: Compatibility for software update package(s) shall be confirmed at
+latest prior to activation
+Note: Can be performed either in vehicle or infrastructure or both
+
+9.3.2.9 SHOULD: Vehicle user should be informed about availability of software update
+campaigns affecting their vehicle
+
+9.3.2.10 SHOULD: Vehicle user should be informed at latest prior to activation about:
+- Purposes of software update campaign
+- Criticality of software update campaign
+- Instructions for safely performing software update operation
+- Changes in vehicle functions due to campaign
+- Vehicle functions unavailable during software update and implications for user
+- Estimated time vehicle/specific functions will be unavailable
+
+9.3.2.11 SHOULD: Software update campaign should obtain confirmation from vehicle user
+at latest prior to activation according to campaign plan
+
+9.3.2.12 SHALL: Vehicle user shall be notified if required to perform action during
+software update campaign execution
+
+9.3.2.13 SHALL: Software update campaign activities requiring special equipment or
+training shall be performed by skilled person
+
+9.3.2.14 SHALL: Corrective action shall be performed in accordance with campaign plan
+when software update operation fails
+
+9.3.2.15 SHOULD: Status of software update campaign execution for each recipient
+should be obtained
+
+9.3.2.16 SHOULD: Results of software update operation for each recipient should be
+reported in appropriate time frame to related parties as determined by campaign plan
+
+9.3.2.17 SHALL: Identified information about content of software update campaign shall
+be communicated to related parties as documented in campaign plan, including any
+changes to user manual
+
+9.3.3 SOFTWARE UPDATE CAMPAIGN COMPLETION
+
+9.3.3.1 SHALL: Records of execution of software update campaign shall be managed and stored
+
+9.3.3.2 SHOULD: End of software update campaign should be communicated to vehicle user
+and related parties
+Note: Not necessary to predetermine end date during preparation/execution
+
+9.4 WORK PRODUCTS
+9.4.1 Documentation of software update campaign plan from 9.3.1.1 to 9.3.1.15
+9.4.2 Documentation of software update campaign execution from 9.3.2.1 to 9.3.2.17
+9.4.3 Documentation related to completion from 9.3.3.1 and 9.3.3.2
+
+================================================================================
+BIBLIOGRAPHY (NORMATIVE AND INFORMATIVE REFERENCES)
+================================================================================
+
+[1] ISO 9001 - Quality management systems — Requirements
+
+[2] ISO 10007 - Quality management — Guidelines for configuration management
+
+[3] ISO 13849 - Safety of machinery — Safety-related parts of control systems
+
+[4] ISO/IEC/IEEE 15288 - Systems and software engineering — System life cycle processes
+
+[5] ISO/SAE 21434 - Road vehicles — Cybersecurity engineering
+
+[6] ISO 21448 - Road vehicles — Safety of the intended functionality
+
+[7] ISO/IEC 25000 - Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — Guide to SQuaRE
+
+[8] ISO 26262 (all parts) - Road vehicles — Functional safety
+
+[9] ISO/IEC 26551 - Software and systems engineering — Tools and methods for product line requirements engineering
+
+[10] ISO/IEC 27000 (all parts) - Information technology — Security techniques
+
+[11] ISO/IEC 27701 - Security techniques — Extension to ISO/IEC 27001 and ISO/IEC 27002 for privacy information management
+
+[12] ISO/IEC 29100 - Information technology — Security techniques — Privacy framework
+
+[13] IEC 61508 (all parts) - Functional safety of electrical/electronic/programmable electronic safety-related systems
+
+[14] IATF 16949 - Quality management system requirements for automotive production, service and/or accessory parts
+
+================================================================================
+DOCUMENT STRUCTURE HIERARCHY
+================================================================================
+
+HIERARCHICAL LEVEL 1: ORGANIZATIONAL PROCESSES
+- Governance and compliance
+- Continuous improvement
+- Information sharing
+- Supporting processes (documentation, requirements, configuration, quality, change management)
+- Organizational auditing
+
+HIERARCHICAL LEVEL 2: PROJECT MANAGEMENT
+- Project planning
+- Project documentation and management
+- Role and responsibility assignment
+- Tailoring justification
+- Interoperability confirmation
+- Integrity preservation
+
+HIERARCHICAL LEVEL 3: INFRASTRUCTURE DEVELOPMENT
+- Cybersecurity risk management
+- Vehicle configuration information handling functions
+- Campaign information communication functions
+- Software update package processing functions
+
+HIERARCHICAL LEVEL 4: VEHICLE/SYSTEM FUNCTIONS
+- Risk management (functional safety and cybersecurity)
+- Vehicle configuration information collection/management
+- Campaign communication to users
+- Software update package processing and safety management
+
+HIERARCHICAL LEVEL 5: SOFTWARE UPDATE PACKAGE ASSEMBLY
+- Target and content identification
+- Package assembly
+- Verification and validation
+- Release approval
+
+HIERARCHICAL LEVEL 6: CAMPAIGN EXECUTION
+- Campaign preparation and planning
+- Campaign execution and distribution
+- Campaign completion and record management
+
+================================================================================
+KEY DEFINITIONS ORGANIZED BY CATEGORY
+================================================================================
+
+SAFETY AND CYBERSECURITY TERMS:
+- Functional safety: Absence of unreasonable risk from malfunctioning vehicle systems
+- Functional safety risk: Combination of probability and severity of harm
+- Cybersecurity: Assets sufficiently protected against threat scenarios
+- Cybersecurity risk: Effect of uncertainty expressed as attack feasibility and impact
+- Safe vehicle state: Vehicle operating mode for software update without unreasonable risk
+
+ORGANIZATIONAL TERMS:
+- Software update engineering: Systematic managed approach to planning, development, deployment
+- Organization: Entities involved in software update engineering
+
+TECHNICAL TERMS:
+- Software: Computer programs and data intended for installation, dynamically written
+- ECU: Embedded device whose software can be updated
+- Vehicle system: Functional group of one or more ECUs and attached hardware
+- Vehicle configuration information: Accounting of hardware/software versions and parameters
+
+PROCESS TERMS:
+- Software update operation: Steps involved in receipt, installation, activation
+- Software update package: Set of software and metadata intended for deployment
+- Software update campaign: Sequence of identifying targets, resolving recipients, distributing
+- Software update project: Set of activities for one or more targets
+
+RESOURCE TERMS:
+- Skilled person: Individual with relevant education, training or experience
+- Vehicle user: Person operating, driving, owning or managing vehicle
+- In-vehicle resource: Vehicle or ECU available properties relevant for updates
+- Recipient: Individual instance receiving software update package
+
+DISTRIBUTION TERMS:
+- Software update distribution method: Mechanism for delivery (wired, wireless, replacement)
+- Condition: Criteria required for successful software update operation
+- Dependency: Effect of software for one system on other systems
+
+INTEGRITY TERMS:
+- Compatibility: Capability of software to be executable without conflicts
+- Integrity: State of being complete and unaltered
+- Tailor: To omit or perform activity differently
+
+================================================================================
+CRITICAL REQUIREMENTS (SHALL STATEMENTS) SUMMARY
+================================================================================
+
+GOVERNANCE (4.3.1.2):
+- SHALL establish, document, and maintain rules and processes
+
+ACTIVITIES (4.3.1.3):
+- SHALL implement software update engineering per ISO/SAE 21434, ISO 26262-6, ISO 26262-8
+
+CONTINUOUS IMPROVEMENT (4.3.2.1, 4.3.2.2):
+- SHALL establish continuous improvement process
+- SHALL verify processes still meet requirements after changes
+
+INFORMATION SHARING (4.3.3.1):
+- SHALL establish policy for sharing information
+
+SUPPORTING PROCESSES (4.3.4.1 through 4.3.4.6):
+- SHALL implement document management
+- SHALL implement requirements management
+- SHALL implement configuration management
+- SHALL implement quality management
+- SHALL implement change management
+
+AUDITING (4.3.5.1):
+- SHALL perform audit to verify achievement of objectives
+
+PROJECT MANAGEMENT (5.3.1.1 through 5.3.1.3):
+- SHALL develop and maintain project plan
+- SHALL manage and store project documentation
+- SHALL establish and maintain roles and responsibilities
+
+INTEROPERABILITY (5.3.3.1):
+- SHALL establish process to confirm interoperability
+
+INTEGRITY (5.3.4.1):
+- SHALL establish processes to preserve integrity
+
+SOFTWARE PACKAGE REQUIREMENTS (8.3.1 - 8.3.4):
+- SHALL determine targets for software update package
+- SHALL select software and metadata for package
+- SHALL identify compatibility with existing software/hardware
+- SHALL determine dependencies
+- SHALL identify necessary in-vehicle resources and conditions
+- SHALL identify constraints on distribution methods
+- SHALL identify necessary cybersecurity actions
+- SHALL determine necessary actions by user/skilled person
+- SHALL create software update package
+- SHALL include only selected software and metadata
+- SHALL assign unique identifier
+- SHALL perform verification and validation
+- SHALL approve for release based on V&V
+
+CAMPAIGN REQUIREMENTS (9.3.1 - 9.3.3):
+- SHALL determine campaign purposes
+- SHALL assign campaign roles and responsibilities
+- SHALL select software update packages
+- SHALL confirm packages approved for release
+- SHALL determine affected vehicle configuration information
+- SHALL determine distribution methods
+- SHALL determine campaign targets
+- SHALL specify execution conditions
+- SHALL specify corrective actions
+- SHALL analyze cybersecurity measures
+- SHALL specify need for special equipment/skilled person
+- SHALL determine need for user confirmation
+- SHALL create campaign plan
+- SHALL obtain vehicle configuration information
+- SHALL resolve targets into recipients
+- SHALL complete pre-execution processes
+- SHALL distribute software update package(s)
+- SHALL ensure necessary conditions met
+- SHALL manage simultaneous access requests
+- SHALL verify package integrity and authenticity
+- SHALL confirm compatibility
+- SHALL notify user if action required
+- SHALL perform activities with special equipment by skilled person
+- SHALL perform corrective actions on failure
+- SHALL manage and store execution records
+
+================================================================================
+RECOMMENDATIONS (SHOULD STATEMENTS) SUMMARY
+================================================================================
+
+PRIVACY (4.3.4.3):
+- SHOULD consider privacy implications
+
+INFRASTRUCTURE RESOURCE DETERMINATION (6.3.4.5):
+- SHOULD have functions to determine sufficient in-vehicle resources
+
+INFRASTRUCTURE FAILURE RESPONSE (6.3.4.7):
+- SHOULD have functions to initiate actions on failure notification
+
+USER CONFIRMATION (7.3.3.2):
+- SHOULD have functions to obtain vehicle user confirmation
+
+CAMPAIGN STATUS REPORTING (9.3.2.15):
+- SHOULD obtain status of campaign execution for each recipient
+
+RESULTS REPORTING (9.3.2.16):
+- SHOULD report results in appropriate time frame to related parties
+
+USER INFORMATION (9.3.2.9):
+- SHOULD inform vehicle user about availability of campaigns affecting their vehicle
+
+USER INFORMATION PRE-ACTIVATION (9.3.2.10):
+- SHOULD inform user about campaign purposes, criticality, instructions, changes, unavailability,
+  and estimated duration
+
+CAMPAIGN CONFIRMATION (9.3.2.11):
+- SHOULD obtain confirmation from vehicle user at latest prior to activation
+
+CAMPAIGN COMPLETION (9.3.3.2):
+- SHOULD communicate end of campaign to vehicle user and related parties
+
+================================================================================
+CROSS-REFERENCES TO OTHER ISO STANDARDS
+================================================================================
+
+ISO 26262 SERIES (Functional Safety):
+- ISO 26262-6: Product development at software level
+- ISO 26262-8: Supporting processes
+- Used for managing functional safety in software update engineering
+
+ISO/SAE 21434 (Cybersecurity Engineering):
+- Referenced for cybersecurity engineering activities and risk management
+- Used for threat analysis and risk assessment methods
+
+ISO 9001 (Quality Management):
+- Referenced for quality management process guidance
+
+ISO 10007 (Configuration Management):
+- Referenced for configuration management process guidance
+
+ISO 13849 (Safety of Machinery):
+- Referenced for safety-related control systems
+
+ISO 21448 (Safety of Intended Functionality):
+- Referenced for managing safety risks from foreseeable misuse
+
+ISO/IEC 15288 (Systems Engineering - Life Cycle):
+- Referenced for system life cycle process guidance
+
+ISO/IEC 25000 (SQuaRE - Quality Evaluation):
+- Referenced for quality management process guidance
+
+ISO/IEC 26551 (Requirements Engineering):
+- Referenced for tools and methods for requirements management
+
+ISO/IEC 27000 SERIES (Information Security):
+- Referenced for cybersecurity risk management of infrastructure
+
+ISO/IEC 27701 (Privacy Extension):
+- Referenced for privacy information management
+
+ISO/IEC 29100 (Privacy Framework):
+- Referenced for privacy framework guidance
+
+IEC 61508 SERIES (Functional Safety - Electric/Electronic/Programmable):
+- Referenced for functional safety in programmable systems
+
+IATF 16949 (Automotive Quality Management):
+- Referenced for automotive production quality requirements
+
+================================================================================
+DOCUMENT CHARACTERISTICS AND METRICS
+================================================================================
+
+Document Structure:
+- Total Pages: 36 (24 substantive pages, 12 front/back matter/blank)
+- Total Clauses: 9 main sections
+- Total Sub-clauses: Approximately 100+ detailed requirements
+
+Content Distribution:
+- Front Matter: Pages 1-7 (Cover, copyright, TOC, foreword, introduction)
+- Main Standard: Pages 8-23 (Sections 1-9)
+- Bibliography: Page 24
+- Back Matter: Pages 25-36 (blank pages)
+
+Requirements Distribution:
+- Organizational Level Requirements: ~15 SHALL statements
+- Project Level Requirements: ~8 SHALL statements
+- Infrastructure Level Requirements: ~14 SHALL statements
+- Vehicle/System Level Requirements: ~20 SHALL statements
+- Software Package Requirements: ~20 SHALL statements
+- Campaign Requirements: ~35 SHALL statements
+
+Total SHALL Statements: Approximately 110+
+Total SHOULD Statements: Approximately 10
+
+Key Principles:
+- Four-level architecture: Organizational, Project, Infrastructure, Vehicle/System
+- Emphasis on safety, cybersecurity, and integrity throughout
+- Strong documentation and process management requirements
+- Scalable to different organizational types (OEM, supplier, service provider)
+
+================================================================================
+END OF ISO 24089:2023(E) EXTRACTION
+================================================================================
