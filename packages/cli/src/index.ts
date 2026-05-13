@@ -40,6 +40,7 @@ async function main(): Promise<void> {
     { registerIndexCommand },
     { registerDialogueCommand },
     { registerQualityCommand },
+    { registerPRCommand },
   ] = await Promise.all([
     import('./commands/init.js'),
     import('./commands/update.js'),
@@ -52,6 +53,7 @@ async function main(): Promise<void> {
     import('./commands/index-cmd.js'),
     import('./commands/dialogue.js'),
     import('./commands/quality.js'),
+    import('./commands/pr.js'),
   ])
 
   registerInitCommand(program)
@@ -65,6 +67,7 @@ async function main(): Promise<void> {
   registerIndexCommand(program)
   registerDialogueCommand(program)
   registerQualityCommand(program)
+  registerPRCommand(program)
 
   // Unknown commands: print a helpful error and exit 1
   program.on('command:*', (operands: string[]) => {

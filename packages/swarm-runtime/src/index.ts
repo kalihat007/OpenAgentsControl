@@ -5,4 +5,5 @@ export * from "./resilience.js";
 export * from "./pev-loop.js";
 export * from "./collaboration.js";
 export * from "./quality-signals.js";
+export * from "./agent-protocol.js";
 export type * from "./types.js";
