@@ -40,7 +40,7 @@ import { loadTestCase, loadTestCases } from './test-case-loader.js';
 import { ResultSaver } from './result-saver.js';
 import { PromptManager } from './prompt-manager.js';
 import { SuiteValidator } from './suite-validator.js';
-import { globSync } from 'glob';
+import glob from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { rmSync, existsSync, readdirSync } from 'fs';
@@ -572,7 +572,7 @@ async function main() {
     }
   } else {
     for (const testDir of testDirs) {
-      const files = globSync(pattern, { cwd: testDir, absolute: true });
+      const files = glob.sync(pattern, { cwd: testDir, absolute: true });
       testFiles = testFiles.concat(files);
     }
   }

@@ -83,6 +83,15 @@ export class ContextLoadingEvaluator extends BaseEvaluator {
       'delegation.md'
     ],
     'bash-only': [], // No context required
+    'read-only': [], // No context required
+    'create-new-file': [], // No existing context required
+    'modify-existing-file': [
+      '.opencode/context/core/standards/code.md',
+      'standards/code.md',
+      'code.md'
+    ],
+    'delete-file': [], // No context required
+    'conversational': [], // No context required
     'unknown': []    // Any context file acceptable
   };
 

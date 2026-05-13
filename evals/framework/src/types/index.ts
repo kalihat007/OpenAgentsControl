@@ -263,7 +263,19 @@ export interface MessageMetrics {
 /**
  * Task type classification
  */
-export type TaskType = 'code' | 'docs' | 'tests' | 'review' | 'delegation' | 'bash-only' | 'unknown';
+export type TaskType =
+  | 'code'
+  | 'docs'
+  | 'tests'
+  | 'review'
+  | 'delegation'
+  | 'bash-only'
+  | 'read-only'
+  | 'create-new-file'
+  | 'modify-existing-file'
+  | 'delete-file'
+  | 'conversational'
+  | 'unknown';
 
 /**
  * Task context for evaluation

@@ -195,6 +195,23 @@ export const ExpectedResultsSchema = z.object({
 export type ExpectedResults = z.infer<typeof ExpectedResultsSchema>;
 
 /**
+ * Legacy integration-test outcome shape.
+ *
+ * Some older TypeScript tests still construct TestCase objects with
+ * expectedOutcome. Keep it typed so those fixtures continue to compile while
+ * the runner migrates toward behavior + expectedViolations.
+ */
+export const LegacyExpectedOutcomeSchema = z.object({
+  type: z.string(),
+  contains: z.array(z.string()).optional(),
+  tools: z.array(z.string()).optional(),
+  files: z.array(z.string()).optional(),
+  description: z.string().optional(),
+}).passthrough();
+
+export type LegacyExpectedOutcome = z.infer<typeof LegacyExpectedOutcomeSchema>;
+
+/**
  * Multi-message prompt (for multi-turn conversations)
  */
 export const MultiMessageSchema = z.object({
@@ -293,6 +310,11 @@ export const TestCaseSchema = z.object({
   expected: ExpectedResultsSchema.optional(),
 
   /**
+   * Legacy integration-test outcome (DEPRECATED - use behavior + expectedViolations)
+   */
+  expectedOutcome: LegacyExpectedOutcomeSchema.optional(),
+
+  /**
    * Timeout in milliseconds (default: 60000)
    */
   timeout: z.number().optional(),
@@ -309,13 +331,22 @@ export const TestCaseSchema = z.object({
 ).refine(
   // Allow: expected (deprecated), behavior alone, or behavior + expectedViolations
   // This is more flexible - behavior alone is valid for simple tests
-  (data) => data.expected || data.behavior || data.expectedViolations,
+  (data) => data.expected || data.expectedOutcome || data.behavior || data.expectedViolations,
   {
-    message: 'Must provide "expected" (deprecated), "behavior", "expectedViolations", or a combination',
+    message: 'Must provide "expected" or "expectedOutcome" (deprecated), "behavior", "expectedViolations", or a combination',
   }
 );
 
-export type TestCase = z.infer<typeof TestCaseSchema>;
+export type ParsedTestCase = z.infer<typeof TestCaseSchema>;
+
+/**
+ * Runtime test cases loaded from YAML include category, but older in-code
+ * integration fixtures omit it. Keep the public fixture type permissive while
+ * preserving strict schema validation for files.
+ */
+export type TestCase = Omit<ParsedTestCase, 'category'> & {
+  category?: ParsedTestCase['category'];
+};
 
 /**
  * Test suite schema (collection of test cases)
