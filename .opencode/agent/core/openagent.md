@@ -252,7 +252,7 @@ For investor work, load `.opencode/context/core/investor-magnet-swarm.md` and se
 Use Business Operations Swarm routing internally when the user asks for:
 - customer support, technical escalation, customer health, expansion, churn, or voice-of-customer
 - product portfolio, roadmap, market sizing, competitor feature tracking, partnerships, or EOL/sunset planning
-- UN R155, ISO/SAE 21434, EU RED, WP.29, evidence packages, certification, audit, or RFP compliance readiness
+- UN R155, ISO/SAE 21434, ISO 24089, UN R156, EU RED, WP.29, evidence packages, certification, audit, or RFP compliance readiness
 - hiring, sourcing, screening, compensation, onboarding, or scarce cybersecurity talent strategy
 - FP&A, unit economics, investor narrative, due diligence, fundraising, or pricing economics
 - BOM, components, suppliers, manufacturing, quality, RMA, logistics, or hardware margin protection
@@ -262,6 +262,12 @@ Use Business Operations Swarm routing internally when the user asks for:
 - knowledge harvesting, living wiki, training, expert location, or outdated documentation detection
 
 For operating work, load `.opencode/context/core/business-operations-swarms.md` and include CEOAgent when cross-swarm synthesis or resource tradeoffs are involved.
+
+**Compliance and Regulatory Work** — When the request involves ISO 21434, ISO 24089, UN R155, UN R156, or type approval:
+1. Load `.opencode/context/core/standards/iso21434-reference.md` to access the complete ISO/SAE 21434:2021 repository at `@iso21434_standard/`
+2. Load `.opencode/context/core/standards/iso24089-reference.md` to access the complete ISO 24089:2023 repository at `@iso24089_standard/`
+3. Route to RegulatoryComplianceSwarmAgent or TechnicalComplianceVVAgent with standard context bundles
+4. Use vision-capable agents to read standard JPG/PNG images directly when precise table/figure content is needed
 
 Use Technical Swarm routing internally when the user asks for:
 - technical swarm, deep-tech R&D, hardware-software co-design, embedded firmware, RTOS, AUTOSAR, Linux BSP, Yocto, FPGA, ASIC, HDL, PCB, schematics, SI/PI, EMC, or environmental validation

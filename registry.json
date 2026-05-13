@@ -455,7 +455,7 @@
         "type": "subagent",
         "path": ".opencode/agent/subagents/core/contextscout.md",
         "version": "5.1.0",
-        "description": "Get accurate context FIRST before diving deep—save time, energy, and avoid rework. ContextScout intelligently discovers and retrieves the exact context files you need with precise file paths and line ranges, so you start with the right information instead of guessing. Optimized for multi-model compatibility (Claude, Gemini, GPT-4) with 20% token reduction.",
+        "description": "Get accurate context FIRST before diving deep\u2014save time, energy, and avoid rework. ContextScout intelligently discovers and retrieves the exact context files you need with precise file paths and line ranges, so you start with the right information instead of guessing. Optimized for multi-model compatibility (Claude, Gemini, GPT-4) with 20% token reduction.",
         "tags": [
           "context",
           "search",
@@ -2433,7 +2433,7 @@
         "name": "Project Context",
         "type": "context",
         "path": ".opencode/context/project/project-context.md",
-        "description": "⛔ DEPRECATED: Replaced by project-intelligence/technical-domain.md",
+        "description": "\u26d4 DEPRECATED: Replaced by project-intelligence/technical-domain.md",
         "tags": [
           "deprecated",
           "context",
@@ -2511,6 +2511,42 @@
         ],
         "dependencies": [],
         "category": "standard"
+      },
+      {
+        "id": "iso21434-reference",
+        "name": "ISO/SAE 21434 Reference",
+        "type": "context",
+        "path": ".opencode/context/core/standards/iso21434-reference.md",
+        "description": "Complete ISO/SAE 21434:2021 road vehicles cybersecurity engineering reference with file index, TARA workflow mapping, CAL tables, and compliance evidence guidance",
+        "tags": [
+          "standards",
+          "iso21434",
+          "cybersecurity",
+          "automotive",
+          "compliance",
+          "tara",
+          "un-r155"
+        ],
+        "dependencies": [],
+        "category": "specialized"
+      },
+      {
+        "id": "iso24089-reference",
+        "name": "ISO 24089 Reference",
+        "type": "context",
+        "path": ".opencode/context/core/standards/iso24089-reference.md",
+        "description": "Complete ISO 24089:2023 road vehicles software update engineering reference with SUMS compliance guidance, OTA design patterns, and UN R156 type-approval mapping",
+        "tags": [
+          "standards",
+          "iso24089",
+          "software-update",
+          "ota",
+          "sums",
+          "un-r156",
+          "automotive"
+        ],
+        "dependencies": [],
+        "category": "specialized"
       },
       {
         "id": "workflows-review",
@@ -4277,7 +4313,7 @@
         "name": "Agent Metadata",
         "type": "context",
         "path": ".opencode/context/openagents-repo/core-concepts/agent-metadata.md",
-        "description": "...\\\"               # ✅ Valid OpenCode field",
+        "description": "...\\\"               # \u2705 Valid OpenCode field",
         "tags": [
           "development",
           "coding"
@@ -4907,7 +4943,7 @@
     },
     "developer": {
       "name": "Developer",
-      "description": "Complete software development and technical-swarm environment under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm routing, code generation, testing, review, build tools, UI/UX patterns, and controlled swarm execution.",
+      "description": "Complete software development and technical-swarm environment under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm routing, ISO/SAE 21434 and ISO 24089 automotive compliance, code generation, testing, review, build tools, UI/UX patterns, and controlled swarm execution.",
       "components": [
         "agent:openagent",
         "subagent:swarm-orchestrator",
@@ -4962,6 +4998,8 @@
         "context:ui-styling-standards",
         "context:clean-code",
         "context:api-design",
+        "context:iso21434-reference",
+        "context:iso24089-reference",
         "config:env-example",
         "config:agent-metadata",
         "config:readme",
@@ -4993,7 +5031,7 @@
     },
     "business": {
       "name": "Business",
-      "description": "Business, revenue, investor, operations, content, and visual workflows under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm routing, revenue swarms, investor magnet swarms, support, compliance, finance, partnerships, and knowledge management.",
+      "description": "Business, revenue, investor, operations, content, and visual workflows under one command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm routing, ISO/SAE 21434 and ISO 24089 regulatory compliance, revenue swarms, investor magnet swarms, support, compliance, finance, partnerships, and knowledge management.",
       "components": [
         "agent:openagent",
         "subagent:task-manager",
@@ -5033,6 +5071,8 @@
         "subagent:predictive-revenue",
         "subagent:sales-coach",
         "context:revenue-swarm",
+        "context:iso21434-reference",
+        "context:iso24089-reference",
         "command:revenue-swarm",
         "command:campaign-genesis",
         "command:sales-coach",
@@ -5075,7 +5115,7 @@
     },
     "full": {
       "name": "Full",
-      "description": "Everything included under one user-facing command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm, development, technical, revenue, investor, business operations, tools, plugins, and complete context coverage.",
+      "description": "Everything included under one user-facing command: opencode --agent OpenAgent. Includes Trusted Fast Mode, default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm, ISO/SAE 21434 and ISO 24089 automotive cybersecurity compliance, development, technical, revenue, investor, business operations, tools, plugins, and complete context coverage.",
       "components": [
         "agent:openagent",
         "subagent:swarm-orchestrator",
@@ -5135,6 +5175,8 @@
         "context:ui-styling-standards",
         "context:clean-code",
         "context:api-design",
+        "context:iso21434-reference",
+        "context:iso24089-reference",
         "config:env-example",
         "config:agent-metadata",
         "config:readme",
@@ -5216,7 +5258,7 @@
     },
     "advanced": {
       "name": "Advanced (Meta-Level)",
-      "description": "Full Trusted Fast OpenAgent installation plus default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm, and meta/system-builder subagents for creating custom AI architectures, agent families, workflows, contexts, commands, and installation profiles.",
+      "description": "Full Trusted Fast OpenAgent installation plus default Experts Mode powered by agent swarm orchestration, scale-out organizational AI, HackersEra Master Swarm, ISO/SAE 21434 and ISO 24089 automotive cybersecurity compliance, and meta/system-builder subagents for creating custom AI architectures, agent families, workflows, contexts, commands, and installation profiles.",
       "badge": "RECOMMENDED DEFAULT",
       "components": [
         "agent:openagent",
@@ -5284,6 +5326,8 @@
         "context:ui-styling-standards",
         "context:clean-code",
         "context:api-design",
+        "context:iso21434-reference",
+        "context:iso24089-reference",
         "context:system-builder-guide",
         "context:orchestrator-template",
         "context:subagent-template",

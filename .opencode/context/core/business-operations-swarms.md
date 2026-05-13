@@ -14,7 +14,7 @@ For the user's product direction, assume HackersEra-style cybersecurity or cyber
 | Investor Magnet | InvestorNarrativeAgent / FundingRoundSimulationAgent | funding narrative, investor momentum, social proof, analyst/media credibility |
 | Customer Support & Success | CustomerSupportSuccessSwarmAgent | ticket triage, technical escalation, health, expansion, VOC |
 | Product Management & Strategy | ProductStrategySwarmAgent | market sizing, roadmap, partnerships, sunset analysis |
-| Regulatory & Compliance | RegulatoryComplianceSwarmAgent | standards monitoring, gap analysis, certification evidence |
+| Regulatory & Compliance | RegulatoryComplianceSwarmAgent | standards monitoring (ISO 21434, ISO 24089, UN R155, UN R156, EU RED, WP.29), gap analysis, certification evidence |
 | Talent & Hiring | TalentHiringSwarmAgent | sourcing, screening, comp, onboarding |
 | Finance & Investor Relations | FinanceInvestorRelationsSwarmAgent | forecasts, unit economics, investor narrative, data room |
 | Supply Chain & Manufacturing | SupplyChainManufacturingSwarmAgent | components, BOM, vendors, quality, logistics |
@@ -46,6 +46,7 @@ For the user's product direction, assume HackersEra-style cybersecurity or cyber
 - Supply chain flags FPGA lead-time risk → Finance updates margin forecast → ProductStrategy evaluates alternate hardware path.
 - Crisis detects customer incident → Compliance checks disclosure → PR/revenue handles trust messaging → Engineering creates patch plan.
 - Funding round starts → InvestorNarrative shapes thesis → PR/LinkedIn builds momentum → Finance validates metrics → SocialProof checks permissions → CEO locks story.
+- Engineering releases OTA update → TechnicalComplianceVVAgent verifies ISO 24089 compliance → RegulatoryComplianceSwarmAgent updates SUMS evidence → ProductStrategy updates roadmap → CustomerSupportSuccessSwarmAgent prepares comms.
 
 ## Required Artifacts
 

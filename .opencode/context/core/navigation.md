@@ -76,6 +76,8 @@ core/
 | **Write tests** | `standards/test-coverage.md` |
 | **Write docs** | `standards/documentation.md` |
 | **Security patterns** | `standards/security-patterns.md` |
+| **ISO 21434 compliance** | `standards/iso21434-reference.md` |
+| **ISO 24089 compliance** | `standards/iso24089-reference.md` |
 | **Review code** | `workflows/code-review.md` |
 | **Delegate task** | `workflows/task-delegation-basics.md` |
 | **Run Experts Mode** | `experts-mode.md` + `swarm-orchestration.md` |
@@ -87,6 +89,7 @@ core/
 | **Build investor magnet swarm** | `investor-magnet-swarm.md` |
 | **Build business operating swarm** | `business-operations-swarms.md` |
 | **Build technical R&D swarm** | `technical-swarm.md` |
+| **Build compliance/TARA swarm** | `technical-swarm.md` + `standards/iso21434-reference.md` + `standards/iso24089-reference.md` |
 | **Break down feature** | `workflows/feature-breakdown.md` |
 | **Resume session** | `guides/resuming-sessions.md` |
 | **Manage tasks** | `task-management/navigation.md` |

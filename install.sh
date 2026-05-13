@@ -95,7 +95,7 @@ print_header() {
     echo "╔════════════════════════════════════════════════════════════════╗"
     echo "║                                                                ║"
     echo "║           OpenAgents Control Installer v1.0.0                 ║"
-    echo "║     Default: OpenAgent Experts Mode + Agent Swarm             ║"
+    echo "║     OpenAgent Experts Mode + Agent Swarm + ISO Compliance     ║"
     echo "║                                                                ║"
     echo "╚════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -510,7 +510,7 @@ check_interactive_mode() {
         echo "curl -fsSL ${RAW_URL}/install.sh | bash -s advanced"
         echo ""
         echo "Available profiles: essential, developer, business, full, advanced"
-        echo "Recommended/default: advanced (complete OpenAgent Experts Mode + agent swarm setup)"
+        echo "Recommended/default: advanced (complete OpenAgent Experts Mode + agent swarm + ISO 21434/24089 compliance)"
         echo ""
         cleanup_and_exit 1
     fi
@@ -612,7 +612,7 @@ show_main_menu() {
     print_header
     
     echo -e "${BOLD}Choose installation mode:${NC}\n"
-    echo "  1) Quick Install (Advanced profile — OpenAgent Experts Mode + Agent Swarm)"
+    echo "  1) Quick Install (Advanced profile — OpenAgent Experts Mode + Agent Swarm + ISO 21434/24089)"
     echo "  2) Custom Install (Pick individual components)"
     echo "  3) List Available Components"
     echo "  4) Exit"
@@ -1415,7 +1415,7 @@ main() {
                 echo "  developer, --developer    Coding setup with Experts Mode + swarm"
                 echo "  business, --business      Business/revenue/investor workflows under OpenAgent"
                 echo "  full, --full              Everything under one OpenAgent entrypoint"
-                echo "  advanced, --advanced      Recommended/default full system plus meta/system-builder components"
+                echo "  advanced, --advanced      Recommended/default full system plus meta/system-builder and ISO 21434/24089 compliance"
                 echo ""
                 echo -e "${BOLD}Options:${NC}"
                 echo "  --install-dir PATH        Custom installation directory"
@@ -1525,7 +1525,7 @@ main() {
         if [ "$INSTALL_MODE" = "profile" ]; then
             # Always install the advanced profile (5th option)
             PROFILE="advanced"
-            print_info "Auto-selecting advanced profile (OpenAgent Experts Mode + Agent Swarm)..."
+            print_info "Auto-selecting advanced profile (OpenAgent Experts Mode + Agent Swarm + ISO 21434/24089)..."
             
             SELECTED_COMPONENTS=()
             local temp_file="$TEMP_DIR/components.tmp"

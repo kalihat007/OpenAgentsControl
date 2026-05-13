@@ -86,7 +86,7 @@ print_header() {
     echo "╔════════════════════════════════════════════════════════════════╗"
     echo "║                                                                ║"
     echo "║           OpenAgents Control Updater v1.1.0                   ║"
-    echo "║     OpenAgent Experts Mode + Agent Swarm                      ║"
+    echo "║     OpenAgent Experts Mode + Agent Swarm + ISO Compliance     ║"
     echo "║                                                                ║"
     echo "╚════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -345,7 +345,7 @@ main() {
 
     update_all_components "$install_dir"
 
-    print_success "Update complete! OpenAgent Experts Mode + Agent Swarm are active."
+    print_success "Update complete! OpenAgent Experts Mode + Agent Swarm + ISO 21434/24089 are active."
 }
 
 main "$@"

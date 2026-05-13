@@ -21,7 +21,7 @@ Default domain: cybersecurity or cybersecurity-testing tools, especially automot
 | Implementation | EmbeddedRustAgent | memory-safe parsers, no_std modules, fuzzable protocol code |
 | V&V | HILSILAgent | dSPACE/Vector/NI benches, CANoe, vTESTstudio, fault campaigns |
 | V&V | PenetrationTestAgent | fuzzing, RE, side-channel, fault injection, wireless, physical, network |
-| V&V | TechnicalComplianceVVAgent | ISO/SAE 21434, UN R155, EVITA/HEAVENS, TARA, evidence |
+| V&V | TechnicalComplianceVVAgent | ISO/SAE 21434, UN R155, ISO 24089, UN R156, EVITA/HEAVENS, TARA, evidence |
 | V&V | EMCEnvironmentalAgent | CISPR 25, ISO 11452, ISO 7637, ESD, thermal, vibration |
 | DevOps | TechnicalCICDAgent | Yocto, toolchains, HDL/software CI, artifact signing |
 | Release | TechnicalReleaseAgent | SBOM, CVE/license, OTA, release notes, advisories |
@@ -35,7 +35,7 @@ Use for new products such as CAN interfaces, GMSL2 tools, EV charging testers, s
 
 1. SystemArchitectAgent decomposes product topology.
 2. SecurityFirmwareAgent and PenetrationTestAgent define attack surface.
-3. TechnicalComplianceVVAgent maps ISO/SAE 21434, UN R155, ISO 26262, and OEM needs.
+3. TechnicalComplianceVVAgent maps ISO/SAE 21434, UN R155, ISO 24089, UN R156, ISO 26262, and OEM needs.
 4. HardwareArchitectAgent, FPGAASICAgent, RTOSOSAgent, EmbeddedCPPCodingAgent, and TechnicalPythonToolingAgent design in parallel after contracts.
 5. HILSILAgent, EMCEnvironmentalAgent, PenetrationTestAgent, and TechnicalComplianceVVAgent run adversarial verification.
 6. TechnicalCICDAgent and TechnicalReleaseAgent prepare reproducible builds, SBOM, signing, and release evidence.
@@ -64,6 +64,8 @@ Weekly or release-bound loop:
 - update penetration plan
 - collect evidence
 - produce product and customer compliance dashboards
+- monitor ISO 24089 software update engineering compliance
+- verify OTA/SUMS evidence readiness for type approval
 
 ### Night-Shift Autonomy
 
@@ -107,6 +109,9 @@ Parallel:
   hil-sil-matrix.json
   compliance-trace.json
   release-evidence.json
+  iso21434-evidence.json
+  iso24089-evidence.json
+  tara-workbook.json
   incidents.jsonl
   artifacts/
   reports/
