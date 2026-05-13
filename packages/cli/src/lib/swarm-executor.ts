@@ -10,6 +10,16 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { createLogger } from './logger.js'
 import type { RouterResult, ExpertProfile } from './task-router.js'
+import { loadBuiltInExperts, type ExpertDefinition } from './expert-definitions.js'
+import {
+  decomposeTask,
+  getExecutionOrder,
+  shouldDecompose,
+  validateDependencies,
+  type DecomposedTask,
+  type SubTask,
+  type TaskDependency,
+} from './task-decomposer.js'
 
 const log = createLogger('swarm-executor')
 import type {
@@ -37,6 +47,7 @@ export interface ExecutionPlan {
   session: SwarmSession
   schedulerResult: SchedulerResult
   stages: ExecutionStage[]
+  decomposition: DecompositionSummary
   acceptanceCriteria: string[]
   createdAt: string
 }
@@ -56,6 +67,24 @@ export interface ExecutionStage {
   mode: 'serial' | 'parallel'
   taskIds: string[]
   syncRequired: boolean
+}
+
+export interface DecompositionSummary {
+  active: boolean
+  source: 'single-objective' | 'auto-decomposed'
+  sequencing: 'sequential' | 'dependency'
+  subTaskCount: number
+  estimatedComplexity?: DecomposedTask['estimatedComplexity']
+  confidence?: number
+  validationIssues: string[]
+  subTasks: Array<{
+    id: string
+    objective: string
+    expertId: string
+    taskId?: string
+    estimatedEffort: SubTask['estimatedEffort']
+  }>
+  order: string[][]
 }
 
 export interface AcceptanceCheck {
@@ -81,6 +110,13 @@ export interface ExecutorCallbacks {
   onBatchComplete?: (batch: SwarmBatch, index: number) => void
 }
 
+export interface PlanExecutionOptions {
+  maxConcurrency?: number
+  autoDecompose?: boolean
+  sequentialSubtasks?: boolean
+  maxSubTasks?: number
+}
+
 // ── Agent → Role reverse-lookup ───────────────────────────────────────────────
 
 const ALL_TEAM_ROLES = [
@@ -103,16 +139,20 @@ function roleForAgent(agentName: string): SwarmRole {
 
 let taskCounter = 0
 
+function nextTaskId(): string {
+  taskCounter += 1
+  return `task-${String(taskCounter).padStart(3, '0')}`
+}
+
 function expertToSwarmTask(
   expert: ExpertProfile,
   objective: string,
   isPrimary: boolean,
 ): SwarmTask {
-  taskCounter += 1
   const role = roleForAgent(expert.name)
   const stage = stageForExpert(expert.name, role)
   return {
-    id: `task-${String(taskCounter).padStart(3, '0')}`,
+    id: nextTaskId(),
     title: `[${expert.name}] ${objective}`,
     agent: expert.name,
     role,
@@ -141,20 +181,12 @@ function resetTaskCounter(): void {
 
 export function planExecution(
   routerResult: RouterResult,
-  options: { maxConcurrency?: number } = {},
+  options: PlanExecutionOptions = {},
 ): ExecutionPlan {
   resetTaskCounter()
 
-  const experts = orderExpertsForPlanning([
-    ...routerResult.primaryExperts.map((expert) => ({ expert, isPrimary: true })),
-    ...routerResult.secondaryExperts.map((expert) => ({ expert, isPrimary: false })),
-  ])
-
-  const tasks = wireStageDependencies(
-    experts.map(({ expert, isPrimary }) =>
-      expertToSwarmTask(expert, routerResult.objective, isPrimary),
-    ),
-  )
+  const planned = createPlannedTasks(routerResult, options)
+  const tasks = planned.tasks
 
   if (tasks.length === 0) {
     throw new SwarmExecutionError(
@@ -191,6 +223,7 @@ export function planExecution(
     session,
     schedulerResult,
     stages: stagesFromBatches(schedulerResult.batches),
+    decomposition: planned.decomposition,
     acceptanceCriteria: planAcceptanceCriteria(routerResult.objective),
     createdAt,
   }
@@ -303,6 +336,271 @@ async function simulateTaskExecution(): Promise<void> {
 
 // ── Planning helpers ─────────────────────────────────────────────────────────
 
+function createPlannedTasks(
+  routerResult: RouterResult,
+  options: PlanExecutionOptions,
+): { tasks: SwarmTask[]; decomposition: DecompositionSummary } {
+  const autoDecompose = options.autoDecompose ?? true
+  const sequentialSubtasks = options.sequentialSubtasks ?? true
+
+  if (autoDecompose && shouldDecompose(routerResult.objective)) {
+    const experts = loadBuiltInExperts()
+    const decomposed = decomposeTask(routerResult.objective, experts, {
+      maxSubTasks: options.maxSubTasks ?? Math.max(4, Math.min(12, routerResult.estimatedChunks)),
+    })
+    const validation = validateDependencies(decomposed.dependencies, decomposed.subTasks)
+
+    if (validation.valid && decomposed.subTasks.length > 1) {
+      const decomposedTasks = tasksFromDecomposition(decomposed, experts, {
+        sequentialSubtasks,
+      })
+
+      return {
+        tasks: decomposedTasks.tasks,
+        decomposition: summarizeDecomposition(
+          decomposed,
+          decomposedTasks.taskIdsBySubTaskId,
+          sequentialSubtasks ? 'sequential' : 'dependency',
+          validation.issues,
+        ),
+      }
+    }
+
+    log.debug('Skipping decomposition fallback', {
+      subTasks: decomposed.subTasks.length,
+      validationIssues: validation.issues,
+    })
+  }
+
+  const experts = orderExpertsForPlanning([
+    ...routerResult.primaryExperts.map((expert) => ({ expert, isPrimary: true })),
+    ...routerResult.secondaryExperts.map((expert) => ({ expert, isPrimary: false })),
+  ])
+
+  return {
+    tasks: wireStageDependencies(
+      experts.map(({ expert, isPrimary }) =>
+        expertToSwarmTask(expert, routerResult.objective, isPrimary),
+      ),
+    ),
+    decomposition: singleObjectiveSummary(),
+  }
+}
+
+function tasksFromDecomposition(
+  decomposed: DecomposedTask,
+  experts: ExpertDefinition[],
+  options: { sequentialSubtasks: boolean },
+): { tasks: SwarmTask[]; taskIdsBySubTaskId: Map<string, string> } {
+  const coordinator = createCoordinatorTask(decomposed)
+  const taskIdsBySubTaskId = new Map<string, string>()
+  for (const subTask of decomposed.subTasks) {
+    taskIdsBySubTaskId.set(subTask.id, nextTaskId())
+  }
+
+  const expertById = new Map(experts.map((expert) => [expert.id, expert]))
+  const subTaskOrder = getExecutionOrder(decomposed.subTasks, decomposed.dependencies).flat()
+  const subTasks = subTaskOrder.map((subTask, index) =>
+    subTaskToSwarmTask(subTask, {
+      index,
+      total: decomposed.subTasks.length,
+      expert: expertById.get(subTask.expertId),
+      taskId: taskIdsBySubTaskId.get(subTask.id)!,
+      coordinatorTaskId: coordinator.id,
+      previousTaskId: options.sequentialSubtasks && index > 0
+        ? taskIdsBySubTaskId.get(subTaskOrder[index - 1]!.id)
+        : undefined,
+      dependencyTaskIds: dependencyTaskIdsForSubTask(
+        subTask,
+        decomposed.dependencies,
+        taskIdsBySubTaskId,
+      ),
+    }),
+  )
+
+  return {
+    tasks: [coordinator, ...subTasks],
+    taskIdsBySubTaskId,
+  }
+}
+
+function createCoordinatorTask(decomposed: DecomposedTask): SwarmTask {
+  return {
+    id: nextTaskId(),
+    title: `[TechLeadAgent] Plan sequential expert chunks for ${decomposed.originalObjective}`,
+    agent: 'TechLeadAgent',
+    role: 'tech-lead',
+    stage: 'planning',
+    status: 'pending',
+    priority: 100,
+    reads: [],
+    writes: [],
+    dependsOn: [],
+    acceptanceCriteria: [
+      'Objective is decomposed into bounded expert subtasks',
+      'Subtask dependencies, checkpoints, and sync points are explicit',
+      'Experts Mode is used by default for the full sequence',
+    ],
+    metadata: {
+      isPrimary: true,
+      stage: 'planning',
+      decompositionId: decomposed.id,
+      decompositionComplexity: decomposed.estimatedComplexity,
+      decompositionConfidence: decomposed.decompositionConfidence,
+      subTaskCount: decomposed.subTasks.length,
+    },
+  }
+}
+
+function subTaskToSwarmTask(
+  subTask: SubTask,
+  options: {
+    index: number
+    total: number
+    expert?: ExpertDefinition
+    taskId: string
+    coordinatorTaskId: string
+    previousTaskId?: string
+    dependencyTaskIds: string[]
+  },
+): SwarmTask {
+  const agent = options.expert?.name ?? subTask.expertId
+  const role = roleForExpertDefinition(options.expert, agent)
+  const stage = stageForExpert(agent, role)
+  const dependsOn = unique([
+    options.coordinatorTaskId,
+    ...options.dependencyTaskIds,
+    ...(options.previousTaskId ? [options.previousTaskId] : []),
+  ])
+  const contextReads = unique([
+    ...subTask.fileScope,
+    ...(options.expert?.filePatterns ?? []),
+  ]).slice(0, 8)
+
+  return {
+    id: options.taskId,
+    title: `[${agent}] Chunk ${options.index + 1}/${options.total}: ${subTask.objective}`,
+    agent,
+    role,
+    stage,
+    status: 'pending',
+    priority: Math.max(1, 90 - options.index),
+    parentTaskId: subTask.parentId,
+    chunkIndex: options.index + 1,
+    chunkTotal: options.total,
+    executionMode: 'serial',
+    reads: contextReads,
+    writes: subTask.fileScope,
+    dependsOn,
+    moduleClaims: subTask.producesArtifacts,
+    syncAfterTaskIds: [options.taskId],
+    acceptanceCriteria: [
+      `Complete chunk ${options.index + 1}/${options.total}: ${subTask.objective}`,
+      `Produce or update artifacts: ${subTask.producesArtifacts.join(', ') || 'implementation checkpoint'}`,
+      'Checkpoint output is ready for TechLeadAgent sync before the next chunk',
+    ],
+    maxChunkMinutes: effortToMaxChunkMinutes(subTask.estimatedEffort),
+    metadata: {
+      stage,
+      decompositionId: subTask.parentId,
+      subTaskId: subTask.id,
+      expertId: subTask.expertId,
+      estimatedEffort: subTask.estimatedEffort,
+      requiredContext: subTask.requiredContext,
+      producesArtifacts: subTask.producesArtifacts,
+      syncPolicy: 'after_each_subtask',
+    },
+  }
+}
+
+function dependencyTaskIdsForSubTask(
+  subTask: SubTask,
+  dependencies: TaskDependency[],
+  taskIdsBySubTaskId: Map<string, string>,
+): string[] {
+  return dependencies
+    .filter((dep) => dep.to === subTask.id && (dep.type === 'blocks' || dep.type === 'requires_artifact'))
+    .map((dep) => taskIdsBySubTaskId.get(dep.from))
+    .filter((id): id is string => Boolean(id))
+}
+
+function summarizeDecomposition(
+  decomposed: DecomposedTask,
+  taskIdsBySubTaskId: Map<string, string>,
+  sequencing: DecompositionSummary['sequencing'],
+  validationIssues: string[],
+): DecompositionSummary {
+  return {
+    active: true,
+    source: 'auto-decomposed',
+    sequencing,
+    subTaskCount: decomposed.subTasks.length,
+    estimatedComplexity: decomposed.estimatedComplexity,
+    confidence: decomposed.decompositionConfidence,
+    validationIssues: [...validationIssues],
+    subTasks: decomposed.subTasks.map((subTask) => ({
+      id: subTask.id,
+      objective: subTask.objective,
+      expertId: subTask.expertId,
+      taskId: taskIdsBySubTaskId.get(subTask.id),
+      estimatedEffort: subTask.estimatedEffort,
+    })),
+    order: getExecutionOrder(decomposed.subTasks, decomposed.dependencies).map((batch) =>
+      batch.map((subTask) => subTask.id),
+    ),
+  }
+}
+
+function singleObjectiveSummary(): DecompositionSummary {
+  return {
+    active: false,
+    source: 'single-objective',
+    sequencing: 'dependency',
+    subTaskCount: 0,
+    validationIssues: [],
+    subTasks: [],
+    order: [],
+  }
+}
+
+function roleForExpertDefinition(
+  expert: ExpertDefinition | undefined,
+  agentName: string,
+): SwarmRole {
+  const knownRole = roleForAgent(agentName)
+  if (knownRole !== 'general' || !expert) return knownRole
+
+  const roleMap: Record<string, SwarmRole> = {
+    'developer': 'general',
+    'frontend-developer': 'frontend-developer',
+    'backend-developer': 'backend-developer',
+    'test-engineer': 'qa',
+    'security-engineer': 'security',
+    'reviewer': 'code-review',
+    'architect': 'system-architect',
+    'tech-lead': 'tech-lead',
+    'devops-engineer': 'devops',
+    'technical-writer': 'documentation',
+    'debugger': 'debug',
+    'product-manager': 'product-manager',
+    'hardware-architect': 'hardware-architect',
+    'embedded-developer': 'embedded-cpp',
+    'pentester': 'penetration-test',
+    'compliance-engineer': 'technical-compliance-vv',
+    'content-creator': 'content-swarm',
+    'investor-relations': 'investor-narrative',
+  }
+
+  return roleMap[expert.role] ?? 'general'
+}
+
+function effortToMaxChunkMinutes(effort: SubTask['estimatedEffort']): number {
+  if (effort === 'trivial') return 5
+  if (effort === 'small') return 10
+  if (effort === 'medium') return 15
+  return 30
+}
+
 function orderExpertsForPlanning(
   experts: Array<{ expert: ExpertProfile; isPrimary: boolean }>,
 ): Array<{ expert: ExpertProfile; isPrimary: boolean }> {
@@ -392,8 +690,9 @@ function acceptanceCriteriaForExpert(agentName: string, stage: string, objective
 function planAcceptanceCriteria(objective: string): string[] {
   return [
     `Selected experts cover the objective: ${objective}`,
+    'Large objectives are decomposed into bounded expert subtasks automatically',
     'TechLeadAgent planning completes before dependent specialist work',
-    'Independent tasks are batched for safe parallel execution',
+    'Subtasks execute sequence-by-sequence unless dependency-safe parallelism is explicitly selected',
     'A sync event is recorded after every batch',
     'Final report marks each acceptance check as passed, failed, or unverified',
   ]
@@ -480,6 +779,7 @@ export async function persistRunArtifacts(
     runId: plan.session.id,
     objective: plan.session.objective,
     createdAt: plan.createdAt,
+    decomposition: plan.decomposition,
     completedTasks: result?.completedTasks ?? [],
     failedTasks: result?.failedTasks ?? [],
     elapsedMs: result?.elapsedMs ?? null,
@@ -495,6 +795,7 @@ function serializablePlan(plan: ExecutionPlan): Record<string, unknown> {
     objective: plan.session.objective,
     createdAt: plan.createdAt,
     maxConcurrency: plan.session.maxConcurrency,
+    decomposition: plan.decomposition,
     stages: plan.stages,
     tasks: plan.session.tasks,
     batches: plan.schedulerResult.batches.map((batch) => ({
@@ -514,6 +815,10 @@ function renderAcceptanceReport(plan: ExecutionPlan, checks: AcceptanceCheck[]):
     '',
     `Objective: ${plan.session.objective}`,
     `Created: ${plan.createdAt}`,
+    '',
+    '## Decomposition',
+    '',
+    ...renderDecompositionLines(plan.decomposition),
     '',
     '## Acceptance Checks',
     '',
@@ -537,6 +842,26 @@ function renderAcceptanceReport(plan: ExecutionPlan, checks: AcceptanceCheck[]):
   return lines.join('\n') + '\n'
 }
 
+function renderDecompositionLines(decomposition: DecompositionSummary): string[] {
+  if (!decomposition.active) {
+    return ['- Mode: single objective']
+  }
+
+  const lines = [
+    `- Mode: ${decomposition.source}`,
+    `- Sequencing: ${decomposition.sequencing}`,
+    `- Complexity: ${decomposition.estimatedComplexity ?? 'unknown'}`,
+    `- Confidence: ${decomposition.confidence ?? 'unknown'}`,
+    `- Subtasks: ${decomposition.subTaskCount}`,
+  ]
+
+  for (const subTask of decomposition.subTasks) {
+    lines.push(`  - ${subTask.id}${subTask.taskId ? ` (${subTask.taskId})` : ''}: ${subTask.objective}`)
+  }
+
+  return lines
+}
+
 function summarizeAcceptance(checks: AcceptanceCheck[]): Record<string, number> {
   return checks.reduce(
     (acc, check) => {
@@ -545,4 +870,8 @@ function summarizeAcceptance(checks: AcceptanceCheck[]): Record<string, number> 
     },
     { passed: 0, failed: 0, unverified: 0 },
   )
+}
+
+function unique(values: string[]): string[] {
+  return [...new Set(values)].sort()
 }

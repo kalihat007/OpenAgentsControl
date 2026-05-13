@@ -260,7 +260,7 @@ export function shouldDecompose(objective: string): boolean {
 
   if (uniqueDomains.size <= 1 && objective.split(/\s+/).length <= 8) return false
 
-  const conjunctions = (objective.match(/\band\b|\bplus\b|\balso\b|\bwith\b/gi) ?? []).length
+  const conjunctions = (objective.match(/\band\b|\bplus\b|\balso\b|\bwith\b|\bthen\b/gi) ?? []).length
   return uniqueDomains.size >= 2 || conjunctions >= 1
 }
 
@@ -381,7 +381,8 @@ function decomposeByLayer(
     const relevantDomains = layer.domains.filter(d => activeDomains.has(d))
     if (relevantDomains.length === 0) continue
 
-    const expert = experts.filter(e => e.enabled).find(e => layer.roles.includes(e.role))
+    const layerRoles: readonly string[] = layer.roles
+    const expert = experts.filter(e => e.enabled).find(e => layerRoles.includes(e.role))
     if (!expert) continue
 
     const subTask: SubTask = {
@@ -479,7 +480,8 @@ function decomposeByPhase(
 
     if (!phaseRelevant) continue
 
-    const expert = experts.filter(e => e.enabled).find(e => phase.roles.includes(e.role))
+    const phaseRoles: readonly string[] = phase.roles
+    const expert = experts.filter(e => e.enabled).find(e => phaseRoles.includes(e.role))
     if (!expert) continue
 
     const subTask: SubTask = {
@@ -650,7 +652,7 @@ function detectCycles(deps: TaskDependency[], taskIds: Set<string>): string | nu
     }
   }
 
-  const WHITE = 0, GRAY = 1, BLACK = 2
+  const WHITE = 0
   const color = new Map<string, number>()
   for (const id of taskIds) color.set(id, WHITE)
 

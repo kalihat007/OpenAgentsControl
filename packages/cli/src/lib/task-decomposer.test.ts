@@ -468,6 +468,10 @@ describe('shouldDecompose', () => {
     expect(shouldDecompose('add authentication and database caching')).toBe(true)
   })
 
+  it('returns true when sequence wording indicates multiple steps', () => {
+    expect(shouldDecompose('build the API then add tests')).toBe(true)
+  })
+
   it('returns false for short single-domain tasks', () => {
     expect(shouldDecompose('fix a typo in readme')).toBe(false)
   })

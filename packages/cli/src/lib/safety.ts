@@ -96,7 +96,7 @@ export function createSnapshot(projectRoot: string, message = 'oac-pre-execute')
 
   // Try stash first (fast, reversible)
   if (hasUncommittedChanges(projectRoot)) {
-    const stashResult = git(['stash', 'push', '-m', `${message} [${id}]`], projectRoot)
+    const stashResult = git(['stash', 'push', '--include-untracked', '-m', `${message} [${id}]`], projectRoot)
     if (stashResult.status === 0) {
       const stashList = git(['stash', 'list'], projectRoot)
       const stashRef = stashList.stdout.split('\n')[0]?.match(/^(stash@\{[^}]+\})/)?.[1] ?? `stash@{0}`

@@ -9,6 +9,8 @@
  *   oac experts "build a login API with JWT auth"          # Auto-detect + show roster
  *   oac experts --plan-only "build a login API"           # Save structured plan
  *   oac experts --run "build a login API with JWT auth"    # Execute via swarm-runtime
+ *   oac experts --run --full "build a login API"           # Full pipeline (index+memory+decompose+quality)
+ *   oac experts --run --quick "fix the typo"               # Minimal pipeline, fast execution
  *   oac experts --dry-run "create a React landing page"    # Preview execution plan
  *   oac experts --list                                     # Show all available experts
  */
@@ -20,14 +22,21 @@ import { createSpinner } from '../ui/spinner.js'
 import { routeTask, discoverAgents } from '../lib/task-router.js'
 import {
   planExecution,
-  executeSwarm,
   persistRunArtifacts,
   plannedAcceptanceChecks,
   type AcceptanceCheck,
   type ExecutionPlan,
 } from '../lib/swarm-executor.js'
+import {
+  runExpertPipeline,
+  getQuickConfig,
+  getFullConfig,
+  type PipelineConfig,
+  type PipelineResult,
+} from '../lib/expert-pipeline.js'
 import { CommandUsageError } from '../lib/errors.js'
 import { createLogger } from '../lib/logger.js'
+import type { InteractiveMode } from '../lib/interactive-mode.js'
 
 const cmdLog = createLogger('cmd:experts')
 
@@ -43,6 +52,13 @@ export async function expertsCommand(
     save: boolean
     verbose: boolean
     concurrency: number
+    decompose: boolean
+    mode: InteractiveMode
+    full: boolean
+    quick: boolean
+    noIndex: boolean
+    noMemory: boolean
+    quality: boolean
   }
 ): Promise<void> {
   const projectRoot = process.cwd()
@@ -74,7 +90,11 @@ export async function expertsCommand(
     objective: objective.slice(0, 120),
     dryRun: options.dryRun,
     run: options.run,
+    full: options.full,
+    quick: options.quick,
+    mode: options.mode,
     concurrency: options.concurrency,
+    decompose: options.decompose,
   })
 
   const spinner = createSpinner('Analyzing objective and routing to experts…')
@@ -112,10 +132,13 @@ export async function expertsCommand(
   dim(`Estimated chunks: ~${result.estimatedChunks}`)
   log('')
 
-  // ── Plan-only / dry-run: show the execution plan without running ─────────
+  // ── Plan-only / dry-run (no pipeline flags): show the execution plan ─────
 
   if (options.dryRun || options.planOnly) {
-    const plan = planExecution(result, { maxConcurrency: options.concurrency })
+    const plan = planExecution(result, {
+      maxConcurrency: options.concurrency,
+      autoDecompose: options.decompose,
+    })
     const { schedulerResult } = plan
 
     info(options.planOnly ? '[plan-only] Execution plan:' : '[dry-run] Execution plan:')
@@ -135,58 +158,10 @@ export async function expertsCommand(
     return
   }
 
-  // ── Run: actually execute the swarm ──────────────────────────────────────
+  // ── Run: use the unified expert pipeline ─────────────────────────────────
 
   if (options.run) {
-    const plan = planExecution(result, { maxConcurrency: options.concurrency })
-    const { schedulerResult } = plan
-
-    info('Execution plan:')
-    log('')
-    printPlanSummary(plan)
-    printBatchPlan(schedulerResult.batches, schedulerResult.blocked)
-
-    const execSpinner = createSpinner('Executing swarm…')
-    execSpinner.start()
-
-    const execResult = await executeSwarm(plan, {
-      onBatchStart: (batch, idx, total) => {
-        execSpinner.update(`Batch ${idx + 1}/${total}: ${batch.tasks.length} task(s)…`)
-      },
-      onTaskStart: (task) => {
-        execSpinner.update(`Running: ${task.agent}…`)
-      },
-    })
-
-    execSpinner.succeed('Swarm execution complete')
-    log('')
-
-    // Summary
-    info('Results:')
-    success(`  Completed: ${execResult.completedTasks.length} task(s)`)
-    if (execResult.failedTasks.length > 0) {
-      warn(`  Blocked/Failed: ${execResult.failedTasks.length} task(s)`)
-    }
-    dim(`  Session: ${execResult.session.id}`)
-    dim(`  Elapsed: ${execResult.elapsedMs}ms`)
-    dim(`  Events: ${execResult.session.events.length}`)
-    printAcceptanceChecks(execResult.acceptanceChecks)
-    if (options.save) {
-      const artifacts = await persistRunArtifacts(projectRoot, plan, execResult)
-      info(`Saved run: ${artifacts.runDir}`)
-      info(`Saved report: ${artifacts.acceptanceReportPath}`)
-    }
-    log('')
-
-    if (options.verbose) {
-      info('Event log:')
-      for (const event of execResult.session.events) {
-        dim(`  [${event.type}] ${event.message}`)
-      }
-      log('')
-    }
-
-    return
+    return runPipelineMode(objective, projectRoot, options)
   }
 
   // ── Default (no --run, no --dry-run): show roster only ───────────────────
@@ -200,12 +175,170 @@ export async function expertsCommand(
   dim('Pass --plan-only to persist a shareable plan, --dry-run to preview batches, or --run to execute it.')
 }
 
+// ── Pipeline-based execution ──────────────────────────────────────────────────
+
+async function runPipelineMode(
+  objective: string,
+  projectRoot: string,
+  options: {
+    dryRun: boolean
+    save: boolean
+    verbose: boolean
+    concurrency: number
+    decompose: boolean
+    mode: InteractiveMode
+    full: boolean
+    quick: boolean
+    noIndex: boolean
+    noMemory: boolean
+    quality: boolean
+  },
+): Promise<void> {
+  let pipelineConfig: Partial<PipelineConfig>
+
+  if (options.quick) {
+    pipelineConfig = { ...getQuickConfig() }
+  } else if (options.full) {
+    pipelineConfig = { ...getFullConfig() }
+  } else {
+    pipelineConfig = {
+      mode: options.mode,
+      useIndex: !options.noIndex,
+      useMemory: !options.noMemory,
+      useDecomposition: options.decompose,
+      qualityChecks: options.quality,
+      dryRun: options.dryRun,
+      verbose: options.verbose,
+    }
+  }
+
+  pipelineConfig.mode = options.mode
+  pipelineConfig.maxConcurrency = options.concurrency
+  pipelineConfig.dryRun = options.dryRun
+  pipelineConfig.verbose = options.verbose
+
+  const spinner = createSpinner('Running expert pipeline…')
+  spinner.start()
+
+  const pipelineResult = await runExpertPipeline(objective, projectRoot, pipelineConfig, {
+    onStageChange: (stage, message) => {
+      spinner.update(`[${stage}] ${message}`)
+    },
+    onProgress: (_pct, message) => {
+      spinner.update(message)
+    },
+    onQualityReport: (report) => {
+      if (options.verbose) {
+        cmdLog.debug('Quality report', {
+          taskId: report.taskId,
+          agent: report.agent,
+          score: report.score,
+        })
+      }
+    },
+  })
+
+  spinner.succeed('Expert pipeline complete')
+  log('')
+
+  printPipelineResult(pipelineResult, options.verbose)
+
+  if (options.save && pipelineResult.plan) {
+    const artifacts = await persistRunArtifacts(
+      projectRoot,
+      pipelineResult.plan,
+      pipelineResult.executionResults ?? undefined,
+    )
+    info(`Saved run: ${artifacts.runDir}`)
+    info(`Saved report: ${artifacts.acceptanceReportPath}`)
+  }
+
+  log('')
+}
+
+// ── Pipeline result display ───────────────────────────────────────────────────
+
+function printPipelineResult(result: PipelineResult, verbose: boolean): void {
+  success(`Objective: ${result.objective}`)
+  log('')
+
+  info(`Pipeline stages: ${result.stages.join(' → ')}`)
+  dim(`Duration: ${result.duration}ms`)
+  log('')
+
+  if (result.decomposed && result.subTasks.length > 0) {
+    info(`Decomposed into ${result.subTasks.length} sub-task(s):`)
+    for (const st of result.subTasks) {
+      log(`  ○ [${st.expertId}] ${truncate(st.objective, 80)}`)
+    }
+    log('')
+  }
+
+  for (const rr of result.routing) {
+    if (rr.primaryExperts.length > 0) {
+      info(`Primary experts (${rr.primaryExperts.length}):`)
+      for (const expert of rr.primaryExperts) {
+        const tags = expert.keywords.slice(0, 3).map((k) => `#${k}`).join(' ')
+        log(`  ▶ ${expert.name} ${tags}`)
+      }
+    }
+    if (rr.secondaryExperts.length > 0) {
+      info(`Secondary experts (${rr.secondaryExperts.length}):`)
+      for (const expert of rr.secondaryExperts) {
+        log(`  ○ ${expert.name}`)
+      }
+    }
+  }
+  log('')
+
+  if (result.executionResults) {
+    const exec = result.executionResults
+    info('Execution results:')
+    success(`  Completed: ${exec.completedTasks.length} task(s)`)
+    if (exec.failedTasks.length > 0) {
+      warn(`  Blocked/Failed: ${exec.failedTasks.length} task(s)`)
+    }
+    dim(`  Session: ${exec.session.id}`)
+    dim(`  Elapsed: ${exec.elapsedMs}ms`)
+    dim(`  Events: ${exec.session.events.length}`)
+    printAcceptanceChecks(exec.acceptanceChecks)
+  }
+
+  if (result.qualityReports.length > 0) {
+    info('Quality reports:')
+    for (const report of result.qualityReports) {
+      const total = report.passed + report.failed + report.unverified
+      const pct = total > 0 ? Math.round(report.score * 100) : 0
+      log(`  ${report.agent}: ${pct}% (${report.passed}/${total})`)
+    }
+    log('')
+  }
+
+  if (result.memoryUpdated) {
+    dim('Expert memory updated with session outcomes.')
+    log('')
+  }
+
+  if (verbose && result.executionResults) {
+    info('Event log:')
+    for (const event of result.executionResults.session.events) {
+      dim(`  [${event.type}] ${event.message}`)
+    }
+    log('')
+  }
+}
+
 // ── Display helpers ───────────────────────────────────────────────────────────
 
 function printPlanSummary(plan: ExecutionPlan): void {
   info(`Stages: ${plan.stages.length}`)
   info(`Tasks: ${plan.session.tasks.length}`)
   info(`Max parallel: ${plan.session.maxConcurrency}`)
+  if (plan.decomposition.active) {
+    info(`Decomposition: ${plan.decomposition.subTaskCount} sequential subtask(s), ${plan.decomposition.estimatedComplexity} complexity`)
+  } else {
+    info('Decomposition: single objective')
+  }
   log('')
 }
 
@@ -281,6 +414,13 @@ export function registerExpertsCommand(program: Command): void {
     .option('--plan-only', 'Create and save the structured expert plan without execution', false)
     .option('--dry-run', 'Show the execution plan without running', false)
     .option('--list', 'List all available experts', false)
+    .option('--mode <mode>', 'Interactive mode: autonomous | supervised | collaborative', 'supervised')
+    .option('--full', 'Enable all pipeline features (index, memory, decomposition, quality)', false)
+    .option('--quick', 'Minimal pipeline — fast execution, no index/memory', false)
+    .option('--no-index', 'Skip codebase indexing')
+    .option('--no-memory', 'Skip memory loading/saving')
+    .option('--no-decompose', 'Disable automatic large-task decomposition')
+    .option('--quality', 'Enable quality checks on results', false)
     .option('--no-save', 'Do not persist plan/run artifacts under .oac/runs')
     .option('--verbose', 'Show expert descriptions, keywords, and event logs', false)
     .option('--concurrency <n>', 'Max parallel tasks per batch', (v) => parseInt(v, 10), 4)
@@ -290,12 +430,23 @@ export function registerExpertsCommand(program: Command): void {
 Examples:
   oac experts "build a JWT auth API"                  Auto-detect experts (roster only)
   oac experts --plan-only "build a JWT auth API"      Save structured plan artifacts
-  oac experts --run "build a JWT auth API"            Execute via swarm-runtime
+  oac experts --run "build a JWT auth API"            Execute via swarm-runtime (pipeline)
+  oac experts --run --full "build a JWT auth API"     Full pipeline with all features
+  oac experts --run --quick "fix a typo"              Minimal fast pipeline
+  oac experts --run --mode autonomous "build it"      Autonomous mode (no approval gates)
+  oac experts --run --quality "refactor auth module"  Execute with quality checks
   oac experts --dry-run "create a React landing page" Preview execution plan
+  oac experts --no-decompose "fix a simple bug"       Bypass automatic subtask splitting
   oac experts --list                                  Show all available experts
 `
     )
     .action(async (objective: string | undefined, opts: Record<string, unknown>) => {
+      const modeRaw = String(opts['mode'] ?? 'supervised')
+      const validModes = ['autonomous', 'supervised', 'collaborative']
+      const mode: InteractiveMode = validModes.includes(modeRaw)
+        ? (modeRaw as InteractiveMode)
+        : 'supervised'
+
       await expertsCommand(objective, {
         dryRun: Boolean(opts['dryRun']),
         planOnly: Boolean(opts['planOnly']),
@@ -304,6 +455,13 @@ Examples:
         save: opts['save'] !== false,
         verbose: Boolean(opts['verbose']),
         concurrency: typeof opts['concurrency'] === 'number' && Number.isFinite(opts['concurrency']) ? opts['concurrency'] : 4,
+        decompose: opts['decompose'] !== false,
+        mode,
+        full: Boolean(opts['full']),
+        quick: Boolean(opts['quick']),
+        noIndex: opts['index'] === false,
+        noMemory: opts['memory'] === false,
+        quality: Boolean(opts['quality']),
       })
     })
 }

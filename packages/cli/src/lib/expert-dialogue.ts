@@ -78,15 +78,6 @@ export interface DialogueConfig {
   persistHistory: boolean
 }
 
-// ── Defaults ──────────────────────────────────────────────────────────────────
-
-const DEFAULT_CONFIG: DialogueConfig = {
-  maxMessages: 100,
-  autoSummarizeAfter: 20,
-  includeCodeContext: true,
-  persistHistory: true,
-}
-
 function emptyContext(): DialogueContext {
   return {
     relevantFiles: [],
