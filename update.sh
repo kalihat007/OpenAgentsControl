@@ -59,6 +59,7 @@ REPO_URL="${OPENCODE_RAW_URL:-https://raw.githubusercontent.com/${REPO_SLUG}/${B
 
 # CLI argument for custom install dir (overrides env var)
 CUSTOM_INSTALL_DIR=""
+WITH_CLAUDE=false
 
 # Track backup files for cleanup on exit
 BACKUP_FILES=()
@@ -93,10 +94,11 @@ print_header() {
 }
 
 print_usage() {
-    echo "Usage: $0 [--install-dir PATH]"
+    echo "Usage: $0 [--install-dir PATH] [--with-claude]"
     echo ""
     echo "Options:"
     echo "  --install-dir PATH   Update a specific installation directory"
+    echo "  --with-claude        Also update Claude Code integration"
     echo "  --help               Show this help message"
     echo ""
     echo "Environment variables:"
@@ -106,6 +108,9 @@ print_usage() {
     echo "Examples:"
     echo "  # Auto-detect and update"
     echo "  $0"
+    echo ""
+    echo "  # Update with Claude Code integration"
+    echo "  $0 --with-claude"
     echo ""
     echo "  # Update a global installation"
     echo "  $0 --install-dir ~/.config/opencode"
@@ -198,6 +203,72 @@ resolve_install_dir() {
         # Neither exists — return local path so main() gives a clear error
         echo "$local_path"
     fi
+}
+
+#############################################################################
+# Claude Integration
+#############################################################################
+
+install_claude_integration() {
+    print_step "Updating Claude Code integration..."
+
+    if ! command -v node >/dev/null 2>&1; then
+        print_warning "Node.js not found. Claude integration requires Node.js 18+."
+        return 1
+    fi
+
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local converter_dir="$script_dir/integrations/claude-code/converter"
+    local plugin_source="$script_dir/plugins/claude-code"
+    local plugin_dest="$HOME/.claude/plugins/openagents-control-bridge"
+
+    if [ ! -f "$converter_dir/src/convert-agents.js" ]; then
+        print_warning "Claude converter not found at $converter_dir"
+        print_info "Claude integration is available when running update.sh from the OpenAgentsControl repository"
+        return 1
+    fi
+
+    print_info "Converting agents to Claude format..."
+    cd "$converter_dir"
+    if ! node src/convert-agents.js 2>&1 | grep -q "Conversion complete"; then
+        print_error "Claude agent conversion failed"
+        return 1
+    fi
+
+    print_info "Installing Claude plugin to ~/.claude/plugins/..."
+    mkdir -p "$HOME/.claude/plugins"
+
+    if [ -d "$plugin_dest" ]; then
+        rm -rf "$plugin_dest"
+    fi
+
+    if [ -d "$plugin_source" ]; then
+        cp -r "$plugin_source" "$plugin_dest"
+        if [ -L "$plugin_dest/context" ]; then
+            rm -f "$plugin_dest/context"
+        fi
+    else
+        mkdir -p "$plugin_dest"
+    fi
+
+    if [ -d "$converter_dir/generated/agents" ]; then
+        mkdir -p "$plugin_dest/agents"
+        cp -r "$converter_dir/generated/agents/"* "$plugin_dest/agents/" 2>/dev/null || true
+    fi
+
+    if [ -d "$converter_dir/generated/skills" ]; then
+        mkdir -p "$plugin_dest/skills"
+        cp -r "$converter_dir/generated/skills/"* "$plugin_dest/skills/" 2>/dev/null || true
+    fi
+
+    if [ ! -f "$plugin_dest/.claude-plugin/plugin.json" ]; then
+        print_warning "Claude plugin manifest missing"
+        return 1
+    fi
+
+    print_success "Claude Code integration updated!"
+    print_info "Plugin location: $plugin_dest"
 }
 
 #############################################################################
@@ -296,6 +367,10 @@ parse_args() {
                     exit 1
                 fi
                 ;;
+            --with-claude)
+                WITH_CLAUDE=true
+                shift
+                ;;
             --help|-h)
                 print_usage
                 exit 0
@@ -344,6 +419,10 @@ main() {
     print_step "Updating components..."
 
     update_all_components "$install_dir"
+
+    if [ "$WITH_CLAUDE" = true ]; then
+        install_claude_integration
+    fi
 
     print_success "Update complete! OpenAgent Experts Mode + Agent Swarm + ISO 21434/24089 are active."
 }

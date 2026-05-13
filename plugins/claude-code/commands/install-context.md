@@ -1,7 +1,7 @@
 ---
 name: install-context
 description: Install OpenAgents Control context files
-argument-hint: [--profile=<profile>] [--force] [--dry-run]
+argument-hint: "[--profile=<profile>] [--force] [--dry-run]"
 ---
 
 $ARGUMENTS

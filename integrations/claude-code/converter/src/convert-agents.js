@@ -112,7 +112,15 @@ function generateClaudeMarkdown(claudeFrontmatter, body) {
       if (Array.isArray(value)) {
         return `${key}: [${value.map(v => `"${v}"`).join(', ')}]`;
       }
-      return `${key}: "${value}"`;
+      if (typeof value !== 'string') {
+        return `${key}: ${value}`;
+      }
+      // Use pipe for multiline or values containing quotes/special chars
+      if (value.includes('\n') || value.includes('"')) {
+        return `${key}: |\n${value.split('\n').map(line => '  ' + line).join('\n')}`;
+      }
+      // Simple strings don't need quotes
+      return `${key}: ${value}`;
     })
     .join('\n');
   

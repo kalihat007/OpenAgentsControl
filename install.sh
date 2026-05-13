@@ -77,6 +77,7 @@ INSTALL_MODE=""
 PROFILE=""
 NON_INTERACTIVE=false
 CUSTOM_INSTALL_DIR=""  # Set via --install-dir argument
+WITH_CLAUDE=false        # Set via --with-claude flag
 
 #############################################################################
 # Utility Functions
@@ -936,6 +937,15 @@ show_installation_preview() {
         print_info "Installing automatically (profile selected)..."
         perform_installation
     else
+        # Ask about Claude integration
+        if [ "$WITH_CLAUDE" != true ]; then
+            echo ""
+            read -r -p "Also install Claude Code integration? [y/N]: " claude_choice
+            if [[ $claude_choice =~ ^[Yy] ]]; then
+                WITH_CLAUDE=true
+            fi
+        fi
+
         read -r -p "Proceed with installation? [Y/n]: " confirm
         
         if [[ $confirm =~ ^[Nn] ]]; then
@@ -1031,6 +1041,82 @@ get_install_strategy() {
         4) echo "cancel" ;;
         *) echo "cancel" ;;
     esac
+}
+
+#############################################################################
+# Claude Integration
+#############################################################################
+
+install_claude_integration() {
+    print_step "Setting up Claude Code integration..."
+    
+    # Check prerequisites
+    if ! command -v node >/dev/null 2>&1; then
+        print_warning "Node.js not found. Claude integration requires Node.js 18+."
+        print_info "Install from https://nodejs.org/ and re-run with --with-claude"
+        return 1
+    fi
+    
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local converter_dir="$script_dir/integrations/claude-code/converter"
+    local plugin_source="$script_dir/plugins/claude-code"
+    local plugin_dest="$HOME/.claude/plugins/openagents-control-bridge"
+    
+    # Check if converter exists (local run from repo)
+    if [ ! -f "$converter_dir/src/convert-agents.js" ]; then
+        print_warning "Claude converter not found at $converter_dir"
+        print_info "Claude integration is available when running install.sh from the OpenAgentsControl repository"
+        return 1
+    fi
+    
+    # Run converter
+    print_info "Converting agents to Claude format..."
+    cd "$converter_dir"
+    if ! node src/convert-agents.js 2>&1 | grep -q "Conversion complete"; then
+        print_error "Claude agent conversion failed"
+        return 1
+    fi
+    
+    # Install plugin
+    print_info "Installing Claude plugin to ~/.claude/plugins/..."
+    mkdir -p "$HOME/.claude/plugins"
+    
+    if [ -d "$plugin_dest" ]; then
+        rm -rf "$plugin_dest"
+    fi
+    
+    # Copy the proper plugin structure (includes manifest, hooks, scripts, skills)
+    if [ -d "$plugin_source" ]; then
+        cp -r "$plugin_source" "$plugin_dest"
+        # Remove symlinked context (will use local .opencode/context instead)
+        if [ -L "$plugin_dest/context" ]; then
+            rm -f "$plugin_dest/context"
+        fi
+    else
+        mkdir -p "$plugin_dest"
+    fi
+    
+    # Merge converted agents into the plugin
+    if [ -d "$converter_dir/generated/agents" ]; then
+        mkdir -p "$plugin_dest/agents"
+        cp -r "$converter_dir/generated/agents/"* "$plugin_dest/agents/" 2>/dev/null || true
+    fi
+    
+    # Merge converted skills into the plugin
+    if [ -d "$converter_dir/generated/skills" ]; then
+        mkdir -p "$plugin_dest/skills"
+        cp -r "$converter_dir/generated/skills/"* "$plugin_dest/skills/" 2>/dev/null || true
+    fi
+    
+    # Verify manifest exists
+    if [ ! -f "$plugin_dest/.claude-plugin/plugin.json" ]; then
+        print_warning "Claude plugin manifest missing"
+        return 1
+    fi
+    
+    print_success "Claude Code integration installed!"
+    print_info "Plugin location: $plugin_dest"
 }
 
 #############################################################################
@@ -1257,6 +1343,11 @@ perform_installation() {
     [ $skipped -gt 0 ] && echo -e "  Skipped: ${CYAN}${skipped}${NC}"
     [ $failed -gt 0 ] && echo -e "  Failed: ${RED}${failed}${NC}"
     
+    # Install Claude integration if requested
+    if [ "$WITH_CLAUDE" = true ]; then
+        install_claude_integration
+    fi
+    
     show_post_install
 }
 
@@ -1321,6 +1412,12 @@ show_post_install() {
     if [ -f "${INSTALL_DIR}/env.example" ] || [ -f "env.example" ]; then
         echo "${step_num}. Copy env.example to .env and configure:"
         echo -e "   ${CYAN}cp env.example .env${NC}"
+        step_num=$((step_num + 1))
+    fi
+    
+    if [ "$WITH_CLAUDE" = true ]; then
+        echo "${step_num}. Use with Claude Code:"
+        echo -e "   ${CYAN}claude --plugin-dir ~/.claude/plugins/openagents-control-bridge${NC}"
         step_num=$((step_num + 1))
     fi
     
@@ -1461,6 +1558,10 @@ main() {
                 list_components
                 cleanup_and_exit 0
                 ;;
+            --with-claude)
+                WITH_CLAUDE=true
+                shift
+                ;;
             --help|-h|help)
                 print_header
                 echo "Usage: $0 [PROFILE] [OPTIONS]"
@@ -1475,6 +1576,7 @@ main() {
                 echo -e "${BOLD}Options:${NC}"
                 echo "  --install-dir PATH        Custom installation directory"
                 echo "                            (default: .opencode)"
+                echo "  --with-claude             Also install Claude Code integration"
                 echo "  list, --list              List all available components"
                 echo "  help, --help, -h          Show this help message"
                 echo ""
@@ -1489,6 +1591,9 @@ main() {
                 echo ""
                 echo -e "  ${CYAN}# Quick install with default location (.opencode/)${NC}"
                 echo "  $0 advanced"
+                echo ""
+                echo -e "  ${CYAN}# Install with Claude Code support${NC}"
+                echo "  $0 advanced --with-claude"
                 echo ""
                 echo -e "  ${CYAN}# Install to global location (Linux/macOS)${NC}"
                 echo "  $0 advanced --install-dir ~/.config/opencode"
