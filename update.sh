@@ -72,6 +72,7 @@ cleanup_backups() {
     for f in "${BACKUP_FILES[@]}"; do
         [ -f "$f" ] && rm -f "$f"
     done
+    return 0
 }
 trap cleanup_backups EXIT INT TERM
 
@@ -324,7 +325,7 @@ update_all_components() {
         else
             failed=$((failed + 1))
         fi
-    done < <(find "$install_dir" -name "*.md" -type f -print0)
+    done < <(find "$install_dir" -path "*/node_modules/*" -prune -o -name "*.md" -type f -print0)
 
     # Update TypeScript files
     while IFS= read -r -d '' file; do
@@ -333,7 +334,7 @@ update_all_components() {
         else
             failed=$((failed + 1))
         fi
-    done < <(find "$install_dir" -name "*.ts" -type f -not -path "*/node_modules/*" -print0)
+    done < <(find "$install_dir" -path "*/node_modules/*" -prune -o -name "*.ts" -type f -print0)
 
     # Update shell scripts inside install dir
     while IFS= read -r -d '' file; do
@@ -342,7 +343,7 @@ update_all_components() {
         else
             failed=$((failed + 1))
         fi
-    done < <(find "$install_dir" -name "*.sh" -type f -print0)
+    done < <(find "$install_dir" -path "*/node_modules/*" -prune -o -name "*.sh" -type f -print0)
 
     print_info "Updated: $updated file(s), failed: $failed file(s)"
 }
