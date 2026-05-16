@@ -91,7 +91,7 @@ print_header() {
     echo "╔════════════════════════════════════════════════════════════════╗"
     echo "║                                                                ║"
     echo "║           OpenAgents Control Updater v1.1.0                   ║"
-    echo "║     OpenAgent Experts Mode + Agent Swarm + ISO Compliance     ║"
+    echo "║       OpenAgent Quest + Experts + Swarm + ISO Compliance      ║"
     echo "║                                                                ║"
     echo "╚════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -348,6 +348,42 @@ update_all_components() {
     print_info "Updated: $updated file(s), failed: $failed file(s)"
 }
 
+install_missing_component() {
+    local install_dir="$1"
+    local relative_path="$2"
+    local dest="${install_dir}/${relative_path}"
+    local url="${REPO_URL}/.opencode/${relative_path}"
+
+    # Guard: keep updater writes inside the selected install directory.
+    if [[ "$relative_path" == /* ]] || [[ "$relative_path" == *..* ]]; then
+        print_warning "Skipping suspicious component path: $relative_path"
+        return 1
+    fi
+
+    if [ -f "$dest" ]; then
+        print_info "Component already present: ${relative_path}"
+        return 0
+    fi
+
+    mkdir -p "$(dirname "$dest")"
+    if curl -fsSL "$url" -o "$dest" 2>/dev/null; then
+        print_success "Installed missing component: ${relative_path}"
+        return 0
+    fi
+
+    rm -f "$dest"
+    print_warning "Could not install missing component: ${relative_path}"
+    return 1
+}
+
+ensure_quest_components() {
+    local install_dir="$1"
+
+    install_missing_component "$install_dir" "context/core/quest-mode.md" || true
+    install_missing_component "$install_dir" "context/core/experts-mode.md" || true
+    install_missing_component "$install_dir" "command/experts.md" || true
+}
+
 ensure_opencode_config() {
     local install_dir="$1"
     local opencode_config="${install_dir}/opencode.json"
@@ -509,6 +545,7 @@ main() {
     print_step "Updating components..."
 
     update_all_components "$install_dir"
+    ensure_quest_components "$install_dir"
 
     print_step "Ensuring latest OpenAgent runtime config..."
 
@@ -519,7 +556,7 @@ main() {
         install_claude_integration
     fi
 
-    print_success "Update complete! OpenAgent Experts Mode + Agent Swarm + ISO 21434/24089 are active."
+    print_success "Update complete! OpenAgent Quest Mode + Experts Mode + Agent Swarm + ISO 21434/24089 are active."
 }
 
 main "$@"
