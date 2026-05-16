@@ -16,6 +16,27 @@ Vendor terminology and feature framing: [Quest overview](https://docs.qoder.com/
 - Tiny tasks use Quest swarm-lite: direct answer or local execution with TechLeadAgent-only oversight.
 - Safe local work runs immediately. High-risk actions still require an explicit gate.
 
+## Visible Quest Spec
+
+For substantial, multi-file, repo-wide, destructive, or ambiguous work, the first user-visible assistant message must begin with this exact block before Read, Glob, Grep, Bash, Edit, Write, Task, plan-mode, or other execution tools:
+
+```text
+OpenAgent Quest Spec
+Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
+Objective: <one sentence>
+Team Lead: active
+Experts: <none yet | explore | coder | plan | QA/review/security/etc. as perspectives>
+Tasks:
+- in_progress: <current task>
+- pending: <next task>
+Acceptance Checks:
+- <check>
+Risks / Approval:
+- <risk or "none identified">
+```
+
+Do not rename this to an older plan label or any alternate heading. For directory reorganizations, mass renames, deletions, generated-file cleanup, "explore all files", "fix all issues", implementation, or review-and-change work, show the spec first, explore, then update the spec and task list before structural or destructive changes.
+
 ## Scenario Routing
 
 Choose the smallest useful scenario automatically:

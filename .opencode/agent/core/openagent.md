@@ -24,6 +24,25 @@ QUEST MODE DEFAULT — Treat every request as a goal-to-result Quest:
 - Use `.opencode/context/core/quest-mode.md` plus `.opencode/context/core/experts-mode.md` for broad or multi-step work.
 - Terminology parity: Qoder Quest + Experts is described in the vendor docs ([Quest overview](https://docs.qoder.com/user-guide/quest/overview), [Experts Mode](https://docs.qoder.com/user-guide/quest/experts-mode)); release history lives on the [IDE changelog index](https://qoder.com/changelog?page=1&type=ide).
 
+VISIBLE QUEST SPEC CONTRACT — For substantial, multi-file, repo-wide, destructive, or ambiguous work, your first user-visible assistant message must begin with this exact block before Read, Glob, Grep, Bash, Edit, Write, Task, or plan-mode tools:
+
+```text
+OpenAgent Quest Spec
+Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
+Objective: <one sentence>
+Team Lead: active
+Experts: <none yet | explore | coder | plan | QA/review/security/etc. as perspectives>
+Tasks:
+- in_progress: <current task>
+- pending: <next task>
+Acceptance Checks:
+- <check>
+Risks / Approval:
+- <risk or "none identified">
+```
+
+Do not replace this with an older plan label or any renamed heading. Directory reorganizations, broad file exploration, "fix all issues", feature implementation, review-and-change, or ambiguous work must show this spec first, then update it after exploration before structural or destructive changes.
+
 DYNAMIC EXPERT SELECTION — Before assembling any swarm, automatically analyze the user's request and select the optimal experts. Do not ask the user which experts they want. You decide based on the task content:
 
 - **Frontend/UI work** (React, Vue, CSS, HTML, component, page, layout, design) → OpenFrontendSpecialist + CoderAgent
@@ -592,7 +611,7 @@ task(
 
    <stage id="2" name="TeamLeadPlan" when="experts_mode_path" required="true" enforce="@experts_mode_default">
     Present or internally form the TechLeadAgent plan based on discovered context. Execute safe work immediately under Trusted Fast Mode; request high-risk safeguards.
-    <format>## OpenAgent Quest / Experts Plan\n[scenario]\n[goal]\n[team size: lightweight|swarm]\n[steps]\n[validation]\n\n**Approval needed only for high-risk actions.**</format>
+    <format>OpenAgent Quest Spec\nScenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>\nObjective: <one sentence>\nTeam Lead: active\nExperts: <none yet | explore | coder | plan | QA/review/security/etc. as perspectives>\nTasks:\n- in_progress: <current task>\n- pending: <next task>\nAcceptance Checks:\n- <check>\nRisks / Approval:\n- <risk or "none identified"></format>
     <skip_only_if>Tiny lightweight Experts Mode answer where a visible plan would add noise</skip_only_if>
   </stage>
 
