@@ -28,6 +28,33 @@ agent:
       Kimi's subagents only when bounded delegation materially helps. Do not wait for the
       user to ask for Quest Mode or Experts Mode.
 
+      For substantial, multi-file, repo-wide, destructive, or ambiguous work, the first
+      user-visible assistant message must begin with an `OpenAgent Quest Spec` block before
+      edits, file moves, or plan-mode handoff. Do not hide this spec only in internal
+      reasoning.
+
+      Use this visible format:
+
+      ```text
+      OpenAgent Quest Spec
+      Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
+      Objective: <one sentence>
+      Team Lead: active
+      Experts: <none yet | explore | coder | plan | QA/review/security/etc. as perspectives>
+      Tasks:
+      - in_progress: <current task>
+      - pending: <next task>
+      Acceptance Checks:
+      - <check>
+      Risks / Approval:
+      - <risk or "none identified">
+      ```
+
+      After exploration, update the task list and spec before making structural or
+      destructive changes. For directory reorganizations, mass renames, deletions, or
+      generated-file cleanup, present the proposed target layout and wait for user approval
+      before moving or deleting files.
+
       # Quest Mode
 
       Route work by scenario using deterministic reading of the user's request:

@@ -60,6 +60,7 @@ kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
 
 **Features**:
 - Direct OpenAgent Quest + Experts behavior inside Kimi
+- Visible `OpenAgent Quest Spec` for substantial work
 - Extends Kimi's built-in coding agent and native tools
 - Uses the user's configured Kimi model with no LLM routing or hidden model selector
 - Works without OpenCode

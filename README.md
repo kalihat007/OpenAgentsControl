@@ -821,6 +821,8 @@ kimi --work-dir . \
 
 No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi uses the selected Kimi model throughout.
 
+For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, or plan-mode handoff. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
+
 Configure models per agent only if you want different experts to use different models.
 
 **When to configure:**
