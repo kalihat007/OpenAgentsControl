@@ -8,7 +8,6 @@
  * - Fast keyword-based scoring (sync, always available)
  * - Confidence scoring (0-1) with configurable threshold
  * - Ambiguity detection when multiple experts score similarly
- * - Optional LLM-based intent classification fallback for low-confidence results
  * - Clarification question generation for ambiguous/low-confidence routing
  */
 
@@ -48,8 +47,16 @@ export interface ClarificationInfo {
   questions: string[]
 }
 
+export type QuestScenario =
+  | 'direct'
+  | 'code_with_spec'
+  | 'prototype_demo'
+  | 'create_tool'
+  | 'research_plan'
+
 export interface RouterResult {
   objective: string
+  scenario: QuestScenario
   primaryExperts: ExpertProfile[]
   secondaryExperts: ExpertProfile[]
   reasoning: string[]
@@ -60,49 +67,12 @@ export interface RouterResult {
   clarification: ClarificationInfo
 }
 
-// ── LLM Classifier abstraction ───────────────────────────────────────────────
-
-export interface LLMClassificationResult {
-  expertName: string
-  confidence: number
-  reasoning: string
-}
-
-/**
- * Pluggable interface for LLM-based intent classification.
- * Implement this with any LLM provider (OpenAI, Anthropic, local models, etc.)
- * and pass it via RouterConfig to enable smart fallback on low-confidence routes.
- */
-export interface LLMClassifier {
-  classify(
-    objective: string,
-    candidateExperts: string[],
-  ): Promise<LLMClassificationResult>
-}
-
-/**
- * Default stub classifier. Returns the first candidate with medium confidence.
- * Replace with a real LLM-backed implementation for production use.
- */
-export class StubLLMClassifier implements LLMClassifier {
-  async classify(
-    objective: string,
-    candidateExperts: string[],
-  ): Promise<LLMClassificationResult> {
-    return {
-      expertName: candidateExperts[0] ?? 'CoderAgent',
-      confidence: 0.5,
-      reasoning: `Stub classifier for "${objective.slice(0, 80)}" — replace with a real LLM provider`,
-    }
-  }
-}
-
 // ── Configuration ─────────────────────────────────────────────────────────────
 
 export interface RouterConfig {
   /**
    * Confidence threshold (0-1). Scores below this trigger low-confidence
-   * flagging and LLM fallback when a classifier is provided. Default: 0.4
+   * flagging and clarification hints. Default: 0.4
    */
   confidenceThreshold?: number
   /**
@@ -110,8 +80,6 @@ export interface RouterConfig {
    * best score exceeds (1 - margin), results are flagged ambiguous. Default: 0.15
    */
   ambiguityMargin?: number
-  /** Optional LLM classifier for low-confidence fallback. */
-  llmClassifier?: LLMClassifier
 }
 
 const DEFAULT_CONFIDENCE_THRESHOLD = 0.4
@@ -122,6 +90,14 @@ const DEFAULT_AMBIGUITY_MARGIN = 0.15
  * 10 points ≈ 5 exact keyword matches — a strong unambiguous signal.
  */
 const MAX_RAW_SCORE_FOR_FULL_CONFIDENCE = 10
+
+const SCENARIO_KEYWORDS: Record<QuestScenario, string[]> = {
+  direct: ['explain', 'what is', 'where is', 'list', 'show', 'read', 'fix typo', 'small change'],
+  code_with_spec: ['full-stack', 'feature', 'refactor', 'migration', 'auth', 'database', 'strict', 'acceptance criteria', 'test coverage'],
+  prototype_demo: ['prototype', 'demo', 'landing page', 'website', 'mockup', 'preview', 'quick app'],
+  create_tool: ['tool', 'cli', 'script', 'automation', 'generator', 'utility', 'command'],
+  research_plan: ['research', 'compare', 'architecture', 'tradeoff', 'plan', 'design', 'proposal', 'compliance', 'hardware bom'],
+}
 
 // ── Keyword → Expert mappings ─────────────────────────────────────────────────
 
@@ -356,6 +332,26 @@ function generateClarification(
   return { needed: true, questions }
 }
 
+function scoreScenario(objective: string, scenario: QuestScenario): number {
+  const text = objective.toLowerCase()
+  return SCENARIO_KEYWORDS[scenario].reduce(
+    (score, keyword) => score + (text.includes(keyword) ? 1 : 0),
+    0,
+  )
+}
+
+function selectQuestScenario(objective: string, estimatedChunks: number): QuestScenario {
+  const scenarioScores = (Object.keys(SCENARIO_KEYWORDS) as QuestScenario[])
+    .map((scenario) => ({ scenario, score: scoreScenario(objective, scenario) }))
+    .sort((a, b) => b.score - a.score)
+
+  const top = scenarioScores[0]
+  if (top && top.score > 0) return top.scenario
+
+  if (estimatedChunks <= 2) return 'direct'
+  return 'code_with_spec'
+}
+
 // ── Agent discovery ───────────────────────────────────────────────────────────
 
 export interface DiscoveredAgent {
@@ -459,15 +455,18 @@ function buildRouterResult(
     reasoning.push(`Ambiguous — close matches: ${confidence.ambiguousExperts.map((e) => e.name).join(', ')}`)
   }
   if (confidence.isLowConfidence) {
-    reasoning.push('Low confidence — consider providing more context or using LLM fallback')
+    reasoning.push('Low confidence — consider providing more context')
   }
 
   const complexity =
     (objective.match(/and|plus|also|additionally/gi)?.length ?? 0) +
     (objective.match(/implement|build|create|write/gi)?.length ?? 0)
   const estimatedChunks = Math.max(2, Math.min(12, 2 + complexity))
+  const scenario = selectQuestScenario(objective, estimatedChunks)
+  reasoning.unshift(`Quest scenario: ${scenario}`)
 
   log.debug('Routing complete', {
+    scenario,
     primary: primary.map((p) => p.name),
     secondary: secondary.map((p) => p.name),
     confidence: confidence.score,
@@ -477,6 +476,7 @@ function buildRouterResult(
 
   return {
     objective,
+    scenario,
     primaryExperts: primary,
     secondaryExperts: secondary,
     reasoning,
@@ -489,10 +489,7 @@ function buildRouterResult(
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
- * Routes a task objective to the best expert swarm (synchronous, keyword-only).
- *
- * This is the fast path. For LLM-based fallback on low-confidence results,
- * use {@link routeTaskAsync}.
+ * Routes a task objective to the best expert swarm using deterministic keyword rules.
  *
  * Backward-compatible: the third `config` parameter is optional.
  */
@@ -504,78 +501,12 @@ export function routeTask(
   return buildRouterResult(objective, projectRoot, config)
 }
 
-/**
- * Routes a task with optional LLM fallback.
- *
- * Runs keyword scoring first (fast path). If confidence is below the
- * threshold and an LLM classifier is configured, invokes it to re-rank
- * or override the routing decision (slow path).
- */
 export async function routeTaskAsync(
   objective: string,
   projectRoot: string,
   config: RouterConfig = {},
 ): Promise<RouterResult> {
-  const result = buildRouterResult(objective, projectRoot, config)
-
-  if (!config.llmClassifier || !result.confidence.isLowConfidence) {
-    return result
-  }
-
-  log.debug('Low confidence — invoking LLM classifier fallback', {
-    confidence: result.confidence.score,
-  })
-
-  const allExperts = Object.keys(EXPERT_KEYWORDS)
-  try {
-    const llmResult = await config.llmClassifier.classify(objective, allExperts)
-    log.debug('LLM classifier responded', {
-      expertName: llmResult.expertName,
-      confidence: llmResult.confidence,
-    })
-
-    const kwConfig = EXPERT_KEYWORDS[llmResult.expertName]
-    if (!kwConfig) return result
-
-    const discovered = discoverAgents(projectRoot)
-    const disc = discovered.find((a) => a.name === llmResult.expertName)
-
-    const llmExpert: ExpertProfile = {
-      id: disc?.id ?? llmResult.expertName.toLowerCase().replace(/agent$/, ''),
-      name: llmResult.expertName,
-      description: disc?.description ?? kwConfig.keywords.slice(0, 3).join(', '),
-      category: disc?.category ?? 'general',
-      keywords: kwConfig.keywords,
-      filePatterns: kwConfig.filePatterns,
-      score: Math.round(llmResult.confidence * MAX_RAW_SCORE_FOR_FULL_CONFIDENCE),
-    }
-
-    const alreadyPrimary = result.primaryExperts.some((e) => e.name === llmExpert.name)
-    if (!alreadyPrimary) {
-      result.primaryExperts.unshift(llmExpert)
-    }
-
-    result.confidence = {
-      score: llmResult.confidence,
-      isLowConfidence: llmResult.confidence < (config.confidenceThreshold ?? DEFAULT_CONFIDENCE_THRESHOLD),
-      isAmbiguous: result.confidence.isAmbiguous,
-      ambiguousExperts: result.confidence.ambiguousExperts,
-    }
-
-    result.reasoning.push(`LLM fallback selected: ${llmResult.expertName} (confidence: ${llmResult.confidence})`)
-    result.reasoning.push(`LLM reasoning: ${llmResult.reasoning}`)
-
-    if (!result.confidence.isLowConfidence) {
-      result.clarification = { needed: false, questions: [] }
-    }
-  } catch (err) {
-    log.warn('LLM classifier failed — using keyword-only routing', {
-      error: err instanceof Error ? err.message : String(err),
-    })
-    result.reasoning.push('LLM classifier failed — falling back to keyword-only routing')
-  }
-
-  return result
+  return routeTask(objective, projectRoot, config)
 }
 
 /**

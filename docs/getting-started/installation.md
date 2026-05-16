@@ -54,7 +54,7 @@ curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/i
 Install a pre-configured set of components. For HackersEra/OpenAgent usage, use **Advanced** by default.
 
 ```bash
-# Advanced - Recommended default complete system with OpenAgent Experts Mode + swarm
+# Advanced - Recommended default complete system with OpenAgent Quest + Experts Mode + swarm
 bash <(curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh) advanced
 
 # Essential - Minimal setup with core agents

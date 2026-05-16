@@ -64,6 +64,11 @@ else
     REGISTRY_URL="${RAW_URL}/registry.json"
 fi
 
+LOCAL_SOURCE_DIR=""
+if [[ "$REGISTRY_URL" == file://* ]]; then
+    LOCAL_SOURCE_DIR="$(dirname "${REGISTRY_URL#file://}")"
+fi
+
 INSTALL_DIR="${OPENCODE_INSTALL_DIR:-.opencode}"  # Allow override via environment variable
 DEFAULT_PROFILE="${OPENCODE_DEFAULT_PROFILE:-advanced}"  # Default quick/non-interactive profile
 OPENAGENT_SELECTED_MODEL="${OPENAGENT_MODEL:-${OPENAGENT_DEFAULT_MODEL:-}}"
@@ -98,7 +103,7 @@ print_header() {
     echo "╔════════════════════════════════════════════════════════════════╗"
     echo "║                                                                ║"
     echo "║           OpenAgents Control Installer v1.0.0                 ║"
-    echo "║     OpenAgent Experts Mode + Agent Swarm + ISO Compliance     ║"
+    echo "║  OpenAgent Quest + Experts Mode + Agent Swarm + ISO Compliance║"
     echo "║                                                                ║"
     echo "╚════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -366,6 +371,18 @@ get_install_path() {
     echo "${INSTALL_DIR}/${relative_path}"
 }
 
+install_source_file() {
+    local source_path=$1
+    local dest=$2
+
+    if [ -n "$LOCAL_SOURCE_DIR" ] && [ -f "${LOCAL_SOURCE_DIR}/${source_path}" ]; then
+        cp "${LOCAL_SOURCE_DIR}/${source_path}" "$dest"
+        return $?
+    fi
+
+    curl -fsSL "${RAW_URL}/${source_path}" -o "$dest"
+}
+
 expand_context_wildcard() {
     local pattern=$1
     local prefix="${pattern%%\**}"
@@ -513,7 +530,7 @@ check_interactive_mode() {
         echo "curl -fsSL ${RAW_URL}/install.sh | bash -s advanced"
         echo ""
         echo "Available profiles: essential, developer, business, full, advanced"
-        echo "Recommended/default: advanced (complete OpenAgent Experts Mode + agent swarm + ISO 21434/24089 compliance)"
+        echo "Recommended/default: advanced (complete OpenAgent Quest + Experts Mode + agent swarm + ISO 21434/24089 compliance)"
         echo ""
         cleanup_and_exit 1
     fi
@@ -615,7 +632,7 @@ show_main_menu() {
     print_header
     
     echo -e "${BOLD}Choose installation mode:${NC}\n"
-    echo "  1) Quick Install (Advanced profile — OpenAgent Experts Mode + Agent Swarm + ISO 21434/24089)"
+    echo "  1) Quick Install (Advanced profile — OpenAgent Quest + Experts Mode + Agent Swarm + ISO 21434/24089)"
     echo "  2) Custom Install (Pick individual components)"
     echo "  3) List Available Components"
     echo "  4) Exit"
@@ -1244,11 +1261,9 @@ perform_installation() {
                     continue
                 fi
                 
-                # Download file
-                local url="${RAW_URL}/${file_path}"
                 mkdir -p "$(dirname "$dest")"
                 
-                if curl -fsSL "$url" -o "$dest"; then
+                if install_source_file "$file_path" "$dest"; then
                     # Transform paths for global installation
                     if [[ "$INSTALL_DIR" != ".opencode" ]] && [[ "$INSTALL_DIR" != *"/.opencode" ]]; then
                         local expanded_path="${INSTALL_DIR/#\~/$HOME}"
@@ -1287,13 +1302,10 @@ perform_installation() {
                 continue
             fi
             
-            # Download component
-            local url="${RAW_URL}/${path}"
-            
             # Create parent directory if needed
             mkdir -p "$(dirname "$dest")"
             
-            if curl -fsSL "$url" -o "$dest"; then
+            if install_source_file "$path" "$dest"; then
                 # Transform paths for global installation (any non-local path)
                 # Local paths: .opencode or */.opencode
                 if [[ "$INSTALL_DIR" != ".opencode" ]] && [[ "$INSTALL_DIR" != *"/.opencode" ]]; then
@@ -1461,7 +1473,7 @@ show_post_install() {
     
     echo "${step_num}. Start using OpenCode agents:"
     echo -e "   ${CYAN}opencode${NC}"
-    echo "   (OpenAgent is the default agent; Experts Mode + Agent Swarm are active by default)"
+    echo "   (OpenAgent is the default agent; Quest Mode + Experts Mode + Agent Swarm are active by default)"
     echo "   If a provider is overloaded, retry the same selected model after a pause or choose another model explicitly:"
     echo -e "   ${CYAN}opencode --agent OpenAgent --model <provider/model>${NC}"
     echo ""
@@ -1612,8 +1624,8 @@ main() {
                 echo "Usage: $0 [PROFILE] [OPTIONS]"
                 echo ""
                 echo -e "${BOLD}Profiles:${NC}"
-                echo "  essential, --essential    Minimal OpenAgent setup with Experts Mode defaults"
-                echo "  developer, --developer    Coding setup with Experts Mode + swarm"
+                echo "  essential, --essential    Minimal OpenAgent setup with Quest + Experts Mode defaults"
+                echo "  developer, --developer    Coding setup with Quest + Experts Mode + swarm"
                 echo "  business, --business      Business/revenue/investor workflows under OpenAgent"
                 echo "  full, --full              Everything under one OpenAgent entrypoint"
                 echo "  advanced, --advanced      Recommended/default full system plus meta/system-builder and ISO 21434/24089 compliance"
@@ -1737,7 +1749,7 @@ main() {
         if [ "$INSTALL_MODE" = "profile" ]; then
             # Always install the advanced profile (5th option)
             PROFILE="advanced"
-            print_info "Auto-selecting advanced profile (OpenAgent Experts Mode + Agent Swarm + ISO 21434/24089)..."
+            print_info "Auto-selecting advanced profile (OpenAgent Quest + Experts Mode + Agent Swarm + ISO 21434/24089)..."
             
             SELECTED_COMPONENTS=()
             local temp_file="$TEMP_DIR/components.tmp"

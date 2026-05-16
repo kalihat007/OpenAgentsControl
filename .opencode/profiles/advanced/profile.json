@@ -1,6 +1,6 @@
 {
   "name": "Advanced (Meta-Level)",
-  "description": "Recommended default full OpenAgent installation plus System Builder for creating custom AI architectures, agent swarms, workflows, contexts, commands, and installation profiles.",
+  "description": "Recommended default full OpenAgent Quest Mode and Experts Mode installation plus System Builder for creating custom AI architectures, agent swarms, workflows, contexts, commands, and installation profiles.",
   "badge": "RECOMMENDED DEFAULT",
   "components": [
     "agent:openagent",
@@ -53,7 +53,10 @@
     "subagent:context-manager",
     "context:workflows-external-context-management",
     "context:workflows-external-context-integration",
-    "context:context-system"
+    "context:context-system",
+    "context:quest-mode",
+    "context:experts-mode",
+    "command:experts"
   ],
   "additionalPaths": [
     ".Building/",

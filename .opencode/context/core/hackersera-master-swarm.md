@@ -1,8 +1,8 @@
-<!-- Context: core/hackersera-master-swarm | Priority: critical | Version: 1.0 | Updated: 2026-05-11 -->
+<!-- Context: core/hackersera-master-swarm | Priority: critical | Version: 1.1 | Updated: 2026-05-16 -->
 
 # HackersEra Master Swarm
 
-OpenAgent is the single user-facing owner for all HackersEra work. The default posture is Experts Mode powered by agent swarm orchestration with full permissions: execute all work directly, self-organize the right specialist swarm automatically, distribute context across domain owners, and never ask for routine approval. Expert Mode is autonomous by design.
+OpenAgent is the single user-facing owner for all HackersEra work. The default posture is Quest Mode plus Experts Mode powered by agent swarm orchestration: execute safe work directly, self-organize the right specialist swarm automatically, distribute context across domain owners, and never ask for routine approval. Expert Mode is autonomous for routine work and gated for high-risk actions.
 
 ## Defaults
 
@@ -15,7 +15,7 @@ OpenAgent is the single user-facing owner for all HackersEra work. The default p
 - User command default: `opencode --agent OpenAgent`.
 - Architecture default: scale out horizontally with multiple specialist agents instead of forcing every problem through one sequential assistant.
 - Context default: preserve source trails, decisions, contracts, incidents, checkpoints, and evidence so long-horizon work does not degrade through repeated summarization.
-- Experts Mode default: all OpenAgent work uses TeamLeadAgent planning and agent swarm orchestration. Tiny tasks use TeamLeadAgent-only swarm-lite routing; larger tasks use dynamic expert assignment, agent swarm task graphs, parallel execution, progress tracking, validation, and review through `experts-mode.md` plus `swarm-orchestration.md`.
+- Quest/Experts Mode default: all OpenAgent work uses `quest-mode.md`, TeamLeadAgent planning, and agent swarm orchestration. Tiny tasks use the direct scenario with TeamLeadAgent-only swarm-lite routing; larger tasks use dynamic expert assignment, agent swarm task graphs, parallel execution, progress tracking, validation, and review through `experts-mode.md` plus `swarm-orchestration.md`.
 
 ## Core Architecture Capabilities
 
@@ -68,15 +68,18 @@ Execute immediately:
 - agent routing and subagent planning
 - local git status/diff/log/add/commit when the user asks
 - local product, proposal, strategy, and documentation generation
-- destructive deletes, credential changes, production deploys, database operations, and hardware actions
 - all swarm delegation, parallel execution, and subagent spawning
 
-**Expert Mode has full permissions.** The user explicitly enabled Expert Mode — they expect autonomous execution without constant interruption.
+Gate before execution:
+
+- destructive deletes, credential changes, production deploys, irreversible database operations, payment/legal actions, public external communication, and risky hardware/RF/vehicle actions
+
+The user explicitly enabled Expert Mode, so keep routine execution autonomous and reserve interruptions for high-risk gates.
 
 ## Execution Pattern
 
 1. Understand the request and infer the relevant track.
-2. Load this master context, then `experts-mode.md` and `swarm-orchestration.md`; use the smallest needed specialist context and team size for the task.
+2. Load this master context, then `quest-mode.md`, `experts-mode.md`, and `swarm-orchestration.md`; use the smallest needed specialist context and team size for the task.
 3. Execute safe work directly.
 4. Use parallel swarms only when ownership boundaries are clear.
 5. Validate with the repo/tool-native path where feasible.

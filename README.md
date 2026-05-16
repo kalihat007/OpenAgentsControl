@@ -4,12 +4,13 @@
 
 # OpenAgents Control (OAC)
 
-### Trusted fast OpenAgent with default Experts Mode powered by agent swarm orchestration.
+### Trusted fast OpenAgent with default Quest-style Experts Mode powered by agent swarm orchestration.
 
 **AI agents that learn YOUR coding patterns and generate matching code every time.**
 
 🎯 **Pattern Control** - Define your patterns once, AI uses them forever  
 ⚡ **Trusted Fast Mode** - Safe local work executes by default
+🧭 **Quest-Style Default** - Describe the goal; OpenAgent plans, executes, verifies, and summarizes
 🧠 **Scale-Out Swarms** - OpenAgent self-organizes specialist teams by default
 🧑‍💻 **Experts Mode** - Team Lead plans, experts build/test/review in parallel
 🔁 **Repeatable Results** - Same patterns = Same quality code  
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
 
 ## The Solution
 
-**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, runs Experts Mode for all work by default, uses agent swarm orchestration for larger work, distributes context across roles, and keeps high-risk actions behind approval gates.
+**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, runs Quest-style Experts Mode for all work by default, uses agent swarm orchestration for larger work, distributes context across roles, and keeps high-risk actions behind approval gates.
 
 **The result:** Production-ready code that ships without heavy rework.
 
@@ -73,11 +74,14 @@ Full control over agent behavior. Edit markdown files directly—no compilation,
 **⚡ Trusted Fast Mode (Fast by Default)**
 OpenAgent executes safe local work directly. It asks approval only for destructive commands, secrets/credentials, production deploys, payment/legal actions, public external communication, or irreversible data operations.
 
+**🧭 Quest-Style Goal Execution**
+OpenAgent treats every request as a goal-to-result Quest. It auto-selects direct execution, code-with-spec, prototype/demo, tool-building, or research-plan flow, then carries the work through planning, execution, verification, and summary.
+
 **🧠 Scale-Out Organizational AI**
 OpenAgent acts like the CEO of a temporary expert organization. It dynamically assigns researchers, analysts, builders, reviewers, fact-checkers, and domain specialists, then reconciles disagreement instead of forcing one assistant to think through everything sequentially.
 
-**🧑‍💻 Experts Mode + Agent Swarm by Default**
-OpenAgent always starts in Experts Mode and always applies agent swarm orchestration. For tiny work it uses TeamLeadAgent-only swarm-lite routing; for larger work it becomes the Team Lead, splits the objective into small ToDo chunks, creates a full swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, syncs completed chunks back into the plan, runs safe work in parallel, validates the result, and records reusable lessons.
+**🧑‍💻 Quest + Experts Mode + Agent Swarm by Default**
+OpenAgent always starts in Quest-style Experts Mode and always applies agent swarm orchestration. For tiny work it uses TeamLeadAgent-only swarm-lite routing; for larger work it becomes the Team Lead, splits the objective into small ToDo chunks, creates a full swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, syncs completed chunks back into the plan, runs safe work in parallel, validates the result, and records reusable lessons.
 
 **⚡ Token Efficient (MVI Principle)**  
 Minimal Viable Information design. Only load what's needed, when it's needed. Context files <200 lines, lazy loading, faster responses.
@@ -94,7 +98,7 @@ Use any AI model (Claude, GPT, Gemini, local). No vendor lock-in.
 
 For bigger work, OAC now includes a controlled swarm layer:
 
-- **Experts Mode + Agent Swarm** is the default OpenAgent operating layer: Team Lead planning, dynamic expert assignment, swarm task graph, task progress, browser verification, code review, QA, research, DevOps, UX, and self-evolution.
+- **Quest Mode + Experts Mode + Agent Swarm** is the default OpenAgent operating layer: scenario routing, Team Lead planning, dynamic expert assignment, swarm task graph, task progress, browser verification, code review, QA, research, DevOps, UX, and self-evolution.
 - **HackersEra Master Swarm** is the default routing layer for cybersecurity product, technical R&D, revenue, investor, operations, compliance, support, and CEO work.
 - **OpenAgent Swarm Mode** plans multi-agent work with dependencies, file ownership, and validation gates behind Experts Mode.
 - **Chunked ToDo execution** keeps large work fast by splitting broad goals into small specialist-owned chunks, syncing after each batch, and scheduling the next chunk set from the latest checkpoint.
@@ -289,7 +293,7 @@ bun run validate:context-links
 - ✅ You want fast trusted execution with approval gates only for high-risk actions
 - ✅ You care about token efficiency and costs
 - ✅ You want OpenAgent to self-organize researchers, analysts, builders, reviewers, and domain specialists without micromanagement
-- ✅ You want Experts Mode by default with Team Lead planning, frontend/backend/QA/review/research/DevOps/UX experts, progress tracking, and swarm execution
+- ✅ You want Quest-style Experts Mode by default with scenario routing, Team Lead planning, frontend/backend/QA/review/research/DevOps/UX experts, progress tracking, and swarm execution
 - ✅ You want an engineering-team swarm with PM, architecture, implementation, QA, security, review, integration, and debug roles
 - ✅ You want long-horizon work with distributed context, adversarial disagreement, and forced reconciliation
 
@@ -389,7 +393,7 @@ Add a login endpoint
 **Features:**
 - ✅ Trusted Fast Mode with high-risk approval gates
 - ✅ Scale-out organizational AI with dynamic role assignment
-- ✅ Experts Mode + agent swarm by default
+- ✅ Quest-style Experts Mode + agent swarm by default
 - ✅ Chunked ToDo execution for fast large-work delivery
 - ✅ Context-aware code generation
 - ✅ 7 specialized subagents (task-manager, context-scout, context-manager, coder-agent, test-engineer, code-reviewer, external-scout)
@@ -923,6 +927,9 @@ A: Smart pattern discovery agent. Finds relevant context files before code gener
 
 **Q: Can I modify requirements during Experts Mode execution?**
 A: Yes. Add information, correct direction, or change priorities at any time. TeamLeadAgent updates the plan, reallocates experts, revises the swarm task graph, and continues from validated work.
+
+**Q: What does Quest-style default mean in OAC?**
+A: `opencode` starts on OpenAgent by default. OpenAgent treats the request as a goal, chooses direct execution, code-with-spec, prototype/demo, tool-building, or research-plan flow, then uses Experts Mode and the swarm runtime when the task needs a team.
 
 **Q: What about cost and time for Experts Mode?**
 A: Experts Mode and agent swarm orchestration are always on, but they scale themselves. Tiny tasks use TeamLeadAgent-only swarm-lite routing with minimal overhead. Larger tasks are split into small ToDo chunks so experts can work quickly, sync after each batch, and avoid wasting context or tool calls.

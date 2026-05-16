@@ -1,6 +1,6 @@
 {
   "name": "Full",
-  "description": "Everything included - all agents, subagents, tools, and plugins for maximum functionality.",
+  "description": "Everything included - OpenAgent Quest Mode, Experts Mode, all agents, subagents, tools, and plugins for maximum functionality.",
   "components": [
     "agent:openagent",
     "agent:opencoder",
@@ -43,6 +43,9 @@
     "skill:context-manager",
     "context:workflows-external-context-management",
     "context:workflows-external-context-integration",
-    "context:context-system"
+    "context:context-system",
+    "context:quest-mode",
+    "context:experts-mode",
+    "command:experts"
   ]
 }

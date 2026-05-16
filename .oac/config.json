@@ -4,6 +4,8 @@
     "yoloMode": false,
     "autoBackup": true,
     "expertMode": true,
-    "useAgentSwarm": true
+    "useAgentSwarm": true,
+    "maxParallelAgents": 2,
+    "maxApiCallsPerSession": 500
   }
 }

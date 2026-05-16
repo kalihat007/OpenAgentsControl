@@ -1,4 +1,4 @@
-<!-- Context: core/navigation | Priority: critical | Version: 1.0 | Updated: 2026-02-15 -->
+<!-- Context: core/navigation | Priority: critical | Version: 1.1 | Updated: 2026-05-16 -->
 
 # Core Context Navigation
 
@@ -14,6 +14,7 @@ core/
 ├── context-system.md
 ├── business-operations-swarms.md
 ├── essential-patterns.md
+├── quest-mode.md
 ├── experts-mode.md
 ├── hackersera-master-swarm.md
 ├── development-swarm.md
@@ -80,6 +81,7 @@ core/
 | **ISO 24089 compliance** | `standards/iso24089-reference.md` |
 | **Review code** | `workflows/code-review.md` |
 | **Delegate task** | `workflows/task-delegation-basics.md` |
+| **Run Quest Mode** | `quest-mode.md` + `experts-mode.md` |
 | **Run Experts Mode** | `experts-mode.md` + `swarm-orchestration.md` |
 | **Run agent swarm** | `swarm-orchestration.md` |
 | **Run HackersEra master swarm** | `hackersera-master-swarm.md` |
@@ -102,6 +104,7 @@ core/
 
 **Standards** → Code quality, testing, docs, security (critical priority)
 **Workflows** → Review, delegation, task breakdown (high priority)
+**Quest Mode** → default goal-to-result wrapper, scenario routing, spec/prototype/tool paths, task progress, environment choice, and mid-flight steering (critical priority)
 **Experts Mode** → Team Lead planning, dynamic experts, task progress, parallel execution, validation, review, and self-evolution (critical priority)
 **Swarm** → Task graph, file locks, safe parallel batches, validation gates (critical priority)
 **HackersEra Master Swarm** → Trusted fast OpenAgent routing plus scale-out organizational AI across technical, development, revenue, investor, operations, support, compliance, and CEO tracks (critical priority)

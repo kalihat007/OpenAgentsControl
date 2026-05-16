@@ -111,18 +111,20 @@ User request
 
 ## Session Layout
 
+CLI swarm/experts runs persist under `.oac/runs/{session-id}/`:
+
 ```text
-.tmp/swarm/{session-id}/
-  swarm.json
-  task-graph.json
-  module-claims.json
-  contracts.json
-  incidents.jsonl
-  checkpoints.jsonl
-  events.jsonl
-  artifacts/
-  reports/
+.oac/runs/{session-id}/
+  spec.json              # SSOT: objective, scenario, expert roster, requirements stub
+  plan.json              # Task graph, batches, stages, decomposition
+  summary.json           # Run outcome, acceptance totals, quality gate result
+  events.ndjson          # Append-only session events (one JSON object per line)
+  acceptance-report.md   # Human-readable acceptance + quality gate report
 ```
+
+Inspect runs with `oac swarm-status` or `oac swarm-status <session-id>`.
+
+OpenCode slash commands (`/swarm-plan`, `/swarm-run`, `/swarm-status`) use the same orchestration model; IDE session artifacts may also include task graphs, module claims, and contracts in workspace context paths.
 
 ## When To Use Swarm Mode
 

@@ -1,18 +1,20 @@
-<!-- Context: core/experts-mode | Priority: critical | Version: 2.0 | Updated: 2026-05-13 -->
+<!-- Context: core/experts-mode | Priority: critical | Version: 2.2 | Updated: 2026-05-16 -->
 
 # OpenAgent Experts Mode
 
-Experts Mode is OpenAgent's default operating mode for all work, and agent swarm orchestration is its default execution engine. The user states the goal; OpenAgent acts as Team Lead, decomposes the work, assembles the smallest useful expert swarm, executes safe work through swarm-lite routing or a parallel swarm task graph, tracks progress, integrates outputs, and validates the final result.
+Experts Mode is OpenAgent's default operating mode for all work, and agent swarm orchestration is its default execution engine. It sits inside OpenAgent Quest Mode: the user states the goal; OpenAgent selects the scenario, creates the right amount of spec, acts as Team Lead, decomposes the work, assembles the smallest useful expert swarm, executes safe work through swarm-lite routing or a parallel swarm task graph, tracks progress, integrates outputs, and validates the final result.
 
 This mode is always routed through `opencode --agent OpenAgent`. Do not tell the user to switch to a different primary agent.
 
-Mandatory invariant: there is no separate non-expert mode for OpenAgent. Conversational answers, direct terminal commands, one-file edits, multi-file builds, research, review, and HackersEra swarm work all pass through Experts Mode and agent swarm orchestration. The only difference is team size and state overhead.
+Vendor feature description and examples: [Experts Mode](https://docs.qoder.com/user-guide/quest/experts-mode); Quest workspace context: [Quest overview](https://docs.qoder.com/user-guide/quest/overview); [IDE changelog index](https://qoder.com/changelog?page=1&type=ide).
+
+Mandatory invariant: there is no separate non-expert mode for OpenAgent. Conversational answers, direct terminal commands, one-file edits, multi-file builds, research, review, and HackersEra swarm work all pass through Quest Mode, Experts Mode, and agent swarm orchestration. The only difference is scenario, team size, and state overhead.
 
 ## Always Active
 
-Activate Experts Mode for every `opencode --agent OpenAgent` request.
+Activate Quest Mode and Experts Mode for every `opencode --agent OpenAgent` request.
 
-Never skip Experts Mode or agent swarm orchestration because the task is small. Small tasks use TechLeadAgent-only swarm-lite execution.
+Never skip Quest Mode, Experts Mode, or agent swarm orchestration because the task is small. Small tasks use the `direct` scenario with TechLeadAgent-only swarm-lite execution.
 
 ## Dynamic Expert Selection
 
@@ -34,6 +36,15 @@ OpenAgent automatically selects experts based on task content — no manual user
 
 TechLeadAgent is always included for coordination. Domain specialists are added only when the task clearly needs them. The `oac experts` CLI command can preview the auto-selected team for any objective.
 
+### Routing policy
+
+| Layer | Routing | Model use |
+|-------|---------|-----------|
+| **OAC CLI** (`oac experts`, swarm preview) | Keyword + scenario rules via `routeTask` | Preview only |
+| **OpenAgent (IDE)** | Team Lead resolves ambiguity, scenario, and expert team | Uses the user's selected model throughout |
+
+Low-confidence or ambiguous CLI previews surface clarification hints. OpenAgent in the IDE acts as Team Lead for disambiguation using the user's selected model.
+
 ### System Defaults
 
 The OAC CLI config (`.oac/config.json`) now defaults to:
@@ -42,7 +53,10 @@ The OAC CLI config (`.oac/config.json`) now defaults to:
 - `maxParallelAgents: 2`
 - `maxApiCallsPerSession: 500`
 
-These defaults are enforced automatically on `oac init`. Expert mode and agent swarm orchestration are always active unless the user explicitly disables them in config.
+OpenCode config (`.opencode/opencode.json`) defaults to:
+- `default_agent: "OpenAgent"`
+
+These defaults are enforced automatically on `oac init` and `install.sh`. Quest Mode, Expert Mode, and agent swarm orchestration are always active unless the user explicitly disables them in config.
 
 ## API Conservation
 
@@ -53,7 +67,7 @@ Expert mode and agent swarm MUST NOT overload API requests or model token budget
 - **Intelligent batching**: Group independent tasks into the smallest number of parallel batches. Do not spawn agents for work that can be done sequentially without penalty.
 - **Sequential large-task default**: For larger agentic coding work, split the objective into small subtasks and run them sequence-by-sequence unless the dependencies, file ownership, and provider capacity clearly support safe parallelism.
 - **Context reuse**: Pass loaded context files to subagents in delegation prompts instead of letting each subagent re-read the same files.
-- **Swarm-lite by default**: For tiny tasks (1-3 files, <30min), use TechLeadAgent-only execution. Do not spawn OpenFrontendSpecialist, BackendDeveloperAgent, TestEngineer, CodeReviewer, ExternalScout, and OpenDevopsSpecialist for trivial work.
+- **Swarm-lite by default**: For tiny tasks (1-3 files, <30min), use the Quest `direct` scenario with TechLeadAgent-only execution. Do not spawn OpenFrontendSpecialist, BackendDeveloperAgent, TestEngineer, CodeReviewer, ExternalScout, and OpenDevopsSpecialist for trivial work.
 - **Estimate before executing**: Before launching a full swarm, give the user an API usage estimate: `"This plan will use ~X tool calls across Y agents."`
 - **Sequential fallback**: When validation is failing, recovery must converge first — do not add more parallel agents to a broken pipeline.
 - **Model loyalty**: Use the user's selected OpenCode model exactly as selected. Never silently switch from Kimi, Claude, OpenAI, or any other provider/model to a fallback model.
@@ -78,11 +92,23 @@ Use the full agent swarm path when a request includes:
 - UI/UX plus backend/API/database work
 - HackersEra cybersecurity product, hardware, firmware, VAPT, compliance, GTM, investor, or operations work
 
-Simple work still remains inside Experts Mode and agent swarm orchestration; it just uses TechLeadAgent-only swarm-lite routing and executes directly in Trusted Fast Mode without assembling a large team or creating session files.
+Simple work still remains inside Quest Mode, Experts Mode, and agent swarm orchestration; it just uses the direct scenario with TechLeadAgent-only swarm-lite routing and executes directly in Trusted Fast Mode without assembling a large team or creating session files.
 
 ---
 
-## Spec-Driven Execution (New)
+## Quest Scenario Routing
+
+Apply `.opencode/context/core/quest-mode.md` before selecting the expert team:
+
+| Scenario | Use When | Expert Behavior |
+|----------|----------|-----------------|
+| `direct` | question, safe local command, tiny edit | answer or execute with swarm-lite and minimal context |
+| `code_with_spec` | complex feature, refactor, strict quality | create spec, task graph, experts, and validation gates |
+| `prototype_demo` | quick app/site/tool prototype | build directly, preview or smoke test, iterate |
+| `create_tool` | automation, CLI, generator, utility | define inputs/outputs, implement, run sample command |
+| `research_plan` | architecture, external docs, compliance, hardware | gather evidence and produce a decision-ready plan |
+
+## Spec-Driven Execution
 
 Every non-trivial swarm task MUST begin with a **Technical Spec** that serves as the single source of truth for the entire execution.
 
@@ -150,11 +176,7 @@ When the user changes requirements or an agent discovers a blocking issue:
 
 ### Self-Clarification for Ambiguous Requirements
 
-Before generating the Spec, OpenAgent MUST resolve ambiguity:
-
-- Ask the user for missing constraints (stack, scope, quality bar)
-- Use ExternalScout to investigate unclear technical terms
-- Do NOT proceed to execution with ambiguous requirements
+Before generating the Spec, resolve ambiguity per Quest Mode: self-clarify via repo context and ExternalScout for routine gaps; ask the user only when missing answers would change destructive, credential, production, legal/payment, public external, or risky hardware behavior.
 
 ---
 
@@ -292,7 +314,7 @@ Represent expert work with explicit status:
 }
 ```
 
-Use the agent swarm state model whenever work needs multiple experts, durable tracking, or validation gates: `.tmp/swarm/{session-id}/task-graph.json`, `module-claims.json`, `contracts.json`, `events.jsonl`, `incidents.jsonl`, and `checkpoints.jsonl`. Summaries should report pending, in-progress, completed, blocked, and failed work.
+Use the agent swarm state model whenever work needs multiple experts, durable tracking, or validation gates. CLI runs persist under `.oac/runs/{session-id}/` as `plan.json`, `events.ndjson`, `acceptance-report.md`, and `summary.json`. Summaries should report pending, in-progress, completed, blocked, and failed work.
 
 ---
 
@@ -396,7 +418,7 @@ Each agent builds a preference profile during execution:
 }
 ```
 
-Store in `.tmp/swarm/{session-id}/agent-memory.json` and pass to the same agent on future tasks.
+Store in `.oac/runs/{session-id}/agent-memory.json` when persisted, and pass to the same agent on future tasks.
 
 ### Team Memory
 
@@ -471,7 +493,7 @@ Long-running tasks can execute in background:
 
 1. OpenAgent delegates to SwarmOrchestrator with `run_in_background=true`
 2. User receives: `"Swarm running in background. Task ID: swarm-abc-123. Use /swarm-status swarm-abc-123 to check progress."`
-3. Swarm writes progress to `.tmp/swarm/{session-id}/events.jsonl`
+3. Swarm writes progress to `.oac/runs/{session-id}/events.ndjson`
 4. User can check status, pause, or attach at any time
 5. On completion: user receives summary notification
 
@@ -483,7 +505,7 @@ After a swarm task completes:
 
 1. **Smart Diff**: Rebuild only changed parts — no full rebuild unless dependencies changed
 2. **Regression Testing**: Run affected test suites + smoke tests on unchanged areas
-3. **Post-Mortem Auto-Report**: Generate `.tmp/swarm/{session-id}/post-mortem.md` with:
+3. **Post-Mortem Auto-Report**: Generate `.oac/runs/{session-id}/acceptance-report.md` (or companion post-mortem) with:
    - What was accomplished vs Spec
    - Quality gate results
    - Retry counts and self-healing events
@@ -522,7 +544,7 @@ Yes. The user can add information, correct direction, or change priorities at an
 Experts Mode and agent swarm orchestration are always active, but they scale themselves. Simple tasks use TechLeadAgent-only swarm-lite routing with minimal overhead. Larger or higher-risk tasks may use more tool calls and wall-clock time than a single direct agent, but they should deliver better quality through planning, parallel specialist work, QA, review, and validation.
 
 **How does terminal execution work in Experts Mode?**
-Expert Mode has **full permissions**. All bash, edit, and task operations execute directly without asking for approval. The user selected Expert Mode explicitly — they expect autonomous execution, not constant interruption. Only catastrophic system destruction (e.g., `rm -rf /`) is blocked at the permission layer.
+Safe local bash, edit, and task operations execute directly without routine approval. The user selected Expert Mode explicitly, so avoid constant interruption. Gate destructive deletes, credential/secret changes, production deploys, payment/legal actions, public external communication, irreversible data changes, risky hardware actions, and tool-budget exhaustion that requires changing the plan.
 
 **What happens when quality gates fail?**
 Quality failures block delivery. The responsible agent enters an auto-fix retry loop (max 3 retries). If the issue persists after 3 retries, OpenAgent escalates to the human with a specific failure report and proposed fix. The user can approve the fix, modify the Spec, or override the gate.
@@ -536,6 +558,7 @@ Use the task DAG and events.jsonl for real-time progress. OpenAgent reports batc
 
 Experts Mode is complete only when:
 
+- the Quest scenario is clear
 - the Technical Spec is clear and validated
 - the Team Lead plan and expert lineup are clear
 - the swarm task graph, ownership boundaries, and validation gates are clear whenever multi-expert execution is used

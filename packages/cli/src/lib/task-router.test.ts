@@ -1,10 +1,8 @@
-import { describe, it, expect, mock } from 'bun:test'
+import { describe, it, expect } from 'bun:test'
 import {
   routeTask,
   routeTaskAsync,
   suggestExperts,
-  StubLLMClassifier,
-  type LLMClassifier,
   type RouterConfig,
   type RouterResult,
 } from './task-router.js'
@@ -52,6 +50,7 @@ describe('task-router (backward-compat)', () => {
 
   it('result always includes confidence and clarification fields', () => {
     const result = routeTask('Build a React login page', projectRoot)
+    expect(result.scenario).toBeDefined()
     expect(result.confidence).toBeDefined()
     expect(result.confidence.score).toBeGreaterThanOrEqual(0)
     expect(result.confidence.score).toBeLessThanOrEqual(1)
@@ -60,6 +59,30 @@ describe('task-router (backward-compat)', () => {
     expect(result.clarification).toBeDefined()
     expect(typeof result.clarification.needed).toBe('boolean')
     expect(Array.isArray(result.clarification.questions)).toBe(true)
+  })
+})
+
+// ── Quest scenario routing ───────────────────────────────────────────────────
+
+describe('quest scenario routing', () => {
+  it('uses direct scenario for tiny work', () => {
+    const result = routeTask('fix typo', projectRoot)
+    expect(result.scenario).toBe('direct')
+  })
+
+  it('uses code_with_spec for strict feature work', () => {
+    const result = routeTask('build a full-stack auth feature with acceptance criteria and test coverage', projectRoot)
+    expect(result.scenario).toBe('code_with_spec')
+  })
+
+  it('uses prototype_demo for prototype requests', () => {
+    const result = routeTask('create a quick website prototype with preview', projectRoot)
+    expect(result.scenario).toBe('prototype_demo')
+  })
+
+  it('uses create_tool for automation tool requests', () => {
+    const result = routeTask('create a CLI automation tool for reports', projectRoot)
+    expect(result.scenario).toBe('create_tool')
   })
 })
 
@@ -199,117 +222,16 @@ describe('clarification questions', () => {
   })
 })
 
-// ── LLM fallback ──────────────────────────────────────────────────────────────
+// ── Async compatibility ───────────────────────────────────────────────────────
 
-describe('LLM fallback', () => {
-  it('StubLLMClassifier returns a result', async () => {
-    const stub = new StubLLMClassifier()
-    const result = await stub.classify('do something', ['CoderAgent', 'DebugAgent'])
-    expect(result.expertName).toBe('CoderAgent')
-    expect(result.confidence).toBe(0.5)
-    expect(result.reasoning).toContain('Stub')
-  })
-
-  it('does not invoke LLM when confidence is high', async () => {
-    let llmCalled = false
-    const classifier: LLMClassifier = {
-      async classify() {
-        llmCalled = true
-        return { expertName: 'DebugAgent', confidence: 0.9, reasoning: 'test' }
-      },
-    }
-
-    await routeTaskAsync(
-      'Write React components with CSS styling for the frontend UI layout and browser DOM',
-      projectRoot,
-      { llmClassifier: classifier },
-    )
-    expect(llmCalled).toBe(false)
-  })
-
-  it('invokes LLM when confidence is low', async () => {
-    let llmCalled = false
-    const classifier: LLMClassifier = {
-      async classify(_obj, _experts) {
-        llmCalled = true
-        return { expertName: 'DebugAgent', confidence: 0.85, reasoning: 'LLM determined this is debugging' }
-      },
-    }
-
-    const result = await routeTaskAsync('hmm something is wrong', projectRoot, {
-      llmClassifier: classifier,
-    })
-    expect(llmCalled).toBe(true)
-    expect(result.primaryExperts.some((e) => e.name === 'DebugAgent')).toBe(true)
-    expect(result.reasoning.some((r) => r.includes('LLM fallback selected'))).toBe(true)
-  })
-
-  it('LLM result updates confidence score', async () => {
-    const classifier: LLMClassifier = {
-      async classify() {
-        return { expertName: 'SecurityAgent', confidence: 0.9, reasoning: 'high confidence' }
-      },
-    }
-
-    const result = await routeTaskAsync('hmm not sure', projectRoot, {
-      llmClassifier: classifier,
-    })
-    expect(result.confidence.score).toBe(0.9)
-    expect(result.confidence.isLowConfidence).toBe(false)
-  })
-
-  it('clears clarification when LLM produces high confidence', async () => {
-    const classifier: LLMClassifier = {
-      async classify() {
-        return { expertName: 'CoderAgent', confidence: 0.8, reasoning: 'clear intent' }
-      },
-    }
-
-    const result = await routeTaskAsync('hmm', projectRoot, {
-      llmClassifier: classifier,
-    })
-    expect(result.clarification.needed).toBe(false)
-  })
-
-  it('gracefully handles LLM classifier errors', async () => {
-    const classifier: LLMClassifier = {
-      async classify() {
-        throw new Error('LLM service unavailable')
-      },
-    }
-
-    const result = await routeTaskAsync('do something', projectRoot, {
-      llmClassifier: classifier,
-    })
-    // Should fall back to keyword-only without crashing
-    expect(result.reasoning.some((r) => r.includes('LLM classifier failed'))).toBe(true)
-    expect(result.confidence.isLowConfidence).toBe(true)
-  })
-
-  it('does not invoke LLM when no classifier is provided', async () => {
+describe('async router compatibility', () => {
+  it('uses the same deterministic routing as routeTask', async () => {
     const result = await routeTaskAsync('do something', projectRoot)
+    const syncResult = routeTask('do something', projectRoot)
+    expect(result.scenario).toBe(syncResult.scenario)
+    expect(result.primaryExperts.map((e) => e.name)).toEqual(
+      syncResult.primaryExperts.map((e) => e.name),
+    )
     expect(result.confidence.isLowConfidence).toBe(true)
-    expect(result.reasoning.every((r) => !r.includes('LLM fallback selected'))).toBe(true)
-    expect(result.reasoning.every((r) => !r.includes('LLM reasoning:'))).toBe(true)
-  })
-
-  it('does not add duplicate expert when LLM picks an already-primary expert', async () => {
-    const classifier: LLMClassifier = {
-      async classify() {
-        return { expertName: 'OpenFrontendSpecialist', confidence: 0.95, reasoning: 'clearly frontend' }
-      },
-    }
-
-    // "build react page" should already have OpenFrontendSpecialist as primary via keywords,
-    // but confidence might be above threshold. Force low confidence threshold to trigger LLM.
-    const result = await routeTaskAsync('build a react page', projectRoot, {
-      llmClassifier: classifier,
-      confidenceThreshold: 0.99,
-    })
-
-    const frontendCount = result.primaryExperts.filter(
-      (e) => e.name === 'OpenFrontendSpecialist',
-    ).length
-    expect(frontendCount).toBeLessThanOrEqual(1)
   })
 })

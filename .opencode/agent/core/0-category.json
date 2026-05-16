@@ -16,6 +16,8 @@
       ],
       "commonContext": [
         "core/essential-patterns",
+        "core/quest-mode",
+        "core/experts-mode",
         "core/workflows/*",
         "core/standards/*"
       ]

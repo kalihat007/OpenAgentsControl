@@ -1,6 +1,6 @@
 {
   "name": "Developer",
-  "description": "Complete software development environment with code generation, testing, review, and build tools. Use Advanced for the default full OpenAgent Experts Mode swarm setup.",
+  "description": "Complete software development environment with OpenAgent Quest Mode, Experts Mode, code generation, testing, review, and build tools. Use Advanced for the default full OpenAgent swarm setup.",
   "components": [
     "agent:openagent",
     "agent:opencoder",
@@ -40,6 +40,9 @@
     "skill:context-manager",
     "context:workflows-external-context-management",
     "context:workflows-external-context-integration",
-    "context:context-system"
+    "context:context-system",
+    "context:quest-mode",
+    "context:experts-mode",
+    "command:experts"
   ]
 }

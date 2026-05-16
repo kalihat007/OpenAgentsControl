@@ -1,6 +1,6 @@
 {
   "name": "Business",
-  "description": "Business process automation, content creation, and visual workflows. Includes image generation, notifications, and documentation tools.",
+  "description": "Business process automation, content creation, and visual workflows under OpenAgent Quest Mode and Experts Mode. Includes image generation, notifications, and documentation tools.",
   "components": [
     "agent:openagent",
     "agent:copywriter",
@@ -27,6 +27,9 @@
     "skill:context-manager",
     "context:workflows-external-context-management",
     "context:workflows-external-context-integration",
-    "context:context-system"
+    "context:context-system",
+    "context:quest-mode",
+    "context:experts-mode",
+    "command:experts"
   ]
 }

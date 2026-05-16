@@ -2,7 +2,7 @@
 
 **Your intelligent assistant for questions, tasks, and workflows**
 
-OpenAgent is the primary universal agent in OpenCode that handles everything from simple questions to complex multi-step workflows. This guide explains how it works and how to get the most out of it.
+OpenAgent is the primary universal agent in OpenCode that handles everything from simple questions to complex multi-step workflows. It now starts in Quest-style Experts Mode by default: describe the goal, and OpenAgent chooses the right scenario, plans, executes, validates, and summarizes.
 
 ---
 
@@ -28,12 +28,12 @@ OpenAgent is your **universal coordinator** that:
 - ✅ **Executes general tasks** - Create files, documentation, simple updates
 - ✅ **Coordinates workflows** - Handles most general tasks directly, delegates to specialists when needed
 - ✅ **Preserves context** - Remembers information across multiple steps
-- ✅ **Keeps you in control** - Always asks for approval before taking action
+- ✅ **Keeps you in control** - Runs safe local work directly and gates high-risk actions
 
-Think of OpenAgent as a **smart project coordinator** who:
+Think of OpenAgent as a **smart Quest-style project coordinator** who:
 - Understands what you need
 - Plans how to do it
-- Asks for your approval
+- Gates high-risk actions
 - Executes the plan (directly or via delegation)
 - Confirms everything is done right
 
@@ -49,9 +49,9 @@ Think of OpenAgent as a **smart project coordinator** who:
 graph LR
     A[You Ask] --> B{Question or Task?}
     B -->|Question| C[Get Answer]
-    B -->|Task| D[See Plan]
-    D --> E[Approve Plan]
-    E --> F[Watch Execution]
+    B -->|Task| D[Select Quest Scenario]
+    D --> E[Plan if Needed]
+    E --> F[Execute Safe Work]
     F --> G[Confirm Done]
     
     style A fill:#4A90E2,stroke:#2E5C8A,stroke-width:3px,color:#000
@@ -63,8 +63,8 @@ graph LR
     style G fill:#7ED321,stroke:#5FA319,stroke-width:3px,color:#000
 ```
 
-**For Questions**: You ask → You get an answer
-**For Tasks**: You ask → See plan → Approve → Watch it happen → Confirm done
+**For Questions**: You ask → OpenAgent answers inside Quest/Experts swarm-lite
+**For Tasks**: You ask → OpenAgent chooses scenario → Plans when useful → Executes safe work → Validates → Summarizes
 
 ### Universal Coordinator Philosophy
 
@@ -84,9 +84,9 @@ This means OpenAgent is your single go-to coordinator for general tasks, deep co
 
 ## The Two Paths
 
-OpenAgent has two different ways of working, depending on what you need:
+OpenAgent uses Quest-style scenarios depending on what you need:
 
-### Path 1: Conversational (For Questions)
+### Path 1: Direct (For Questions And Tiny Work)
 
 ```mermaid
 graph TD
@@ -114,11 +114,11 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Request Task] --> B[OpenAgent Creates Plan]
-    B --> C[Shows You Plan]
-    C --> D{Approve?}
-    D -->|Yes| E[Executes Plan]
-    D -->|No| F[Revise or Cancel]
+    A[Request Task] --> B[OpenAgent Selects Scenario]
+    B --> C[Creates Plan if Needed]
+    C --> D{High Risk?}
+    D -->|No| E[Executes Safe Work]
+    D -->|Yes| F[Gate or Isolate]
     E --> G[Validates Results]
     G --> H[Shows Summary]
     H --> I{Satisfied?}
@@ -147,10 +147,10 @@ graph TD
 - "Refactor this code to use TypeScript"
 
 **What Happens**: 
-1. You see a plan
-2. You approve it
-3. OpenAgent executes it
-4. You confirm it's done right
+1. OpenAgent selects a Quest scenario
+2. You see a plan when the work is non-trivial
+3. OpenAgent executes safe local work directly
+4. OpenAgent validates and summarizes the result
 
 ---
 
@@ -165,9 +165,9 @@ graph TD
         A2 --> A3{Question or Task?}
     end
     
-    subgraph Stage2["Stage 2: Approve"]
-        B1[Create Plan] --> B2[Present to User]
-        B2 --> B3[Wait for Approval]
+    subgraph Stage2["Stage 2: Scenario and Plan"]
+        B1[Select Quest Scenario] --> B2[Create Plan if Needed]
+        B2 --> B3[Gate High-Risk Actions]
     end
     
     subgraph Stage3["Stage 3: Execute"]
@@ -181,9 +181,11 @@ graph TD
     subgraph Stage4["Stage 4: Validate"]
         D1[Check Quality] --> D2[Run Tests if Applicable]
         D2 --> D3{Issues Found?}
-        D3 -->|Yes| D4[Report & Propose Fixes]
-        D4 --> D5[Wait for Approval]
-        D5 --> D6[Apply Approved Fixes]
+        D3 -->|Yes| D4[Report & Fix Low-Risk Issues]
+        D4 --> D5{High-Risk Fix?}
+        D5 -->|No| D6[Apply Fix]
+        D5 -->|Yes| D8[Request Approval]
+        D8 --> D6
         D6 --> D2
         D3 -->|No| D7[Ask: Review Work?]
     end
@@ -250,19 +252,18 @@ graph TD
 
 ---
 
-### Stage 2: Approve ⚠️ (MANDATORY - CRITICAL RULE)
+### Stage 2: Scenario And Plan
 
 ```mermaid
 graph TD
     A[Task Identified] --> B[Analyze Requirements]
-    B --> C[Create Step-by-Step Plan]
-    C --> D[Format Plan for User]
-    D --> E[Present Plan to User]
-    E --> F{User Response}
+    B --> C[Select Quest Scenario]
+    C --> D[Create Plan if Needed]
+    D --> E{High-Risk Action?}
     
-    F -->|Approve| G[Proceed to Stage 3]
-    F -->|Request Changes| H[Revise Plan]
-    F -->|Reject/Cancel| I[Cancel Task]
+    E -->|No| G[Proceed to Stage 3]
+    E -->|Yes| H[Request Approval or Isolate]
+    H --> I[Proceed After Gate]
     
     H --> C
     I --> J[End - Task Cancelled]
@@ -276,9 +277,9 @@ graph TD
     style J fill:#D0021B,stroke:#A00116,stroke-width:3px,color:#fff
 ```
 
-**What happens**: OpenAgent creates a plan and shows it to you.
+**What happens**: OpenAgent creates a plan and task list when the work is non-trivial.
 
-**Critical Rule**: OpenAgent **ALWAYS** requests approval before **ANY** execution (bash, write, edit, task delegation). This is absolute and strictly enforced. Read and list operations do not require approval.
+**Current Rule**: OpenAgent executes safe local reads, edits, tests, builds, and task delegation directly in Trusted Fast Mode. It asks approval only for destructive deletes, credentials/secrets, production deploys, payment/legal actions, public external communication, irreversible data operations, or risky hardware actions.
 
 **Your experience**: You see something like:
 ```
@@ -366,11 +367,14 @@ graph TD
     
     I --> J[Report Issues Clearly]
     J --> K[Propose Fix Plan]
-    K --> L[Request Approval]
-    L --> M{User Approves Fix?}
+    K --> L{High-Risk Fix?}
+    L -->|No| M[Apply Fixes]
+    L -->|Yes| P[Request Approval]
     
-    M -->|Yes| N[Apply Fixes]
-    M -->|No| O[End - Issues Remain]
+    P -->|Approved| N[Apply Fixes]
+    P -->|Not Approved| O[End - Issues Remain]
+    M --> H
+    N --> H
     
     N --> D
     
@@ -398,9 +402,9 @@ graph TD
 **What happens**: OpenAgent checks the quality of the work, runs tests if applicable, and ensures everything works correctly.
 
 **Critical Rules Enforced**:
-1. **STOP on failure** - Immediately stops execution when tests fail or errors occur
+1. **Converge on failure** - Fix low-risk validation failures and rerun the failed gate
 2. **REPORT first** - Always reports issues before proposing fixes
-3. **NEVER auto-fix** - Always requests approval before fixing issues
+3. **Gate high-risk fixes** - Requests approval only for destructive, credential, production, public, irreversible, or risky hardware actions
 
 **Your experience when validation passes**: You see:
 ```
@@ -417,15 +421,14 @@ Would you like me to run any additional checks or review the work before I summa
 
 #### Special Case: Test Failures or Issues Found
 
-If OpenAgent runs tests or validation and finds issues, it follows a **strict protocol** (Critical Rule):
+If OpenAgent runs tests or validation and finds issues, it follows a convergence protocol:
 
 **What happens**:
-1. ⛔ **STOPS** execution immediately (no auto-fix)
+1. ⛔ **STOPS** the broken path
 2. 📋 **REPORTS** all issues/failures clearly
-3. 📝 **PROPOSES** a fix plan with specific steps
-4. ⚠️ **REQUESTS APPROVAL** before fixing (absolute requirement)
-5. ✅ **PROCEEDS** only after you approve
-6. 🔄 **RE-VALIDATES** after fixes are applied
+3. 📝 **FIXES** low-risk issues directly
+4. ⚠️ **REQUESTS APPROVAL** only for high-risk fixes
+5. 🔄 **RE-VALIDATES** after fixes are applied
 
 **Your experience**: You see something like:
 ```
@@ -443,7 +446,7 @@ If OpenAgent runs tests or validation and finds issues, it follows a **strict pr
 **Approval needed before proceeding with fixes.**
 ```
 
-**Critical**: OpenAgent will **NEVER** auto-fix issues without your explicit approval. This is an absolute rule with strict enforcement. After fixes are applied, validation runs again to ensure everything passes.
+**Current Rule**: OpenAgent auto-fixes low-risk validation issues and reruns the failing gate. It escalates only when the fix is high-risk, irreversible, or requires a destructive/credential/production action.
 
 ---
 
@@ -832,9 +835,8 @@ sequenceDiagram
     Note over OpenAgent: Stage 1: Analyze
     OpenAgent->>OpenAgent: Complex task, needs task-manager
     
-    Note over OpenAgent: Stage 2: Approve
-    OpenAgent->>User: ## Proposed Plan<br/>1. Create requirements<br/>2. Delegate to task-manager<br/>3. Review breakdown<br/><br/>**Approval needed**
-    User->>OpenAgent: Approved
+    Note over OpenAgent: Stage 2: Scenario and Plan
+    OpenAgent->>OpenAgent: Scenario: code_with_spec<br/>Plan: requirements, delegation, validation
     
     Note over OpenAgent: Stage 3: Execute
     OpenAgent->>Session: Create session abc123
@@ -929,7 +931,7 @@ graph TD
 **Instead of**: "Make this better"
 **Try**: "Refactor this function to use async/await and add error handling"
 
-**Why**: Specific requests help OpenAgent create better plans and get approval faster.
+**Why**: Specific requests help OpenAgent choose the right Quest scenario and plan faster.
 
 ---
 
@@ -1048,19 +1050,19 @@ ls -la .tmp/sessions/
 
 ---
 
-### 11. Use Explicit Approvals for Learning
+### 11. Use Plan Review for Learning
 
-When learning a new codebase or technology, use OpenAgent's approval step as a learning opportunity:
+When learning a new codebase or technology, use OpenAgent's plan/spec step as a learning opportunity:
 - Read the plan carefully
 - Ask questions about steps you don't understand
-- Request explanations before approving
+- Request explanations before broad or high-risk execution
 
 **Example**:
 ```
 OpenAgent: "I'll refactor this to use dependency injection"
 You: "What is dependency injection and why is it better here?"
 OpenAgent: [Explains]
-You: "Got it, approved!"
+You: "Got it, continue."
 ```
 
 ---
@@ -1145,28 +1147,28 @@ OpenAgent follows these core principles:
 Concise responses, no over-explanation. Gets to the point quickly.
 
 ### 🔄 Adaptive
-Conversational for questions, formal for tasks. Matches the context.
+Quest direct for questions and tiny work, spec-driven for complex tasks. Matches the context.
 
 ### ⚡ Lazy
 Only creates sessions/files when actually needed. No unnecessary overhead. Fetches context files on-demand.
 
-### 🔒 Safe (CRITICAL RULE - Absolute & Strict)
-**ALWAYS** requests approval before ANY execution (bash, write, edit, task delegation). Confirms before cleanup. This is an absolute rule with strict enforcement.
+### 🔒 Safe
+Executes safe local work directly in Trusted Fast Mode. Requests approval only for destructive, credential, production, payment/legal, public external, irreversible data, or risky hardware actions. Confirms before cleanup.
 
-### 📋 Report First (CRITICAL RULE - Absolute & Strict)
+### 📋 Report First
 When tests fail or issues are found:
-1. **STOP** immediately (no auto-fix)
+1. **STOP** the broken path
 2. **REPORT** the issues clearly
 3. **PROPOSE** fix plan
-4. **REQUEST APPROVAL** (mandatory)
-5. **FIX** (only after approval)
+4. **FIX** low-risk issues directly
+5. **REQUEST APPROVAL** only for high-risk fixes
 
-**Never auto-fixes** - you're always in control. This is an absolute rule with strict enforcement.
+Routine validation recovery is autonomous; high-risk changes stay gated.
 
 ### 🛡️ Critical Rules Summary
 Three critical rules are enforced with absolute priority:
-1. **Approval Gate** - Always request approval before execution
-2. **Stop on Failure** - Stop immediately on test failures or errors, never auto-fix
+1. **High-Risk Gate** - Request approval for destructive, credential, production, public, irreversible, or risky hardware actions
+2. **Converge on Failure** - Stop the broken path, report, fix low-risk issues, rerun validation
 3. **Confirm Cleanup** - Always confirm before deleting session files
 
 ---
@@ -1175,16 +1177,16 @@ Three critical rules are enforced with absolute priority:
 
 OpenAgent is your **intelligent universal agent** that:
 
-✅ **Plans before acting** - Shows you the plan and waits for approval (Critical Rule)
+✅ **Quest-style by default** - Chooses direct, code-with-spec, prototype, tool, or research-plan flow
 ✅ **Preserves context** - Remembers information across multiple steps
-✅ **Executes directly** - Handles most tasks itself, delegates only when needed
-✅ **Keeps you in control** - Always confirms before cleanup (Critical Rule)
+✅ **Executes directly** - Handles safe local work itself, delegates only when needed
+✅ **Keeps you in control** - Gates high-risk actions and confirms before cleanup
 ✅ **Handles all user workflows** - Questions, docs, coordination, coding, swarms, and custom-system design through internal specialist routing
-✅ **Reports before fixing** - Never auto-fixes issues without approval (Critical Rule)
+✅ **Reports before fixing** - Reports validation issues, auto-fixes low-risk failures, and gates risky fixes
 
 **Key Takeaways**:
 1. Be specific in your requests
-2. Review plans before approving
+2. Review plans for broad or high-risk work
 3. Use multi-step workflows for complex projects
 4. OpenAgent handles most tasks directly - delegation is the exception, not the rule
 5. Clean up sessions when done
@@ -1217,7 +1219,7 @@ OpenAgent has been optimized based on research-backed prompt engineering pattern
 ✅ **Universal agent philosophy** - Execute directly first, delegate only when truly needed
 
 **Key Principles**:
-- **Tier 1 (Highest)**: Safety & Approval Gates - Always override other tiers
+- **Tier 1 (Highest)**: Safety and high-risk gates - Always override other tiers
 - **Tier 2**: Core Workflow - Stage progression and delegation routing
 - **Tier 3**: Optimization - Lazy initialization, session management, context discovery
 

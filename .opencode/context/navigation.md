@@ -1,4 +1,4 @@
-<!-- Context: core/navigation | Priority: critical | Version: 1.0 | Updated: 2026-02-15 -->
+<!-- Context: core/navigation | Priority: critical | Version: 1.1 | Updated: 2026-05-16 -->
 
 # Context Navigation
 
@@ -31,6 +31,7 @@
 | **Write docs** | `core/standards/documentation.md` |
 | **Review code** | `core/workflows/code-review.md` |
 | **Delegate task** | `core/workflows/task-delegation-basics.md` |
+| **Run Quest Mode** | `core/quest-mode.md` + `core/experts-mode.md` |
 | **Run Experts Mode** | `core/experts-mode.md` + `core/swarm-orchestration.md` |
 | **Run agent swarm** | `core/swarm-orchestration.md` |
 | **Run HackersEra master swarm** | `core/hackersera-master-swarm.md` |

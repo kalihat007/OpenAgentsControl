@@ -4,7 +4,7 @@
 
 # OpenAgents Control (OAC)
 
-### Trusted fast OpenAgent with default Experts Mode powered by agent swarm orchestration.
+### Trusted fast OpenAgent with default Quest-style Experts Mode powered by agent swarm orchestration.
 
 **AI agents that learn YOUR coding patterns and generate matching code every time.**
 
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
 ## The Solution
 
-**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, runs Experts Mode for all work by default, uses agent swarm orchestration for larger work, distributes context across roles, and keeps high-risk actions behind approval gates.
+**OpenAgentsControl teaches OpenAgent your patterns upfront.** It understands your coding standards, architecture, security requirements, and HackersEra cybersecurity-product defaults. It executes safe local work quickly, runs Quest-style Experts Mode for all work by default, uses agent swarm orchestration for larger work, distributes context across roles, and keeps high-risk actions behind approval gates.
 
 **The result:** Production-ready code that ships without heavy rework.
 
@@ -76,8 +76,8 @@ OpenAgent executes safe local work directly. It asks approval only for destructi
 **🧠 Scale-Out Organizational AI**
 OpenAgent acts like the CEO of a temporary expert organization. It dynamically assigns researchers, analysts, builders, reviewers, fact-checkers, and domain specialists, then reconciles disagreement instead of forcing one assistant to think through everything sequentially.
 
-**🧑‍💻 Experts Mode + Agent Swarm by Default**
-OpenAgent always starts in Experts Mode and always applies agent swarm orchestration. For tiny work it uses TeamLeadAgent-only swarm-lite routing; for larger work it becomes the Team Lead, creates a full swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, runs safe work in parallel, validates the result, and records reusable lessons.
+**🧑‍💻 Quest + Experts Mode + Agent Swarm by Default**
+OpenAgent always starts in Quest-style Experts Mode and always applies agent swarm orchestration. For tiny work it uses TeamLeadAgent-only swarm-lite routing; for larger work it becomes the Team Lead, creates a full swarm task graph, assigns frontend/backend/QA/review/research/DevOps/UX experts, runs safe work in parallel, validates the result, and records reusable lessons.
 
 **⚡ Token Efficient (MVI Principle)**  
 Minimal Viable Information design. Only load what's needed, when it's needed. Context files <200 lines, lazy loading, faster responses.
@@ -94,7 +94,7 @@ Use any AI model (Claude, GPT, Gemini, local). No vendor lock-in.
 
 For bigger work, OAC now includes a controlled swarm layer:
 
-- **Experts Mode + Agent Swarm** is the default OpenAgent operating layer: Team Lead planning, dynamic expert assignment, swarm task graph, task progress, browser verification, code review, QA, research, DevOps, UX, and self-evolution.
+- **Quest Mode + Experts Mode + Agent Swarm** is the default OpenAgent operating layer: scenario routing, Team Lead planning, dynamic expert assignment, swarm task graph, task progress, browser verification, code review, QA, research, DevOps, UX, and self-evolution.
 - **HackersEra Master Swarm** is the default routing layer for cybersecurity product, technical R&D, revenue, investor, operations, compliance, support, and CEO work.
 - **OpenAgent Swarm Mode** plans multi-agent work with dependencies, file ownership, and validation gates behind Experts Mode.
 - **Scale-out architecture** targets up to 100 subagents and hundreds to 1,500+ tool calls for long-horizon deployments when the runtime, task boundaries, and validation capacity support it.
@@ -171,7 +171,7 @@ Read the full design: [Controlled Agent Swarm System](./docs/features/agent-swar
 - ✅ You want fast trusted execution with approval gates only for high-risk actions
 - ✅ You care about token efficiency and costs
 - ✅ You want OpenAgent to self-organize researchers, analysts, builders, reviewers, and domain specialists without micromanagement
-- ✅ You want Experts Mode by default with Team Lead planning, frontend/backend/QA/review/research/DevOps/UX experts, progress tracking, and swarm execution
+- ✅ You want Quest-style Experts Mode by default with scenario routing, Team Lead planning, frontend/backend/QA/review/research/DevOps/UX experts, progress tracking, and swarm execution
 - ✅ You want an engineering-team swarm with PM, architecture, implementation, QA, security, review, integration, and debug roles
 - ✅ You want long-horizon work with distributed context, adversarial disagreement, and forced reconciliation
 
@@ -261,7 +261,7 @@ Add a login endpoint
 **Features:**
 - ✅ Trusted Fast Mode with high-risk approval gates
 - ✅ Scale-out organizational AI with dynamic role assignment
-- ✅ Experts Mode + agent swarm by default
+- ✅ Quest-style Experts Mode + agent swarm by default
 - ✅ Context-aware code generation
 - ✅ 7 specialized subagents (task-manager, context-scout, context-manager, coder-agent, test-engineer, code-reviewer, external-scout)
 - ✅ 9 workflow skills + 6 user commands

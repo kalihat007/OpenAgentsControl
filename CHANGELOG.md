@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+### Changed
+- Made OpenAgent's default operating model explicitly Quest-style before Experts Mode: scenario routing, code-with-spec/prototype/tool/research flows, task progress, autonomous safe-local execution, and high-risk gates.
+- Added `core/quest-mode.md` and wired it into OpenAgent, the `/experts` command, registry metadata, and install profiles.
+
 ## [0.7.1] - 2026-01-30
 
 ### Changes
@@ -315,4 +320,3 @@ v0.X.Y
 - **0.4.0** - Category-based agent organization system
 - **0.3.1** - CI improvements
 - **0.0.2** - Execution balance evaluator
-
