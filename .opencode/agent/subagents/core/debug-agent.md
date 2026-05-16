@@ -49,7 +49,7 @@ permission:
 
 ## Workflow
 
-1. Load `.tmp/swarm/{session-id}/events.jsonl` and incident details.
+1. Load `.oac/runs/{session-id}/events.ndjson` and `plan.json`; read incident details from logs or `acceptance-report.md`.
 2. Read the failing command output and changed files from the owning task.
 3. Use ContextScout for relevant standards or patterns.
 4. Use ExternalScout if failure involves external libraries or APIs.

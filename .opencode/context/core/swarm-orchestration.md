@@ -38,7 +38,7 @@ These are architecture targets, not permission to ignore safety. Reduce parallel
 ## Required Session Files
 
 ```text
-.tmp/swarm/{session-id}/
+.oac/runs/{session-id}/
   swarm.json
   task-graph.json
   module-claims.json

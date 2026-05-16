@@ -85,6 +85,7 @@ PROFILE=""
 NON_INTERACTIVE=false
 CUSTOM_INSTALL_DIR=""  # Set via --install-dir argument
 WITH_CLAUDE=false        # Set via --with-claude flag
+WITH_KIMI=false          # Set via --with-kimi flag
 
 #############################################################################
 # Utility Functions

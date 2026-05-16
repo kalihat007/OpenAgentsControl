@@ -20,7 +20,16 @@ import {
   type SubTask,
   type TaskDependency,
 } from './task-decomposer.js'
-import { DEFAULT_MAX_PARALLEL_AGENTS } from './config.js'
+import {
+  createDefaultConfig,
+  DEFAULT_MAX_PARALLEL_AGENTS,
+  getMaxApiCallsPerSession,
+  getMaxParallelAgents,
+  readConfig,
+} from './config.js'
+import { SessionBudgetExceededError } from './errors.js'
+import { buildRunSpec, type RunSpec } from './run-spec.js'
+import type { SwarmQualityGateResult } from './swarm-quality-gate.js'
 
 const log = createLogger('swarm-executor')
 import type {
@@ -40,9 +49,30 @@ import {
   TECHNICAL_SWARM_TEAM,
   INVESTOR_MAGNET_SWARM_TEAM,
 } from '@nextsystems/oac-swarm-runtime'
-import { SwarmExecutionError } from './errors.js'
-
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+/** simulate = CLI scheduling only; handoff = defer execution to OpenCode TUI or Claude plugin */
+export type ExecutionMode = 'simulate' | 'handoff'
+
+export interface SessionBudgetLimits {
+  maxApiCallsPerSession: number
+  maxParallelAgents: number
+}
+
+export interface SessionBudgetUsage {
+  apiCalls: number
+  peakParallelAgents: number
+}
+
+export interface ExecutionEstimate {
+  batches: number
+  tasks: number
+  maxParallelAgents: number
+  maxApiCallsPerSession: number
+  estimatedApiCalls: number
+  decomposition: DecompositionSummary
+  mode: ExecutionMode
+}
 
 export interface ExecutionPlan {
   session: SwarmSession
@@ -60,6 +90,9 @@ export interface ExecutionResult {
   failedTasks: string[]
   acceptanceChecks: AcceptanceCheck[]
   elapsedMs: number
+  executionMode: ExecutionMode
+  budgetUsage: SessionBudgetUsage
+  qualityGate?: SwarmQualityGateResult
 }
 
 export interface ExecutionStage {
@@ -99,6 +132,7 @@ export interface AcceptanceCheck {
 export interface RunArtifacts {
   runDir: string
   planPath: string
+  specPath: string
   eventsPath: string
   acceptanceReportPath: string
   summaryPath: string
@@ -113,9 +147,17 @@ export interface ExecutorCallbacks {
 
 export interface PlanExecutionOptions {
   maxConcurrency?: number
+  /** Hard cap from .oac/config.json — applied before batch scheduling. */
+  maxParallelAgents?: number
   autoDecompose?: boolean
   sequentialSubtasks?: boolean
   maxSubTasks?: number
+}
+
+export interface ExecuteSwarmOptions {
+  mode?: ExecutionMode
+  budget?: SessionBudgetLimits
+  callbacks?: ExecutorCallbacks
 }
 
 // ── Agent → Role reverse-lookup ───────────────────────────────────────────────
@@ -180,6 +222,13 @@ function resetTaskCounter(): void {
 
 // ── Plan ──────────────────────────────────────────────────────────────────────
 
+export function resolvePlanConcurrency(options: PlanExecutionOptions = {}): number {
+  const requested = options.maxConcurrency ?? DEFAULT_MAX_PARALLEL_AGENTS
+  const cap = options.maxParallelAgents
+  if (cap === undefined) return requested
+  return Math.min(requested, cap)
+}
+
 export function planExecution(
   routerResult: RouterResult,
   options: PlanExecutionOptions = {},
@@ -195,24 +244,27 @@ export function planExecution(
     )
   }
 
+  const maxConcurrency = resolvePlanConcurrency(options)
   const sessionId = `swarm-${Date.now().toString(36)}`
   const createdAt = new Date().toISOString()
   log.debug('Creating swarm session', {
     sessionId,
     taskCount: tasks.length,
-    maxConcurrency: options.maxConcurrency ?? DEFAULT_MAX_PARALLEL_AGENTS,
+    maxConcurrency,
+    requestedConcurrency: options.maxConcurrency ?? DEFAULT_MAX_PARALLEL_AGENTS,
+    maxParallelAgentsCap: options.maxParallelAgents,
   })
 
   const session = createSwarmSession({
     id: sessionId,
     objective: routerResult.objective,
     tasks,
-    maxConcurrency: options.maxConcurrency ?? DEFAULT_MAX_PARALLEL_AGENTS,
+    maxConcurrency,
     createdAt,
   })
 
   const schedulerResult = planSwarmBatches(tasks, {
-    maxConcurrency: options.maxConcurrency ?? DEFAULT_MAX_PARALLEL_AGENTS,
+    maxConcurrency,
   })
 
   log.debug('Execution plan ready', {
@@ -230,31 +282,124 @@ export function planExecution(
   }
 }
 
-// ── Execute (simulated) ───────────────────────────────────────────────────────
+// ── Budget & estimation ───────────────────────────────────────────────────────
+
+export async function loadSessionBudgetLimits(projectRoot: string): Promise<SessionBudgetLimits> {
+  const config = (await readConfig(projectRoot)) ?? createDefaultConfig()
+  return {
+    maxApiCallsPerSession: getMaxApiCallsPerSession(config),
+    maxParallelAgents: getMaxParallelAgents(config),
+  }
+}
+
+export function estimateExecution(
+  plan: ExecutionPlan,
+  limits: SessionBudgetLimits,
+  mode: ExecutionMode = 'simulate',
+): ExecutionEstimate {
+  const batchCount = plan.schedulerResult.batches.length
+  const taskCount = plan.session.tasks.length
+  // Each batch start + each task invocation counts as one API-call proxy
+  const estimatedApiCalls = batchCount + taskCount
+
+  return {
+    batches: batchCount,
+    tasks: taskCount,
+    maxParallelAgents: Math.min(plan.session.maxConcurrency, limits.maxParallelAgents),
+    maxApiCallsPerSession: limits.maxApiCallsPerSession,
+    estimatedApiCalls,
+    decomposition: plan.decomposition,
+    mode,
+  }
+}
+
+function trackApiCall(
+  usage: SessionBudgetUsage,
+  limits: SessionBudgetLimits,
+): void {
+  usage.apiCalls += 1
+  if (usage.apiCalls > limits.maxApiCallsPerSession) {
+    throw new SessionBudgetExceededError(
+      'api_calls',
+      usage.apiCalls,
+      limits.maxApiCallsPerSession,
+    )
+  }
+}
+
+function enforceParallelLimit(
+  batchSize: number,
+  usage: SessionBudgetUsage,
+  limits: SessionBudgetLimits,
+): void {
+  usage.peakParallelAgents = Math.max(usage.peakParallelAgents, batchSize)
+  if (batchSize > limits.maxParallelAgents) {
+    throw new SessionBudgetExceededError(
+      'parallel_agents',
+      batchSize,
+      limits.maxParallelAgents,
+    )
+  }
+}
+
+// ── Execute ───────────────────────────────────────────────────────────────────
 
 export async function executeSwarm(
   plan: ExecutionPlan,
-  callbacks: ExecutorCallbacks = {},
+  callbacksOrOptions: ExecutorCallbacks | ExecuteSwarmOptions = {},
 ): Promise<ExecutionResult> {
+  const options: ExecuteSwarmOptions =
+    typeof callbacksOrOptions.onBatchStart === 'function' ||
+    typeof callbacksOrOptions.onTaskStart === 'function' ||
+    typeof callbacksOrOptions.onTaskComplete === 'function' ||
+    typeof callbacksOrOptions.onBatchComplete === 'function'
+      ? { callbacks: callbacksOrOptions as ExecutorCallbacks }
+      : (callbacksOrOptions as ExecuteSwarmOptions)
+
+  const mode = options.mode ?? 'simulate'
+  const callbacks = options.callbacks ?? {}
+  const limits = options.budget ?? {
+    maxApiCallsPerSession: 500,
+    maxParallelAgents: plan.session.maxConcurrency,
+  }
+
   const start = Date.now()
   let session = plan.session
   const { schedulerResult } = plan
   const completedTasks: string[] = []
   const failedTasks: string[] = []
+  const budgetUsage: SessionBudgetUsage = { apiCalls: 0, peakParallelAgents: 0 }
+  const handoff = mode === 'handoff'
 
   log.info('Swarm execution starting', {
     sessionId: session.id,
+    mode,
     batches: schedulerResult.batches.length,
     tasks: session.tasks.length,
+    maxApiCalls: limits.maxApiCallsPerSession,
+    maxParallel: limits.maxParallelAgents,
   })
 
-  session = appendSwarmEvent(session, 'batch.planned', `Planned ${schedulerResult.batches.length} batch(es)`, {
+  trackApiCall(budgetUsage, limits)
+  session = appendSwarmEvent(session, 'batch.planned', `[${mode}] Planned ${schedulerResult.batches.length} batch(es)`, {
     batchCount: schedulerResult.batches.length,
     totalTasks: session.tasks.length,
+    executionMode: mode,
   })
+
+  if (handoff) {
+    session = appendSwarmEvent(
+      session,
+      'handoff.ready',
+      'Run deferred to IDE runtime — see handoff.json for OpenCode TUI and Claude plugin commands',
+      { executionMode: mode, runId: session.id },
+    )
+  }
 
   for (let i = 0; i < schedulerResult.batches.length; i++) {
     const batch = schedulerResult.batches[i]!
+    enforceParallelLimit(batch.tasks.length, budgetUsage, limits)
+    trackApiCall(budgetUsage, limits)
     callbacks.onBatchStart?.(batch, i, schedulerResult.batches.length)
 
     log.debug('Batch starting', {
@@ -262,34 +407,57 @@ export async function executeSwarm(
       batchIndex: i + 1,
       taskCount: batch.tasks.length,
       agents: batch.tasks.map((t) => t.agent),
+      mode,
     })
 
-    session = appendSwarmEvent(session, 'task.ready', `Batch ${batch.id} starting (${batch.tasks.length} task(s))`, {
+    session = appendSwarmEvent(session, 'task.ready', `[${mode}] Batch ${batch.id} starting (${batch.tasks.length} task(s))`, {
       batchId: batch.id,
       taskIds: batch.tasks.map((t) => t.id),
+      executionMode: mode,
     })
 
     for (const task of batch.tasks) {
+      trackApiCall(budgetUsage, limits)
       callbacks.onTaskStart?.(task, i)
-      log.trace('Task starting', { taskId: task.id, agent: task.agent, role: task.role })
+      log.trace('Task starting', { taskId: task.id, agent: task.agent, role: task.role, mode })
 
-      session = appendSwarmEvent(session, 'task.started', `${task.agent} started`, {
+      if (handoff) {
+        session = appendSwarmEvent(
+          session,
+          'task.ready',
+          `[handoff] ${task.agent} pending — run in OpenCode TUI or Claude plugin (see handoff.json)`,
+          {
+            taskId: task.id,
+            agent: task.agent,
+            executionMode: mode,
+            handoff: true,
+          },
+        )
+        callbacks.onTaskComplete?.(task, i)
+        continue
+      }
+
+      session = appendSwarmEvent(session, 'task.started', `[${mode}] ${task.agent} started`, {
         taskId: task.id,
         agent: task.agent,
+        executionMode: mode,
       })
 
       await simulateTaskExecution()
 
-      session = appendSwarmEvent(session, 'task.completed', `${task.agent} completed`, {
+      session = appendSwarmEvent(session, 'task.completed', `[${mode}] ${task.agent} completed (simulated)`, {
         taskId: task.id,
         agent: task.agent,
+        executionMode: mode,
+        simulated: true,
       })
 
       completedTasks.push(task.id)
-      log.trace('Task completed', { taskId: task.id, agent: task.agent })
+      log.trace('Task completed (simulated)', { taskId: task.id, agent: task.agent })
       callbacks.onTaskComplete?.(task, i)
     }
 
+    trackApiCall(budgetUsage, limits)
     session = appendSwarmEvent(session, 'sync.completed', `Batch ${batch.id} sync completed`, {
       batchId: batch.id,
       taskIds: batch.tasks.map((t) => t.id),
@@ -316,9 +484,11 @@ export async function executeSwarm(
   const elapsedMs = Date.now() - start
   log.info('Swarm execution complete', {
     sessionId: session.id,
+    mode,
     completed: completedTasks.length,
     failed: failedTasks.length,
     elapsedMs,
+    apiCalls: budgetUsage.apiCalls,
   })
 
   return {
@@ -326,8 +496,10 @@ export async function executeSwarm(
     schedulerResult,
     completedTasks,
     failedTasks,
-    acceptanceChecks: buildAcceptanceChecks(plan, completedTasks, failedTasks),
+    acceptanceChecks: buildAcceptanceChecks(plan, completedTasks, failedTasks, mode),
     elapsedMs,
+    executionMode: mode,
+    budgetUsage,
   }
 }
 
@@ -703,36 +875,78 @@ function buildAcceptanceChecks(
   plan: ExecutionPlan,
   completedTasks: string[],
   failedTasks: string[],
+  mode: ExecutionMode = 'simulate',
 ): AcceptanceCheck[] {
   const completed = new Set(completedTasks)
   const failed = new Set(failedTasks)
+  const simulated = mode === 'simulate'
+  const deferred = mode === 'handoff'
+
   const checks: AcceptanceCheck[] = plan.acceptanceCriteria.map((criterion, index) => ({
     id: `plan-ac-${index + 1}`,
     criterion,
-    status: failedTasks.length === 0 ? 'passed' : 'failed',
-    evidence:
-      failedTasks.length === 0
-        ? 'All scheduled batches completed in the runtime session.'
-        : `Failed or blocked tasks: ${failedTasks.join(', ')}`,
+    status: simulated || deferred
+      ? 'unverified'
+      : failedTasks.length === 0
+        ? 'passed'
+        : 'failed',
+    evidence: deferred
+      ? 'Handoff — execute in OpenCode TUI or Claude plugin; see .oac/runs/{id}/handoff.json.'
+      : simulated
+        ? 'Simulated execution — plan-level criteria require IDE runtime or quality gate.'
+        : failedTasks.length === 0
+          ? 'All scheduled batches completed in the runtime session.'
+          : `Failed or blocked tasks: ${failedTasks.join(', ')}`,
   }))
 
   for (const task of plan.session.tasks) {
     for (const [index, criterion] of (task.acceptanceCriteria ?? []).entries()) {
+      let status: AcceptanceCheck['status']
+      let evidence: string
+
+      if (failed.has(task.id)) {
+        status = 'failed'
+        evidence = `${task.agent} was blocked or failed.`
+      } else if (deferred) {
+        status = 'unverified'
+        evidence = `${task.agent} deferred to IDE runtime — load handoff.json and run ${task.agent} in OpenCode or Claude.`
+      } else if (simulated && completed.has(task.id)) {
+        status = 'unverified'
+        evidence = `${task.agent} simulated completion in session ${plan.session.id} — no real agent output.`
+      } else if (completed.has(task.id)) {
+        status = 'passed'
+        evidence = `${task.agent} completed in session ${plan.session.id}.`
+      } else {
+        status = 'unverified'
+        evidence = `${task.agent} has not executed yet.`
+      }
+
       checks.push({
         id: `${task.id}-ac-${index + 1}`,
         taskId: task.id,
         criterion,
-        status: completed.has(task.id) ? 'passed' : failed.has(task.id) ? 'failed' : 'unverified',
-        evidence: completed.has(task.id)
-          ? `${task.agent} completed in session ${plan.session.id}.`
-          : failed.has(task.id)
-            ? `${task.agent} was blocked or failed.`
-            : `${task.agent} has not executed yet.`,
+        status,
+        evidence,
       })
     }
   }
 
   return checks
+}
+
+export function mergeQualityGateChecks(
+  checks: AcceptanceCheck[],
+  gate: SwarmQualityGateResult,
+): AcceptanceCheck[] {
+  return [
+    ...checks,
+    {
+      id: 'quality-gate',
+      criterion: 'Quality gate on changed files',
+      status: gate.passed ? 'passed' : 'failed',
+      evidence: gate.summary,
+    },
+  ]
 }
 
 export function plannedAcceptanceChecks(plan: ExecutionPlan): AcceptanceCheck[] {
@@ -757,37 +971,76 @@ export function plannedAcceptanceChecks(plan: ExecutionPlan): AcceptanceCheck[] 
 
 // ── Persistence ──────────────────────────────────────────────────────────────
 
+export interface PersistRunArtifactsOptions {
+  routerResult?: RouterResult
+  spec?: RunSpec
+}
+
+export async function persistRunSpec(
+  projectRoot: string,
+  plan: ExecutionPlan,
+  routerResult: RouterResult,
+): Promise<string> {
+  const runDir = join(projectRoot, '.oac', 'runs', plan.session.id)
+  await mkdir(runDir, { recursive: true })
+  const specPath = join(runDir, 'spec.json')
+  const spec = buildRunSpec(routerResult, plan)
+  await writeFile(specPath, JSON.stringify(spec, null, 2) + '\n')
+  return specPath
+}
+
 export async function persistRunArtifacts(
   projectRoot: string,
   plan: ExecutionPlan,
   result?: ExecutionResult,
+  options: PersistRunArtifactsOptions = {},
 ): Promise<RunArtifacts> {
   const runDir = join(projectRoot, '.oac', 'runs', plan.session.id)
   await mkdir(runDir, { recursive: true })
 
   const planPath = join(runDir, 'plan.json')
+  const specPath = join(runDir, 'spec.json')
   const eventsPath = join(runDir, 'events.ndjson')
   const acceptanceReportPath = join(runDir, 'acceptance-report.md')
   const summaryPath = join(runDir, 'summary.json')
 
   const session = result?.session ?? plan.session
   const acceptanceChecks = result?.acceptanceChecks ?? plannedAcceptanceChecks(plan)
+  const spec =
+    options.spec ??
+    (options.routerResult ? buildRunSpec(options.routerResult, plan) : null)
 
   await writeFile(planPath, JSON.stringify(serializablePlan(plan), null, 2) + '\n')
+  if (spec) {
+    await writeFile(specPath, JSON.stringify(spec, null, 2) + '\n')
+  }
   await writeFile(eventsPath, session.events.map((event) => JSON.stringify(event)).join('\n') + '\n')
-  await writeFile(acceptanceReportPath, renderAcceptanceReport(plan, acceptanceChecks))
+  await writeFile(
+    acceptanceReportPath,
+    renderAcceptanceReport(plan, acceptanceChecks, result),
+  )
   await writeFile(summaryPath, JSON.stringify({
     runId: plan.session.id,
     objective: plan.session.objective,
     createdAt: plan.createdAt,
+    executionMode: result?.executionMode ?? null,
     decomposition: plan.decomposition,
     completedTasks: result?.completedTasks ?? [],
     failedTasks: result?.failedTasks ?? [],
     elapsedMs: result?.elapsedMs ?? null,
+    budgetUsage: result?.budgetUsage ?? null,
+    qualityGate: result?.qualityGate
+      ? {
+          passed: result.qualityGate.passed,
+          overallScore: result.qualityGate.overallScore,
+          grade: result.qualityGate.grade,
+          summary: result.qualityGate.summary,
+        }
+      : null,
     acceptance: summarizeAcceptance(acceptanceChecks),
   }, null, 2) + '\n')
 
-  return { runDir, planPath, eventsPath, acceptanceReportPath, summaryPath }
+  return { runDir, planPath, specPath, eventsPath, acceptanceReportPath, summaryPath }
 }
 
 function serializablePlan(plan: ExecutionPlan): Record<string, unknown> {
@@ -810,12 +1063,37 @@ function serializablePlan(plan: ExecutionPlan): Record<string, unknown> {
   }
 }
 
-function renderAcceptanceReport(plan: ExecutionPlan, checks: AcceptanceCheck[]): string {
+function renderAcceptanceReport(
+  plan: ExecutionPlan,
+  checks: AcceptanceCheck[],
+  result?: ExecutionResult,
+): string {
   const lines = [
     `# OpenAgent Experts Run ${plan.session.id}`,
     '',
     `Objective: ${plan.session.objective}`,
     `Created: ${plan.createdAt}`,
+    `Execution mode: ${result?.executionMode ?? 'plan-only'}`,
+  ]
+
+  if (result?.budgetUsage) {
+    lines.push(
+      `API calls (proxy): ${result.budgetUsage.apiCalls}`,
+      `Peak parallel agents: ${result.budgetUsage.peakParallelAgents}`,
+    )
+  }
+
+  if (result?.qualityGate) {
+    lines.push(
+      '',
+      '## Quality Gate',
+      '',
+      `- ${result.qualityGate.summary}`,
+      `- Status: ${result.qualityGate.passed ? 'PASSED' : 'FAILED'}`,
+    )
+  }
+
+  lines.push(
     '',
     '## Decomposition',
     '',
@@ -823,7 +1101,7 @@ function renderAcceptanceReport(plan: ExecutionPlan, checks: AcceptanceCheck[]):
     '',
     '## Acceptance Checks',
     '',
-  ]
+  )
 
   for (const check of checks) {
     const marker = check.status === 'passed' ? '[x]' : check.status === 'failed' ? '[!]' : '[ ]'

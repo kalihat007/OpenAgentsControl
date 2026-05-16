@@ -140,7 +140,7 @@ Present this to the user and request approval.
 After approval, create:
 
 ```text
-.tmp/swarm/{session-id}/
+.oac/runs/{session-id}/
   swarm.json
   task-graph.json
   module-claims.json
@@ -229,8 +229,8 @@ Sequentialize when:
 When delegating:
 
 ```text
-Load context from .tmp/swarm/{session-id}/swarm.json.
-Execute task {task-id} from .tmp/swarm/{session-id}/task-graph.json.
+Load context from .oac/runs/{session-id}/plan.json (and task graph within it when present).
+Execute task {task-id} from the session plan or task-graph artifact under .oac/runs/{session-id}/.
 You are one worker in a controlled swarm. Other agents may be editing different files.
 Do not modify files outside your declared writes list.
 Do not revert unrelated changes.

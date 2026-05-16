@@ -8,12 +8,12 @@ description: "Inspect the current OAC swarm session, task graph, event stream, b
 
 # Swarm Status
 
-Inspect an existing `.tmp/swarm/{session-id}/` session.
+Inspect an existing `.oac/runs/{session-id}/` session.
 
 ## Instructions
 
-1. If no session is provided, list `.tmp/swarm/` and choose the latest session.
-2. Read `swarm.json`, `task-graph.json`, and recent `events.jsonl` entries.
+1. If no session is provided, list `.oac/runs/` and choose the latest session.
+2. Read `plan.json`, `summary.json`, and recent `events.ndjson` entries (and `acceptance-report.md` when present).
 3. Summarize:
    - objective
    - current batch

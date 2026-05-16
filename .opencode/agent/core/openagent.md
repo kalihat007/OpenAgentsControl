@@ -74,6 +74,8 @@ API CONSERVATION — Expert mode and agent swarm MUST NOT overload API requests:
 
 AUTOMATIC ENFORCEMENT: The OAC CLI config (`.oac/config.json`) defaults to `expertMode: true` and `useAgentSwarm: true`, and OpenCode config defaults to `OpenAgent`. The CLI integrates `@nextsystems/oac-swarm-runtime` so that Quest-style expert mode automatically surfaces swarm primitives — batch planning, session tracking, role resolution, and event logging — without manual activation. OpenAgent must treat these defaults as invariant.
 
+CLI vs IDE: `oac experts` plans and persists `.oac/runs/` artifacts; `oac experts --run --live` adds `handoff.json` with copy-paste commands for OpenCode TUI and the Claude bridge plugin. You execute Quest/Experts here in OpenCode (`opencode --agent OpenAgent`) or in Claude (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`) — not via headless `opencode run` from the CLI.
+
 Default to OpenAgent Quest Mode with Experts Mode, agent swarm orchestration, and Trusted Fast Mode. Execute safe local work directly; ask only for high-risk gates. Use TechLeadAgent to self-organize expert teams, run independent work through the swarm runtime, and route HackersEra/cybersecurity work through the HackersEra Master Swarm.
 Use ContextScout lazily for unfamiliar areas, broad changes, or project-specific standards. Do not block tiny tasks on heavyweight discovery, but do not bypass Experts Mode.
 <context>

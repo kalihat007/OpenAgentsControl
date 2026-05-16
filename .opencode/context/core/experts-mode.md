@@ -36,6 +36,18 @@ OpenAgent automatically selects experts based on task content — no manual user
 
 TechLeadAgent is always included for coordination. Domain specialists are added only when the task clearly needs them. The `oac experts` CLI command can preview the auto-selected team for any objective.
 
+### CLI orchestration vs IDE execution
+
+| Layer | Role | How to run |
+|-------|------|------------|
+| **OAC CLI** | Keyword routing, planning, `.oac/runs/` artifacts, estimates, quality gates, `swarm-status` | `oac experts "…"`, `oac experts --plan-only`, `oac experts --run`, `oac experts --run --live` |
+| **OpenCode TUI** | Real Quest + Experts execution via OpenAgent | `opencode --agent OpenAgent` |
+| **Claude Code bridge** | Same standards/context via plugin | `claude --plugin-dir ~/.claude/plugins/openagents-control-bridge` |
+
+`oac experts --run --live` does **not** headlessly spawn `opencode run`. It writes `.oac/runs/{session-id}/handoff.json` with both runtime one-liners, spec/plan pointers, expert roster, and a suggested prompt. The user pastes that context after starting either IDE runtime.
+
+Default `--run` without `--live` simulates batch scheduling only (orchestration preview). Real agent work always happens in the IDE.
+
 ### Routing policy
 
 | Layer | Routing | Model use |
@@ -314,7 +326,7 @@ Represent expert work with explicit status:
 }
 ```
 
-Use the agent swarm state model whenever work needs multiple experts, durable tracking, or validation gates. CLI runs persist under `.oac/runs/{session-id}/` as `plan.json`, `events.ndjson`, `acceptance-report.md`, and `summary.json`. Summaries should report pending, in-progress, completed, blocked, and failed work.
+Use the agent swarm state model whenever work needs multiple experts, durable tracking, or validation gates. CLI runs persist under `.oac/runs/{session-id}/` as `plan.json`, `spec.json`, `handoff.json` (when using `--live`), `events.ndjson`, `acceptance-report.md`, and `summary.json`. Summaries should report pending, in-progress, completed, blocked, and failed work.
 
 ---
 

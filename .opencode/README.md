@@ -193,7 +193,7 @@ Read the full design: [Controlled Agent Swarm System](./docs/features/agent-swar
 **One command:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s developer
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash
 ```
 
 <sub>The installer will set up OpenCode CLI if you don't have it yet.</sub>

@@ -30,6 +30,8 @@ describe('Pipeline configuration presets', () => {
     expect(config.dryRun).toBe(false)
     expect(config.verbose).toBe(false)
     expect(config.maxConcurrency).toBe(1)
+    expect(config.executionMode).toBe('simulate')
+    expect(config.runQualityGate).toBe(true)
   })
 
   it('getFullConfig enables everything with supervised mode', () => {
@@ -95,6 +97,8 @@ describe('Pipeline result structure', () => {
     expect(result.executionResults).not.toBeNull()
     expect(result.executionResults!.completedTasks.length).toBeGreaterThan(0)
     expect(result.executionResults!.session).toBeDefined()
+    expect(result.executionResults!.executionMode).toBe('simulate')
+    expect(result.executionResults!.budgetUsage.apiCalls).toBeGreaterThan(0)
   })
 
   it('includes interactiveSession in result', async () => {

@@ -20,10 +20,14 @@ import { routeTask, type RouterResult, type ExpertProfile } from './task-router.
 import {
   planExecution,
   executeSwarm,
+  loadSessionBudgetLimits,
+  mergeQualityGateChecks,
+  type ExecutionMode,
   type ExecutionPlan,
   type ExecutionResult,
   type AcceptanceCheck,
 } from './swarm-executor.js'
+import { runSwarmQualityGate } from './swarm-quality-gate.js'
 import {
   indexCodebase,
   loadIndex,
@@ -85,6 +89,12 @@ export interface PipelineConfig {
   dryRun: boolean
   verbose: boolean
   maxConcurrency: number
+  /** simulate (default) or handoff — handoff writes IDE manifest, no headless spawn */
+  executionMode: ExecutionMode
+  /** Run real quality gate on changed files after execution (--run default) */
+  runQualityGate: boolean
+  /** Cap from .oac/config.json — clamps planner concurrency before scheduling */
+  maxParallelAgents?: number
 }
 
 export interface QualityReport {
@@ -132,6 +142,8 @@ export function getQuickConfig(): PipelineConfig {
     dryRun: false,
     verbose: false,
     maxConcurrency: 1,
+    executionMode: 'simulate',
+    runQualityGate: true,
   }
 }
 
@@ -145,6 +157,8 @@ export function getFullConfig(): PipelineConfig {
     dryRun: false,
     verbose: true,
     maxConcurrency: DEFAULT_MAX_PARALLEL_AGENTS,
+    executionMode: 'simulate',
+    runQualityGate: true,
   }
 }
 
@@ -158,6 +172,8 @@ export function getSafeConfig(): PipelineConfig {
     dryRun: false,
     verbose: false,
     maxConcurrency: DEFAULT_MAX_PARALLEL_AGENTS,
+    executionMode: 'simulate',
+    runQualityGate: true,
   }
 }
 
@@ -336,8 +352,11 @@ export async function runExpertPipeline(
   }
 
   try {
+    const parallelCap =
+      cfg.maxParallelAgents ?? (await loadSessionBudgetLimits(projectRoot)).maxParallelAgents
     plan = planExecution(primaryRouting, {
       maxConcurrency: cfg.maxConcurrency,
+      maxParallelAgents: parallelCap,
       autoDecompose: cfg.useDecomposition,
     })
 
@@ -411,10 +430,21 @@ export async function runExpertPipeline(
     )
   }
 
-  emitStage('execution', 'Executing expert swarm…', callbacks, completedStages)
+  const handoff = cfg.executionMode === 'handoff'
+  emitStage(
+    'execution',
+    handoff ? 'Preparing IDE handoff (no headless execution)…' : `Executing expert swarm (${cfg.executionMode})…`,
+    callbacks,
+    completedStages,
+  )
+
+  const budgetLimits = await loadSessionBudgetLimits(projectRoot)
 
   try {
     execResult = await executeSwarm(plan, {
+      mode: cfg.executionMode,
+      budget: budgetLimits,
+      callbacks: {
       onBatchStart: (batch, idx, total) => {
         callbacks?.onProgress?.(
           ((idx + 1) / total) * 80,
@@ -445,12 +475,15 @@ export async function runExpertPipeline(
           })
         }
       },
+    },
     })
 
     log.info('Swarm execution complete', {
+      mode: execResult.executionMode,
       completed: execResult.completedTasks.length,
       failed: execResult.failedTasks.length,
       elapsedMs: execResult.elapsedMs,
+      apiCalls: execResult.budgetUsage.apiCalls,
     })
   } catch (err) {
     log.error('Swarm execution failed', {
@@ -472,8 +505,32 @@ export async function runExpertPipeline(
 
   // ── Stage 9: Quality verification ─────────────────────────────────────────
 
+  if (cfg.runQualityGate && execResult && !handoff) {
+    emitStage('quality', 'Running quality gate on changed files…', callbacks, completedStages)
+
+    try {
+      const gate = await runSwarmQualityGate(projectRoot, { review: cfg.qualityChecks })
+      execResult = {
+        ...execResult,
+        qualityGate: gate,
+        acceptanceChecks: mergeQualityGateChecks(execResult.acceptanceChecks, gate),
+      }
+
+      if (interactiveSession) {
+        interactiveSession = emitProgress(interactiveSession, {
+          type: gate.passed ? 'step_completed' : 'step_failed',
+          data: { qualityGate: gate.summary, score: gate.overallScore },
+        })
+      }
+    } catch (err) {
+      log.warn('Quality gate failed', {
+        error: err instanceof Error ? err.message : String(err),
+      })
+    }
+  }
+
   if (cfg.qualityChecks && execResult) {
-    emitStage('quality', 'Running quality checks…', callbacks, completedStages)
+    emitStage('verification', 'Scoring acceptance checks…', callbacks, completedStages)
 
     const taskChecks = groupChecksByTask(execResult.acceptanceChecks)
     for (const [taskId, checks] of taskChecks) {
@@ -519,7 +576,6 @@ export async function runExpertPipeline(
       callbacks?.onQualityReport?.(planReport)
     }
 
-    emitStage('verification', 'Verifying results…', callbacks, completedStages)
   }
 
   // ── Stage 10: Update expert memory with outcomes ──────────────────────────

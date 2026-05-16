@@ -83,7 +83,9 @@ Use a task list for substantial work:
 }
 ```
 
-For large tasks, persist progress under `.oac/runs/{session-id}/` (CLI artifacts: `plan.json`, `events.ndjson`, `acceptance-report.md`, `summary.json`).
+For large tasks, persist progress under `.oac/runs/{session-id}/` (CLI artifacts: `plan.json`, `spec.json`, optional `handoff.json`, `events.ndjson`, `acceptance-report.md`, `summary.json`).
+
+**Execution surface:** Quest/Experts work runs in **OpenCode TUI** (`opencode --agent OpenAgent`) or **Claude Code** (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`). The `oac experts` CLI plans and hands off; it does not replace those runtimes.
 
 ## Intervention Rules
 

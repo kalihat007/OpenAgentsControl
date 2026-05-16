@@ -89,7 +89,7 @@ Parallel:
 ## Required Artifacts
 
 ```text
-.tmp/swarm/{session-id}/
+.oac/runs/{session-id}/
   swarm.json
   task-graph.json
   module-claims.json

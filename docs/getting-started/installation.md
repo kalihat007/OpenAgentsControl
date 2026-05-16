@@ -24,11 +24,15 @@ Installs to `.opencode/` in your current directory.
 
 ### 1. Interactive Installation (Recommended for First-Time Users)
 
-Run the installer without arguments to get an interactive experience:
+Download the installer first for a fully interactive experience (profile menu defaults to **Advanced**, option 5):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh -o install.sh
+chmod +x install.sh
+./install.sh
 ```
+
+**Non-interactive pipe** (`curl … | bash` with no profile argument) installs the **Advanced** profile automatically.
 
 **Interactive Flow:**
 1. **Choose Installation Location**
@@ -37,7 +41,7 @@ curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/i
    - Custom (enter any path)
 
 2. **Choose Installation Mode**
-   - Quick Install (select a profile)
+   - Quick Install (profile menu; press Enter for **Advanced**, option 5)
    - Custom Install (pick individual components)
    - List Available Components
 
@@ -355,6 +359,17 @@ Components:
 
 ---
 
+## install.sh vs update.sh
+
+| Script | When to use |
+|--------|-------------|
+| **`install.sh`** | First-time setup, new projects, adding profiles/components, or reinstall with collision handling |
+| **`update.sh`** | Refresh an **existing** `.opencode/` tree in place (agents, contexts, quest/experts files) without re-running the full installer |
+
+Run both from the project root (or pass `--install-dir` for global/custom paths). When cloning the repo, `install.sh` also installs the Claude bridge plugin automatically if `plugins/claude-code` is present.
+
+---
+
 ## Post-Installation
 
 ### 1. Verify Installation
@@ -377,15 +392,29 @@ cp env.example .env
 nano .env
 ```
 
-### 3. Start Using OpenCode
+### 3. Recommended execution workflow
+
+**Primary execution** (use these for day-to-day work):
 
 ```bash
-# Run OpenCode CLI
-opencode
+# OpenCode TUI — OpenAgent default (Quest + Experts + swarm via .oac/config.json)
+opencode --agent OpenAgent
 
-# Or use specific agents/commands
-# (depends on your OpenCode CLI setup)
+# Claude Code — after install.sh from repo clone or --with-claude
+claude --plugin-dir ~/.claude/plugins/openagents-control-bridge
 ```
+
+**CLI orchestration (`oac`)** — expert routing, plans, and handoff artifacts:
+
+```bash
+oac experts "build a JWT auth API"              # roster / routing
+oac experts --plan-only "build a JWT auth API"  # save structured plan for handoff
+oac experts --run "build a JWT auth API"        # simulated pipeline (default for --run)
+```
+
+`oac experts --run --live` runs a headless OpenCode spawn for the first scheduled task only (MVP). It is **not** the primary path — prefer `install.sh` / `update.sh` plus OpenCode TUI or Claude Code for execution.
+
+`.oac/config.json` is created on install with `expertMode`, `useAgentSwarm`, and `maxParallelAgents: 2` (overload-safe default).
 
 ---
 
@@ -417,7 +446,19 @@ When installing into an existing directory, the installer detects file collision
 
 ## Updating Installations
 
-### Add New Components
+Prefer **`update.sh`** to refresh files in an existing `.opencode/` directory. Use **`install.sh`** when you need a new profile, new components, or interactive collision handling.
+
+### Refresh in place (`update.sh`)
+
+From the project where `.opencode/` lives:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/update.sh | bash
+```
+
+The updater refreshes existing `.md`/`.ts`/`.sh` files, ensures quest/experts contexts and commands exist, creates `.opencode/opencode.json` and `.oac/config.json` when missing, preserves the user's selected OpenCode model, and moves old default swarm parallelism from `4` to `2`. From a repo clone it also refreshes the Claude bridge plugin when `plugins/claude-code` is present.
+
+### Add new components (`install.sh`)
 
 ```bash
 # Run installer again with "Skip existing" option
@@ -427,17 +468,7 @@ When installing into an existing directory, the installer detects file collision
 # Option 1: Skip existing
 ```
 
-Only new components will be installed, existing files remain unchanged.
-
-### Update All Components
-
-For an existing install, use the updater from the project where `.opencode/` is installed:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/update.sh | bash
-```
-
-The updater refreshes existing files, creates `.opencode/opencode.json` if missing, preserves the user's selected OpenCode model, and moves old default swarm parallelism from `4` to `2`.
+Only new components will be installed; existing files remain unchanged.
 
 For custom install locations:
 
@@ -572,11 +603,15 @@ export OPENCODE_BRANCH=develop
 ### Non-Interactive Installation (CI/CD)
 
 ```bash
+# Piped install — defaults to Advanced (profile 5) when no profile arg is passed
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash
+
 # Set environment variables for automation
 export OPENCODE_INSTALL_DIR=/opt/opencode
 export OPENCODE_BRANCH=main
+export OPENCODE_DEFAULT_PROFILE=advanced   # or OAC_PROFILE=5
 
-# Run with profile (no prompts)
+# Run with explicit profile (no prompts)
 ./install.sh advanced
 ```
 
@@ -587,6 +622,8 @@ export OPENCODE_BRANCH=main
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
 | `OPENCODE_INSTALL_DIR` | Installation directory | `.opencode` | `~/.config/opencode` |
+| `OPENCODE_DEFAULT_PROFILE` | Profile when non-interactive with no profile arg | `advanced` | `developer`, `5` |
+| `OAC_PROFILE` | Alias for `OPENCODE_DEFAULT_PROFILE` | `advanced` | `advanced`, `5` |
 | `OPENCODE_BRANCH` | Git branch to install from | `main` | `develop` |
 
 ---

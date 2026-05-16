@@ -119,6 +119,15 @@ This copies the plugin to `~/.claude/plugins/openagents-control-bridge/`.
 claude --plugin-dir ~/.claude/plugins/openagents-control-bridge
 ```
 
+**With OAC experts handoff** (plan in CLI, execute in Claude):
+
+```bash
+oac experts --run --live "your objective"
+# Prints the same plugin command and loads .oac/runs/{id}/handoff.json
+claude --plugin-dir ~/.claude/plugins/openagents-control-bridge
+# Paste the suggested prompt from handoff.json (references spec.json + plan.json)
+```
+
 **Without plugin (manual mode)**:
 ```bash
 # Set environment variable to load context files

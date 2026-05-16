@@ -346,10 +346,26 @@ For a full reinstall or overwrite of every component, download `install.sh` and 
 
 ### Step 2: Start Building
 
+**Primary execution:**
+
 ```bash
 opencode --agent OpenAgent
 > "Create a user authentication system"
 ```
+
+```bash
+# Claude Code (after install from repo clone, or install.sh --with-claude)
+claude --plugin-dir ~/.claude/plugins/openagents-control-bridge
+```
+
+**CLI orchestration (`oac`)** — expert routing and handoff plans:
+
+```bash
+oac experts "Create a user authentication system"
+oac experts --plan-only "Create a user authentication system"
+```
+
+Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --live` writes `.oac/runs/{id}/handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`) and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`); real execution happens in those runtimes, not headless from the CLI.
 
 ### Step 3: Approve & Ship
 

@@ -14,18 +14,24 @@
 
 ### macOS / Linux
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s essential
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash
+```
+
+Piped installs default to the **Advanced** profile (option 5). To pin explicitly:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s advanced
 ```
 
 ### Windows (Git Bash)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash -s essential
+curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh | bash
 ```
 
 ### Windows (PowerShell)
 ```powershell
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/install.sh" -OutFile "install.sh"
-& "C:\Program Files\Git\bin\bash.exe" install.sh essential
+& "C:\Program Files\Git\bin\bash.exe" install.sh advanced
 ```
 
 ## Test Your System

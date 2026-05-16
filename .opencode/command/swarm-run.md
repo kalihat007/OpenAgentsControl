@@ -15,7 +15,7 @@ Run only after the user has approved a swarm plan.
 ## Instructions
 
 1. Confirm the plan is approved.
-2. Create `.tmp/swarm/{session-id}/` with `swarm.json`, `task-graph.json`, `events.jsonl`, `artifacts/`, and `reports/`.
+2. Create or use `.oac/runs/{session-id}/` (CLI: `plan.json`, `events.ndjson`, `acceptance-report.md`, `summary.json`; extended orchestration may add task-graph and artifact subdirs).
 3. Before every batch:
    - verify dependencies are complete
    - verify no write-lock conflicts
