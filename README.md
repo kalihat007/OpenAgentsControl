@@ -817,7 +817,7 @@ For a cleaner Quest-style screen without Kimi's visible thinking stream:
 kimi --no-thinking --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
 ```
 
-The Kimi adapter extends Kimi's native coding agent and does not set a model. Kimi uses the default model in `~/.kimi/config.toml`, or the model the user explicitly passes:
+The Kimi adapter inherits Kimi's native tools/subagents, uses an OpenAgent Quest-first system prompt, and does not set a model. Kimi uses the default model in `~/.kimi/config.toml`, or the model the user explicitly passes:
 
 ```bash
 kimi --work-dir . \

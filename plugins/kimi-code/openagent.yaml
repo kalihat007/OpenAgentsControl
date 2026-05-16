@@ -2,6 +2,7 @@ version: 1
 agent:
   extend: default
   name: OpenAgent
+  system_prompt_path: ./openagent-system.md
   when_to_use: |
     Use OpenAgent as the default Quest + Experts operating layer for software engineering
     work, product/architecture planning, expert-team task breakdown, implementation,
