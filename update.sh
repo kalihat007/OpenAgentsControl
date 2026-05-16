@@ -488,7 +488,17 @@ EOF
         fi
     fi
 
-    if [ -f "$legacy_config" ]; then
+    if [[ "$install_dir" != ".opencode" && "$install_dir" != *"/.opencode" ]]; then
+        if [ -f "$legacy_config" ] && grep -Eq '"agent"[[:space:]]*:[[:space:]]*"OpenAgent"' "$legacy_config"; then
+            cp "$legacy_config" "${legacy_config}.legacy-oac-backup.$(date +%Y%m%d-%H%M%S)"
+            cat > "$legacy_config" << 'EOF'
+{}
+EOF
+            print_warning "Replaced invalid legacy OAC config at ${legacy_config}; OpenCode 1.14 expects config.json to be an object"
+        else
+            print_info "Skipping legacy OAC config for OpenCode config directory: ${install_dir}"
+        fi
+    elif [ -f "$legacy_config" ]; then
         print_info "Legacy OpenAgent config already exists: ${legacy_config}"
     else
         cat > "$legacy_config" << EOF

@@ -1491,7 +1491,7 @@ EOF
 }
 
 create_opencode_config() {
-    local opencode_dir=".opencode"
+    local opencode_dir="$INSTALL_DIR"
     local opencode_config="${opencode_dir}/opencode.json"
     local legacy_config="${opencode_dir}/config.json"
 
@@ -1521,7 +1521,17 @@ EOF
         fi
     fi
 
-    if [ -f "$legacy_config" ]; then
+    if [[ "$opencode_dir" != ".opencode" && "$opencode_dir" != *"/.opencode" ]]; then
+        if [ -f "$legacy_config" ] && grep -Eq '"agent"[[:space:]]*:[[:space:]]*"OpenAgent"' "$legacy_config"; then
+            cp "$legacy_config" "${legacy_config}.legacy-oac-backup.$(date +%Y%m%d-%H%M%S)"
+            cat > "$legacy_config" << 'EOF'
+{}
+EOF
+            print_warning "Replaced invalid legacy OAC config at ${legacy_config}; OpenCode 1.14 expects config.json to be an object"
+        else
+            print_info "Skipping legacy OAC config for OpenCode config directory: ${opencode_dir}"
+        fi
+    elif [ -f "$legacy_config" ]; then
         print_info "OAC legacy OpenCode config already exists: ${legacy_config}"
     else
         if [ -n "$OPENAGENT_SELECTED_MODEL" ]; then
