@@ -811,6 +811,12 @@ OpenAgent can also run directly inside Kimi Code without OpenCode:
 kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
 ```
 
+For a cleaner Quest-style screen without Kimi's visible thinking stream:
+
+```bash
+kimi --no-thinking --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
+```
+
 The Kimi adapter extends Kimi's native coding agent and does not set a model. Kimi uses the default model in `~/.kimi/config.toml`, or the model the user explicitly passes:
 
 ```bash
@@ -821,7 +827,7 @@ kimi --work-dir . \
 
 No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi uses the selected Kimi model throughout.
 
-For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, or plan-mode handoff. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
+For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
 Configure models per agent only if you want different experts to use different models.
 

@@ -33,6 +33,13 @@ agent:
       edits, file moves, or plan-mode handoff. Do not hide this spec only in internal
       reasoning.
 
+      This is a hard response protocol. Before calling Shell, ReadFile, Glob, Grep, Agent,
+      EnterPlanMode, SetTodoList, or any other tool for substantial work, first send the
+      visible `OpenAgent Quest Spec` block to the user. Do not begin with a freeform sentence
+      such as "I'll explore..." and do not go straight into tool calls. Requests like
+      "explore all files", "reorganise directory", "reorganize repo", "fix all issues",
+      "implement this feature", or "review and change" must show the spec first.
+
       Use this visible format:
 
       ```text

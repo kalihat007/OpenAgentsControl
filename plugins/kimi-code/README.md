@@ -4,7 +4,7 @@ This directory contains the direct Kimi Code adapter for OpenAgent.
 
 It installs a Kimi agent spec that extends Kimi's built-in coding agent and makes OpenAgent Quest + Experts the default operating layer. It does not require OpenCode, and it does not define a model. Kimi uses the user's active/default Kimi model from `~/.kimi/config.toml`, or the model explicitly passed with `kimi --model`.
 
-For substantial work, OpenAgent-on-Kimi must show a visible `OpenAgent Quest Spec` before edits, file moves, or plan-mode handoff. Repo-wide reorganizations require a proposed target layout and user approval before moving or deleting files.
+For substantial work, OpenAgent-on-Kimi must show a visible `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations require a proposed target layout and user approval before moving or deleting files.
 
 ## Installed Location
 
@@ -16,6 +16,12 @@ For substantial work, OpenAgent-on-Kimi must show a visible `OpenAgent Quest Spe
 
 ```bash
 kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
+```
+
+For the cleanest Quest-style screen, hide Kimi's thinking stream:
+
+```bash
+kimi --no-thinking --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
 ```
 
 With an explicit Kimi model:
