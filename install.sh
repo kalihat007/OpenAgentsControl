@@ -1523,13 +1523,15 @@ EOF
 
     if [[ "$opencode_dir" != ".opencode" && "$opencode_dir" != *"/.opencode" ]]; then
         local compact_legacy_config=""
+        local legacy_config_invalid=false
         [ -f "$legacy_config" ] && compact_legacy_config="$(tr -d '[:space:]' < "$legacy_config" 2>/dev/null || true)"
-        if [ -f "$legacy_config" ] && { grep -Eq '"agent"[[:space:]]*:[[:space:]]*"OpenAgent"' "$legacy_config" || [ "$compact_legacy_config" = '{"$schema":"https://opencode.ai/config.json",}' ]; }; then
+        if [ -f "$legacy_config" ] && command -v node >/dev/null 2>&1; then
+            node -e 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))' "$legacy_config" >/dev/null 2>&1 || legacy_config_invalid=true
+        fi
+        if [ -f "$legacy_config" ] && { grep -Eq '"agent"[[:space:]]*:[[:space:]]*"OpenAgent"' "$legacy_config" || [ "$compact_legacy_config" = '{"$schema":"https://opencode.ai/config.json",}' ] || [ "$legacy_config_invalid" = true ]; }; then
             cp "$legacy_config" "${legacy_config}.legacy-oac-backup.$(date +%Y%m%d-%H%M%S)"
-            cat > "$legacy_config" << 'EOF'
-{}
-EOF
-            print_warning "Replaced invalid legacy OAC config at ${legacy_config}; OpenCode 1.14 expects config.json to be an object"
+            rm -f "$legacy_config"
+            print_warning "Removed invalid legacy OAC config at ${legacy_config}; OpenCode 1.14 uses opencode.json"
         else
             print_info "Skipping legacy OAC config for OpenCode config directory: ${opencode_dir}"
         fi
