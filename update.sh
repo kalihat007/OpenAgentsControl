@@ -489,7 +489,9 @@ EOF
     fi
 
     if [[ "$install_dir" != ".opencode" && "$install_dir" != *"/.opencode" ]]; then
-        if [ -f "$legacy_config" ] && grep -Eq '"agent"[[:space:]]*:[[:space:]]*"OpenAgent"' "$legacy_config"; then
+        local compact_legacy_config=""
+        [ -f "$legacy_config" ] && compact_legacy_config="$(tr -d '[:space:]' < "$legacy_config" 2>/dev/null || true)"
+        if [ -f "$legacy_config" ] && { grep -Eq '"agent"[[:space:]]*:[[:space:]]*"OpenAgent"' "$legacy_config" || [ "$compact_legacy_config" = '{"$schema":"https://opencode.ai/config.json",}' ]; }; then
             cp "$legacy_config" "${legacy_config}.legacy-oac-backup.$(date +%Y%m%d-%H%M%S)"
             cat > "$legacy_config" << 'EOF'
 {}
