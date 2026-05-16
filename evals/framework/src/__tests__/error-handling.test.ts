@@ -451,7 +451,7 @@ describe('Severity Levels', () => {
 
     it('distinguishes between severity levels correctly', () => {
       // Arrange
-      const code = 'eval("x");'.repeat(100);
+      const code = 'eval("x");'.repeat(101);
 
       // Act
       const result = validateCode(code);

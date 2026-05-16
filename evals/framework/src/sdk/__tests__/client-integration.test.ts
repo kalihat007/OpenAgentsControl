@@ -112,7 +112,7 @@ describe.skipIf(skipIntegration)('ClientManager Integration', () => {
     
     // Should have received some events
     expect(events.length).toBeGreaterThan(0);
-  });
+  }, 15000);
 
   it('should delete session', async () => {
     await client.deleteSession(sessionId);

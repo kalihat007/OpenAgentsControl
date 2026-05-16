@@ -1,6 +1,7 @@
 import { readFile } from 'fs/promises';
 import { parse as parseYaml } from 'yaml';
 import { TestCaseSchema, TestSuiteSchema, type TestCase, type TestSuite } from './test-case-schema.js';
+import { normalizeAgentId } from '../config.js';
 
 /**
  * Load a single test case from a YAML file
@@ -10,7 +11,10 @@ export async function loadTestCase(filePath: string): Promise<TestCase> {
   const data = parseYaml(content);
   
   try {
-    const testCase = TestCaseSchema.parse(data);
+    const parsed = TestCaseSchema.parse(data);
+    const testCase: TestCase = parsed.agent
+      ? { ...parsed, agent: normalizeAgentId(parsed.agent) }
+      : parsed;
     
     // Warn about deprecated schema
     if (testCase.expected && !testCase.behavior && !testCase.expectedViolations) {

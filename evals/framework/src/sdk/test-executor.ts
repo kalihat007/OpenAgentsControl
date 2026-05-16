@@ -93,7 +93,8 @@ export class TestExecutor {
       this.logger.log(`${'='.repeat(60)}`);
       
       // Show agent/model configuration prominently
-      const modelToUse = testCase.model || this.config.defaultModel;
+      const modelToUse = this.resolveModelForRequest(testCase.model || this.config.defaultModel);
+      const modelLabel = modelToUse || 'OpenCode selected model';
       const agentDisplayMap: Record<string, string> = {
         'openagent': 'OpenAgent',
         'core/openagent': 'OpenAgent',
@@ -133,7 +134,7 @@ export class TestExecutor {
       
       this.logger.log(`┌${'─'.repeat(58)}┐`);
       this.logger.log(`│ 🤖 Agent: ${agentToUse.padEnd(46)} │`);
-      this.logger.log(`│ 🧠 Model: ${modelToUse.padEnd(46)} │`);
+      this.logger.log(`│ 🧠 Model: ${modelLabel.padEnd(46)} │`);
       this.logger.log(`└${'─'.repeat(58)}┘`);
       
       this.logger.log(`Approval strategy: ${approvalStrategy.describe()}`);
@@ -253,7 +254,7 @@ export class TestExecutor {
     errors: string[]
   ): Promise<void> {
     const timeout = testCase.timeout || this.config.defaultTimeout;
-    const modelToUse = testCase.model || this.config.defaultModel;
+    const modelToUse = this.resolveModelForRequest(testCase.model || this.config.defaultModel);
     
     // Map test agent names to their display names (as shown in `opencode agent list`)
     const agentDisplayMap: Record<string, string> = {
@@ -284,7 +285,7 @@ export class TestExecutor {
     testCase: TestCase,
     sessionId: string,
     timeout: number,
-    modelToUse: string,
+    modelToUse: string | undefined,
     agentToUse: string
   ): Promise<void> {
     this.logger.log(`Sending ${testCase.prompts!.length} prompts (multi-turn)...`);
@@ -331,7 +332,7 @@ export class TestExecutor {
     testCase: TestCase,
     sessionId: string,
     timeout: number,
-    modelToUse: string,
+    modelToUse: string | undefined,
     agentToUse: string
   ): Promise<void> {
     this.logger.log('Sending prompt...');
@@ -402,6 +403,18 @@ export class TestExecutor {
       throw new Error(`Invalid model format: ${model}. Expected provider/model`);
     }
     return { providerID, modelID };
+  }
+
+  /**
+   * The eval framework used to default to legacy "opencode/..." model aliases.
+   * Current OpenCode already owns the selected provider/model, so these aliases
+   * should not override the user's configured model.
+   */
+  private resolveModelForRequest(model?: string): string | undefined {
+    if (!model || model.startsWith('opencode/')) {
+      return undefined;
+    }
+    return model;
   }
 
   /**
@@ -680,7 +693,7 @@ export class TestExecutor {
     timeoutMs: number,
     modelId?: string
   ): Promise<void> {
-    const model = modelId || this.config.defaultModel;
+    const model = modelId || this.resolveModelForRequest(this.config.defaultModel) || 'default';
     
     // Start completion polling in parallel
     const completionPromise = this.waitForCompletion(sessionId, model, timeoutMs);

@@ -101,7 +101,8 @@ export class EventStreamHandler {
       'session.created', 'session.updated',
       'message.created', 'message.updated',
       'part.created', 'part.updated',
-      'permission.request', 'tool.call', 'tool.result'
+      'message.part.updated', 'permission.request',
+      'tool.call', 'tool.result', 'server.connected'
     ];
     
     for (const type of eventTypes) {
@@ -134,50 +135,39 @@ export class EventStreamHandler {
     this.isListening = true;
 
     try {
-      const response = await this.client.event.subscribe();
+      while (this.isListening && !this.abortController.signal.aborted) {
+        const response = await this.client.global.event({
+          signal: this.abortController.signal,
+        } as any);
 
-      // Process events from the stream
-      for await (const event of response.stream) {
-        if (!this.isListening) {
-          break;
-        }
-
-        const serverEvent: ServerEvent = {
-          type: event.type as EventType,
-          properties: event.properties,
-          timestamp: Date.now(),
-        };
-
-        // Multi-agent logging hooks
-        if (this.multiAgentLogger) {
-          this.handleMultiAgentLogging(serverEvent);
-        }
-
-        // Handle permission requests automatically if handler is registered
-        if ((event.type as string) === 'permission.request' && this.permissionHandler) {
-          try {
-            const approved = await this.permissionHandler(serverEvent as PermissionRequestEvent);
-            
-            // Respond to the permission request with retry logic
-            const { sessionId, permissionId } = event.properties as any;
-            await this.respondToPermissionWithRetry(sessionId, permissionId, approved);
-          } catch (error) {
-            console.error('Error handling permission request:', error);
+        // Process events from the stream. Some OpenCode builds close idle SSE
+        // streams; the outer loop keeps the handler attached until stopped.
+        for await (const event of response.stream) {
+          if (!this.isListening) {
+            break;
           }
+
+          const payload = (event as any).payload || event;
+
+          if (payload.type === 'sync') {
+            continue;
+          }
+
+          const serverEvent: ServerEvent = {
+            type: payload.type as EventType,
+            properties: payload.properties,
+            timestamp: Date.now(),
+          };
+
+          await this.processServerEvent(serverEvent);
         }
 
-        // Trigger registered event handlers
-        const handlers = this.eventHandlers.get(serverEvent.type) || [];
-        for (const handler of handlers) {
-          try {
-            await handler(serverEvent);
-          } catch (error) {
-            console.error(`Error in event handler for ${serverEvent.type}:`, error);
-          }
+        if (this.isListening) {
+          await new Promise(resolve => setTimeout(resolve, 250));
         }
       }
     } catch (error) {
-      if (this.isListening) {
+      if (this.isListening && !this.abortController?.signal.aborted) {
         console.error('Event stream error:', error);
         throw error;
       }
@@ -202,6 +192,36 @@ export class EventStreamHandler {
    */
   listening(): boolean {
     return this.isListening;
+  }
+
+  private async processServerEvent(serverEvent: ServerEvent): Promise<void> {
+    // Multi-agent logging hooks
+    if (this.multiAgentLogger) {
+      this.handleMultiAgentLogging(serverEvent);
+    }
+
+    // Handle permission requests automatically if handler is registered
+    if ((serverEvent.type as string) === 'permission.request' && this.permissionHandler) {
+      try {
+        const approved = await this.permissionHandler(serverEvent as PermissionRequestEvent);
+
+        // Respond to the permission request with retry logic
+        const { sessionId, permissionId } = serverEvent.properties as any;
+        await this.respondToPermissionWithRetry(sessionId, permissionId, approved);
+      } catch (error) {
+        console.error('Error handling permission request:', error);
+      }
+    }
+
+    // Trigger registered event handlers
+    const handlers = this.eventHandlers.get(serverEvent.type) || [];
+    for (const handler of handlers) {
+      try {
+        await handler(serverEvent);
+      } catch (error) {
+        console.error(`Error in event handler for ${serverEvent.type}:`, error);
+      }
+    }
   }
 
   /**

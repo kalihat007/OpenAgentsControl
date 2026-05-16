@@ -37,63 +37,63 @@ export class ToolUsageEvaluator extends BaseEvaluator {
       pattern: /\bcat\s+([^\s|>]+)(?!\s*[|>])/i, 
       tool: 'read', 
       message: 'Use Read tool instead of cat for reading files',
-      severity: 'warning' as const,
+      severity: 'error' as const,
       example: 'read(filePath: "path/to/file")'
     },
     { 
       pattern: /\bhead\s+(-n\s*\d+\s+)?([^\s]+)/i, 
       tool: 'read', 
       message: 'Use Read tool with limit parameter instead of head',
-      severity: 'warning' as const,
+      severity: 'error' as const,
       example: 'read(filePath: "file", limit: 10)'
     },
     { 
       pattern: /\btail\s+(-n\s*\d+\s+)?([^\s]+)/i, 
       tool: 'read', 
       message: 'Use Read tool with offset parameter instead of tail',
-      severity: 'warning' as const,
+      severity: 'error' as const,
       example: 'read(filePath: "file", offset: -10)'
     },
     { 
-      pattern: /\bls\s+(?!-[al]+\s)([^\s]*)/i, 
+      pattern: /\bls(?:\s+|$)/i,
       tool: 'list', 
-      message: 'Use List tool instead of ls (unless ls -la for detailed info)',
-      severity: 'info' as const,
+      message: 'Use List tool instead of ls',
+      severity: 'error' as const,
       example: 'list(path: "directory")'
     },
     { 
       pattern: /\bfind\s+.*-name\s+["']?([^"'\s]+)["']?/i, 
       tool: 'glob', 
       message: 'Use Glob tool instead of find for pattern matching',
-      severity: 'warning' as const,
+      severity: 'error' as const,
       example: 'glob(pattern: "**/*.ts")'
     },
     { 
       pattern: /echo\s+["']?([^"'>]+)["']?\s*>\s*([^\s]+)/i, 
       tool: 'write', 
       message: 'Use Write tool instead of echo redirection',
-      severity: 'warning' as const,
+      severity: 'error' as const,
       example: 'write(filePath: "file", content: "text")'
     },
     { 
       pattern: /cat\s*<<\s*EOF/i, 
       tool: 'write', 
       message: 'Use Write tool instead of cat with heredoc',
-      severity: 'warning' as const,
+      severity: 'error' as const,
       example: 'write(filePath: "file", content: "multiline\\ntext")'
     },
     {
       pattern: /\bsed\s+/i,
       tool: 'edit',
       message: 'Use Edit tool instead of sed for file modifications',
-      severity: 'warning' as const,
+      severity: 'error' as const,
       example: 'edit(filePath: "file", oldString: "old", newString: "new")'
     },
     {
       pattern: /\bawk\s+/i,
       tool: 'edit',
       message: 'Use Edit tool or Read tool instead of awk',
-      severity: 'info' as const,
+      severity: 'error' as const,
       example: 'read(filePath: "file") then process in code'
     }
   ];
@@ -116,7 +116,6 @@ export class ToolUsageEvaluator extends BaseEvaluator {
     /^\s*mv\s+/i,            // moving files
     /^\s*cp\s+/i,            // copying files
     /^\s*chmod\s+/i,         // permissions
-    /^\s*ls\s+-[la]+/i,      // ls -la for detailed directory info
     /^\s*cd\s+/i,            // navigation
     /^\s*pwd\s*/i,           // current directory
     /^\s*which\s+/i,         // command location
@@ -195,7 +194,9 @@ export class ToolUsageEvaluator extends BaseEvaluator {
         // Add violation with appropriate severity
         violations.push(
           this.createViolation(
-            'suboptimal-tool-usage',
+            antiPattern.tool === 'read' || antiPattern.tool === 'list'
+              ? 'bash-antipattern'
+              : 'suboptimal-tool-usage',
             antiPattern.severity,
             antiPattern.message,
             bashCall.timestamp,

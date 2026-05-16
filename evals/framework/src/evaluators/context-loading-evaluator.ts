@@ -222,6 +222,7 @@ export class ContextLoadingEvaluator extends BaseEvaluator {
       });
 
       return this.buildResult(this.name, checks, violations, evidence, {
+        skipped: true,
         isTaskSession: false,
         executionToolCount: 0
       });
@@ -378,7 +379,7 @@ export class ContextLoadingEvaluator extends BaseEvaluator {
       violations.push(
         this.createViolation(
           'no-context-loaded',
-          'warning',
+          'error',
           'Task execution started without loading any context files',
           firstExecution.timestamp,
           {
@@ -411,7 +412,7 @@ export class ContextLoadingEvaluator extends BaseEvaluator {
       violations.push(
         this.createViolation(
           'context-loaded-after-execution',
-          'warning',
+          'error',
           'Some executions happened before context was loaded',
           firstExecution.timestamp,
           {

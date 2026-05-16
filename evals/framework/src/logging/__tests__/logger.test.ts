@@ -12,7 +12,7 @@ describe('MultiAgentLogger', () => {
   let consoleLogSpy: any;
   
   beforeEach(() => {
-    logger = new MultiAgentLogger(true);
+    logger = new MultiAgentLogger(true, true);
     consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
   });
   

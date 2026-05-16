@@ -98,11 +98,10 @@ describe('ContextLoadingEvaluator', () => {
 
       const result = await evaluator.evaluate(timeline, mockSessionInfo);
 
-      // Context loading violation is a warning, not error, so passed is still true
-      // But contextLoadedBeforeExecution should be false
+      // Missing task context is blocking for execution-oriented sessions.
       expect(result.metadata?.contextLoadedBeforeExecution).toBe(false);
       expect(result.violations.length).toBeGreaterThan(0);
-      expect(result.violations[0].severity).toBe('warning');
+      expect(result.violations[0].severity).toBe('error');
     });
   });
 
