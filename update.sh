@@ -214,6 +214,24 @@ resolve_install_dir() {
 # Claude Integration
 #############################################################################
 
+claude_plugin_source_dir() {
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -f "${script_dir}/plugins/claude-code/.claude-plugin/plugin.json" ]; then
+        echo "${script_dir}/plugins/claude-code"
+    fi
+}
+
+maybe_enable_claude_from_repo() {
+    if [ "$WITH_CLAUDE" = true ]; then
+        return 0
+    fi
+    if [ -n "$(claude_plugin_source_dir)" ]; then
+        WITH_CLAUDE=true
+        print_info "Claude bridge plugin found in repo — refreshing ~/.claude/plugins/openagents-control-bridge"
+    fi
+}
+
 install_claude_integration() {
     print_step "Updating Claude Code integration..."
 
@@ -469,6 +487,36 @@ EOF
     fi
 }
 
+print_execution_workflow() {
+    echo -e "${BOLD}Primary execution (recommended):${NC}"
+    echo -e "  OpenCode TUI:  ${CYAN}opencode --agent OpenAgent${NC}"
+    echo "                 Quest + Experts Mode + Agent Swarm (see .oac/config.json)"
+    if [ -d "$HOME/.claude/plugins/openagents-control-bridge" ]; then
+        echo -e "  Claude Code:   ${CYAN}claude --plugin-dir ~/.claude/plugins/openagents-control-bridge${NC}"
+    else
+        echo -e "  Claude Code:   ${CYAN}./update.sh --with-claude${NC} (from repo clone)"
+        echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge"
+    fi
+    echo ""
+    echo -e "${BOLD}CLI orchestration (oac — planning, routing, handoff artifacts):${NC}"
+    echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
+    echo -e "  ${CYAN}oac experts --plan-only \"<objective>\"${NC}       Save structured plan for handoff"
+    echo -e "  ${CYAN}oac experts --run \"<objective>\"${NC}             Simulated swarm pipeline (default)"
+    echo ""
+    print_info "Headless OpenCode spawn (oac experts --run --live) is optional — use TUI/Claude for primary execution."
+    echo ""
+}
+
+show_post_update() {
+    echo ""
+    print_step "Next Steps"
+    print_execution_workflow
+    print_info "Re-run updates anytime: ${CYAN}./update.sh${NC} or curl update.sh | bash"
+    print_info "Fresh install / new components: ${CYAN}curl -fsSL .../install.sh | bash${NC} (defaults to Advanced)"
+    print_info "Explicit Advanced profile: ${CYAN}./install.sh advanced${NC}"
+    echo ""
+}
+
 #############################################################################
 # Argument Parsing
 #############################################################################
@@ -517,6 +565,8 @@ parse_args() {
 main() {
     parse_args "$@"
 
+    maybe_enable_claude_from_repo
+
     print_header
 
     local install_dir
@@ -531,8 +581,13 @@ main() {
         echo "  3. Local path:  $(pwd)/.opencode"
         echo "  4. Global path: $(get_global_install_path)"
         echo ""
-        echo "Run install.sh first to install components, or specify the correct"
-        echo "path with: $0 --install-dir PATH"
+        echo "Install first (Advanced profile is the default — option 5):"
+        echo "  curl -fsSL ${REPO_URL%/}/install.sh | bash"
+        echo "  curl -fsSL ${REPO_URL%/}/install.sh | bash -s advanced"
+        echo "  ./install.sh advanced"
+        echo ""
+        echo "Or point this updater at an existing install:"
+        echo "  $0 --install-dir PATH"
         exit 1
     fi
 
@@ -557,6 +612,7 @@ main() {
     fi
 
     print_success "Update complete! OpenAgent Quest Mode + Experts Mode + Agent Swarm + ISO 21434/24089 are active."
+    show_post_update
 }
 
 main "$@"

@@ -70,7 +70,7 @@ if [[ "$REGISTRY_URL" == file://* ]]; then
 fi
 
 INSTALL_DIR="${OPENCODE_INSTALL_DIR:-.opencode}"  # Allow override via environment variable
-DEFAULT_PROFILE="${OPENCODE_DEFAULT_PROFILE:-advanced}"  # Default quick/non-interactive profile
+DEFAULT_PROFILE="${OAC_PROFILE:-${OPENCODE_DEFAULT_PROFILE:-advanced}}"  # Default quick/non-interactive profile (name or 1-5)
 OPENAGENT_SELECTED_MODEL="${OPENAGENT_MODEL:-${OPENAGENT_DEFAULT_MODEL:-}}"
 OPENAGENT_SMALL_MODEL="${OPENAGENT_SMALL_MODEL:-$OPENAGENT_SELECTED_MODEL}"
 TEMP_DIR="/tmp/opencode-installer-$$"
@@ -300,6 +300,17 @@ fetch_registry() {
         fi
         print_success "Registry fetched successfully"
     fi
+}
+
+resolve_profile_name() {
+    case "$1" in
+        1|essential) echo "essential" ;;
+        2|developer) echo "developer" ;;
+        3|business) echo "business" ;;
+        4|full) echo "full" ;;
+        5|advanced) echo "advanced" ;;
+        *) echo "$1" ;;
+    esac
 }
 
 get_profile_components() {
@@ -717,9 +728,9 @@ show_profile_menu() {
     local adv_badge
     adv_badge=$(jq_exec '.profiles.advanced.badge // ""' "$TEMP_DIR/registry.json")
     if [ -n "$adv_badge" ]; then
-        echo -e "  ${YELLOW}5) ${adv_name} ${GREEN}[${adv_badge}]${NC}"
+        echo -e "  ${YELLOW}5) ${adv_name} ${GREEN}[${adv_badge}]${NC} ${BOLD}(default)${NC}"
     else
-        echo -e "  ${YELLOW}5) ${adv_name}${NC}"
+        echo -e "  ${YELLOW}5) ${adv_name}${NC} ${BOLD}(default)${NC}"
     fi
     echo -e "     ${adv_desc}"
     echo -e "     Components: ${adv_count}\n"
@@ -1065,6 +1076,24 @@ get_install_strategy() {
 #############################################################################
 # Claude Integration
 #############################################################################
+
+claude_plugin_source_dir() {
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -f "${script_dir}/plugins/claude-code/.claude-plugin/plugin.json" ]; then
+        echo "${script_dir}/plugins/claude-code"
+    fi
+}
+
+maybe_enable_claude_from_repo() {
+    if [ "$WITH_CLAUDE" = true ]; then
+        return 0
+    fi
+    if [ -n "$(claude_plugin_source_dir)" ]; then
+        WITH_CLAUDE=true
+        print_info "Claude bridge plugin found in repo — installing to ~/.claude/plugins/openagents-control-bridge"
+    fi
+}
 
 install_claude_integration() {
     print_step "Setting up Claude Code integration..."
@@ -1451,13 +1480,36 @@ EOF
 # Post-Installation
 #############################################################################
 
+print_execution_workflow() {
+    echo -e "${BOLD}Primary execution (recommended):${NC}"
+    echo -e "  OpenCode TUI:  ${CYAN}opencode --agent OpenAgent${NC}"
+    echo "                 Quest + Experts Mode + Agent Swarm (see .oac/config.json)"
+    if [ -d "$HOME/.claude/plugins/openagents-control-bridge" ]; then
+        echo -e "  Claude Code:   ${CYAN}claude --plugin-dir ~/.claude/plugins/openagents-control-bridge${NC}"
+    else
+        echo -e "  Claude Code:   ${CYAN}./install.sh advanced --with-claude${NC} (from repo clone)"
+        echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge"
+    fi
+    echo ""
+    echo -e "${BOLD}CLI orchestration (oac — planning, routing, handoff artifacts):${NC}"
+    echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
+    echo -e "  ${CYAN}oac experts --plan-only \"<objective>\"${NC}       Save structured plan for handoff"
+    echo -e "  ${CYAN}oac experts --run \"<objective>\"${NC}             Simulated swarm pipeline (default)"
+    echo ""
+    print_info "Headless OpenCode spawn (oac experts --run --live) is an optional MVP — not the primary path."
+    print_info "Use install.sh / update.sh + OpenCode TUI or Claude for day-to-day execution."
+    echo ""
+    echo "  If a provider is overloaded, retry after a pause or pick a model explicitly:"
+    echo -e "  ${CYAN}opencode --agent OpenAgent --model <provider/model>${NC}"
+    echo ""
+}
+
 show_post_install() {
     echo ""
     print_step "Next Steps"
     
     echo "1. Review the installed components in ${CYAN}${INSTALL_DIR}/${NC}"
     
-    # Check if env.example was installed
     local step_num=2
     if [ -f "${INSTALL_DIR}/env.example" ] || [ -f "env.example" ]; then
         echo "${step_num}. Copy env.example to .env and configure:"
@@ -1465,28 +1517,20 @@ show_post_install() {
         step_num=$((step_num + 1))
     fi
     
-    if [ "$WITH_CLAUDE" = true ]; then
-        echo "${step_num}. Use with Claude Code:"
-        echo -e "   ${CYAN}claude --plugin-dir ~/.claude/plugins/openagents-control-bridge${NC}"
-        step_num=$((step_num + 1))
-    fi
-    
-    echo "${step_num}. Start using OpenCode agents:"
-    echo -e "   ${CYAN}opencode${NC}"
-    echo "   (OpenAgent is the default agent; Quest Mode + Experts Mode + Agent Swarm are active by default)"
-    echo "   If a provider is overloaded, retry the same selected model after a pause or choose another model explicitly:"
-    echo -e "   ${CYAN}opencode --agent OpenAgent --model <provider/model>${NC}"
+    echo "${step_num}. Run the recommended workflow:"
     echo ""
+    print_execution_workflow
     
     # Show installation location info
     print_info "Installation directory: ${CYAN}${INSTALL_DIR}${NC}"
-    print_info "OAC config: ${CYAN}.oac/config.json${NC} (expertMode + useAgentSwarm enabled)"
+    print_info "OAC config: ${CYAN}.oac/config.json${NC} (expertMode, useAgentSwarm, maxParallelAgents=2)"
     if [ -n "$OPENAGENT_SELECTED_MODEL" ]; then
         print_info "OpenCode config: ${CYAN}.opencode/opencode.json${NC} (default agent: OpenAgent, model: ${OPENAGENT_SELECTED_MODEL})"
     else
         print_info "OpenCode config: ${CYAN}.opencode/opencode.json${NC} (default agent: OpenAgent; model stays user-selected)"
     fi
     print_info "OAC legacy config: ${CYAN}.opencode/config.json${NC} (OpenAgent compatibility metadata)"
+    print_info "Keep components current: ${CYAN}./update.sh${NC} (from project root) or curl update.sh | bash"
     
     # Check for backup directories
     local has_backup=0
@@ -1639,6 +1683,8 @@ main() {
                 echo ""
                 echo -e "${BOLD}Environment Variables:${NC}"
                 echo "  OPENCODE_INSTALL_DIR      Installation directory"
+                echo "  OPENCODE_DEFAULT_PROFILE  Profile when non-interactive with no profile arg (default: advanced)"
+                echo "  OAC_PROFILE               Alias for OPENCODE_DEFAULT_PROFILE (name or 1-5)"
                 echo "  OPENCODE_BRANCH           Git branch to install from (default: main)"
                 echo "  OPENAGENT_MODEL           Optional explicit model to pin in .opencode/opencode.json"
                 echo "                            (default: unset; use the user's OpenCode-selected model)"
@@ -1707,13 +1753,14 @@ main() {
     
     check_bash_version
     check_dependencies
+    maybe_enable_claude_from_repo
     fetch_registry
 
     if [ -z "$PROFILE" ] && [ ! -t 0 ]; then
         INSTALL_MODE="profile"
-        PROFILE="$DEFAULT_PROFILE"
+        PROFILE="$(resolve_profile_name "$DEFAULT_PROFILE")"
         NON_INTERACTIVE=true
-        print_info "No profile provided in non-interactive mode; defaulting to ${PROFILE}"
+        print_info "No profile provided in non-interactive mode; defaulting to ${PROFILE} (profile 5 / advanced)"
     fi
     
     if [ -n "$PROFILE" ]; then
@@ -1747,10 +1794,10 @@ main() {
         show_main_menu
         
         if [ "$INSTALL_MODE" = "profile" ]; then
-            # Always install the advanced profile (5th option)
+            # Quick Install always maps to the Advanced profile (option 5).
             PROFILE="advanced"
             print_info "Auto-selecting advanced profile (OpenAgent Quest + Experts Mode + Agent Swarm + ISO 21434/24089)..."
-            
+
             SELECTED_COMPONENTS=()
             local temp_file="$TEMP_DIR/components.tmp"
             get_profile_components "$PROFILE" > "$temp_file"
@@ -1760,7 +1807,6 @@ main() {
 
             expand_selected_components
 
-            # Resolve dependencies for profile installs
             print_step "Resolving dependencies..."
             local original_count=${#SELECTED_COMPONENTS[@]}
             for comp in "${SELECTED_COMPONENTS[@]}"; do
