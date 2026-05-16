@@ -722,8 +722,6 @@ export function generateFileDiff(original: string, modified: string): string {
       }
     }
 
-    const endOrig = i
-    const endMod = j
     const origCount = hunkLines.filter(l => l.startsWith(' ') || l.startsWith('-')).length
     const modCount = hunkLines.filter(l => l.startsWith(' ') || l.startsWith('+')).length
 

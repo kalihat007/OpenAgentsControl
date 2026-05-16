@@ -13,14 +13,13 @@
  */
 
 import type { Command } from 'commander'
-import { log, info, success, dim, warn, bold } from '../ui/logger.js'
+import { log, info, success, dim, bold } from '../ui/logger.js'
 import { createSpinner } from '../ui/spinner.js'
 import { createLogger } from '../lib/logger.js'
 import {
   createPRPlan,
   formatPRBody,
   formatReviewComment,
-  generateBranchName,
   getDefaultTemplate,
   getConventionalTemplate,
   getDetailedTemplate,
@@ -58,7 +57,7 @@ export interface PRCommandOptions {
 }
 
 export async function prCommand(options: PRCommandOptions): Promise<void> {
-  cmdLog.debug('Running pr command', options)
+  cmdLog.debug('Running pr command', { ...options })
 
   const spinner = createSpinner('Generating PR plan…')
   spinner.start()

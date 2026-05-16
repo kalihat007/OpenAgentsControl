@@ -27,7 +27,7 @@ import {
   getMaxParallelAgents,
   readConfig,
 } from './config.js'
-import { SessionBudgetExceededError } from './errors.js'
+import { SessionBudgetExceededError, SwarmExecutionError } from './errors.js'
 import { buildRunSpec, type RunSpec } from './run-spec.js'
 import type { SwarmQualityGateResult } from './swarm-quality-gate.js'
 
@@ -158,6 +158,15 @@ export interface ExecuteSwarmOptions {
   mode?: ExecutionMode
   budget?: SessionBudgetLimits
   callbacks?: ExecutorCallbacks
+}
+
+function isExecutorCallbacks(value: ExecutorCallbacks | ExecuteSwarmOptions): value is ExecutorCallbacks {
+  return (
+    typeof (value as ExecutorCallbacks).onBatchStart === 'function' ||
+    typeof (value as ExecutorCallbacks).onTaskStart === 'function' ||
+    typeof (value as ExecutorCallbacks).onTaskComplete === 'function' ||
+    typeof (value as ExecutorCallbacks).onBatchComplete === 'function'
+  )
 }
 
 // ── Agent → Role reverse-lookup ───────────────────────────────────────────────
@@ -349,11 +358,8 @@ export async function executeSwarm(
   callbacksOrOptions: ExecutorCallbacks | ExecuteSwarmOptions = {},
 ): Promise<ExecutionResult> {
   const options: ExecuteSwarmOptions =
-    typeof callbacksOrOptions.onBatchStart === 'function' ||
-    typeof callbacksOrOptions.onTaskStart === 'function' ||
-    typeof callbacksOrOptions.onTaskComplete === 'function' ||
-    typeof callbacksOrOptions.onBatchComplete === 'function'
-      ? { callbacks: callbacksOrOptions as ExecutorCallbacks }
+    isExecutorCallbacks(callbacksOrOptions)
+      ? { callbacks: callbacksOrOptions }
       : (callbacksOrOptions as ExecuteSwarmOptions)
 
   const mode = options.mode ?? 'simulate'

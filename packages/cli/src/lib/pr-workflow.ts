@@ -316,7 +316,7 @@ export function suggestReviewers(changes: ChangeDescription[]): string[] {
 export function generatePRDescription(
   objective: string,
   pipelineResult: PipelineResult,
-  config?: PRTemplate,
+  _config?: PRTemplate,
 ): PRDescription {
   const allFiles = collectFilesFromPipeline(pipelineResult)
   const expertIds = collectExpertIds(pipelineResult)

@@ -25,20 +25,20 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Check for ajv-cli (JSON schema validator)
-# Use npx to run from local node_modules
+# Prefer the native TypeScript validator. It uses the same Zod schemas as the
+# eval framework and avoids requiring a global ajv-cli install.
 if ! command -v npx &> /dev/null; then
     echo -e "${RED}❌ Error: npx not found (Node.js required)${NC}"
     exit 2
 fi
 
-# Check if ajv-cli is installed
-if ! (cd "$PROJECT_ROOT/evals/framework" && npx ajv validate -s /dev/null -d /dev/null 2>&1 | grep -q "valid"); then
-    echo -e "${RED}❌ Error: ajv-cli not found${NC}"
-    echo ""
-    echo "Install with: cd evals/framework && npm install"
-    echo "Or globally: npm install -g ajv-cli"
-    exit 2
+if [[ -f "$PROJECT_ROOT/evals/framework/src/sdk/validate-suites-cli.ts" ]]; then
+    if [[ $# -gt 0 ]]; then
+        (cd "$PROJECT_ROOT/evals/framework" && npm run validate:suites -- "$@")
+    else
+        (cd "$PROJECT_ROOT/evals/framework" && npm run validate:suites)
+    fi
+    exit $?
 fi
 
 AJV_CMD="cd $PROJECT_ROOT/evals/framework && npx ajv"

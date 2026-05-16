@@ -276,8 +276,8 @@ class AbilitiesPlugin {
       onStepComplete: (step, result) => {
         console.log(`[abilities] Step completed: ${step.id} - ${result.status}`)
       },
-      onStepFail: (step, error) => {
-        console.log(`[abilities] Step failed: ${step.id} - ${error.message}`)
+      onStepFail: (step, result) => {
+        console.log(`[abilities] Step failed: ${step.id} - ${result.error || result.status}`)
       }
     }
   }

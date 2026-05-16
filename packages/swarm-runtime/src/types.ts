@@ -17,6 +17,7 @@ export type SwarmEventType =
   | "task.completed"
   | "task.failed"
   | "batch.planned"
+  | "handoff.ready"
   | "sync.required"
   | "sync.completed"
   | "lock.conflict"
