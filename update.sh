@@ -63,6 +63,7 @@ OPENAGENT_SMALL_MODEL="${OPENAGENT_SMALL_MODEL:-$OPENAGENT_SELECTED_MODEL}"
 # CLI argument for custom install dir (overrides env var)
 CUSTOM_INSTALL_DIR=""
 WITH_CLAUDE=false
+WITH_KIMI=false
 
 # Track backup files for cleanup on exit
 BACKUP_FILES=()
@@ -98,11 +99,12 @@ print_header() {
 }
 
 print_usage() {
-    echo "Usage: $0 [--install-dir PATH] [--with-claude]"
+    echo "Usage: $0 [--install-dir PATH] [--with-claude] [--with-kimi]"
     echo ""
     echo "Options:"
     echo "  --install-dir PATH   Update a specific installation directory"
     echo "  --with-claude        Also update Claude Code integration"
+    echo "  --with-kimi          Also update Kimi Code direct agent integration"
     echo "  --help               Show this help message"
     echo ""
     echo "Environment variables:"
@@ -116,6 +118,9 @@ print_usage() {
     echo ""
     echo "  # Update with Claude Code integration"
     echo "  $0 --with-claude"
+    echo ""
+    echo "  # Update with Kimi Code direct integration"
+    echo "  $0 --with-kimi"
     echo ""
     echo "  # Update a global installation"
     echo "  $0 --install-dir ~/.config/opencode"
@@ -232,6 +237,59 @@ maybe_enable_claude_from_repo() {
     fi
 }
 
+#############################################################################
+# Kimi Code Integration
+#############################################################################
+
+kimi_plugin_source_dir() {
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -f "${script_dir}/plugins/kimi-code/openagent.yaml" ]; then
+        echo "${script_dir}/plugins/kimi-code"
+    fi
+}
+
+maybe_enable_kimi_from_repo() {
+    if [ "$WITH_KIMI" = true ]; then
+        return 0
+    fi
+    if [ -n "$(kimi_plugin_source_dir)" ] && { command -v kimi >/dev/null 2>&1 || [ -d "$HOME/.kimi" ]; }; then
+        WITH_KIMI=true
+        print_info "Kimi Code adapter found in repo — refreshing ~/.kimi/agents/openagents-control"
+    fi
+}
+
+install_kimi_integration() {
+    print_step "Updating Kimi Code integration..."
+
+    local plugin_source
+    plugin_source="$(kimi_plugin_source_dir)"
+    local plugin_dest="$HOME/.kimi/agents/openagents-control"
+
+    if [ -z "$plugin_source" ]; then
+        print_warning "Kimi adapter source not found. Run update.sh from the OpenAgentsControl repository."
+        return 1
+    fi
+
+    if ! command -v kimi >/dev/null 2>&1; then
+        print_warning "Kimi CLI not found on PATH. Updating adapter files anyway."
+    fi
+
+    mkdir -p "$HOME/.kimi/agents"
+    rm -rf "$plugin_dest"
+    mkdir -p "$plugin_dest"
+    cp -R "$plugin_source"/. "$plugin_dest"/
+
+    if [ ! -f "$plugin_dest/openagent.yaml" ]; then
+        print_warning "Kimi OpenAgent spec missing after update"
+        return 1
+    fi
+
+    print_success "Kimi Code integration updated!"
+    print_info "Agent file: $plugin_dest/openagent.yaml"
+    print_info "Run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+}
+
 install_claude_integration() {
     print_step "Updating Claude Code integration..."
 
@@ -253,8 +311,7 @@ install_claude_integration() {
     fi
 
     print_info "Converting agents to Claude format..."
-    cd "$converter_dir"
-    if ! node src/convert-agents.js 2>&1 | grep -q "Conversion complete"; then
+    if ! (cd "$converter_dir" && node src/convert-agents.js 2>&1 | grep -q "Conversion complete"); then
         print_error "Claude agent conversion failed"
         return 1
     fi
@@ -497,13 +554,19 @@ print_execution_workflow() {
         echo -e "  Claude Code:   ${CYAN}./update.sh --with-claude${NC} (from repo clone)"
         echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge"
     fi
+    if [ -f "$HOME/.kimi/agents/openagents-control/openagent.yaml" ]; then
+        echo -e "  Kimi Code:     ${CYAN}kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml${NC}"
+    else
+        echo -e "  Kimi Code:     ${CYAN}./update.sh --with-kimi${NC} (from repo clone)"
+        echo "                 then: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+    fi
     echo ""
     echo -e "${BOLD}CLI orchestration (oac — planning, routing, handoff artifacts):${NC}"
     echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
     echo -e "  ${CYAN}oac experts --plan-only \"<objective>\"${NC}       Save structured plan for handoff"
     echo -e "  ${CYAN}oac experts --run \"<objective>\"${NC}             Simulated swarm pipeline (default)"
     echo ""
-    print_info "Headless OpenCode spawn (oac experts --run --live) is optional — use TUI/Claude for primary execution."
+    print_info "Headless OpenCode spawn (oac experts --run --live) is optional — use OpenCode TUI, Claude, or Kimi for primary execution."
     echo ""
 }
 
@@ -545,6 +608,10 @@ parse_args() {
                 WITH_CLAUDE=true
                 shift
                 ;;
+            --with-kimi)
+                WITH_KIMI=true
+                shift
+                ;;
             --help|-h)
                 print_usage
                 exit 0
@@ -566,6 +633,7 @@ main() {
     parse_args "$@"
 
     maybe_enable_claude_from_repo
+    maybe_enable_kimi_from_repo
 
     print_header
 
@@ -609,6 +677,10 @@ main() {
 
     if [ "$WITH_CLAUDE" = true ]; then
         install_claude_integration
+    fi
+
+    if [ "$WITH_KIMI" = true ]; then
+        install_kimi_integration
     fi
 
     print_success "Update complete! OpenAgent Quest Mode + Experts Mode + Agent Swarm + ISO 21434/24089 are active."

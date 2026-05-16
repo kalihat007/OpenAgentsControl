@@ -977,6 +977,14 @@ show_installation_preview() {
             fi
         fi
 
+        if [ "$WITH_KIMI" != true ]; then
+            echo ""
+            read -r -p "Also install Kimi Code integration? [y/N]: " kimi_choice
+            if [[ $kimi_choice =~ ^[Yy] ]]; then
+                WITH_KIMI=true
+            fi
+        fi
+
         read -r -p "Proceed with installation? [Y/n]: " confirm
         
         if [[ $confirm =~ ^[Nn] ]]; then
@@ -1096,6 +1104,60 @@ maybe_enable_claude_from_repo() {
     fi
 }
 
+#############################################################################
+# Kimi Code Integration
+#############################################################################
+
+kimi_plugin_source_dir() {
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -f "${script_dir}/plugins/kimi-code/openagent.yaml" ]; then
+        echo "${script_dir}/plugins/kimi-code"
+    fi
+}
+
+maybe_enable_kimi_from_repo() {
+    if [ "$WITH_KIMI" = true ]; then
+        return 0
+    fi
+    if [ -n "$(kimi_plugin_source_dir)" ] && { command -v kimi >/dev/null 2>&1 || [ -d "$HOME/.kimi" ]; }; then
+        WITH_KIMI=true
+        print_info "Kimi Code adapter found in repo — installing to ~/.kimi/agents/openagents-control"
+    fi
+}
+
+install_kimi_integration() {
+    print_step "Setting up Kimi Code integration..."
+
+    local plugin_source
+    plugin_source="$(kimi_plugin_source_dir)"
+    local plugin_dest="$HOME/.kimi/agents/openagents-control"
+
+    if [ -z "$plugin_source" ]; then
+        print_warning "Kimi adapter source not found. Run install.sh from the OpenAgentsControl repository."
+        return 1
+    fi
+
+    if ! command -v kimi >/dev/null 2>&1; then
+        print_warning "Kimi CLI not found on PATH. Installing adapter files anyway."
+        print_info "Install/login to Kimi CLI, then run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+    fi
+
+    mkdir -p "$HOME/.kimi/agents"
+    rm -rf "$plugin_dest"
+    mkdir -p "$plugin_dest"
+    cp -R "$plugin_source"/. "$plugin_dest"/
+
+    if [ ! -f "$plugin_dest/openagent.yaml" ]; then
+        print_warning "Kimi OpenAgent spec missing after install"
+        return 1
+    fi
+
+    print_success "Kimi Code integration installed!"
+    print_info "Agent file: $plugin_dest/openagent.yaml"
+    print_info "Run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+}
+
 install_claude_integration() {
     print_step "Setting up Claude Code integration..."
     
@@ -1121,8 +1183,7 @@ install_claude_integration() {
     
     # Run converter
     print_info "Converting agents to Claude format..."
-    cd "$converter_dir"
-    if ! node src/convert-agents.js 2>&1 | grep -q "Conversion complete"; then
+    if ! (cd "$converter_dir" && node src/convert-agents.js 2>&1 | grep -q "Conversion complete"); then
         print_error "Claude agent conversion failed"
         return 1
     fi
@@ -1391,6 +1452,10 @@ perform_installation() {
     if [ "$WITH_CLAUDE" = true ]; then
         install_claude_integration
     fi
+
+    if [ "$WITH_KIMI" = true ]; then
+        install_kimi_integration
+    fi
     
     show_post_install
 }
@@ -1491,6 +1556,12 @@ print_execution_workflow() {
         echo -e "  Claude Code:   ${CYAN}./install.sh advanced --with-claude${NC} (from repo clone)"
         echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge"
     fi
+    if [ -f "$HOME/.kimi/agents/openagents-control/openagent.yaml" ]; then
+        echo -e "  Kimi Code:     ${CYAN}kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml${NC}"
+    else
+        echo -e "  Kimi Code:     ${CYAN}./install.sh advanced --with-kimi${NC} (from repo clone)"
+        echo "                 then: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+    fi
     echo ""
     echo -e "${BOLD}CLI orchestration (oac — planning, routing, handoff artifacts):${NC}"
     echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
@@ -1498,7 +1569,7 @@ print_execution_workflow() {
     echo -e "  ${CYAN}oac experts --run \"<objective>\"${NC}             Simulated swarm pipeline (default)"
     echo ""
     print_info "Headless OpenCode spawn (oac experts --run --live) is an optional MVP — not the primary path."
-    print_info "Use install.sh / update.sh + OpenCode TUI or Claude for day-to-day execution."
+    print_info "Use install.sh / update.sh + OpenCode TUI, Claude, or Kimi for day-to-day execution."
     echo ""
     echo "  If a provider is overloaded, retry after a pause or pick a model explicitly:"
     echo -e "  ${CYAN}opencode --agent OpenAgent --model <provider/model>${NC}"
@@ -1664,6 +1735,10 @@ main() {
                 WITH_CLAUDE=true
                 shift
                 ;;
+            --with-kimi)
+                WITH_KIMI=true
+                shift
+                ;;
             --help|-h|help)
                 print_header
                 echo "Usage: $0 [PROFILE] [OPTIONS]"
@@ -1679,6 +1754,7 @@ main() {
                 echo "  --install-dir PATH        Custom installation directory"
                 echo "                            (default: .opencode)"
                 echo "  --with-claude             Also install Claude Code integration"
+                echo "  --with-kimi               Also install Kimi Code direct agent integration"
                 echo "  list, --list              List all available components"
                 echo "  help, --help, -h          Show this help message"
                 echo ""
@@ -1702,6 +1778,9 @@ main() {
                 echo ""
                 echo -e "  ${CYAN}# Install with Claude Code support${NC}"
                 echo "  $0 advanced --with-claude"
+                echo ""
+                echo -e "  ${CYAN}# Install with Kimi Code direct support${NC}"
+                echo "  $0 advanced --with-kimi"
                 echo ""
                 echo -e "  ${CYAN}# Install to global location (Linux/macOS)${NC}"
                 echo "  $0 advanced --install-dir ~/.config/opencode"
@@ -1755,6 +1834,7 @@ main() {
     check_bash_version
     check_dependencies
     maybe_enable_claude_from_repo
+    maybe_enable_kimi_from_repo
     fetch_registry
 
     if [ -z "$PROFILE" ] && [ ! -t 0 ]; then

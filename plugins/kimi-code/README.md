@@ -2,7 +2,7 @@
 
 This directory contains the direct Kimi Code adapter for OpenAgent.
 
-It installs a Kimi agent spec that extends Kimi's built-in coding agent and injects the OpenAgent Quest + Experts behavior. It does not require OpenCode, and it does not define a model. Kimi uses the user's active/default Kimi model from `~/.kimi/config.toml`, or the model explicitly passed with `kimi --model`.
+It installs a Kimi agent spec that extends Kimi's built-in coding agent and makes OpenAgent Quest + Experts the default operating layer. It does not require OpenCode, and it does not define a model. Kimi uses the user's active/default Kimi model from `~/.kimi/config.toml`, or the model explicitly passed with `kimi --model`.
 
 ## Installed Location
 
@@ -35,4 +35,4 @@ kimi --work-dir . \
 
 ## Model Policy
 
-OpenAgent-on-Kimi uses exactly the Kimi model selected by the user. There is no LLM routing, fallback model, or separate classifier model.
+OpenAgent-on-Kimi uses exactly the Kimi model selected by the user. There is no LLM routing, hidden model selector, fallback model, or separate classifier model.

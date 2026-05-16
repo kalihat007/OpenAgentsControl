@@ -20,6 +20,6 @@ Then users can run OpenAgent without OpenCode:
 kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
 ```
 
-The Kimi adapter extends Kimi's built-in default coding agent, so Kimi keeps its native tools, subagents, auth, context handling, and configured model. OpenAgent only adds the Quest + Experts operating contract.
+The Kimi adapter extends Kimi's built-in default coding agent, so Kimi keeps its native tools, subagents, auth, context handling, and configured model. OpenAgent makes Quest + Experts the default operating contract.
 
-No LLM routing is introduced. Kimi uses the default model from `~/.kimi/config.toml` unless the user explicitly passes `--model`.
+No LLM routing or extra model selector is introduced. Kimi uses the default model from `~/.kimi/config.toml` unless the user explicitly passes `--model`.

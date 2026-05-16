@@ -366,7 +366,7 @@ Components:
 | **`install.sh`** | First-time setup, new projects, adding profiles/components, or reinstall with collision handling |
 | **`update.sh`** | Refresh an **existing** `.opencode/` tree in place (agents, contexts, quest/experts files) without re-running the full installer |
 
-Run both from the project root (or pass `--install-dir` for global/custom paths). When cloning the repo, `install.sh` also installs the Claude bridge plugin automatically if `plugins/claude-code` is present.
+Run both from the project root (or pass `--install-dir` for global/custom paths). When cloning the repo, `install.sh` can also install the Claude bridge plugin and Kimi direct agent adapter from `plugins/`.
 
 ---
 
@@ -402,6 +402,9 @@ opencode --agent OpenAgent
 
 # Claude Code — after install.sh from repo clone or --with-claude
 claude --plugin-dir ~/.claude/plugins/openagents-control-bridge
+
+# Kimi Code — after install.sh --with-kimi or update.sh --with-kimi from repo clone
+kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
 ```
 
 **CLI orchestration (`oac`)** — expert routing, plans, and handoff artifacts:
@@ -412,7 +415,7 @@ oac experts --plan-only "build a JWT auth API"  # save structured plan for hando
 oac experts --run "build a JWT auth API"        # simulated pipeline (default for --run)
 ```
 
-`oac experts --run --live` runs a headless OpenCode spawn for the first scheduled task only (MVP). It is **not** the primary path — prefer `install.sh` / `update.sh` plus OpenCode TUI or Claude Code for execution.
+`oac experts --run --live` runs a headless OpenCode spawn for the first scheduled task only (MVP). It is **not** the primary path — prefer `install.sh` / `update.sh` plus OpenCode TUI, Claude Code, or Kimi Code for execution.
 
 `.oac/config.json` is created on install with `expertMode`, `useAgentSwarm`, and `maxParallelAgents: 2` (overload-safe default).
 
@@ -456,7 +459,7 @@ From the project where `.opencode/` lives:
 curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/update.sh | bash
 ```
 
-The updater refreshes existing `.md`/`.ts`/`.sh` files, ensures quest/experts contexts and commands exist, creates `.opencode/opencode.json` and `.oac/config.json` when missing, preserves the user's selected OpenCode model, and moves old default swarm parallelism from `4` to `2`. From a repo clone it also refreshes the Claude bridge plugin when `plugins/claude-code` is present.
+The updater refreshes existing `.md`/`.ts`/`.sh` files, ensures quest/experts contexts and commands exist, creates `.opencode/opencode.json` and `.oac/config.json` when missing, preserves the user's selected OpenCode model, and moves old default swarm parallelism from `4` to `2`. From a repo clone it also refreshes the Claude bridge plugin and Kimi direct agent adapter when their `plugins/` sources are present.
 
 ### Add new components (`install.sh`)
 

@@ -802,6 +802,25 @@ opencode --agent OpenAgent --model provider/model-id
 OPENAGENT_MODEL=provider/model-id bash install.sh advanced
 ```
 
+### Direct Kimi Code Usage
+
+OpenAgent can also run directly inside Kimi Code without OpenCode:
+
+```bash
+./install.sh advanced --with-kimi
+kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
+```
+
+The Kimi adapter extends Kimi's native coding agent and does not set a model. Kimi uses the default model in `~/.kimi/config.toml`, or the model the user explicitly passes:
+
+```bash
+kimi --work-dir . \
+  --agent-file ~/.kimi/agents/openagents-control/openagent.yaml \
+  --model kimi-code/kimi-for-coding
+```
+
+No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi uses the selected Kimi model throughout.
+
 Configure models per agent only if you want different experts to use different models.
 
 **When to configure:**

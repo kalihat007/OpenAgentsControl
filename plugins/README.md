@@ -6,7 +6,8 @@ This directory contains IDE-specific plugin implementations for OpenAgents Contr
 
 ```
 plugins/
-└── claude-code/          # Claude Code plugin
+├── claude-code/          # Claude Code plugin
+└── kimi-code/            # Kimi Code direct agent adapter
     ├── .claude-plugin/   # Plugin manifest
     ├── skills/           # Claude-specific skills
     ├── agents/           # Claude-specific agents
@@ -40,6 +41,30 @@ claude --plugin-dir ./plugins/claude-code
 - Context-aware agents
 
 **Documentation**: See `claude-code/README.md`
+
+### Kimi Code (`kimi-code/`)
+
+**Integration Name**: `openagents-control`
+
+**Installation**:
+```bash
+./install.sh advanced --with-kimi
+# or refresh later
+./update.sh --with-kimi
+```
+
+**Usage**:
+```bash
+kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
+```
+
+**Features**:
+- Direct OpenAgent Quest + Experts behavior inside Kimi
+- Extends Kimi's built-in coding agent and native tools
+- Uses the user's configured Kimi model with no LLM routing or hidden model selector
+- Works without OpenCode
+
+**Documentation**: See `kimi-code/README.md`
 
 ## Future Plugins
 
