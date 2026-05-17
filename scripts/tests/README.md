@@ -124,6 +124,34 @@ bash scripts/tests/test-collision-detection.sh
 
 ---
 
+### 5. Quest v2 Cycle Tests
+
+These optional live tests verify that OpenAgent starts a fresh Quest Spec for a
+second substantial input in the same session.
+
+**Run locally:**
+```bash
+bash scripts/tests/test-kimi-quest-cycle.sh
+bash scripts/tests/test-opencode-quest-cycle.sh
+```
+
+Or through npm:
+
+```bash
+npm run test:quest-v2
+```
+
+**What they test:**
+- ✅ First substantial turn starts with `OpenAgent Quest Spec`
+- ✅ Second substantial turn in the same resumed session starts a fresh Quest Spec
+- ✅ Quest v2 fields are present: `State: NEW`, `Scenario`, `Intensity`, `Team Lead`, `Experts`, `Trust Label`
+- ✅ OpenCode event order keeps the Quest Spec before tool calls
+- ✅ Kimi/OpenCode remain model-native; no hidden LLM routing is required
+
+If Kimi or OpenCode is not installed, the corresponding test skips cleanly.
+
+---
+
 ## Running All Tests
 
 ```bash

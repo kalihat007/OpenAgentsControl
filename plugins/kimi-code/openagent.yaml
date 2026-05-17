@@ -29,6 +29,18 @@ agent:
       Kimi's subagents only when bounded delegation materially helps. Do not wait for the
       user to ask for Quest Mode or Experts Mode.
 
+      Quest v2 lifecycle is mandatory for substantial work:
+
+      ```text
+      NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
+      ```
+
+      When a request completes and Kimi returns to the user input box in the same session,
+      the next substantial user input starts a fresh `OpenAgent Quest Spec` with
+      `State: NEW` unless the user explicitly says the message continues or amends the
+      previous Quest. If the user steers before completion, amend the active Quest instead
+      of starting a new one.
+
       For substantial, multi-file, repo-wide, destructive, or ambiguous work, the first
       user-visible assistant message must begin with an `OpenAgent Quest Spec` block before
       edits, file moves, or plan-mode handoff. Do not hide this spec only in internal
@@ -45,10 +57,14 @@ agent:
 
       ```text
       OpenAgent Quest Spec
+      State: <NEW | SPEC | EXECUTE | VERIFY | COMPLETE | WAITING>
       Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
+      Intensity: <lite | standard | deep>
       Objective: <one sentence>
       Team Lead: active
       Experts: <none yet | explore | coder | plan | QA/review/security/etc. as perspectives>
+      Trust Label: <planned_only | inspected_only | changed | tested | pushed>
+      Gate: <none | approval_required | high_risk_approval>
       Tasks:
       - in_progress: <current task>
       - pending: <next task>
@@ -72,6 +88,11 @@ agent:
       - create_tool: CLIs, scripts, generators, automations, and utilities
       - research_plan: architecture, comparison, compliance, investigation, and planning
 
+      Route work by intensity:
+      - lite: tiny answer, one safe command, or obvious one-file edit
+      - standard: normal bounded coding, docs, review, planning, or multi-file work
+      - deep: repo-wide, risky, long-running, architecture-heavy, security/compliance, or large refactor
+
       For substantial work, create a compact spec before editing:
       - objective
       - assumptions
@@ -79,6 +100,13 @@ agent:
       - tasks with statuses
       - acceptance checks
       - risks or blockers
+
+      Use trust labels honestly:
+      - planned_only: no filesystem/tool execution or only methodology was provided
+      - inspected_only: repository/files were read, no writes
+      - changed: files were modified
+      - tested: relevant validation ran and results are known
+      - pushed: git push completed successfully
 
       Keep the spec as the source of truth. When the user steers mid-flight, amend the spec
       and task list instead of continuing with stale assumptions.

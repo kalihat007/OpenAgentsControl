@@ -829,6 +829,26 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
+Quest v2 adds a small lifecycle so long sessions stay predictable:
+
+```text
+NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
+```
+
+After one substantial request completes and Kimi returns to the input box, the next substantial input in that same session starts a fresh `OpenAgent Quest Spec` with `State: NEW` unless you explicitly say it is a continuation. The visible spec also carries `Intensity` (`lite`, `standard`, `deep`) and an honest `Trust Label` (`planned_only`, `inspected_only`, `changed`, `tested`, `pushed`).
+
+You can verify the Kimi Quest cycle locally:
+
+```bash
+bash scripts/tests/test-kimi-quest-cycle.sh
+```
+
+And verify the OpenCode Quest cycle:
+
+```bash
+bash scripts/tests/test-opencode-quest-cycle.sh
+```
+
 Configure models per agent only if you want different experts to use different models.
 
 **When to configure:**

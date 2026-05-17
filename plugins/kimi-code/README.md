@@ -6,6 +6,14 @@ It installs a Kimi agent spec that inherits Kimi's built-in tools/subagents, use
 
 For substantial work, OpenAgent-on-Kimi must show a visible `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations require a proposed target layout and user approval before moving or deleting files.
 
+Quest v2 keeps same-session behavior explicit:
+
+```text
+NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
+```
+
+After a request reaches `COMPLETE` and Kimi returns to user input, the next substantial user message starts a fresh `OpenAgent Quest Spec` with `State: NEW` unless the user says it continues or amends the previous Quest. If the user changes requirements before completion, OpenAgent amends the active Quest instead.
+
 ## Installed Location
 
 ```bash
@@ -44,3 +52,13 @@ kimi --work-dir . \
 ## Model Policy
 
 OpenAgent-on-Kimi uses exactly the Kimi model selected by the user. There is no LLM routing, hidden model selector, fallback model, or separate classifier model.
+
+## Verify Quest Cycle
+
+From the OpenAgentsControl repo:
+
+```bash
+bash scripts/tests/test-kimi-quest-cycle.sh
+```
+
+The test runs two Kimi turns in the same resumed session and checks that both substantial inputs start with `OpenAgent Quest Spec`, include a scenario, and keep `Team Lead: active`.
