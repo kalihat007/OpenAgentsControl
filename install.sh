@@ -1582,11 +1582,13 @@ print_execution_workflow() {
     echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
     echo -e "  ${CYAN}oac experts --plan-only \"<objective>\"${NC}       Save structured plan for handoff"
     echo -e "  ${CYAN}oac experts --run \"<objective>\"${NC}             Simulated swarm pipeline (default)"
+    echo -e "  ${CYAN}oac experts --run --runtime kimi \"<objective>\"${NC}  Strict Kimi runtime bridge"
+    echo -e "  ${CYAN}oac experts --run --runtime opencode \"<objective>\"${NC} Strict OpenCode runtime bridge"
     echo -e "  ${CYAN}oac quest-status${NC}                            List durable Quest runs"
     echo -e "  ${CYAN}oac quest-status <quest-id>${NC}                 Inspect Quest state, tasks, artifacts"
     echo -e "  ${CYAN}oac quest-resume <quest-id>${NC}                 Print runtime resume commands"
     echo ""
-    print_info "Headless OpenCode spawn (oac experts --run --live) is an optional MVP — not the primary path."
+    print_info "Use --runtime for strict headless bridge checks; use --live for handoff commands."
     print_info "Use install.sh / update.sh + OpenCode TUI, Claude, or Kimi for day-to-day execution."
     echo ""
     echo "  If a provider is overloaded, retry after a pause or pick a model explicitly:"
@@ -1613,7 +1615,7 @@ show_post_install() {
     
     # Show installation location info
     print_info "Installation directory: ${CYAN}${INSTALL_DIR}${NC}"
-    print_info "OAC config: ${CYAN}.oac/config.json${NC} (expertMode, useAgentSwarm, maxParallelAgents=2)"
+    print_info "OAC config: ${CYAN}.oac/config.json${NC} (Quest + Experts + swarm defaults)"
     if [ -n "$OPENAGENT_SELECTED_MODEL" ]; then
         print_info "OpenCode config: ${CYAN}.opencode/opencode.json${NC} (default agent: OpenAgent, model: ${OPENAGENT_SELECTED_MODEL})"
     else

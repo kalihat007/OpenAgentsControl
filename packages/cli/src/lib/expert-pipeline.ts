@@ -27,6 +27,7 @@ import {
   type ExecutionResult,
   type AcceptanceCheck,
 } from './swarm-executor.js'
+import type { RuntimeType } from './runtime-bridge.js'
 import { runSwarmQualityGate } from './swarm-quality-gate.js'
 import {
   indexCodebase,
@@ -89,12 +90,16 @@ export interface PipelineConfig {
   dryRun: boolean
   verbose: boolean
   maxConcurrency: number
-  /** simulate (default) or handoff — handoff writes IDE manifest, no headless spawn */
+  /** simulate (default), handoff, or runtime — runtime spawns real execution */
   executionMode: ExecutionMode
   /** Run real quality gate on changed files after execution (--run default) */
   runQualityGate: boolean
   /** Cap from .oac/config.json — clamps planner concurrency before scheduling */
   maxParallelAgents?: number
+  /** Selected runtime for real execution (opencode, kimi, claude) */
+  runtime?: RuntimeType
+  /** Run the runtime in detached background mode */
+  background?: boolean
 }
 
 export interface QualityReport {
@@ -444,6 +449,10 @@ export async function runExpertPipeline(
     execResult = await executeSwarm(plan, {
       mode: cfg.executionMode,
       budget: budgetLimits,
+      runtime: cfg.runtime,
+      projectRoot,
+      routerResult: primaryRouting,
+      background: cfg.background,
       callbacks: {
       onBatchStart: (batch, idx, total) => {
         callbacks?.onProgress?.(

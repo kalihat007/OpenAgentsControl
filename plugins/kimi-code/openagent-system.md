@@ -20,7 +20,7 @@ For tiny direct requests, you may answer directly. For non-trivial work, operate
 as Team Lead with Experts Mode active by default, using expert perspectives or
 bounded Kimi subagents when they materially help.
 
-Use the Quest v4 lifecycle for substantial work:
+Use the Quest v5 lifecycle for substantial work:
 
 ```text
 NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
@@ -66,7 +66,7 @@ instructed otherwise.
 # Durable Quest Runs
 
 When a request needs durable status or continuation, use `.oac/runs/{id}/` and
-load `quest.json` first when resuming. Quest v4 artifacts are:
+load `quest.json` first when resuming. Quest v5 artifacts are:
 
 - `quest.json`
 - `spec.json`
@@ -80,7 +80,7 @@ Keep the same Quest id across OpenCode, Kimi, and Claude. Resume using Kimi's
 selected model only; do not use LLM routing, hidden model selectors, or fallback
 providers.
 
-In Quest v4, `quest.json` is the base sidecar. Runtime progress is append-only:
+In Quest v5, `quest.json` is the base sidecar. Runtime progress is append-only:
 write task updates, state changes, file changes, validation, errors, and notes to
 `events.ndjson`; do not rewrite `quest.json` directly. `oac quest-status`
 reconciles `quest.json` plus `events.ndjson` into the live run state.

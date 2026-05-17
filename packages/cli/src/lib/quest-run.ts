@@ -17,7 +17,7 @@ import {
   OPENCODE_TUI_COMMAND,
 } from './run-handoff.js'
 
-export const QUEST_RUN_VERSION = '4' as const
+export const QUEST_RUN_VERSION = '5' as const
 
 export type QuestRunState =
   | 'NEW'
@@ -208,7 +208,7 @@ export async function listQuestRunIds(projectRoot: string): Promise<string[]> {
   }
 }
 
-// ── Standalone durable-quest helpers (Quest v4) ───────────────────────────────
+// ── Standalone durable-quest helpers (Quest v5) ───────────────────────────────
 
 /**
  * Generate the next Quest ID in the form quest-YYYYMMDD-NNN.
@@ -318,6 +318,40 @@ export async function writeTaskGraph(
   await writeFile(join(runDir, 'task-graph.json'), JSON.stringify(graph, null, 2) + '\n')
 }
 
+// ── Background run PID helpers ────────────────────────────────────────────────
+
+export async function writeRunPid(
+  projectRoot: string,
+  questId: string,
+  pid: number,
+): Promise<void> {
+  const runDir = join(projectRoot, '.oac', 'runs', questId)
+  await mkdir(runDir, { recursive: true })
+  await writeFile(join(runDir, 'run.pid'), String(pid))
+}
+
+export async function readRunPid(
+  projectRoot: string,
+  questId: string,
+): Promise<number | null> {
+  try {
+    const raw = await readFile(join(projectRoot, '.oac', 'runs', questId, 'run.pid'), 'utf-8')
+    const pid = parseInt(raw.trim(), 10)
+    return Number.isNaN(pid) ? null : pid
+  } catch {
+    return null
+  }
+}
+
+export function isRunPidAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0)
+    return true
+  } catch {
+    return false
+  }
+}
+
 // ── Formatting ────────────────────────────────────────────────────────────────
 
 /** Format a runtime-specific handoff block for copy-pasting into an IDE. */
@@ -327,7 +361,7 @@ export function formatRuntimeHandoff(
 ): string {
   const rt = quest.runtimes[runtime]
   const lines: string[] = [
-    `OpenAgent Quest v4 — ${runtime.toUpperCase()} Resume`,
+    `OpenAgent Quest v5 — ${runtime.toUpperCase()} Resume`,
     `Quest ID:    ${quest.questId}`,
     `State:       ${quest.state}`,
     `Trust:       ${quest.trustLabel}`,
@@ -365,7 +399,7 @@ export function formatRuntimeHandoff(
   lines.push('Resume prompt:')
   lines.push(`  ${rt.resumePrompt}`)
   lines.push('')
-  lines.push('v4 Runtime Write-Back Contract:')
+  lines.push('v5 Runtime Write-Back Contract:')
   lines.push('  DO NOT rewrite quest.json. Append events to events.ndjson only.')
   lines.push('  Event format: {"timestamp":"ISO","type":"...","data":{}}')
   lines.push('')

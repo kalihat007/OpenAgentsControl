@@ -38,7 +38,7 @@ import {
   type PipelineConfig,
   type PipelineResult,
 } from '../lib/expert-pipeline.js'
-import { CommandUsageError, QualityGateFailedError } from '../lib/errors.js'
+import { CommandUsageError, QualityGateFailedError, SwarmExecutionError } from '../lib/errors.js'
 import {
   buildRunHandoff,
   persistRunHandoff,
@@ -49,6 +49,11 @@ import { buildQuestRun, persistQuestRun } from '../lib/quest-run.js'
 import { createLogger } from '../lib/logger.js'
 import type { InteractiveMode } from '../lib/interactive-mode.js'
 import { DEFAULT_MAX_PARALLEL_AGENTS } from '../lib/config.js'
+import {
+  isRuntimeAvailable,
+  runtimeUnavailableMessage,
+  type RuntimeType,
+} from '../lib/runtime-bridge.js'
 
 const cmdLog = createLogger('cmd:experts')
 
@@ -74,6 +79,8 @@ export async function expertsCommand(
     simulate: boolean
     live: boolean
     noQualityGate: boolean
+    runtime?: RuntimeType
+    background: boolean
   }
 ): Promise<void> {
   const projectRoot = process.cwd()
@@ -193,6 +200,9 @@ export async function expertsCommand(
 
   if (options.run) {
     const executionMode = resolveExecutionMode(options)
+    if (executionMode === 'runtime' && options.runtime && !isRuntimeAvailable(options.runtime)) {
+      throw new CommandUsageError(runtimeUnavailableMessage(options.runtime))
+    }
     const limits = await loadSessionBudgetLimits(projectRoot)
     const plan = planExecution(result, {
       maxConcurrency: options.concurrency,
@@ -217,11 +227,12 @@ export async function expertsCommand(
 
 // ── Pipeline-based execution ──────────────────────────────────────────────────
 
-function resolveExecutionMode(options: { simulate: boolean; live: boolean }): ExecutionMode {
+function resolveExecutionMode(options: { simulate: boolean; live: boolean; runtime?: RuntimeType }): ExecutionMode {
   if (options.live && options.simulate) {
     throw new CommandUsageError('Use either --live or --simulate, not both.')
   }
   if (options.live) return 'handoff'
+  if (options.runtime) return 'runtime'
   return 'simulate'
 }
 
@@ -276,6 +287,8 @@ async function runPipelineMode(
     executionMode: ExecutionMode
     noQualityGate: boolean
     budgetLimits: Awaited<ReturnType<typeof loadSessionBudgetLimits>>
+    runtime?: RuntimeType
+    background: boolean
   },
   routerResult?: ReturnType<typeof routeTask>,
 ): Promise<void> {
@@ -307,8 +320,15 @@ async function runPipelineMode(
   pipelineConfig.executionMode = options.executionMode
   pipelineConfig.runQualityGate = !options.noQualityGate
   pipelineConfig.maxParallelAgents = options.budgetLimits.maxParallelAgents
+  pipelineConfig.runtime = options.runtime
+  pipelineConfig.background = options.background
 
-  const modeLabel = options.executionMode === 'handoff' ? 'handoff' : 'simulated'
+  const modeLabel =
+    options.executionMode === 'handoff'
+      ? 'handoff'
+      : options.executionMode === 'runtime'
+        ? `runtime (${options.runtime})`
+        : 'simulated'
   const spinner = createSpinner(`Running expert pipeline (${modeLabel})…`)
   spinner.start()
 
@@ -332,12 +352,23 @@ async function runPipelineMode(
 
   const simulated = options.executionMode === 'simulate'
   const handoff = options.executionMode === 'handoff'
+  const runtime = options.executionMode === 'runtime'
   spinner.succeed(
-    handoff ? 'Expert pipeline complete (handoff)' : simulated ? 'Expert pipeline complete (simulated)' : 'Expert pipeline complete',
+    handoff
+      ? 'Expert pipeline complete (handoff)'
+      : simulated
+        ? 'Expert pipeline complete (simulated)'
+        : runtime
+          ? `Expert pipeline complete (runtime: ${options.runtime})`
+          : 'Expert pipeline complete',
   )
   log('')
 
-  printPipelineResult(pipelineResult, options.verbose, simulated, handoff)
+  printPipelineResult(pipelineResult, options.verbose, simulated, handoff, runtime)
+
+  if (runtime) {
+    assertRuntimeExecutionPassed(pipelineResult)
+  }
 
   assertQualityGatePassed(pipelineResult)
 
@@ -369,6 +400,27 @@ async function runPipelineMode(
   log('')
 }
 
+function assertRuntimeExecutionPassed(result: PipelineResult): void {
+  const exec = result.executionResults
+  if (!exec) {
+    throw new SwarmExecutionError('Runtime execution did not produce execution results.')
+  }
+
+  const totalTasks = result.plan?.session.tasks.length ?? exec.completedTasks.length + exec.failedTasks.length
+  const accountedTasks = exec.completedTasks.length + exec.failedTasks.length
+
+  if (exec.failedTasks.length > 0) {
+    throw new SwarmExecutionError(`Runtime execution failed or blocked task(s): ${exec.failedTasks.join(', ')}`)
+  }
+
+  if (totalTasks > 0 && accountedTasks < totalTasks) {
+    throw new SwarmExecutionError(
+      `Runtime execution did not report all tasks (${accountedTasks}/${totalTasks}). ` +
+        'Runtimes must append task_update events to events.ndjson.',
+    )
+  }
+}
+
 /** Throws QualityGateFailedError when --run completed but the quality gate failed. */
 export function assertQualityGatePassed(result: PipelineResult): void {
   const gate = result.executionResults?.qualityGate
@@ -398,6 +450,7 @@ function printPipelineResult(
   verbose: boolean,
   simulated: boolean,
   handoff = false,
+  runtime = false,
 ): void {
   success(`Objective: ${result.objective}`)
   info(`Quest scenario: ${result.routing[0]?.scenario ?? 'direct'}`)
@@ -405,6 +458,8 @@ function printPipelineResult(
     warn('Execution mode: HANDOFF — run Quest/Experts in OpenCode TUI or Claude plugin (see handoff.json).')
   } else if (simulated) {
     warn('Execution mode: SIMULATED — agents did not run; task completions are scheduling placeholders only.')
+  } else if (runtime) {
+    success('Execution mode: RUNTIME — tasks were executed in the selected runtime and events were reconciled.')
   }
   log('')
 
@@ -464,6 +519,11 @@ function printPipelineResult(
         warn(`Quality gate: FAILED (score ${gate.overallScore}/100, grade ${gate.grade})`)
       }
       dim(`  ${gate.summary}`)
+    }
+
+    if (runtime && exec.budgetUsage) {
+      log('')
+      dim(`Runtime budget: ${exec.budgetUsage.apiCalls} API call(s), peak ${exec.budgetUsage.peakParallelAgents} parallel agent(s)`)
     }
   }
 
@@ -579,6 +639,8 @@ export function registerExpertsCommand(program: Command): void {
     .option('--run', 'Execute the swarm through the runtime (simulated by default)', false)
     .option('--simulate', 'Simulate execution — no real agents (default for --run)', true)
     .option('--live', 'Write IDE handoff manifest (.oac/runs/{id}/handoff.json) for OpenCode TUI or Claude plugin — does not spawn agents', false)
+    .option('--runtime <name>', 'Real execution via runtime: opencode, kimi, or claude')
+    .option('--background', 'Detach the runtime process and run in background', false)
     .option('--plan-only', 'Create and save the structured expert plan without execution', false)
     .option('--dry-run', 'Show the execution plan without running', false)
     .option('--list', 'List all available experts', false)
@@ -604,6 +666,8 @@ Examples:
   oac experts "build a JWT auth API"                  Auto-detect experts (roster only)
   oac experts --plan-only "build a JWT auth API"      Save structured plan artifacts
   oac experts --run "build a JWT auth API"            Execute via swarm-runtime (simulated)
+  oac experts --run --runtime opencode "build it"     Real execution in OpenCode runtime
+  oac experts --run --runtime kimi --background "x"   Background execution in Kimi
   oac experts --run --live "build a JWT auth API"     Plan + handoff for OpenCode TUI / Claude plugin
   oac experts --plan-only --live "build a JWT auth API"  Plan artifacts + handoff only
   oac experts --run --full "build a JWT auth API"     Full pipeline with all features
@@ -623,6 +687,16 @@ Examples:
         ? (modeRaw as InteractiveMode)
         : 'supervised'
 
+      const runtimeRaw = opts['runtime'] ? String(opts['runtime']) : undefined
+      const validRuntimes = ['opencode', 'kimi', 'claude']
+      if (runtimeRaw && !validRuntimes.includes(runtimeRaw)) {
+        throw new CommandUsageError(`Invalid runtime '${runtimeRaw}'. Use one of: ${validRuntimes.join(', ')}`)
+      }
+      const runtime: RuntimeType | undefined =
+        runtimeRaw && validRuntimes.includes(runtimeRaw)
+          ? (runtimeRaw as RuntimeType)
+          : undefined
+
       await expertsCommand(objective, {
         dryRun: Boolean(opts['dryRun']),
         planOnly: Boolean(opts['planOnly']),
@@ -641,6 +715,8 @@ Examples:
         simulate: opts['simulate'] !== false,
         live: Boolean(opts['live']),
         noQualityGate: Boolean(opts['noQualityGate']),
+        runtime,
+        background: Boolean(opts['background']),
       })
     })
 }

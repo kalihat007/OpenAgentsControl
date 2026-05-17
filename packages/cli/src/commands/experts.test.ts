@@ -160,7 +160,7 @@ describe('expertsCommand', () => {
     expect(spec.objective).toContain('JWT')
     const questRaw = await readFile(join(runsDir, sessions[0]!, 'quest.json'), 'utf-8')
     const quest = JSON.parse(questRaw) as { objective: string; version: string; state: string; runtimes: { kimi: { command: string } } }
-    expect(quest.version).toBe('4')
+    expect(quest.version).toBe('5')
     expect(quest.state).toBe('SPEC')
     expect(quest.objective).toContain('JWT')
     expect(quest.runtimes.kimi.command).toBe(KIMI_CODE_COMMAND)

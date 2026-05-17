@@ -17,7 +17,7 @@ import { persistQuestRun, type QuestRun } from './quest-run.js'
 function makeBaseQuest(): QuestRun {
   const now = new Date().toISOString()
   return {
-    version: '4',
+    version: '5',
     questId: 'test-q-001',
     runId: 'test-q-001',
     objective: 'Test quest',
@@ -68,6 +68,21 @@ describe('quest-reconciler', () => {
     expect(live.tasks[0].status).toBe('completed')
     expect(live.tasks[1].status).toBe('failed')
     expect(live.updatedAt).not.toBe(base.updatedAt)
+  })
+
+  it('reconcileQuestRun accepts runtime task_id write-back events', () => {
+    const base = makeBaseQuest()
+    const events = [
+      {
+        timestamp: new Date().toISOString(),
+        type: 'task_update' as const,
+        data: { task_id: '1', status: 'completed', expert: 'TechLeadAgent' },
+      },
+    ]
+
+    const live = reconcileQuestRun(base, events)
+    expect(live.tasks[0].status).toBe('completed')
+    expect(live.tasks[0].expert).toBe('TechLeadAgent')
   })
 
   it('reconcileQuestRun creates missing tasks from task_update', () => {

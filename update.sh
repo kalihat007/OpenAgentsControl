@@ -545,7 +545,7 @@ ensure_oac_config() {
   }
 }
 EOF
-        print_success "Created OAC config: ${oac_config} (maxParallelAgents=2)"
+        print_success "Created OAC config: ${oac_config} (Quest + Experts + swarm defaults)"
         return 0
     fi
 
@@ -553,7 +553,7 @@ EOF
         local tmp_file="${oac_config}.tmp.$$"
         sed 's/"maxParallelAgents"[[:space:]]*:[[:space:]]*4/"maxParallelAgents": 2/' "$oac_config" > "$tmp_file"
         mv "$tmp_file" "$oac_config"
-        print_success "Updated OAC config: maxParallelAgents 4 → 2"
+        print_success "Updated legacy OAC parallel default"
     else
         print_info "OAC config already customized or current: ${oac_config}"
     fi
@@ -580,11 +580,13 @@ print_execution_workflow() {
     echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
     echo -e "  ${CYAN}oac experts --plan-only \"<objective>\"${NC}       Save structured plan for handoff"
     echo -e "  ${CYAN}oac experts --run \"<objective>\"${NC}             Simulated swarm pipeline (default)"
+    echo -e "  ${CYAN}oac experts --run --runtime kimi \"<objective>\"${NC}  Strict Kimi runtime bridge"
+    echo -e "  ${CYAN}oac experts --run --runtime opencode \"<objective>\"${NC} Strict OpenCode runtime bridge"
     echo -e "  ${CYAN}oac quest-status${NC}                            List durable Quest runs"
     echo -e "  ${CYAN}oac quest-status <quest-id>${NC}                 Inspect Quest state, tasks, artifacts"
     echo -e "  ${CYAN}oac quest-resume <quest-id>${NC}                 Print runtime resume commands"
     echo ""
-    print_info "Headless OpenCode spawn (oac experts --run --live) is optional — use OpenCode TUI, Claude, or Kimi for primary execution."
+    print_info "Use --runtime for strict headless bridge checks; use --live for handoff commands."
     echo ""
 }
 

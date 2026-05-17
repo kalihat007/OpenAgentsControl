@@ -13,6 +13,7 @@ import { appendQuestEvent, questExists } from '../lib/quest-run.js'
 export type QuestAmendOptions = {
   objective?: string
   addTask?: string
+  dependsOn?: string[]
 }
 
 // ── Command Handler ───────────────────────────────────────────────────────────
@@ -61,6 +62,19 @@ export async function questAmendCommand(
     })
     await appendQuestEvent(projectRoot, questId, taskEvent)
     success(`Added pending task: ${options.addTask} (${taskId})`)
+
+    // Add dependency links if requested
+    if (options.dependsOn && options.dependsOn.length > 0) {
+      await appendQuestEvent(projectRoot, questId, {
+        timestamp: new Date().toISOString(),
+        type: 'task_update',
+        data: {
+          taskId,
+          dependsOn: options.dependsOn,
+        },
+      })
+      dim(`  Dependencies: ${options.dependsOn.join(', ')}`)
+    }
   }
 
   // If quest was COMPLETE or WAITING, bump back to EXECUTE
@@ -83,15 +97,17 @@ export function registerQuestAmendCommand(program: Command): void {
     .description('Amend a Quest with new requirements (updates events, adds tasks)')
     .option('--objective <text>', 'Update the quest objective')
     .option('--add-task <title>', 'Add a new pending task')
+    .option('--depends-on <ids>', 'Comma-separated task IDs this new task depends on', (val: string) => val.split(',').map((s) => s.trim()).filter(Boolean))
     .action(
       async (
         questId: string,
         amendmentText: string,
-        opts: { objective?: string; addTask?: string },
+        opts: { objective?: string; addTask?: string; dependsOn?: string[] },
       ) => {
         await questAmendCommand(questId, amendmentText, {
           objective: opts.objective,
           addTask: opts.addTask,
+          dependsOn: opts.dependsOn,
         })
       },
     )

@@ -13,7 +13,7 @@ import { join } from 'node:path'
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export type QuestCompleteOptions = {
-  force?: boolean
+  skipGates?: boolean
 }
 
 // ── Command Handler ───────────────────────────────────────────────────────────
@@ -41,25 +41,44 @@ export async function questCompleteCommand(
   info(`Trust: ${quest.trustLabel}`)
   log('')
 
-  // Gate: verification should have passed
+  // Gate: verification must have passed with real checks
   const verification = quest.verification
-  const hasRealVerification =
-    verification?.overallPassed === true &&
-    verification.forced !== true &&
-    verification.noChecks !== true
+  const requiredChecks = ['test', 'build', 'lint']
+  const hasRunChecks =
+    verification &&
+    verification.checks.length > 0 &&
+    !verification.forced &&
+    !verification.noChecks
 
-  if (!hasRealVerification) {
-    warn('Quest has not been verified.')
+  const requiredChecksPassed =
+    hasRunChecks &&
+    requiredChecks.every((name) => {
+      const check = verification.checks.find((c) => c.name === name)
+      return check ? check.passed : true // non-existent required checks are tolerated if others pass
+    })
+
+  const gatesPassed =
+    verification?.overallPassed === true && hasRunChecks && requiredChecksPassed
+
+  if (!gatesPassed) {
+    warn('Quest completion gates not satisfied.')
     warn(`Current trust label: ${quest.trustLabel}`)
-    if (verification?.forced) {
-      warn(`Last verification was forced: ${verification.summary}`)
+    if (!hasRunChecks) {
+      warn('Required checks (test, build, lint) have not been run.')
+    } else if (!requiredChecksPassed) {
+      const failedRequired = requiredChecks
+        .filter((name) => {
+          const check = verification.checks.find((c) => c.name === name)
+          return check && !check.passed
+        })
+      warn(`Failed required gates: ${failedRequired.join(', ')}`)
     }
-    if (!options.force) {
+    if (!options.skipGates) {
       throw new CommandUsageError(
-        `Run 'oac quest-verify ${questId}' first, or use --force to complete anyway.`,
+        `Run 'oac quest-verify ${questId}' first, or use --skip-gates to override.`,
       )
     }
-    info('--force: completing without verification')
+    info('--skip-gates: completing without passing verification gates')
   } else {
     success(`Verification passed: ${verification.summary}`)
   }
@@ -81,7 +100,22 @@ export async function questCompleteCommand(
   const runDir = join(projectRoot, '.oac', 'runs', questId)
   await mkdir(runDir, { recursive: true })
 
-  // Append completion event
+  // Append validation + completion events
+  if (verification) {
+    const validationEvent = {
+      timestamp: new Date().toISOString(),
+      type: 'validation' as const,
+      data: {
+        result: {
+          ...verification,
+          completionAttempted: true,
+          gatesSkipped: options.skipGates ?? false,
+        },
+      },
+    }
+    await appendQuestEvent(projectRoot, questId, validationEvent)
+  }
+
   const event = buildStateChangeEvent(quest.state, 'COMPLETE')
   await appendQuestEvent(projectRoot, questId, event)
 
@@ -215,8 +249,9 @@ export function registerQuestCompleteCommand(program: Command): void {
   program
     .command('quest-complete <quest-id>')
     .description('Finalize a Quest, generate summary artifacts, and mark COMPLETE')
-    .option('--force', 'Complete even if verification has not passed', false)
-    .action(async (questId: string, opts: { force?: boolean }) => {
-      await questCompleteCommand(questId, { force: opts.force ?? false })
+    .option('--skip-gates', 'Complete even if verification gates have not passed', false)
+    .option('--force', 'Alias for --skip-gates', false)
+    .action(async (questId: string, opts: { skipGates?: boolean; force?: boolean }) => {
+      await questCompleteCommand(questId, { skipGates: opts.skipGates ?? opts.force ?? false })
     })
 }

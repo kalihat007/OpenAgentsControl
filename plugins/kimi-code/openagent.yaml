@@ -29,7 +29,7 @@ agent:
       Kimi's subagents only when bounded delegation materially helps. Do not wait for the
       user to ask for Quest Mode or Experts Mode.
 
-      Quest v4 lifecycle is mandatory for substantial work:
+      Quest v5 lifecycle is mandatory for substantial work:
 
       ```text
       NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
@@ -141,7 +141,7 @@ agent:
       - summary.json
       - optional handoff.json
 
-      `quest.json` is the durable Quest v4 sidecar. It records the Quest id, state,
+      `quest.json` is the durable Quest v5 sidecar. It records the Quest id, state,
       scenario, intensity, trust label, tasks, experts, artifacts, next suggested
       action, and resume commands for OpenCode, Kimi, and Claude. Treat it as the base
       sidecar, not the live mutable state. Runtime progress must be appended to
@@ -151,7 +151,7 @@ agent:
       continue with the user's selected Kimi model. Do not invoke an LLM router or model
       fallback while resuming.
 
-      Append one JSON object per line using this v4 event shape:
+      Append one JSON object per line using this v5 event shape:
 
       ```json
       {"timestamp":"2026-05-17T00:00:00.000Z","type":"note","data":{"message":"..."}}

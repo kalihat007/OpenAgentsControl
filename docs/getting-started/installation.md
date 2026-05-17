@@ -413,11 +413,13 @@ kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
 oac experts "build a JWT auth API"              # roster / routing
 oac experts --plan-only "build a JWT auth API"  # save structured plan for handoff
 oac experts --run "build a JWT auth API"        # simulated pipeline (default for --run)
+oac experts --run --runtime kimi "build a JWT auth API"
+oac experts --run --runtime opencode "build a JWT auth API"
 ```
 
-`oac experts --run --live` runs a headless OpenCode spawn for the first scheduled task only (MVP). It is **not** the primary path — prefer `install.sh` / `update.sh` plus OpenCode TUI, Claude Code, or Kimi Code for execution.
+`oac experts --run --runtime kimi|opencode|claude` runs a strict headless runtime bridge and trusts completion only after task write-back events are preserved in `.oac/runs/{id}/events.ndjson`. `--live` writes handoff commands for OpenCode TUI, Claude Code, and Kimi Code.
 
-`.oac/config.json` is created on install with `expertMode`, `useAgentSwarm`, and `maxParallelAgents: 2` (overload-safe default).
+`.oac/config.json` is created on install with Quest + Experts + swarm defaults.
 
 ---
 

@@ -47,6 +47,7 @@ async function main(): Promise<void> {
     { registerQuestVerifyCommand },
     { registerQuestCompleteCommand },
     { registerQuestAmendCommand },
+    { registerQuestAttachCommand },
   ] = await Promise.all([
     import('./commands/init.js'),
     import('./commands/update.js'),
@@ -66,6 +67,7 @@ async function main(): Promise<void> {
     import('./commands/quest-verify.js'),
     import('./commands/quest-complete.js'),
     import('./commands/quest-amend.js'),
+    import('./commands/quest-attach.js'),
   ])
 
   registerInitCommand(program)
@@ -86,6 +88,7 @@ async function main(): Promise<void> {
   registerQuestVerifyCommand(program)
   registerQuestCompleteCommand(program)
   registerQuestAmendCommand(program)
+  registerQuestAttachCommand(program)
 
   // Unknown commands: print a helpful error and exit 1
   program.on('command:*', (operands: string[]) => {

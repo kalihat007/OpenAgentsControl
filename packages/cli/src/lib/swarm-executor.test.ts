@@ -1,4 +1,7 @@
 import { describe, it, expect } from 'bun:test'
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { routeTask } from './task-router.js'
 import { SessionBudgetExceededError } from './errors.js'
 import { buildRunSpec } from './run-spec.js'
@@ -6,6 +9,7 @@ import {
   executeSwarm,
   estimateExecution,
   planExecution,
+  persistRunArtifacts,
   resolvePlanConcurrency,
   type ExecutionPlan,
 } from './swarm-executor.js'
@@ -152,5 +156,32 @@ describe('swarm-executor automatic decomposition', () => {
     expect(spec.scenario).toBe(routed.scenario)
     expect(spec.experts.length).toBeGreaterThan(0)
     expect(spec.requirements.acceptanceCriteria.length).toBeGreaterThan(0)
+  })
+
+  it('preserves runtime-appended events when persisting run artifacts', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-runtime-events-'))
+    try {
+      const routed = routeTask('write a small docs update', tmpRoot)
+      const plan = planExecution(routed, { maxConcurrency: 1 })
+      const runDir = join(tmpRoot, '.oac', 'runs', plan.session.id)
+      const eventsPath = join(runDir, 'events.ndjson')
+      const runtimeEvent = {
+        timestamp: '2026-05-17T00:00:00.000Z',
+        type: 'task_update',
+        data: { task_id: plan.session.tasks[0]!.id, status: 'completed' },
+      }
+
+      await mkdir(runDir, { recursive: true })
+      await writeFile(eventsPath, `${JSON.stringify(runtimeEvent)}\n`)
+
+      await persistRunArtifacts(tmpRoot, plan)
+
+      const rawEvents = await readFile(eventsPath, 'utf8')
+      expect(rawEvents).toContain('"type":"task_update"')
+      expect(rawEvents).toContain('"task_id"')
+      expect(rawEvents).toContain('"type":"session.created"')
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
   })
 })

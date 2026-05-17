@@ -6,7 +6,7 @@
  * the resulting plan.
  */
 
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { createLogger } from './logger.js'
 import type { RouterResult, ExpertProfile } from './task-router.js'
@@ -34,9 +34,12 @@ import {
   buildQuestRun,
   persistQuestRun,
   questArtifactsFromRunArtifacts,
+  appendQuestEvent,
   writeTaskGraph,
   type QuestRunTask,
 } from './quest-run.js'
+import { spawnRuntime, type RuntimeType } from './runtime-bridge.js'
+import { loadEvents } from './quest-reconciler.js'
 
 const log = createLogger('swarm-executor')
 import type {
@@ -58,8 +61,8 @@ import {
 } from '@nextsystems/oac-swarm-runtime'
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-/** simulate = CLI scheduling only; handoff = defer execution to OpenCode TUI or Claude plugin */
-export type ExecutionMode = 'simulate' | 'handoff'
+/** simulate = CLI scheduling only; handoff = defer execution to IDE; runtime = real headless execution */
+export type ExecutionMode = 'simulate' | 'handoff' | 'runtime'
 
 export interface SessionBudgetLimits {
   maxApiCallsPerSession: number
@@ -166,6 +169,10 @@ export interface ExecuteSwarmOptions {
   mode?: ExecutionMode
   budget?: SessionBudgetLimits
   callbacks?: ExecutorCallbacks
+  runtime?: RuntimeType
+  projectRoot?: string
+  routerResult?: RouterResult
+  background?: boolean
 }
 
 function isExecutorCallbacks(value: ExecutorCallbacks | ExecuteSwarmOptions): value is ExecutorCallbacks {
@@ -408,6 +415,131 @@ export async function executeSwarm(
       'Run deferred to IDE runtime — see handoff.json for OpenCode TUI and Claude plugin commands',
       { executionMode: mode, runId: session.id },
     )
+  }
+
+  if (mode === 'runtime') {
+    if (!options.projectRoot || !options.runtime) {
+      throw new SwarmExecutionError('Runtime mode requires projectRoot and runtime.')
+    }
+
+    trackApiCall(budgetUsage, limits)
+    session = appendSwarmEvent(
+      session,
+      'batch.planned',
+      `[runtime] Planned ${schedulerResult.batches.length} batch(es)`,
+      {
+        batchCount: schedulerResult.batches.length,
+        totalTasks: session.tasks.length,
+        executionMode: mode,
+        runtime: options.runtime,
+      },
+    )
+
+    const runDir = join(options.projectRoot, '.oac', 'runs', session.id)
+    await persistRunArtifacts(options.projectRoot, { ...plan, session }, undefined, {
+      routerResult: options.routerResult,
+    })
+
+    const runtimeResult = await spawnRuntime({
+      questId: session.id,
+      objective: session.objective,
+      projectRoot: options.projectRoot,
+      runDir,
+      runtime: options.runtime,
+      tasks: session.tasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        agent: task.agent,
+      })),
+      background: options.background,
+    })
+
+    // Reconcile events written by the runtime
+    const events = await loadEvents(options.projectRoot, session.id)
+    const completedSet = new Set<string>()
+    const failedSet = new Set<string>()
+    const reportedTaskIds = new Set<string>()
+
+    for (const event of events) {
+      const eventTaskId = (event.data.taskId ?? event.data.task_id) as unknown
+      if (event.type === 'task_update' && typeof eventTaskId === 'string') {
+        reportedTaskIds.add(eventTaskId)
+        if (event.data.status === 'completed') completedSet.add(eventTaskId)
+        if (event.data.status === 'failed' || event.data.status === 'blocked') {
+          failedSet.add(eventTaskId)
+        }
+      }
+    }
+
+    const missingRuntimeWriteback =
+      runtimeResult.ok &&
+      session.tasks.length > 0 &&
+      !session.tasks.some((task) => reportedTaskIds.has(task.id))
+
+    if (missingRuntimeWriteback) {
+      await appendQuestEvent(options.projectRoot, session.id, {
+        timestamp: new Date().toISOString(),
+        type: 'error',
+        data: {
+          message: `Runtime ${options.runtime} finished without task_update write-back events.`,
+          critical: true,
+        },
+      })
+    }
+
+    for (const task of session.tasks) {
+      if (completedSet.has(task.id)) {
+        completedTasks.push(task.id)
+        session = appendSwarmEvent(session, 'task.completed', `[runtime] ${task.agent} completed`, {
+          taskId: task.id,
+          agent: task.agent,
+          executionMode: mode,
+        })
+      } else if (failedSet.has(task.id)) {
+        failedTasks.push(task.id)
+        session = appendSwarmEvent(session, 'task.failed', `[runtime] ${task.agent} failed`, {
+          taskId: task.id,
+          agent: task.agent,
+          executionMode: mode,
+        })
+      } else if (!runtimeResult.ok || missingRuntimeWriteback) {
+        failedTasks.push(task.id)
+        session = appendSwarmEvent(
+          session,
+          'task.failed',
+          `[runtime] ${task.agent} not reported (${runtimeResult.ok ? 'missing write-back' : 'runtime error'})`,
+          {
+            taskId: task.id,
+            agent: task.agent,
+            executionMode: mode,
+            runtimeError: runtimeResult.errorMessage,
+            missingRuntimeWriteback,
+          },
+        )
+      }
+    }
+
+    // Skip the normal batch loop — runtime handled everything
+    const elapsedMs = Date.now() - start
+    log.info('Swarm runtime execution complete', {
+      sessionId: session.id,
+      runtime: options.runtime,
+      completed: completedTasks.length,
+      failed: failedTasks.length,
+      elapsedMs,
+      apiCalls: budgetUsage.apiCalls,
+    })
+
+    return {
+      session,
+      schedulerResult,
+      completedTasks,
+      failedTasks,
+      acceptanceChecks: buildAcceptanceChecks(plan, completedTasks, failedTasks, mode),
+      elapsedMs,
+      executionMode: mode,
+      budgetUsage,
+    }
   }
 
   for (let i = 0; i < schedulerResult.batches.length; i++) {
@@ -1056,7 +1188,7 @@ export async function persistRunArtifacts(
       dependsOn: task.dependsOn ?? [],
     })),
   )
-  await writeFile(eventsPath, session.events.map((event) => JSON.stringify(event)).join('\n') + '\n')
+  await writeFile(eventsPath, await mergeEventLines(eventsPath, session.events))
   await writeFile(
     acceptanceReportPath,
     renderAcceptanceReport(plan, acceptanceChecks, result),
@@ -1093,6 +1225,35 @@ export async function persistRunArtifacts(
   }
 
   return artifacts
+}
+
+async function mergeEventLines(
+  eventsPath: string,
+  sessionEvents: SwarmSession['events'],
+): Promise<string> {
+  const existingLines = await readExistingEventLines(eventsPath)
+  const seen = new Set(existingLines)
+  const mergedLines = [...existingLines]
+
+  for (const event of sessionEvents) {
+    const line = JSON.stringify(event)
+    if (!seen.has(line)) {
+      mergedLines.push(line)
+      seen.add(line)
+    }
+  }
+
+  return mergedLines.length > 0 ? `${mergedLines.join('\n')}\n` : ''
+}
+
+async function readExistingEventLines(eventsPath: string): Promise<string[]> {
+  try {
+    const raw = await readFile(eventsPath, 'utf8')
+    return raw.split(/\r?\n/).filter((line) => line.trim().length > 0)
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return []
+    throw error
+  }
 }
 
 function toQuestTaskGraphStatus(status: string | undefined): QuestRunTask['status'] {

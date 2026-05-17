@@ -1,5 +1,5 @@
 /**
- * oac quest-status — List and inspect durable OpenAgent Quest v4 runs.
+ * oac quest-status — List and inspect durable OpenAgent Quest v5 runs.
  */
 
 import type { Command } from 'commander'
@@ -8,7 +8,7 @@ import { join } from 'node:path'
 import { log, info, success, dim, warn, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
 import { createLogger } from '../lib/logger.js'
-import { listQuestRunIds } from '../lib/quest-run.js'
+import { listQuestRunIds, readRunPid, isRunPidAlive } from '../lib/quest-run.js'
 import { loadReconciledQuest, type ReconciledQuestRun } from '../lib/quest-reconciler.js'
 
 const cmdLog = createLogger('cmd:quest-status')
@@ -110,6 +110,16 @@ export async function questStatusCommand(
     warn('This is a legacy run without quest.json.')
   }
 
+  // Background run status
+  if (questId) {
+    const pid = await readRunPid(projectRoot, questId)
+    if (pid) {
+      const alive = isRunPidAlive(pid)
+      info(`Background run: ${alive ? `running (pid ${pid})` : 'finished'}`)
+      log('')
+    }
+  }
+
   if (summary) {
     info('Run Summary:')
     if (summary.executionMode) log(`  Mode: ${summary.executionMode}`)
@@ -137,7 +147,7 @@ export async function questStatusCommand(
 }
 
 function printQuest(quest: ReconciledQuestRun): void {
-  info('Quest v4:')
+  info('Quest v5:')
   log(`  Objective:   ${quest.objective}`)
   log(`  State:       ${quest.state}`)
   log(`  Scenario:    ${quest.scenario}`)
@@ -212,7 +222,7 @@ function truncate(str: string, max: number): string {
 export function registerQuestStatusCommand(program: Command): void {
   program
     .command('quest-status [quest-id]')
-    .description('List or inspect durable OpenAgent Quest v4 runs under .oac/runs/')
+    .description('List or inspect durable OpenAgent Quest v5 runs under .oac/runs/')
     .option('--verbose', 'Show extra detail', false)
     .addHelpText(
       'after',

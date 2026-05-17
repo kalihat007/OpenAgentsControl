@@ -56,7 +56,7 @@ export interface ReconciledQuestRun extends QuestRun {
 // ── Event Application ─────────────────────────────────────────────────────────
 
 function applyTaskUpdate(quest: ReconciledQuestRun, data: Record<string, unknown>): void {
-  const taskId = data.taskId as string | undefined
+  const taskId = (data.taskId ?? data.task_id) as string | undefined
   if (!taskId) return
 
   const task = quest.tasks.find((t) => t.id === taskId)
@@ -85,6 +85,9 @@ function applyTaskUpdate(quest: ReconciledQuestRun, data: Record<string, unknown
   }
   if (data.stage) {
     ;(task as unknown as Record<string, unknown>).stage = data.stage
+  }
+  if (data.dependsOn && Array.isArray(data.dependsOn)) {
+    task.dependsOn = [...task.dependsOn, ...(data.dependsOn as string[]).filter((d) => !task.dependsOn.includes(d))]
   }
 }
 
@@ -387,5 +390,23 @@ export function buildAmendmentEvent(
     timestamp: new Date().toISOString(),
     type: 'amendment',
     data: { objective, amendmentText },
+  }
+}
+
+/**
+ * Build a write-back event for an error.
+ */
+export function buildErrorEvent(
+  message: string,
+  options?: { taskId?: string; critical?: boolean },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'error',
+    data: {
+      message,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.critical !== undefined && { critical: options.critical }),
+    },
   }
 }

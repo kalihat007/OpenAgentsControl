@@ -334,7 +334,7 @@ For existing installations, run the updater from the project where `.opencode/` 
 curl -fsSL https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/main/update.sh | bash
 ```
 
-The updater refreshes existing OpenAgent files, creates `.opencode/opencode.json` when missing, preserves the user's selected OpenCode model, and updates the old default `maxParallelAgents: 4` to the overload-safe default of `2`.
+The updater refreshes existing OpenAgent files, creates `.opencode/opencode.json` when missing, preserves the user's selected OpenCode model, and keeps conservative swarm defaults current.
 
 Use `--install-dir PATH` if you installed to a custom location:
 
@@ -367,7 +367,7 @@ oac quest-status
 oac quest-resume <quest-id>
 ```
 
-Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --live` writes `.oac/runs/{id}/quest.json` and `handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`), Kimi Code (`kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml`), and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`); real execution happens in those runtimes, not headless from the CLI.
+Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --runtime kimi|opencode|claude` runs a strict headless bridge that requires runtime task write-back before completion is trusted. `oac experts --run --live` writes `.oac/runs/{id}/quest.json` and `handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`), Kimi Code (`kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml`), and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`).
 
 ### Step 3: Approve & Ship
 
@@ -834,7 +834,7 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
-Quest v4 adds a small lifecycle, durable run identity, and append-only event reconciliation so long sessions stay predictable:
+Quest v5 adds a small lifecycle, durable run identity, append-only event reconciliation, and runtime execution handoff so long sessions stay predictable:
 
 ```text
 NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING

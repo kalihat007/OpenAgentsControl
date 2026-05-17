@@ -1,4 +1,4 @@
-<!-- Context: core/quest-mode | Priority: critical | Version: 3.0 | Updated: 2026-05-17 -->
+<!-- Context: core/quest-mode | Priority: critical | Version: 5.0 | Updated: 2026-05-17 -->
 
 # OpenAgent Quest Mode
 
@@ -17,9 +17,9 @@ Vendor terminology and feature framing: [Quest overview](https://docs.qoder.com/
 - Safe local work runs immediately. High-risk actions still require an explicit gate.
 - No hidden LLM routing is allowed. OpenAgent and its expert perspectives use the user's selected runtime model unless the user explicitly changes it.
 
-## Quest v3 Lifecycle
+## Quest v5 Lifecycle
 
-OpenAgent Quest v3 tracks each substantial request through a simple lifecycle and durable run identity:
+OpenAgent Quest v5 tracks each substantial request through a simple lifecycle and durable run identity:
 
 ```text
 NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
@@ -42,7 +42,7 @@ If the user adds requirements while a Quest is still in progress, amend the curr
 
 For planned, live handoff, simulated, background, or long-running work, persist a Quest sidecar under `.oac/runs/{quest-id}/quest.json` alongside the existing swarm artifacts. The Quest id and run id are the same value.
 
-Required v3 artifacts when available:
+Required v5 artifacts when available:
 
 - `quest.json` - user-facing Quest state, scenario, intensity, trust label, tasks, experts, runtime resume commands, and next suggested action
 - `spec.json` - compatibility SSOT for requirements, scenario, experts, and acceptance criteria
