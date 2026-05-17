@@ -401,7 +401,7 @@ nano .env
 opencode --agent OpenAgent
 
 # Claude Code — after install.sh from repo clone or --with-claude
-claude --plugin-dir ~/.claude/plugins/openagents-control-bridge
+claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt "$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)"
 
 # Kimi Code — after install.sh --with-kimi or update.sh --with-kimi from repo clone
 kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml

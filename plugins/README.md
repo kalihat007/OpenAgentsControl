@@ -30,7 +30,7 @@ plugins/
 /plugin install oac
 
 # Local testing
-claude --plugin-dir ./plugins/claude-code
+claude --plugin-dir ./plugins/claude-code --append-system-prompt "$(cat ./plugins/claude-code/openagent-system.md)"
 ```
 
 **Features**:

@@ -1566,10 +1566,10 @@ print_execution_workflow() {
     echo -e "  OpenCode TUI:  ${CYAN}opencode --agent OpenAgent${NC}"
     echo "                 Quest + Experts Mode + Agent Swarm (see .oac/config.json)"
     if [ -d "$HOME/.claude/plugins/openagents-control-bridge" ]; then
-        echo -e "  Claude Code:   ${CYAN}claude --plugin-dir ~/.claude/plugins/openagents-control-bridge${NC}"
+        echo -e "  Claude Code:   ${CYAN}claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt \"\$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)\"${NC}"
     else
         echo -e "  Claude Code:   ${CYAN}./install.sh advanced --with-claude${NC} (from repo clone)"
-        echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge"
+        echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt \"\$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)\""
     fi
     if [ -f "$HOME/.kimi/agents/openagents-control/openagent.yaml" ]; then
         echo -e "  Kimi Code:     ${CYAN}kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml${NC}"

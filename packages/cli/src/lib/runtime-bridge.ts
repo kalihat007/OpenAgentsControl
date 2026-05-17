@@ -7,6 +7,7 @@
  */
 
 import { spawn, spawnSync, type SpawnOptions } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { createLogger } from './logger.js'
@@ -126,6 +127,7 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
     `For every listed task, append one task_update event with status "in_progress" before work and one task_update event with status "completed", "failed", or "blocked" after work.`,
     `Use this exact task update JSON shape: {"timestamp":"<ISO time>","type":"task_update","data":{"taskId":"task-001","status":"completed","expert":"TechLeadAgent","title":"..."}}`,
     `Append events to ${runDir}/events.ndjson for every task start, completion, file change, and validation.`,
+    `The append-only writes under ${runDir} are required control-plane artifacts; they are allowed even when the user objective says not to modify product files.`,
     `Each JSONL event must include timestamp, type, and data. Use task IDs exactly as listed.`,
     `Do not rewrite quest.json. Use append-only events.`,
     `If no file change is required, still append task_update completion events and a note event explaining that the task was a no-op.`,
@@ -518,6 +520,22 @@ function getClaudePluginDir(): string {
   return process.env.CLAUDE_PLUGIN_DIR ?? join(homedir(), '.claude', 'plugins', 'openagents-control-bridge')
 }
 
+function getClaudeOpenAgentSystemPrompt(): string | undefined {
+  const pluginDir = getClaudePluginDir()
+  for (const promptPath of [
+    join(pluginDir, 'openagent-system.md'),
+    join(pluginDir, 'agents', 'core', 'openagent.md'),
+  ]) {
+    if (!existsSync(promptPath)) continue
+    try {
+      return readFileSync(promptPath, 'utf8')
+    } catch {
+      return undefined
+    }
+  }
+  return undefined
+}
+
 function spawnClaude(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   const start = Date.now()
@@ -526,6 +544,11 @@ function spawnClaude(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult
 
   const args = [
     '--plugin-dir', getClaudePluginDir(),
+    '--permission-mode', 'acceptEdits',
+    ...(() => {
+      const systemPrompt = getClaudeOpenAgentSystemPrompt()
+      return systemPrompt ? ['--append-system-prompt', systemPrompt] : []
+    })(),
     '--print',
     prompt,
   ]

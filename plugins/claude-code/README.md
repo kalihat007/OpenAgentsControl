@@ -52,7 +52,7 @@ git clone https://github.com/kalihat007/OpenAgentsControl.git
 cd OpenAgentsControl
 
 # Load plugin locally
-claude --plugin-dir ./plugins/claude-code
+claude --plugin-dir ./plugins/claude-code --append-system-prompt "$(cat ./plugins/claude-code/openagent-system.md)"
 
 # Download context files
 /install-context
@@ -418,7 +418,7 @@ Context files are downloaded from the main repository via `/install-context`:
 
 3. Test locally:
    ```bash
-   claude --plugin-dir ./plugins/claude-code
+   claude --plugin-dir ./plugins/claude-code --append-system-prompt "$(cat ./plugins/claude-code/openagent-system.md)"
    /my-skill
    ```
 

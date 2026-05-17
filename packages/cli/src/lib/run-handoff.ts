@@ -17,7 +17,8 @@ export const OPENCODE_TUI_COMMAND = 'opencode --agent OpenAgent'
 export const KIMI_AGENT_FILE = '~/.kimi/agents/openagents-control/openagent.yaml'
 export const KIMI_CODE_COMMAND = `kimi --work-dir . --agent-file ${KIMI_AGENT_FILE}`
 export const CLAUDE_BRIDGE_PLUGIN_DIR = '~/.claude/plugins/openagents-control-bridge'
-export const CLAUDE_BRIDGE_COMMAND = `claude --plugin-dir ${CLAUDE_BRIDGE_PLUGIN_DIR}`
+export const CLAUDE_OPENAGENT_SYSTEM_PROMPT = `"$(cat ${CLAUDE_BRIDGE_PLUGIN_DIR}/openagent-system.md)"`
+export const CLAUDE_BRIDGE_COMMAND = `claude --plugin-dir ${CLAUDE_BRIDGE_PLUGIN_DIR} --append-system-prompt ${CLAUDE_OPENAGENT_SYSTEM_PROMPT}`
 
 export interface HandoffRuntime {
   /** Shell one-liner to start the runtime */

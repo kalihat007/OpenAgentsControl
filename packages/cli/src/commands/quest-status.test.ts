@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { questStatusCommand } from './quest-status.js'
+import { CLAUDE_BRIDGE_COMMAND } from '../lib/run-handoff.js'
 
 describe('questStatusCommand', () => {
   let tmpRoot: string
@@ -35,7 +36,7 @@ describe('questStatusCommand', () => {
         runtimes: {
           opencode: { command: 'opencode --agent OpenAgent', resumePrompt: 'resume' },
           kimi: { command: 'kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml', resumePrompt: 'resume' },
-          claude: { command: 'claude --plugin-dir ~/.claude/plugins/openagents-control-bridge', resumePrompt: 'resume' },
+          claude: { command: CLAUDE_BRIDGE_COMMAND, resumePrompt: 'resume' },
         },
       }),
     )

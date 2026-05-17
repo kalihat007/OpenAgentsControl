@@ -20,6 +20,7 @@
 #   OPENCODE_BRANCH                      # Branch to pull from (default: main)
 #   OPENCODE_RAW_URL                     # Full raw GitHub base URL override
 #   OPENAGENT_MODEL                      # Optional explicit model to pin when creating opencode.json
+#   OAC_CURL_MAX_TIME                    # Per-file curl timeout in seconds (default: 60)
 #############################################################################
 
 set -e
@@ -87,6 +88,16 @@ print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
 print_error()   { echo -e "${RED}✗${NC} $1" >&2; }
 print_step()    { echo -e "\n${CYAN}${BOLD}▶${NC} $1\n"; }
 
+curl_fetch() {
+    curl \
+        -fsSL \
+        --connect-timeout "${OAC_CURL_CONNECT_TIMEOUT:-10}" \
+        --max-time "${OAC_CURL_MAX_TIME:-60}" \
+        --retry "${OAC_CURL_RETRIES:-2}" \
+        --retry-delay "${OAC_CURL_RETRY_DELAY:-1}" \
+        "$@"
+}
+
 print_header() {
     echo -e "${CYAN}${BOLD}"
     echo "╔════════════════════════════════════════════════════════════════╗"
@@ -111,6 +122,7 @@ print_usage() {
     echo "  OPENCODE_INSTALL_DIR   Override the default installation directory"
     echo "  OPENCODE_BRANCH        Branch to pull updates from (default: main)"
     echo "  OPENAGENT_MODEL        Optional explicit model to pin only when creating opencode.json"
+    echo "  OAC_CURL_MAX_TIME      Per-file download timeout in seconds (default: 60)"
     echo ""
     echo "Examples:"
     echo "  # Auto-detect and update"
@@ -372,7 +384,7 @@ update_component() {
     cp "$path" "$backup"
     BACKUP_FILES+=("$backup")
 
-    if curl -fsSL "$url" -o "$path" 2>/dev/null; then
+    if curl_fetch "$url" -o "$path" 2>/dev/null; then
         print_success "Updated $path"
         rm -f "$backup"
         # Remove from tracking array (bash 3.2 compatible)
@@ -441,7 +453,7 @@ install_missing_component() {
     fi
 
     mkdir -p "$(dirname "$dest")"
-    if curl -fsSL "$url" -o "$dest" 2>/dev/null; then
+    if curl_fetch "$url" -o "$dest" 2>/dev/null; then
         print_success "Installed missing component: ${relative_path}"
         return 0
     fi
@@ -564,10 +576,10 @@ print_execution_workflow() {
     echo -e "  OpenCode TUI:  ${CYAN}opencode --agent OpenAgent${NC}"
     echo "                 Quest + Experts Mode + Agent Swarm (see .oac/config.json)"
     if [ -d "$HOME/.claude/plugins/openagents-control-bridge" ]; then
-        echo -e "  Claude Code:   ${CYAN}claude --plugin-dir ~/.claude/plugins/openagents-control-bridge${NC}"
+        echo -e "  Claude Code:   ${CYAN}claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt \"\$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)\"${NC}"
     else
         echo -e "  Claude Code:   ${CYAN}./update.sh --with-claude${NC} (from repo clone)"
-        echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge"
+        echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt \"\$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)\""
     fi
     if [ -f "$HOME/.kimi/agents/openagents-control/openagent.yaml" ]; then
         echo -e "  Kimi Code:     ${CYAN}kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml${NC}"

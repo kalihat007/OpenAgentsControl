@@ -355,7 +355,7 @@ opencode --agent OpenAgent
 
 ```bash
 # Claude Code (after install from repo clone, or install.sh --with-claude)
-claude --plugin-dir ~/.claude/plugins/openagents-control-bridge
+claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt "$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)"
 ```
 
 **CLI orchestration (`oac`)** — expert routing and handoff plans:
@@ -367,7 +367,7 @@ oac quest-status
 oac quest-resume <quest-id>
 ```
 
-Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --runtime kimi|opencode|claude` runs a strict headless bridge that requires runtime task write-back before completion is trusted. `oac experts --run --live` writes `.oac/runs/{id}/quest.json` and `handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`), Kimi Code (`kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml`), and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`).
+Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --runtime kimi|opencode|claude` runs a strict headless bridge that requires runtime task write-back before completion is trusted. `oac experts --run --live` writes `.oac/runs/{id}/quest.json` and `handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`), Kimi Code (`kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml`), and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt "$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)"`).
 
 ### Step 3: Approve & Ship
 

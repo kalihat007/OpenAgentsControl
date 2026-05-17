@@ -43,7 +43,7 @@ TechLeadAgent is always included for coordination. Domain specialists are added 
 | **OAC CLI** | Keyword routing, planning, durable `.oac/runs/` artifacts, estimates, quality gates, `quest-status`, `quest-resume`, `swarm-status` | `oac experts "…"`, `oac experts --plan-only`, `oac experts --run`, `oac experts --run --live`, `oac quest-status`, `oac quest-resume <id>` |
 | **OpenCode TUI** | Real Quest + Experts execution via OpenAgent | `opencode --agent OpenAgent` |
 | **Kimi Code direct** | Same Quest + Experts behavior without OpenCode | `kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml` |
-| **Claude Code bridge** | Same standards/context via plugin | `claude --plugin-dir ~/.claude/plugins/openagents-control-bridge` |
+| **Claude Code bridge** | Same standards/context via plugin | `claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt "$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)"` |
 
 `oac experts --run --live` does **not** headlessly spawn `opencode run`. It writes `.oac/runs/{session-id}/quest.json` and `handoff.json` with OpenCode, Kimi, and Claude runtime one-liners, spec/plan pointers, expert roster, and a suggested prompt. The user pastes that context after starting the chosen runtime.
 

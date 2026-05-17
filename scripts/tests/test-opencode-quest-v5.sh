@@ -24,7 +24,48 @@ pass() { echo -e "${GREEN}✓${NC} $1"; }
 fail() { echo -e "${RED}✗${NC} $1"; exit 1; }
 warn() { echo -e "${YELLOW}⚠${NC} $1"; }
 
-cleanup() { rm -rf "$TEST_DIR"; }
+kill_process_tree() {
+  local pid=$1
+  local signal=${2:-TERM}
+  local children
+  children="$(pgrep -P "$pid" 2>/dev/null || true)"
+  for child in $children; do
+    kill_process_tree "$child" "$signal"
+  done
+  kill "-$signal" "$pid" >/dev/null 2>&1 || true
+}
+
+run_with_timeout() {
+  local duration=$1
+  shift
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$duration" "$@"
+  elif command -v gtimeout >/dev/null 2>&1; then
+    gtimeout "$duration" "$@"
+  else
+    "$@" &
+    local cmd_pid=$!
+    (
+      sleep "$duration"
+      if kill -0 "$cmd_pid" >/dev/null 2>&1; then
+        kill_process_tree "$cmd_pid" TERM
+        sleep 3
+        kill_process_tree "$cmd_pid" KILL
+      fi
+    ) &
+    local watcher_pid=$!
+    local status=0
+    wait "$cmd_pid" || status=$?
+    kill "$watcher_pid" >/dev/null 2>&1 || true
+    wait "$watcher_pid" 2>/dev/null || true
+    return "$status"
+  fi
+}
+
+cleanup() {
+  pkill -f "$TEST_DIR" >/dev/null 2>&1 || true
+  rm -rf "$TEST_DIR"
+}
 trap cleanup EXIT
 
 echo -e "${CYAN}${BOLD}"
@@ -107,7 +148,13 @@ fi
 pass "quest-amend appends amendment event"
 
 if command -v opencode >/dev/null 2>&1; then
-  "${OAC_CLI[@]}" experts --run --quick --runtime opencode --no-quality-gate "Do not modify files. Append task_update completion events and a note event that says opencode-v5-runtime-ok." > /dev/null
+  if ! run_with_timeout "${OAC_OPENCODE_RUNTIME_TIMEOUT:-300}" \
+    "${OAC_CLI[@]}" experts --run --quick --runtime opencode --no-quality-gate \
+      "Do not modify files. Append task_update completion events and a note event that says opencode-v5-runtime-ok." \
+      > runtime.out 2>&1; then
+    sed -n '1,120p' runtime.out >&2 || true
+    fail "OpenCode runtime bridge did not finish within ${OAC_OPENCODE_RUNTIME_TIMEOUT:-300}s"
+  fi
   RUNTIME_QUEST_ID="$(ls -1 .oac/runs/ | sort | tail -1)"
   RUNTIME_EVENTS=".oac/runs/${RUNTIME_QUEST_ID}/events.ndjson"
   if ! grep -q '"type":"task_update"' "$RUNTIME_EVENTS"; then

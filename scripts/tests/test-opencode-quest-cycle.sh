@@ -40,11 +40,38 @@ run_with_timeout() {
     elif command -v gtimeout >/dev/null 2>&1; then
         gtimeout "$duration" "$@"
     else
-        "$@"
+        "$@" &
+        local cmd_pid=$!
+        (
+            sleep "$duration"
+            if kill -0 "$cmd_pid" >/dev/null 2>&1; then
+                kill_process_tree "$cmd_pid" TERM
+                sleep 3
+                kill_process_tree "$cmd_pid" KILL
+            fi
+        ) &
+        local watcher_pid=$!
+        local status=0
+        wait "$cmd_pid" || status=$?
+        kill "$watcher_pid" >/dev/null 2>&1 || true
+        wait "$watcher_pid" 2>/dev/null || true
+        return "$status"
     fi
 }
 
+kill_process_tree() {
+    local pid=$1
+    local signal=${2:-TERM}
+    local children
+    children="$(pgrep -P "$pid" 2>/dev/null || true)"
+    for child in $children; do
+        kill_process_tree "$child" "$signal"
+    done
+    kill "-$signal" "$pid" >/dev/null 2>&1 || true
+}
+
 cleanup() {
+    pkill -f "$TEST_DIR" >/dev/null 2>&1 || true
     rm -rf "$TEST_DIR"
 }
 
