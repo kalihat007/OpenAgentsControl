@@ -75,3 +75,47 @@ export function findTasksToResetOnRetry<T extends DagNode>(tasks: T[], taskId: s
   const dependents = findTransitiveDependents(graph, taskId)
   return [taskId, ...dependents]
 }
+
+/**
+ * Detect cycles in a DAG. Returns the first cycle found as an array of node IDs,
+ * or null if the graph is acyclic.
+ */
+export function detectCycles<T extends DagNode>(nodes: T[]): string[] | null {
+  const graph = buildDag(nodes)
+  const visited = new Set<string>()
+  const recStack = new Set<string>()
+
+  function dfs(nodeId: string, path: string[]): string[] | null {
+    visited.add(nodeId)
+    recStack.add(nodeId)
+    path.push(nodeId)
+
+    const node = graph.nodes.get(nodeId)
+    if (node) {
+      for (const depId of node.dependsOn ?? []) {
+        if (!graph.nodes.has(depId)) continue
+        if (!visited.has(depId)) {
+          const cycle = dfs(depId, path)
+          if (cycle) return cycle
+        } else if (recStack.has(depId)) {
+          // Found cycle — return the cycle path
+          const cycleStart = path.indexOf(depId)
+          return path.slice(cycleStart)
+        }
+      }
+    }
+
+    path.pop()
+    recStack.delete(nodeId)
+    return null
+  }
+
+  for (const node of nodes) {
+    if (!visited.has(node.id)) {
+      const cycle = dfs(node.id, [])
+      if (cycle) return cycle
+    }
+  }
+
+  return null
+}

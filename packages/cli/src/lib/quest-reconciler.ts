@@ -11,6 +11,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { QuestRun, QuestRunState, QuestRunTask } from './quest-run.js'
 import { loadQuestRun } from './quest-run.js'
+import { detectCycles } from './task-dag.js'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -29,6 +30,11 @@ export type ReconcilerEventType =
   | 'handoff.incoming'
   | 'incident.created'
   | 'incident.resolved'
+  | 'review.started'
+  | 'review.approved'
+  | 'review.rejected'
+  | 'task.injected'
+  | 'priority.changed'
 
 export interface ReconcilerEvent {
   timestamp: string
@@ -141,7 +147,7 @@ function applyTaskUpdate(quest: ReconciledQuestRun, data: Record<string, unknown
 function applyStateChange(quest: ReconciledQuestRun, data: Record<string, unknown>): void {
   const to = data.to as QuestRunState | undefined
   if (!to) return
-  const validStates: QuestRunState[] = ['NEW', 'SPEC', 'EXECUTE', 'VERIFY', 'COMPLETE', 'WAITING', 'BLOCKED', 'FAILED']
+  const validStates: QuestRunState[] = ['NEW', 'SPEC', 'EXECUTE', 'REVIEW', 'VERIFY', 'COMPLETE', 'WAITING', 'BLOCKED', 'FAILED']
   if (validStates.includes(to)) {
     quest.state = to
   }
@@ -439,6 +445,21 @@ export function reconcileQuestRun(
       case 'incident.resolved':
         applyIncidentResolved(quest, event)
         break
+      case 'review.started':
+        applyReviewStarted(quest, event)
+        break
+      case 'review.approved':
+        applyReviewApproved(quest, event)
+        break
+      case 'review.rejected':
+        applyReviewRejected(quest, event)
+        break
+      case 'task.injected':
+        applyTaskInjected(quest, event)
+        break
+      case 'priority.changed':
+        applyPriorityChanged(quest, event)
+        break
     }
   }
 
@@ -498,6 +519,74 @@ function normalizeSeverity(value: string | undefined): IncidentRecord['severity'
   return undefined
 }
 
+// ── v8 Event Application ──────────────────────────────────────────────────────
+
+function applyReviewStarted(quest: ReconciledQuestRun, _event: ReconcilerEvent): void {
+  quest.state = 'REVIEW'
+}
+
+function applyReviewApproved(quest: ReconciledQuestRun, _event: ReconcilerEvent): void {
+  // Transition from REVIEW to VERIFY (or EXECUTE if verification is manual)
+  if (quest.state === 'REVIEW') {
+    quest.state = 'VERIFY'
+  }
+}
+
+function applyReviewRejected(quest: ReconciledQuestRun, event: ReconcilerEvent): void {
+  if (quest.state === 'REVIEW') {
+    quest.state = 'EXECUTE'
+  }
+  // Reset failed tasks to pending so they can be retried
+  const resetFailed = event.data.resetFailed !== false
+  if (resetFailed) {
+    for (const task of quest.tasks) {
+      if (task.status === 'failed') {
+        task.status = 'pending'
+      }
+    }
+  }
+}
+
+function applyTaskInjected(quest: ReconciledQuestRun, event: ReconcilerEvent): void {
+  const taskId = asString(event.data.taskId)
+  const title = asString(event.data.title)
+  if (!taskId || !title) return
+
+  // Avoid duplicates
+  if (quest.tasks.some((t) => t.id === taskId)) return
+
+  const newTask: QuestRunTask = {
+    id: taskId,
+    title,
+    status: normalizeStatus(asString(event.data.status)) || 'pending',
+    expert: asString(event.data.expert) || 'auto',
+    dependsOn: stringArray(event.data.dependsOn),
+    acceptanceCriteria: stringArray(event.data.acceptanceCriteria),
+    priority: asNumber(event.data.priority) ?? 3,
+  }
+
+  quest.tasks.push(newTask)
+
+  // Validate DAG for cycles
+  const cycle = detectCycles(quest.tasks)
+  if (cycle) {
+    newTask.status = 'blocked'
+    ;(newTask as unknown as Record<string, unknown>).blockReason = `Cycle detected: ${cycle.join(' → ')}`
+    quest.trustLabel = 'blocked'
+  }
+}
+
+function applyPriorityChanged(quest: ReconciledQuestRun, event: ReconcilerEvent): void {
+  const taskId = asString(event.data.taskId)
+  const priority = asNumber(event.data.priority)
+  if (!taskId || priority === undefined) return
+
+  const task = quest.tasks.find((t) => t.id === taskId)
+  if (task) {
+    task.priority = priority
+  }
+}
+
 /**
  * Load and reconcile a quest from disk.
  * Reads quest.json + events.ndjson and applies reconciliation.
@@ -554,6 +643,10 @@ function inferNextAction(quest: ReconciledQuestRun): string {
 
   if (quest.state === 'COMPLETE') {
     return `Quest ${quest.questId} is complete. Run 'oac quest-verify ${quest.questId}' for final checks.`
+  }
+
+  if (quest.state === 'REVIEW') {
+    return `Quest ${quest.questId} is awaiting review. Run 'oac quest-review ${quest.questId} --approve' to continue or '--reject' to return to execution.`
   }
 
   if (quest.state === 'WAITING') {
@@ -673,5 +766,90 @@ export function buildErrorEvent(
       ...(options?.taskId && { taskId: options.taskId }),
       ...(options?.critical !== undefined && { critical: options.critical }),
     },
+  }
+}
+
+// ── v8 Event Builders ─────────────────────────────────────────────────────────
+
+/**
+ * Build a write-back event for a review started.
+ */
+export function buildReviewStartedEvent(): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'review.started',
+    data: {},
+  }
+}
+
+/**
+ * Build a write-back event for a review approval.
+ */
+export function buildReviewApprovedEvent(): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'review.approved',
+    data: {},
+  }
+}
+
+/**
+ * Build a write-back event for a review rejection.
+ */
+export function buildReviewRejectedEvent(options?: { resetFailed?: boolean; reason?: string }): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'review.rejected',
+    data: {
+      ...(options?.resetFailed !== undefined && { resetFailed: options.resetFailed }),
+      ...(options?.reason && { reason: options.reason }),
+    },
+  }
+}
+
+/**
+ * Build a write-back event for injecting a new task.
+ */
+export function buildTaskInjectedEvent(
+  taskId: string,
+  title: string,
+  options?: {
+    expert?: string
+    dependsOn?: string[]
+    priority?: number
+    status?: QuestRunTask['status']
+    acceptanceCriteria?: string[]
+    injectedBy?: string
+    reason?: string
+  },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'task.injected',
+    data: {
+      taskId,
+      title,
+      ...(options?.expert && { expert: options.expert }),
+      ...(options?.dependsOn && { dependsOn: options.dependsOn }),
+      ...(options?.priority !== undefined && { priority: options.priority }),
+      ...(options?.status && { status: options.status }),
+      ...(options?.acceptanceCriteria && { acceptanceCriteria: options.acceptanceCriteria }),
+      ...(options?.injectedBy && { injectedBy: options.injectedBy }),
+      ...(options?.reason && { reason: options.reason }),
+    },
+  }
+}
+
+/**
+ * Build a write-back event for changing task priority.
+ */
+export function buildPriorityChangedEvent(
+  taskId: string,
+  priority: number,
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'priority.changed',
+    data: { taskId, priority },
   }
 }

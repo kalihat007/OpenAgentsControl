@@ -19,6 +19,7 @@ import {
   recordValidatedCommand,
   saveTeamMemory,
 } from './team-memory.js'
+import { extractPattern, appendPatternToCorpus } from './quest-feedback.js'
 
 export interface ExtractedMemory {
   validatedCommands: Array<{
@@ -202,6 +203,17 @@ export async function extractQuestMemory(
 
   for (const failure of extracted.failurePatterns) {
     memory = recordRecurringFailure(memory, failure.category, failure.pattern, quest.questId)
+  }
+
+  // v8: Extract and store pattern for self-improvement
+  try {
+    const pattern = extractPattern(quest)
+    const corpusResult = await appendPatternToCorpus(projectRoot, pattern)
+    if (corpusResult.appended) {
+      promotedLessons += 1
+    }
+  } catch {
+    // Non-critical: pattern extraction failure should not block memory extraction
   }
 
   await saveTeamMemory(memory)

@@ -45,7 +45,26 @@ run_with_timeout() {
     fi
 }
 
+wait_for_kimi_processes_to_release_dir() {
+    local dir="$1"
+    if ! command -v pgrep >/dev/null 2>&1; then
+        sleep 2
+        return 0
+    fi
+
+    for _ in $(seq 1 20); do
+        if ! pgrep -f "$dir" >/dev/null 2>&1; then
+            return 0
+        fi
+        sleep 0.5
+    done
+
+    pkill -TERM -f "$dir" >/dev/null 2>&1 || true
+    sleep 1
+}
+
 cleanup() {
+    wait_for_kimi_processes_to_release_dir "$TEST_DIR"
     rm -rf "$TEST_DIR"
 }
 

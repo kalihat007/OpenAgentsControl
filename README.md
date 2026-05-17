@@ -834,11 +834,17 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
-Quest v5 adds a small lifecycle, durable run identity, append-only event reconciliation, and runtime execution handoff so long sessions stay predictable:
+Quest v8 (evolved from v5–v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable:
 
 ```text
-NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
+NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING
 ```
+
+**v8 adaptive features:**
+- **REVIEW gate** — Pause between EXECUTE and VERIFY for diff inspection. Approve with `oac quest-review <id> --approve` or reject to return to EXECUTE.
+- **Dynamic replanning** — Inject new tasks into an active Quest without restarting via `oac quest-amend <id> "also do X"`.
+- **Priority queue** — Tasks have priorities (1–5). Urgent tasks are scheduled first.
+- **Self-improvement** — Completed Quest patterns are stored in a corpus that improves future expert routing decisions.
 
 After one substantial request completes and Kimi returns to the input box, the next substantial input in that same session starts a fresh `OpenAgent Quest Spec` with `State: NEW` unless you explicitly say it is a continuation. The visible spec also carries `Intensity` (`lite`, `standard`, `deep`) and an honest `Trust Label` (`planned_only`, `inspected_only`, `changed`, `tested`, `pushed`).
 
@@ -849,6 +855,7 @@ quest.json
 spec.json
 plan.json
 events.ndjson
+review-bundle.md     # v8: generated when a Quest enters REVIEW
 acceptance-report.md
 summary.json
 handoff.json

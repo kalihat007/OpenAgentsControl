@@ -17,12 +17,13 @@ import {
   OPENCODE_TUI_COMMAND,
 } from './run-handoff.js'
 
-export const QUEST_RUN_VERSION = '7' as const
+export const QUEST_RUN_VERSION = '8' as const
 
 export type QuestRunState =
   | 'NEW'
   | 'SPEC'
   | 'EXECUTE'
+  | 'REVIEW'
   | 'VERIFY'
   | 'COMPLETE'
   | 'WAITING'
@@ -47,6 +48,7 @@ export interface QuestRunTask {
   expert: string
   role?: string
   stage?: string
+  priority?: number
   dependsOn: string[]
   acceptanceCriteria: string[]
 }
@@ -86,6 +88,11 @@ export interface QuestEvent {
     | 'handoff.incoming'
     | 'incident.created'
     | 'incident.resolved'
+    | 'review.started'
+    | 'review.approved'
+    | 'review.rejected'
+    | 'task.injected'
+    | 'priority.changed'
   data: Record<string, unknown>
 }
 
@@ -114,7 +121,7 @@ export interface QuestVerificationResult {
 }
 
 export interface QuestRun {
-  version: '5' | '6' | '7'
+  version: '5' | '6' | '7' | '8'
   questId: string
   runId: string
   objective: string
@@ -138,6 +145,8 @@ export interface QuestRun {
   changedFiles?: string[]
   /** Latest verification result. */
   verification?: QuestVerificationResult
+  /** v8: whether the review gate should be skipped for this quest. */
+  skipReview?: boolean
 }
 
 export interface BuildQuestRunOptions {
@@ -145,6 +154,7 @@ export interface BuildQuestRunOptions {
   trustLabel?: QuestTrustLabel
   artifacts?: Partial<QuestRunArtifacts>
   result?: ExecutionResult
+  skipReview?: boolean
 }
 
 export function buildQuestRun(
@@ -189,6 +199,7 @@ export function buildQuestRun(
     artifacts,
     nextSuggestedAction: nextActionFor(state, plan.session.id),
     runtimes: buildRuntimeHints(plan.session.id, routerResult.objective, runDir),
+    skipReview: options.skipReview,
   }
 }
 
@@ -388,7 +399,7 @@ export function formatRuntimeHandoff(
 ): string {
   const rt = quest.runtimes[runtime]
   const lines: string[] = [
-    `OpenAgent Quest v7 — ${runtime.toUpperCase()} Resume`,
+    `OpenAgent Quest v${quest.version} — ${runtime.toUpperCase()} Resume`,
     `Quest ID:    ${quest.questId}`,
     `State:       ${quest.state}`,
     `Trust:       ${quest.trustLabel}`,
@@ -426,7 +437,7 @@ export function formatRuntimeHandoff(
   lines.push('Resume prompt:')
   lines.push(`  ${rt.resumePrompt}`)
   lines.push('')
-  lines.push('v7 Runtime Write-Back Contract:')
+  lines.push(`v${quest.version} Runtime Write-Back Contract:`)
   lines.push('  DO NOT rewrite quest.json. Append events to events.ndjson only.')
   lines.push('  Stay inside the selected runtime/model. Do not route work to a hidden LLM.')
   lines.push('  Event format: {"timestamp":"ISO","type":"...","data":{}}')
@@ -439,6 +450,11 @@ export function formatRuntimeHandoff(
   lines.push('  note         → {"type":"note","data":{"message":"Reasoning..."}}')
   lines.push('  runtime.*    → record assignment/spawn/completion metadata when runtime ownership changes')
   lines.push('  handoff.*    → record outgoing/incoming continuity between allowed runtimes')
+  if (quest.version === '8') {
+    lines.push('  review.*     → record review gate start/approval/rejection')
+    lines.push('  task.injected → add dynamic replanning tasks without rewriting quest.json')
+    lines.push('  priority.changed → update task priority for the daemon queue')
+  }
   lines.push('')
   lines.push('  The CLI reconciler reads base quest.json + events.ndjson to produce live state.')
   lines.push('  Run "oac quest-status <id>" to see reconciled state.')

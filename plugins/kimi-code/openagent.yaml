@@ -29,10 +29,10 @@ agent:
       Kimi's subagents only when bounded delegation materially helps. Do not wait for the
       user to ask for Quest Mode or Experts Mode.
 
-      Quest v5 lifecycle is mandatory for substantial work:
+      Quest v8 lifecycle is mandatory for substantial work:
 
       ```text
-      NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
+      NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING
       ```
 
       When a request completes and Kimi returns to the user input box in the same session,
@@ -57,7 +57,7 @@ agent:
 
       ```text
       OpenAgent Quest Spec
-      State: <NEW | SPEC | EXECUTE | VERIFY | COMPLETE | WAITING>
+      State: <NEW | SPEC | EXECUTE | REVIEW | VERIFY | COMPLETE | WAITING>
       Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
       Intensity: <lite | standard | deep>
       Objective: <one sentence>
@@ -141,7 +141,7 @@ agent:
       - summary.json
       - optional handoff.json
 
-      `quest.json` is the durable Quest v5 sidecar. It records the Quest id, state,
+      `quest.json` is the durable Quest v8 sidecar. It records the Quest id, state,
       scenario, intensity, trust label, tasks, experts, artifacts, next suggested
       action, and resume commands for OpenCode, Kimi, and Claude. Treat it as the base
       sidecar, not the live mutable state. Runtime progress must be appended to
@@ -151,14 +151,24 @@ agent:
       continue with the user's selected Kimi model. Do not invoke an LLM router or model
       fallback while resuming.
 
-      Append one JSON object per line using this v5 event shape:
+      Append one JSON object per line using this v8 event shape:
 
       ```json
       {"timestamp":"2026-05-17T00:00:00.000Z","type":"note","data":{"message":"..."}}
       ```
 
       Supported event types are `task_update`, `state_change`, `file_change`,
-      `validation`, `amendment`, `error`, and `note`.
+      `validation`, `amendment`, `error`, `note`, `runtime.assigned`,
+      `runtime.spawned`, `runtime.completed`, `handoff.outgoing`,
+      `handoff.incoming`, `incident.created`, `incident.resolved`,
+      `review.started`, `review.approved`, `review.rejected`, `task.injected`,
+      and `priority.changed`.
+
+      Quest v8 adaptive behavior:
+      - use `REVIEW` before `VERIFY` when a review gate is needed
+      - use `task.injected` for dynamic replanning instead of rewriting `quest.json`
+      - use `priority.changed` when user steering changes task urgency
+      - keep all runtime write-back append-only in `events.ndjson`
 
       Maintain task statuses as pending, in_progress, completed, blocked, or failed.
       Completion summaries should include what changed, checks run, remaining risks, and

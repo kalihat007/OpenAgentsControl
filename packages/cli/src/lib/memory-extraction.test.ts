@@ -184,7 +184,7 @@ describe('memory-extraction', () => {
 
 function baseQuest(): ReconciledQuestRun {
   return {
-    version: '7',
+    version: '8',
     questId: 'quest-memory-wrapper',
     runId: 'quest-memory-wrapper',
     objective: 'memory wrapper',

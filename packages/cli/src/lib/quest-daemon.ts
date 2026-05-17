@@ -18,6 +18,9 @@ import { findTasksToResetOnRetry } from './task-dag.js'
 import { runQuestVerification } from './quest-verification.js'
 import { runSwarmQualityGate } from './swarm-quality-gate.js'
 import { extractQuestMemory } from './memory-extraction.js'
+import { generateReviewBundle, persistReviewBundle, shouldAutoApprove } from './quest-review.js'
+import { buildReviewStartedEvent, buildReviewApprovedEvent } from './quest-reconciler.js'
+import { readConfig } from './config.js'
 
 const log = createLogger('quest-daemon')
 
@@ -25,6 +28,8 @@ const HEARTBEAT_INTERVAL_MS = 5000
 const ACTION_POLL_INTERVAL_MS = 2000
 const RUNTIME_TIMEOUT_MS = 10 * 60 * 1000
 const GRACEFUL_SHUTDOWN_MS = 10000
+const TERMINAL_RUNTIME_EXIT_GRACE_MS = 5000
+const TERMINAL_RUNTIME_KILL_GRACE_MS = 2000
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -222,13 +227,18 @@ export async function runDaemonLoop(options: DaemonOptions): Promise<void> {
 
   await saveDaemonState(projectRoot, state)
 
-  // Group tasks by runtime
-  const runtimeMap = new Map<RuntimeType, Array<{ id: string; title: string; agent: string }>>()
+  // Group tasks by runtime, sorted by priority
+  const runtimeMap = new Map<RuntimeType, Array<{ id: string; title: string; agent: string; priority?: number }>>()
   for (const task of plan.tasks) {
     if (isTerminalStatus(task.status)) continue
     const rt = (runtimeAssignments?.[task.id] ?? task.runtime ?? 'kimi') as RuntimeType
     const list = runtimeMap.get(rt) ?? []
-    list.push({ id: task.id, title: task.title, agent: task.agent })
+    list.push({ id: task.id, title: task.title, agent: task.agent, priority: (task as unknown as { priority?: number }).priority })
+    runtimeMap.set(rt, list)
+  }
+  // Sort each runtime's task list by priority (1 = highest)
+  for (const [rt, list] of runtimeMap) {
+    list.sort((a, b) => (a.priority ?? 3) - (b.priority ?? 3))
     runtimeMap.set(rt, list)
   }
 
@@ -319,7 +329,42 @@ export async function runDaemonLoop(options: DaemonOptions): Promise<void> {
         (t) => t.status === 'completed' || t.status === 'failed' || t.status === 'blocked' || t.status === 'cancelled',
       )
       if (allDone && state.status === 'running') {
+        await settleTerminalRuntimeProcesses(projectRoot, questId, state, reconciled.tasks)
         await finalizeTerminalRuntimes(projectRoot, questId, state)
+
+        // v8 Review Gate
+        if (reconciled.version === '8' && !reconciled.skipReview) {
+          const config = await readConfig(projectRoot)
+          const v8Prefs = config?.v8
+          const reviewPrefs = v8Prefs?.reviewGate
+          const reviewEnabled =
+            v8Prefs?.enabled !== false &&
+            reviewPrefs?.enabled !== false &&
+            (reviewPrefs?.requiredFor ?? ['standard', 'deep']).includes(reconciled.intensity)
+          const autoApprove = shouldAutoApprove(reconciled, {
+            autoApproveOnNoChanges: reviewPrefs?.autoApproveOnNoChanges,
+            excludedFor: reviewPrefs?.excludedFor,
+            yoloMode: config ? (config.preferences.yoloMode || process.env['CI'] === 'true') : false,
+          })
+
+          if (reviewEnabled && !autoApprove && reconciled.state !== 'REVIEW' && reconciled.state !== 'VERIFY' && reconciled.state !== 'COMPLETE') {
+            log.info('All tasks complete — entering REVIEW gate', { questId })
+            const bundle = await generateReviewBundle(projectRoot, reconciled)
+            await persistReviewBundle(projectRoot, questId, bundle)
+            await appendQuestEvent(projectRoot, questId, buildReviewStartedEvent())
+            state.status = 'paused'
+            await saveDaemonState(projectRoot, state)
+            // Pause loop — user must run quest-review --approve to continue
+            await sleep(5000)
+            continue
+          }
+
+          if (reviewEnabled && autoApprove && reconciled.state !== 'REVIEW' && reconciled.state !== 'VERIFY' && reconciled.state !== 'COMPLETE') {
+            log.info('Auto-approving review gate', { questId })
+            await appendQuestEvent(projectRoot, questId, buildReviewApprovedEvent())
+          }
+        }
+
         const gateResult = await runDaemonQualityGates(projectRoot, questId)
         if (gateResult.passed) {
           log.info('All tasks complete and quality gates passed, daemon finishing', { questId })
@@ -404,6 +449,76 @@ async function finalizeTerminalRuntimes(
     })
     entry.status = 'exited'
   }
+}
+
+async function settleTerminalRuntimeProcesses(
+  projectRoot: string,
+  questId: string,
+  state: QuestDaemonState,
+  tasks: Array<{ id: string; status: string }>,
+): Promise<void> {
+  const statusByTask = new Map(tasks.map((task) => [task.id, task.status]))
+
+  for (const entry of state.runtimes) {
+    if (entry.status !== 'running') continue
+    if (entry.taskIds.length === 0) {
+      entry.status = 'exited'
+      continue
+    }
+
+    const allAssignedTasksTerminal = entry.taskIds.every((taskId) => {
+      const status = statusByTask.get(taskId)
+      return status === 'completed' || status === 'failed' || status === 'blocked' || status === 'cancelled'
+    })
+    if (!allAssignedTasksTerminal) continue
+
+    if (await waitForPidExit(entry.pid, TERMINAL_RUNTIME_EXIT_GRACE_MS)) {
+      entry.status = 'exited'
+      continue
+    }
+
+    log.warn('Runtime still alive after terminal task write-back; stopping before daemon completion', {
+      questId,
+      runtime: entry.runtime,
+      pid: entry.pid,
+    })
+    await appendQuestEvent(projectRoot, questId, {
+      timestamp: new Date().toISOString(),
+      type: 'note',
+      data: {
+        message: `Runtime ${entry.runtime} was still alive after terminal task write-back; stopping it before daemon completion.`,
+        runtime: entry.runtime,
+        pid: entry.pid,
+      },
+    })
+
+    try {
+      process.kill(entry.pid, 'SIGTERM')
+    } catch {
+      entry.status = 'exited'
+      continue
+    }
+
+    if (!(await waitForPidExit(entry.pid, TERMINAL_RUNTIME_KILL_GRACE_MS))) {
+      try {
+        process.kill(entry.pid, 'SIGKILL')
+      } catch {
+        // already gone
+      }
+      await waitForPidExit(entry.pid, 1000)
+    }
+
+    entry.status = 'exited'
+  }
+}
+
+async function waitForPidExit(pid: number, timeoutMs: number): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs
+  while (Date.now() < deadline) {
+    if (!isPidAlive(pid)) return true
+    await sleep(100)
+  }
+  return !isPidAlive(pid)
 }
 
 // ── Heartbeat ─────────────────────────────────────────────────────────────────

@@ -14,6 +14,7 @@ import { runQuestVerification } from '../lib/quest-verification.js'
 import { runAutoFixLoop } from '../lib/auto-fix-loop.js'
 import type { RuntimeType } from '../lib/runtime-bridge.js'
 import { createIncident } from '../lib/incident-tracker.js'
+import { readConfig, isYoloMode, createDefaultConfig } from '../lib/config.js'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -39,6 +40,28 @@ export async function questVerifyCommand(
   const quest = await loadReconciledQuest(projectRoot, questId)
   if (!quest) {
     throw new CommandUsageError(`Quest '${questId}' has no quest.json.`)
+  }
+
+  const config = (await readConfig(projectRoot)) ?? createDefaultConfig()
+
+  // v8 Review Gate: block verify if quest is in REVIEW state
+  if (quest.state === 'REVIEW') {
+    if (options.force || isYoloMode(config)) {
+      warn('Quest is in REVIEW state. --force / yolo mode bypasses the review gate.')
+    } else {
+      throw new CommandUsageError(
+        `Quest '${questId}' is awaiting review. Run 'oac quest-review ${questId} --approve' before verifying, or use --force to bypass.`,
+      )
+    }
+  }
+
+  // Warn if quest hasn't reached REVIEW yet but tasks are done
+  const allTerminal = quest.tasks.every(
+    (t) => t.status === 'completed' || t.status === 'failed' || t.status === 'blocked' || t.status === 'cancelled',
+  )
+  if (quest.state === 'EXECUTE' && allTerminal && quest.version === '8' && !options.force) {
+    warn('All tasks are complete but this v8 Quest has not been reviewed.')
+    warn(`Run 'oac quest-review ${questId} --approve' first, or use --force to bypass.`)
   }
 
   log('')

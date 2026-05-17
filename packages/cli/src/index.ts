@@ -47,6 +47,7 @@ async function main(): Promise<void> {
     { registerQuestVerifyCommand },
     { registerQuestCompleteCommand },
     { registerQuestAmendCommand },
+    { registerQuestReviewCommand },
     { registerQuestAttachCommand },
     { registerIncidentListCommand },
     { registerIncidentSearchCommand },
@@ -74,6 +75,7 @@ async function main(): Promise<void> {
     import('./commands/quest-verify.js'),
     import('./commands/quest-complete.js'),
     import('./commands/quest-amend.js'),
+    import('./commands/quest-review.js'),
     import('./commands/quest-attach.js'),
     import('./commands/incident-list.js'),
     import('./commands/incident-search.js'),
@@ -102,6 +104,7 @@ async function main(): Promise<void> {
   registerQuestVerifyCommand(program)
   registerQuestCompleteCommand(program)
   registerQuestAmendCommand(program)
+  registerQuestReviewCommand(program)
   registerQuestAttachCommand(program)
   registerIncidentListCommand(program)
   registerIncidentSearchCommand(program)

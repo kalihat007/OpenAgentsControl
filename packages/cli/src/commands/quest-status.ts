@@ -243,8 +243,9 @@ async function watchQuestStatus(
     const pct = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0
     const bar = '█'.repeat(Math.round(pct / 5)) + '░'.repeat(20 - Math.round(pct / 5))
 
+    const reviewIndicator = quest.state === 'REVIEW' ? ' 👁 REVIEW' : ''
     log(`┌─ OpenAgent Quest v${quest.version} ───────────────────────────────────────────┐`)
-    log(`│ ${quest.questId} │ State: ${quest.state.padEnd(8)} │ Trust: ${quest.trustLabel.padEnd(12)} │`)
+    log(`│ ${quest.questId} │ State: ${(quest.state + reviewIndicator).padEnd(8)} │ Trust: ${quest.trustLabel.padEnd(12)} │`)
     log(`│ Progress: ${progress.completed}/${progress.total} tasks ${bar} ${pct}% │`)
 
     const rtNames = Object.keys(quest.runtimeProgress)
@@ -281,7 +282,8 @@ async function watchQuestStatus(
     for (const [rt, tasks] of tasksByRuntime) {
       const taskLine = tasks.map((t) => {
         const icon = t.status === 'completed' ? '✓' : t.status === 'in_progress' ? '→' : t.status === 'blocked' ? '⊘' : t.status === 'failed' ? '✗' : '○'
-        return `${icon} ${t.id}`
+        const pri = t.priority ? `P${t.priority}` : ''
+        return `${icon}${pri} ${t.id}`
       }).join('  ')
       log(`│ ${rt.padEnd(10)} ${taskLine.slice(0, 50).padEnd(50)} │`)
     }
@@ -407,6 +409,9 @@ function printQuest(quest: ReconciledQuestRun): void {
   log(`  Intensity:   ${quest.intensity}`)
   log(`  Trust:       ${trustIcon(quest.trustLabel)} ${quest.trustLabel}`)
   log(`  Updated:     ${quest.updatedAt}`)
+  if (quest.version === '8' && quest.skipReview) {
+    log(`  Review:      skipped`)
+  }
   if (quest.changedFiles && quest.changedFiles.length > 0) {
     log(`  Changed:     ${quest.changedFiles.length} file(s)`)
   }
@@ -438,7 +443,8 @@ function printQuest(quest: ReconciledQuestRun): void {
               : task.status === 'failed'
                 ? '✗'
                 : '○'
-      log(`  ${icon} ${task.status.padEnd(11)} ${task.title}`)
+      const priorityBadge = task.priority ? `[P${task.priority}] ` : ''
+      log(`  ${icon} ${task.status.padEnd(11)} ${priorityBadge}${task.title}`)
     }
     if (quest.tasks.length > 10) dim(`  ... ${quest.tasks.length - 10} more task(s)`)
     log('')

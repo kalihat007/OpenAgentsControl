@@ -11,6 +11,11 @@ import {
   buildFileChangeEvent,
   buildValidationEvent,
   buildAmendmentEvent,
+  buildReviewStartedEvent,
+  buildReviewApprovedEvent,
+  buildReviewRejectedEvent,
+  buildTaskInjectedEvent,
+  buildPriorityChangedEvent,
 } from './quest-reconciler.js'
 import { persistQuestRun, type QuestRun } from './quest-run.js'
 
@@ -101,6 +106,15 @@ describe('quest-reconciler', () => {
 
     const live = reconcileQuestRun(base, events)
     expect(live.state).toBe('VERIFY')
+  })
+
+  it('reconcileQuestRun accepts REVIEW as a v8 state_change target', () => {
+    const base = makeBaseQuest()
+    base.version = '8'
+    const events = [buildStateChangeEvent('EXECUTE', 'REVIEW')]
+
+    const live = reconcileQuestRun(base, events)
+    expect(live.state).toBe('REVIEW')
   })
 
   it('reconcileQuestRun ignores invalid state changes', () => {
@@ -372,5 +386,59 @@ describe('quest-reconciler', () => {
     const events = await loadEvents(projectRoot, 'q-malformed')
     expect(events).toHaveLength(1)
     expect(events[0].type).toBe('task_update')
+  })
+
+  // ── v8 Event Types ──────────────────────────────────────────────────────────
+
+  it('review.started transitions state to REVIEW', () => {
+    const base = makeBaseQuest()
+    const live = reconcileQuestRun(base, [buildReviewStartedEvent()])
+    expect(live.state).toBe('REVIEW')
+  })
+
+  it('review.approved transitions REVIEW → VERIFY', () => {
+    const base = makeBaseQuest()
+    base.state = 'REVIEW'
+    const live = reconcileQuestRun(base, [buildReviewApprovedEvent()])
+    expect(live.state).toBe('VERIFY')
+  })
+
+  it('review.rejected transitions REVIEW → EXECUTE and resets failed tasks', () => {
+    const base = makeBaseQuest()
+    base.state = 'REVIEW'
+    base.tasks[0].status = 'failed'
+    const live = reconcileQuestRun(base, [buildReviewRejectedEvent()])
+    expect(live.state).toBe('EXECUTE')
+    expect(live.tasks[0].status).toBe('pending')
+  })
+
+  it('task.injected adds a new task to the quest', () => {
+    const base = makeBaseQuest()
+    const live = reconcileQuestRun(base, [
+      buildTaskInjectedEvent('new-1', 'Injected task', { expert: 'tester', priority: 2 }),
+    ])
+    expect(live.tasks).toHaveLength(3)
+    const injected = live.tasks.find((t) => t.id === 'new-1')
+    expect(injected).not.toBeUndefined()
+    expect(injected!.title).toBe('Injected task')
+    expect(injected!.priority).toBe(2)
+  })
+
+  it('task.injected detects cycles and blocks the task', () => {
+    const base = makeBaseQuest()
+    base.tasks[0].dependsOn = ['2']
+    base.tasks[1].dependsOn = ['1']
+    const live = reconcileQuestRun(base, [
+      buildTaskInjectedEvent('new-1', 'Cyclic task', { dependsOn: ['1'] }),
+    ])
+    const injected = live.tasks.find((t) => t.id === 'new-1')
+    expect(injected!.status).toBe('blocked')
+    expect(live.trustLabel).toBe('blocked')
+  })
+
+  it('priority.changed updates task priority', () => {
+    const base = makeBaseQuest()
+    const live = reconcileQuestRun(base, [buildPriorityChangedEvent('1', 1)])
+    expect(live.tasks[0].priority).toBe(1)
   })
 })

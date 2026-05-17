@@ -18,6 +18,7 @@ export interface QuestRunOptions {
   runtime?: string
   distributed?: boolean
   mode?: ExecutionMode
+  skipReview?: boolean
 }
 
 export async function questRunCommand(objective: string, options: QuestRunOptions): Promise<void> {
@@ -39,7 +40,7 @@ export async function questRunCommand(objective: string, options: QuestRunOption
   const questId = plan.session.id
 
   // Build and persist quest
-  const quest = buildQuestRun(routerResult, plan, { state: options.background ? 'EXECUTE' : 'WAITING' })
+  const quest = buildQuestRun(routerResult, plan, { state: options.background ? 'EXECUTE' : 'WAITING', skipReview: options.skipReview })
   await persistQuestRun(projectRoot, quest)
 
   // Persist artifacts
@@ -123,6 +124,7 @@ export function registerQuestRunCommand(program: Command): void {
     .option('--background', 'Run as a background daemon process', false)
     .option('--runtime <name>', 'Runtime for inline execution: opencode, kimi, or claude')
     .option('--distributed', 'Use distributed multi-runtime mode', false)
+    .option('--skip-review', 'Skip the review gate for this Quest (v8)', false)
     .action(async (objective: string, opts: QuestRunOptions) => {
       await questRunCommand(objective, opts)
     })

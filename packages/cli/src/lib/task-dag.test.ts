@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { buildDag, findTransitiveDependents, findTasksToResetOnRetry } from './task-dag.js'
+import { buildDag, findTransitiveDependents, findTasksToResetOnRetry, detectCycles } from './task-dag.js'
 
 describe('task-dag', () => {
   describe('buildDag', () => {
@@ -69,6 +69,56 @@ describe('task-dag', () => {
         { id: 'b', dependsOn: ['a'] },
       ]
       expect(findTasksToResetOnRetry(tasks, 'a')).toEqual(['a', 'b'])
+    })
+  })
+
+  describe('detectCycles', () => {
+    it('returns null for acyclic graph', () => {
+      const tasks = [
+        { id: 'a', dependsOn: [] as string[] },
+        { id: 'b', dependsOn: ['a'] },
+        { id: 'c', dependsOn: ['b'] },
+      ]
+      expect(detectCycles(tasks)).toBeNull()
+    })
+
+    it('detects self-loop', () => {
+      const tasks = [{ id: 'a', dependsOn: ['a'] as string[] }]
+      const cycle = detectCycles(tasks)
+      expect(cycle).not.toBeNull()
+      expect(cycle).toContain('a')
+    })
+
+    it('detects A→B→A cycle', () => {
+      const tasks = [
+        { id: 'a', dependsOn: ['b'] as string[] },
+        { id: 'b', dependsOn: ['a'] },
+      ]
+      const cycle = detectCycles(tasks)
+      expect(cycle).not.toBeNull()
+      expect(cycle).toContain('a')
+      expect(cycle).toContain('b')
+    })
+
+    it('detects A→B→C→A cycle', () => {
+      const tasks = [
+        { id: 'a', dependsOn: ['c'] as string[] },
+        { id: 'b', dependsOn: ['a'] },
+        { id: 'c', dependsOn: ['b'] },
+      ]
+      const cycle = detectCycles(tasks)
+      expect(cycle).not.toBeNull()
+      expect(cycle).toContain('a')
+      expect(cycle).toContain('b')
+      expect(cycle).toContain('c')
+    })
+
+    it('ignores missing dependencies', () => {
+      const tasks = [
+        { id: 'a', dependsOn: ['missing'] as string[] },
+        { id: 'b', dependsOn: ['a'] },
+      ]
+      expect(detectCycles(tasks)).toBeNull()
     })
   })
 })

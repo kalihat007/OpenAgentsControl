@@ -27,6 +27,28 @@ export const OacV6PreferencesSchema = z.object({
   }).default({}),
 });
 
+export const OacV8PreferencesSchema = z.object({
+  enabled: z.boolean().default(true),
+  reviewGate: z.object({
+    enabled: z.boolean().default(true),
+    autoApproveOnNoChanges: z.boolean().default(true),
+    requiredFor: z.array(z.enum(["lite", "standard", "deep"])).default(["standard", "deep"]),
+    excludedFor: z.array(z.enum(["lite", "standard", "deep"])).default(["lite"]),
+  }).default({}),
+  priorityQueue: z.object({
+    enabled: z.boolean().default(true),
+    maxConcurrentUrgent: z.number().int().min(1).max(5).default(2),
+    preemptOnCritical: z.boolean().default(false),
+  }).default({}),
+  selfImprovement: z.object({
+    enabled: z.boolean().default(true),
+    patternCorpusMaxSize: z.number().int().min(10).max(5000).default(1000),
+    minPatternConfidence: z.number().min(0).max(1).default(0.7),
+    boostSuccessPatterns: z.boolean().default(true),
+    penalizeFailedPatterns: z.boolean().default(true),
+  }).default({}),
+});
+
 export const OacPreferencesSchema = z.object({
   yoloMode: z.boolean(),
   autoBackup: z.boolean(),
@@ -40,10 +62,12 @@ export const OacConfigSchema = z.object({
   version: z.literal("1"),
   preferences: OacPreferencesSchema,
   v6: OacV6PreferencesSchema.optional(),
+  v8: OacV8PreferencesSchema.optional(),
 });
 
 export type OacPreferences = z.infer<typeof OacPreferencesSchema>;
 export type OacV6Preferences = z.infer<typeof OacV6PreferencesSchema>;
+export type OacV8Preferences = z.infer<typeof OacV8PreferencesSchema>;
 export type OacConfig = z.infer<typeof OacConfigSchema>;
 
 export const DEFAULT_MAX_PARALLEL_AGENTS = 2;
@@ -62,6 +86,7 @@ export const createDefaultConfig = (): OacConfig => ({
     maxApiCallsPerSession: 500,
   },
   v6: OacV6PreferencesSchema.parse({}),
+  v8: OacV8PreferencesSchema.parse({}),
 });
 
 // Pure — returns new object, no mutation
@@ -91,6 +116,12 @@ export const isV6Enabled = (config: OacConfig): boolean =>
 
 export const getV6Preferences = (config: OacConfig): OacV6Preferences | undefined =>
   config.v6;
+
+export const isV8Enabled = (config: OacConfig): boolean =>
+  config.v8?.enabled ?? false;
+
+export const getV8Preferences = (config: OacConfig): OacV8Preferences | undefined =>
+  config.v8;
 
 export async function readConfig(projectRoot: string): Promise<OacConfig | null> {
   const configPath = getConfigPath(projectRoot);

@@ -506,7 +506,39 @@ export async function routeTaskAsync(
   projectRoot: string,
   config: RouterConfig = {},
 ): Promise<RouterResult> {
-  return routeTask(objective, projectRoot, config)
+  // v8: attempt to load feedback corpus and boost expert scores
+  let boostedResult = buildRouterResult(objective, projectRoot, config)
+  try {
+    const { findSimilarPatterns, boostExpertsFromPatterns } = await import('./quest-feedback.js')
+    const patterns = await findSimilarPatterns(projectRoot, objective, { maxResults: 5 })
+    if (patterns.length > 0) {
+      const scoreMap = new Map<string, number>()
+      for (const expert of [...boostedResult.primaryExperts, ...boostedResult.secondaryExperts]) {
+        scoreMap.set(expert.name, expert.score)
+      }
+      const boostedScores = boostExpertsFromPatterns(scoreMap, patterns)
+      // Rebuild result with boosted scores
+      boostedResult = buildRouterResult(objective, projectRoot, config)
+      // Apply boosts to profiles
+      const allExperts = [...boostedResult.primaryExperts, ...boostedResult.secondaryExperts]
+      for (const expert of allExperts) {
+        const boosted = boostedScores.get(expert.name)
+        if (boosted !== undefined) {
+          expert.score = boosted
+        }
+      }
+      // Re-sort and re-filter
+      const allProfiles = allExperts.sort((a, b) => b.score - a.score)
+      const primary = allProfiles.filter((p) => p.score >= 3)
+      const secondary = allProfiles.filter((p) => p.score >= 1 && p.score < 3)
+      boostedResult.primaryExperts = primary
+      boostedResult.secondaryExperts = secondary
+      boostedResult.reasoning.push(`Feedback corpus: ${patterns.length} similar pattern(s) applied`)
+    }
+  } catch {
+    // Corpus not available or quest-feedback not loadable — fall back to base routing
+  }
+  return boostedResult
 }
 
 /**

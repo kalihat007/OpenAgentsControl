@@ -5,7 +5,7 @@
 import { type Command } from 'commander'
 import { log, info, success, dim, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
-import { loadReconciledQuest, buildAmendmentEvent, buildStateChangeEvent, buildTaskUpdateEvent } from '../lib/quest-reconciler.js'
+import { loadReconciledQuest, buildAmendmentEvent, buildStateChangeEvent, buildTaskUpdateEvent, buildTaskInjectedEvent, buildPriorityChangedEvent } from '../lib/quest-reconciler.js'
 import { appendQuestEvent, questExists } from '../lib/quest-run.js'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -14,6 +14,7 @@ export type QuestAmendOptions = {
   objective?: string
   addTask?: string
   dependsOn?: string[]
+  priority?: number
 }
 
 // ── Command Handler ───────────────────────────────────────────────────────────
@@ -57,23 +58,54 @@ export async function questAmendCommand(
   // Add new task if requested
   if (options.addTask) {
     const taskId = `amend-${Date.now()}`
-    const taskEvent = buildTaskUpdateEvent(taskId, 'pending', {
-      title: options.addTask,
-    })
-    await appendQuestEvent(projectRoot, questId, taskEvent)
-    success(`Added pending task: ${options.addTask} (${taskId})`)
 
-    // Add dependency links if requested
-    if (options.dependsOn && options.dependsOn.length > 0) {
-      await appendQuestEvent(projectRoot, questId, {
-        timestamp: new Date().toISOString(),
-        type: 'task_update',
-        data: {
-          taskId,
-          dependsOn: options.dependsOn,
-        },
+    // v8: use task.injected for richer metadata; v7 fallback to task_update
+    if (quest.version === '8') {
+      const injectedEvent = buildTaskInjectedEvent(taskId, options.addTask, {
+        expert: 'auto',
+        dependsOn: options.dependsOn,
+        priority: options.priority ?? 3,
+        status: 'pending',
+        injectedBy: 'user',
+        reason: amendmentText,
       })
+      await appendQuestEvent(projectRoot, questId, injectedEvent)
+    } else {
+      const taskEvent = buildTaskUpdateEvent(taskId, 'pending', {
+        title: options.addTask,
+      })
+      await appendQuestEvent(projectRoot, questId, taskEvent)
+
+      if (options.dependsOn && options.dependsOn.length > 0) {
+        await appendQuestEvent(projectRoot, questId, {
+          timestamp: new Date().toISOString(),
+          type: 'task_update',
+          data: {
+            taskId,
+            dependsOn: options.dependsOn,
+          },
+        })
+      }
+    }
+
+    success(`Added pending task: ${options.addTask} (${taskId})`)
+    if (options.dependsOn && options.dependsOn.length > 0) {
       dim(`  Dependencies: ${options.dependsOn.join(', ')}`)
+    }
+    if (options.priority !== undefined) {
+      dim(`  Priority: ${options.priority}`)
+    }
+  }
+
+  // Change priority of existing task if specified without add-task
+  if (options.priority !== undefined && !options.addTask) {
+    // Find most recently added pending task and change its priority
+    const pendingTasks = quest.tasks.filter((t) => t.status === 'pending')
+    if (pendingTasks.length > 0) {
+      const target = pendingTasks[pendingTasks.length - 1]
+      const priorityEvent = buildPriorityChangedEvent(target.id, options.priority)
+      await appendQuestEvent(projectRoot, questId, priorityEvent)
+      success(`Priority changed for task ${target.id}: ${target.priority ?? 3} → ${options.priority}`)
     }
   }
 
@@ -98,16 +130,18 @@ export function registerQuestAmendCommand(program: Command): void {
     .option('--objective <text>', 'Update the quest objective')
     .option('--add-task <title>', 'Add a new pending task')
     .option('--depends-on <ids>', 'Comma-separated task IDs this new task depends on', (val: string) => val.split(',').map((s) => s.trim()).filter(Boolean))
+    .option('--priority <n>', 'Set task priority (1=highest, 5=lowest)', (val: string) => parseInt(val, 10))
     .action(
       async (
         questId: string,
         amendmentText: string,
-        opts: { objective?: string; addTask?: string; dependsOn?: string[] },
+        opts: { objective?: string; addTask?: string; dependsOn?: string[]; priority?: number },
       ) => {
         await questAmendCommand(questId, amendmentText, {
           objective: opts.objective,
           addTask: opts.addTask,
           dependsOn: opts.dependsOn,
+          priority: opts.priority,
         })
       },
     )
