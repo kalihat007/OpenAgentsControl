@@ -35,6 +35,7 @@ export type QuestStatusOptions = {
 
 interface QuestStatusJson {
   questId: string
+  version?: string
   state: string
   trustLabel: string
   objective: string
@@ -49,6 +50,7 @@ interface QuestStatusJson {
     expert: string
     runtime?: string
     dependsOn: string[]
+    priority?: number
   }>
   recentEvents: ReconcilerEvent[]
   handoffs: ReconciledQuestRun['handoffs']
@@ -351,6 +353,7 @@ async function buildQuestStatusJson(
 ): Promise<QuestStatusJson> {
   return {
     questId: quest.questId,
+    version: quest.version,
     state: quest.state,
     trustLabel: quest.trustLabel,
     objective: quest.objective,
@@ -365,6 +368,7 @@ async function buildQuestStatusJson(
       expert: task.expert,
       runtime: runtimeForTask(task),
       dependsOn: task.dependsOn,
+      priority: task.priority,
     })),
     recentEvents: events.slice(-20),
     handoffs: quest.handoffs,

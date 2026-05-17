@@ -424,6 +424,35 @@ describe('quest-reconciler', () => {
     expect(injected!.priority).toBe(2)
   })
 
+  it('task.injected accepts real runtime snake_case and nested task payloads', () => {
+    const base = makeBaseQuest()
+    const live = reconcileQuestRun(base, [
+      {
+        timestamp: new Date().toISOString(),
+        type: 'task.injected',
+        data: {
+          task: {
+            task_id: 'new-runtime-1',
+            title: 'Runtime injected task',
+            status: 'completed',
+            agent: 'KimiAdaptiveExpert',
+            depends_on: ['1'],
+            acceptance_criteria: ['Runtime shape reconciles'],
+            priority: '1',
+          },
+        },
+      },
+    ])
+
+    const injected = live.tasks.find((t) => t.id === 'new-runtime-1')
+    expect(injected).not.toBeUndefined()
+    expect(injected!.status).toBe('completed')
+    expect(injected!.expert).toBe('KimiAdaptiveExpert')
+    expect(injected!.dependsOn).toEqual(['1'])
+    expect(injected!.acceptanceCriteria).toEqual(['Runtime shape reconciles'])
+    expect(injected!.priority).toBe(1)
+  })
+
   it('task.injected detects cycles and blocks the task', () => {
     const base = makeBaseQuest()
     base.tasks[0].dependsOn = ['2']
@@ -439,6 +468,18 @@ describe('quest-reconciler', () => {
   it('priority.changed updates task priority', () => {
     const base = makeBaseQuest()
     const live = reconcileQuestRun(base, [buildPriorityChangedEvent('1', 1)])
+    expect(live.tasks[0].priority).toBe(1)
+  })
+
+  it('priority.changed accepts snake_case ids and numeric string priorities', () => {
+    const base = makeBaseQuest()
+    const live = reconcileQuestRun(base, [
+      {
+        timestamp: new Date().toISOString(),
+        type: 'priority.changed',
+        data: { task_id: '1', new_priority: '1' },
+      },
+    ])
     expect(live.tasks[0].priority).toBe(1)
   })
 })

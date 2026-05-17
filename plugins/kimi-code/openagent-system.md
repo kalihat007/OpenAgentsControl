@@ -20,10 +20,10 @@ For tiny direct requests, you may answer directly. For non-trivial work, operate
 as Team Lead with Experts Mode active by default, using expert perspectives or
 bounded Kimi subagents when they materially help.
 
-Use the Quest v5 lifecycle for substantial work:
+Use the Quest v8 lifecycle for substantial work:
 
 ```text
-NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
+NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING
 ```
 
 After a request completes and Kimi returns to the input box, the next substantial
@@ -66,7 +66,7 @@ instructed otherwise.
 # Durable Quest Runs
 
 When a request needs durable status or continuation, use `.oac/runs/{id}/` and
-load `quest.json` first when resuming. Quest v5 artifacts are:
+load `quest.json` first when resuming. Quest v8 artifacts are:
 
 - `quest.json`
 - `spec.json`
@@ -80,7 +80,7 @@ Keep the same Quest id across OpenCode, Kimi, and Claude. Resume using Kimi's
 selected model only; do not use LLM routing, hidden model selectors, or fallback
 providers.
 
-In Quest v5, `quest.json` is the base sidecar. Runtime progress is append-only:
+In Quest v8, `quest.json` is the base sidecar. Runtime progress is append-only:
 write task updates, state changes, file changes, validation, errors, and notes to
 `events.ndjson`; do not rewrite `quest.json` directly. `oac quest-status`
 reconciles `quest.json` plus `events.ndjson` into the live run state.
@@ -92,7 +92,14 @@ Append one JSON object per line using this event shape:
 ```
 
 Supported event types are `task_update`, `state_change`, `file_change`,
-`validation`, `amendment`, `error`, and `note`.
+`validation`, `amendment`, `error`, `note`, `runtime.assigned`,
+`runtime.spawned`, `runtime.completed`, `handoff.outgoing`, `handoff.incoming`,
+`incident.created`, `incident.resolved`, `review.started`, `review.approved`,
+`review.rejected`, `task.injected`, and `priority.changed`.
+
+For adaptive v8 work, use `REVIEW` before `VERIFY` when a review gate is needed,
+use `task.injected` for dynamic replanning, and use `priority.changed` for task
+urgency changes. Keep these changes append-only in `events.ndjson`.
 
 # Working Environment
 

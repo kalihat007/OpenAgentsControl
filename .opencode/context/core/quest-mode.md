@@ -1,4 +1,4 @@
-<!-- Context: core/quest-mode | Priority: critical | Version: 5.0 | Updated: 2026-05-17 -->
+<!-- Context: core/quest-mode | Priority: critical | Version: 8.0 | Updated: 2026-05-17 -->
 
 # OpenAgent Quest Mode
 
@@ -17,12 +17,12 @@ Vendor terminology and feature framing: [Quest overview](https://docs.qoder.com/
 - Safe local work runs immediately. High-risk actions still require an explicit gate.
 - No hidden LLM routing is allowed. OpenAgent and its expert perspectives use the user's selected runtime model unless the user explicitly changes it.
 
-## Quest v5 Lifecycle
+## Quest v8 Lifecycle
 
-OpenAgent Quest v5 tracks each substantial request through a simple lifecycle and durable run identity:
+OpenAgent Quest v8 tracks each substantial request through a simple lifecycle, a review gate, adaptive replanning events, and durable run identity:
 
 ```text
-NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
+NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING
 ```
 
 Use this lifecycle to decide whether a user message starts a new Quest or amends the current one:
@@ -32,6 +32,7 @@ Use this lifecycle to decide whether a user message starts a new Quest or amends
 | `NEW` | A new substantial goal was received | Emit a fresh Quest Spec before tools |
 | `SPEC` | Requirements, scenario, experts, gates, and tasks are being defined | Refine the spec |
 | `EXECUTE` | Safe work is being performed through swarm-lite or expert chunks | Continue execution unless the user changes scope |
+| `REVIEW` | Review bundle, risk assessment, or approval gate is active | Approve, reject, skip, or amend the Quest |
 | `VERIFY` | Validation, review, build, tests, or evidence checks are running | Finish checks or fix routine failures |
 | `COMPLETE` | Requested work is done or clearly blocked with evidence | Summarize honestly |
 | `WAITING` | The CLI/session has returned to user input after completion | A new substantial input starts a fresh Quest Spec unless the user says it is a continuation |
@@ -42,7 +43,7 @@ If the user adds requirements while a Quest is still in progress, amend the curr
 
 For planned, live handoff, simulated, background, or long-running work, persist a Quest sidecar under `.oac/runs/{quest-id}/quest.json` alongside the existing swarm artifacts. The Quest id and run id are the same value.
 
-Required v5 artifacts when available:
+Required v8 artifacts when available:
 
 - `quest.json` - user-facing Quest state, scenario, intensity, trust label, tasks, experts, runtime resume commands, and next suggested action
 - `spec.json` - compatibility SSOT for requirements, scenario, experts, and acceptance criteria
@@ -51,6 +52,15 @@ Required v5 artifacts when available:
 - `acceptance-report.md` - acceptance checks and evidence
 - `summary.json` - machine-readable execution summary
 - `handoff.json` - optional IDE handoff manifest
+
+Runtime progress is append-only in `events.ndjson`; runtimes do not rewrite `quest.json`. Supported event types include `task_update`, `state_change`, `file_change`, `validation`, `amendment`, `error`, `note`, `runtime.assigned`, `runtime.spawned`, `runtime.completed`, `handoff.outgoing`, `handoff.incoming`, `incident.created`, `incident.resolved`, `review.started`, `review.approved`, `review.rejected`, `task.injected`, and `priority.changed`.
+
+For adaptive v8 work:
+
+- enter `REVIEW` before `VERIFY` when the configured review gate is required
+- use `task.injected` for dynamic replanning instead of editing `quest.json`
+- use `priority.changed` when a task becomes urgent or less urgent
+- keep review decisions, injected tasks, and priority changes append-only
 
 Use these CLI commands for durable status and continuation:
 
@@ -88,7 +98,7 @@ For substantial, multi-file, repo-wide, destructive, or ambiguous work, the firs
 
 ```text
 OpenAgent Quest Spec
-State: <NEW | SPEC | EXECUTE | VERIFY | COMPLETE | WAITING>
+State: <NEW | SPEC | EXECUTE | REVIEW | VERIFY | COMPLETE | WAITING>
 Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
 Intensity: <lite | standard | deep>
 Objective: <one sentence>

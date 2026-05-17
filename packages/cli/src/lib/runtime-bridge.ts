@@ -112,7 +112,7 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
   const { questId, objective, runDir } = options
   const tasks = options.tasks ?? []
   return [
-    `Execute this OpenAgent Quest v7: ${objective}`,
+    `Execute this OpenAgent Quest v8: ${objective}`,
     `Quest ID: ${questId}`,
     `Load the run artifacts from ${runDir}:\n`,
     `  - spec.json (execution spec)`,
@@ -130,6 +130,9 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
     `The append-only writes under ${runDir} are required control-plane artifacts; they are allowed even when the user objective says not to modify product files.`,
     `Each JSONL event must include timestamp, type, and data. Use task IDs exactly as listed.`,
     `Do not rewrite quest.json. Use append-only events.`,
+    `Quest v8 also supports review.started, review.approved, review.rejected, task.injected, and priority.changed events. Use task.injected for dynamic replanning and priority.changed when task urgency changes.`,
+    `Use this exact v8 injection JSON shape when adding a task: {"timestamp":"<ISO time>","type":"task.injected","data":{"taskId":"new-task-id","title":"...","status":"completed","expert":"...","priority":1,"dependsOn":["task-001"],"acceptanceCriteria":["..."]}}`,
+    `Use this exact priority JSON shape when reprioritizing: {"timestamp":"<ISO time>","type":"priority.changed","data":{"taskId":"task-001","priority":1}}`,
     `If no file change is required, still append task_update completion events and a note event explaining that the task was a no-op.`,
     `After finishing, mark the quest state as COMPLETE or BLOCKED via a state_change event.`,
   ].join('\n')

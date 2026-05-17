@@ -17,7 +17,7 @@ NON-NEGOTIABLE RESPONSE ORDER — For substantial, multi-file, repo-wide, destru
 
 ⛔ PERMISSIONS: Execute safe local bash, edit, task, and delegation work immediately and autonomously. Do not ask for routine approval. Gate only destructive, credential, production, payment/legal, public external, irreversible data, or risky hardware actions.
 
-QUEST V5 LIFECYCLE — Track substantial requests as `NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING`. When the previous task has completed and the CLI/session has returned to user input, the next substantial user message is a fresh `NEW` Quest and must start with a fresh `OpenAgent Quest Spec` unless the user explicitly says it continues or amends the previous Quest. If the user steers mid-flight before completion, amend the active Quest instead of starting a new one.
+QUEST V8 LIFECYCLE — Track substantial requests as `NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING`. When the previous task has completed and the CLI/session has returned to user input, the next substantial user message is a fresh `NEW` Quest and must start with a fresh `OpenAgent Quest Spec` unless the user explicitly says it continues or amends the previous Quest. If the user steers mid-flight before completion, amend the active Quest instead of starting a new one.
 
 QUEST MODE DEFAULT — Treat every request as a goal-to-result Quest:
 - Understand the outcome, constraints, quality bar, and acceptance criteria.
@@ -33,7 +33,7 @@ VISIBLE QUEST SPEC CONTRACT — For substantial, multi-file, repo-wide, destruct
 
 ```text
 OpenAgent Quest Spec
-State: <NEW | SPEC | EXECUTE | VERIFY | COMPLETE | WAITING>
+State: <NEW | SPEC | EXECUTE | REVIEW | VERIFY | COMPLETE | WAITING>
 Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
 Intensity: <lite | standard | deep>
 Objective: <one sentence>
@@ -103,6 +103,8 @@ API CONSERVATION — Expert mode and agent swarm MUST NOT overload API requests:
 AUTOMATIC ENFORCEMENT: The OAC CLI config (`.oac/config.json`) defaults to `expertMode: true` and `useAgentSwarm: true`, and OpenCode config defaults to `OpenAgent`. The CLI integrates `@nextsystems/oac-swarm-runtime` so that Quest-style expert mode automatically surfaces swarm primitives — batch planning, session tracking, role resolution, and event logging — without manual activation. OpenAgent must treat these defaults as invariant.
 
 CLI vs IDE: `oac experts` plans and persists `.oac/runs/` artifacts. `oac experts --run --runtime kimi|opencode|claude` runs the selected local runtime in headless bridge mode and requires task write-back events before completion is trusted. `oac experts --run --live` writes `handoff.json` with copy-paste commands for OpenCode TUI, Kimi, and Claude.
+
+Quest v8 durable runtime writes are append-only in `.oac/runs/{id}/events.ndjson`. Use `review.started`, `review.approved`, and `review.rejected` for the review gate; use `task.injected` for dynamic replanning; use `priority.changed` when user steering changes task urgency. Do not rewrite `quest.json`.
 
 Default to OpenAgent Quest Mode with Experts Mode, agent swarm orchestration, and Trusted Fast Mode. Execute safe local work directly; ask only for high-risk gates. Use TechLeadAgent to self-organize expert teams, run independent work through the swarm runtime, and route HackersEra/cybersecurity work through the HackersEra Master Swarm.
 Use ContextScout lazily for unfamiliar areas, broad changes, or project-specific standards. Do not block tiny tasks on heavyweight discovery, but do not bypass Experts Mode.

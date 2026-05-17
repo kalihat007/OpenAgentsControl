@@ -109,7 +109,8 @@ export interface IncidentRecord {
 // ── Event Application ─────────────────────────────────────────────────────────
 
 function applyTaskUpdate(quest: ReconciledQuestRun, data: Record<string, unknown>): void {
-  const taskId = (data.taskId ?? data.task_id) as string | undefined
+  const taskData = flattenTaskEventData(data)
+  const taskId = taskIdFromData(taskData)
   if (!taskId) return
 
   const task = quest.tasks.find((t) => t.id === taskId)
@@ -117,30 +118,33 @@ function applyTaskUpdate(quest: ReconciledQuestRun, data: Record<string, unknown
     // Task doesn't exist yet — possibly from an amendment. Create it.
     const newTask: QuestRunTask = {
       id: taskId,
-      title: (data.title as string) || `Task ${taskId}`,
-      status: normalizeStatus(data.status as string) || 'pending',
-      expert: (data.expert as string) || 'auto',
-      dependsOn: [],
-      acceptanceCriteria: [],
+      title: asString(taskData.title ?? taskData.name) || `Task ${taskId}`,
+      status: normalizeStatus(asString(taskData.status)) || 'pending',
+      expert: asString(taskData.expert ?? taskData.agent ?? taskData.owner) || 'auto',
+      dependsOn: stringArray(taskData.dependsOn ?? taskData.depends_on ?? taskData.dependencies),
+      acceptanceCriteria: stringArray(taskData.acceptanceCriteria ?? taskData.acceptance_criteria ?? taskData.acceptance),
     }
     quest.tasks.push(newTask)
     return
   }
 
-  if (data.status) {
-    task.status = normalizeStatus(data.status as string) || task.status
+  if (taskData.status) {
+    task.status = normalizeStatus(asString(taskData.status)) || task.status
   }
-  if (data.title) {
-    task.title = data.title as string
+  const title = asString(taskData.title ?? taskData.name)
+  if (title) {
+    task.title = title
   }
-  if (data.expert) {
-    task.expert = data.expert as string
+  const expert = asString(taskData.expert ?? taskData.agent ?? taskData.owner)
+  if (expert) {
+    task.expert = expert
   }
-  if (data.stage) {
-    ;(task as unknown as Record<string, unknown>).stage = data.stage
+  if (taskData.stage) {
+    ;(task as unknown as Record<string, unknown>).stage = taskData.stage
   }
-  if (data.dependsOn && Array.isArray(data.dependsOn)) {
-    task.dependsOn = [...task.dependsOn, ...(data.dependsOn as string[]).filter((d) => !task.dependsOn.includes(d))]
+  const dependsOn = stringArray(taskData.dependsOn ?? taskData.depends_on ?? taskData.dependencies)
+  if (dependsOn.length > 0) {
+    task.dependsOn = [...task.dependsOn, ...dependsOn.filter((d) => !task.dependsOn.includes(d))]
   }
 }
 
@@ -493,19 +497,40 @@ function asString(value: unknown): string | undefined {
 }
 
 function asNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value : undefined
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  if (typeof value === 'string' && value.trim()) {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : undefined
+  }
+  return undefined
 }
 
 function stringArray(value: unknown): string[] {
-  return Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === 'string' && item.length > 0)
-    : []
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === 'string' && item.length > 0)
+  }
+  return typeof value === 'string' && value.trim() ? [value.trim()] : []
 }
 
 function taskIdsFromData(data: Record<string, unknown>): string[] {
-  const single = asString(data.taskId ?? data.task_id)
+  const single = taskIdFromData(flattenTaskEventData(data))
   const many = stringArray(data.taskIds ?? data.task_ids)
   return unique([...(single ? [single] : []), ...many])
+}
+
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : undefined
+}
+
+function flattenTaskEventData(data: Record<string, unknown>): Record<string, unknown> {
+  const task = asRecord(data.task)
+  return task ? { ...task, ...data } : data
+}
+
+function taskIdFromData(data: Record<string, unknown>): string | undefined {
+  return asString(data.taskId ?? data.task_id ?? data.id)
 }
 
 function unique(values: string[]): string[] {
@@ -548,8 +573,9 @@ function applyReviewRejected(quest: ReconciledQuestRun, event: ReconcilerEvent):
 }
 
 function applyTaskInjected(quest: ReconciledQuestRun, event: ReconcilerEvent): void {
-  const taskId = asString(event.data.taskId)
-  const title = asString(event.data.title)
+  const data = flattenTaskEventData(event.data)
+  const taskId = taskIdFromData(data)
+  const title = asString(data.title ?? data.name ?? data.description)
   if (!taskId || !title) return
 
   // Avoid duplicates
@@ -558,11 +584,11 @@ function applyTaskInjected(quest: ReconciledQuestRun, event: ReconcilerEvent): v
   const newTask: QuestRunTask = {
     id: taskId,
     title,
-    status: normalizeStatus(asString(event.data.status)) || 'pending',
-    expert: asString(event.data.expert) || 'auto',
-    dependsOn: stringArray(event.data.dependsOn),
-    acceptanceCriteria: stringArray(event.data.acceptanceCriteria),
-    priority: asNumber(event.data.priority) ?? 3,
+    status: normalizeStatus(asString(data.status)) || 'pending',
+    expert: asString(data.expert ?? data.agent ?? data.owner) || 'auto',
+    dependsOn: stringArray(data.dependsOn ?? data.depends_on ?? data.dependencies),
+    acceptanceCriteria: stringArray(data.acceptanceCriteria ?? data.acceptance_criteria ?? data.acceptance),
+    priority: asNumber(data.priority) ?? 3,
   }
 
   quest.tasks.push(newTask)
@@ -577,8 +603,9 @@ function applyTaskInjected(quest: ReconciledQuestRun, event: ReconcilerEvent): v
 }
 
 function applyPriorityChanged(quest: ReconciledQuestRun, event: ReconcilerEvent): void {
-  const taskId = asString(event.data.taskId)
-  const priority = asNumber(event.data.priority)
+  const data = flattenTaskEventData(event.data)
+  const taskId = taskIdFromData(data)
+  const priority = asNumber(data.priority ?? data.newPriority ?? data.new_priority)
   if (!taskId || priority === undefined) return
 
   const task = quest.tasks.find((t) => t.id === taskId)
