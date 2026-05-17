@@ -1,5 +1,5 @@
 /**
- * oac quest-status — List and inspect durable OpenAgent Quest v5 runs.
+ * oac quest-status — List and inspect durable OpenAgent Quest runs.
  */
 
 import type { Command } from 'commander'
@@ -9,6 +9,8 @@ import { log, info, success, dim, warn, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
 import { createLogger } from '../lib/logger.js'
 import { listQuestRunIds, readRunPid, isRunPidAlive } from '../lib/quest-run.js'
+import { loadDaemonState, type QuestDaemonState } from '../lib/quest-daemon.js'
+import { renderDagFlow } from '../lib/dag-render.js'
 import {
   loadEvents,
   loadReconciledQuest,
@@ -54,6 +56,7 @@ interface QuestStatusJson {
   changedFiles: string[]
   nextAction: string
   backgroundRun?: { pid: number; alive: boolean }
+  daemon?: QuestDaemonState
 }
 
 function trustIcon(label: string): string {
@@ -148,10 +151,11 @@ export async function questStatusCommand(
   const summary = await loadSummary(projectRoot, questId)
   const events = quest ? await loadEvents(projectRoot, questId) : []
   const pid = await readRunPid(projectRoot, questId)
+  const daemon = await loadDaemonState(projectRoot, questId)
 
   if (options.json) {
     if (quest) {
-      console.log(JSON.stringify(await buildQuestStatusJson(projectRoot, quest, events, pid), null, 2))
+      console.log(JSON.stringify(await buildQuestStatusJson(projectRoot, quest, events, pid, daemon), null, 2))
     } else {
       console.log(JSON.stringify({ questId, legacy: true, summary }, null, 2))
     }
@@ -170,6 +174,11 @@ export async function questStatusCommand(
 
   // Background run status
   if (questId) {
+    if (daemon) {
+      info(`Daemon: ${daemon.status} (pid ${daemon.pid}, progress ${Math.round((daemon.progress ?? 0) * 100)}%)`)
+      if (daemon.lastError) warn(`Daemon error: ${daemon.lastError}`)
+      log('')
+    }
     if (pid) {
       const alive = isRunPidAlive(pid)
       info(`Background run: ${alive ? `running (pid ${pid})` : 'finished'}`)
@@ -220,12 +229,13 @@ async function watchQuestStatus(
     if (!quest) return
     const events = await loadEvents(projectRoot, questId)
     const pid = await readRunPid(projectRoot, questId)
+    const daemon = await loadDaemonState(projectRoot, questId)
 
     // Clear screen and move cursor to top-left
     process.stdout.write('\x1B[2J\x1B[H')
 
     if (json) {
-      console.log(JSON.stringify(await buildQuestStatusJson(projectRoot, quest, events, pid), null, 2))
+      console.log(JSON.stringify(await buildQuestStatusJson(projectRoot, quest, events, pid, daemon), null, 2))
       return
     }
 
@@ -233,7 +243,7 @@ async function watchQuestStatus(
     const pct = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0
     const bar = '█'.repeat(Math.round(pct / 5)) + '░'.repeat(20 - Math.round(pct / 5))
 
-    log('┌─ OpenAgent Quest v6 ───────────────────────────────────────────┐')
+    log(`┌─ OpenAgent Quest v${quest.version} ───────────────────────────────────────────┐`)
     log(`│ ${quest.questId} │ State: ${quest.state.padEnd(8)} │ Trust: ${quest.trustLabel.padEnd(12)} │`)
     log(`│ Progress: ${progress.completed}/${progress.total} tasks ${bar} ${pct}% │`)
 
@@ -244,6 +254,20 @@ async function watchQuestStatus(
         return `${name}(${p.completed}/${p.assigned})`
       }).join(' ')
       log(`│ Runtimes: ${rtSummary.padEnd(56)} │`)
+    }
+    if (daemon) {
+      const daemonLine = `Daemon: ${daemon.status} pid=${daemon.pid} ${Math.round((daemon.progress ?? 0) * 100)}%`
+      log(`│ ${daemonLine.slice(0, 60).padEnd(60)} │`)
+    }
+    const dagLine = renderDagFlow(quest.tasks.map((task) => ({
+      id: task.id,
+      title: task.title,
+      status: task.status,
+      runtime: runtimeForTask(task),
+      dependsOn: task.dependsOn,
+    })))
+    if (dagLine) {
+      log(`│ DAG: ${dagLine.slice(0, 55).padEnd(55)} │`)
     }
     log('├─ Tasks ────────────────────────────────────────────────────────┤')
 
@@ -321,6 +345,7 @@ async function buildQuestStatusJson(
   quest: ReconciledQuestRun,
   events: ReconcilerEvent[],
   pid: number | null,
+  daemon?: QuestDaemonState | null,
 ): Promise<QuestStatusJson> {
   return {
     questId: quest.questId,
@@ -345,6 +370,7 @@ async function buildQuestStatusJson(
     changedFiles: quest.changedFiles,
     nextAction: quest.nextSuggestedAction,
     backgroundRun: pid ? { pid, alive: isRunPidAlive(pid) } : undefined,
+    daemon: daemon ?? undefined,
   }
 }
 
@@ -374,7 +400,7 @@ function runtimeForTask(task: ReconciledQuestRun['tasks'][number]): string | und
 }
 
 function printQuest(quest: ReconciledQuestRun): void {
-  info('Quest v5/v6:')
+  info(`Quest v${quest.version}:`)
   log(`  Objective:   ${quest.objective}`)
   log(`  State:       ${quest.state}`)
   log(`  Scenario:    ${quest.scenario}`)
@@ -462,7 +488,7 @@ function truncate(str: string, max: number): string {
 export function registerQuestStatusCommand(program: Command): void {
   program
     .command('quest-status [quest-id]')
-    .description('List or inspect durable OpenAgent Quest v5 runs under .oac/runs/')
+    .description('List or inspect durable OpenAgent Quest runs under .oac/runs/')
     .option('--verbose', 'Show extra detail', false)
     .option('--json', 'Print machine-readable Quest status JSON', false)
     .option('--watch', 'Poll and refresh Quest status every 2 seconds', false)

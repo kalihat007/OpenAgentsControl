@@ -1,5 +1,5 @@
 /**
- * Quest run — durable v6 status document with v5 compatibility.
+ * Quest run — durable v7 status document with v5/v6 compatibility.
  *
  * `spec.json` remains the compatibility SSOT. `quest.json` is the user-facing
  * lifecycle/status sidecar used by quest-status and quest-resume.
@@ -17,7 +17,7 @@ import {
   OPENCODE_TUI_COMMAND,
 } from './run-handoff.js'
 
-export const QUEST_RUN_VERSION = '6' as const
+export const QUEST_RUN_VERSION = '7' as const
 
 export type QuestRunState =
   | 'NEW'
@@ -114,7 +114,7 @@ export interface QuestVerificationResult {
 }
 
 export interface QuestRun {
-  version: '5' | '6'
+  version: '5' | '6' | '7'
   questId: string
   runId: string
   objective: string
@@ -388,7 +388,7 @@ export function formatRuntimeHandoff(
 ): string {
   const rt = quest.runtimes[runtime]
   const lines: string[] = [
-    `OpenAgent Quest v5/v6 — ${runtime.toUpperCase()} Resume`,
+    `OpenAgent Quest v7 — ${runtime.toUpperCase()} Resume`,
     `Quest ID:    ${quest.questId}`,
     `State:       ${quest.state}`,
     `Trust:       ${quest.trustLabel}`,
@@ -426,7 +426,7 @@ export function formatRuntimeHandoff(
   lines.push('Resume prompt:')
   lines.push(`  ${rt.resumePrompt}`)
   lines.push('')
-  lines.push('v5/v6 Runtime Write-Back Contract:')
+  lines.push('v7 Runtime Write-Back Contract:')
   lines.push('  DO NOT rewrite quest.json. Append events to events.ndjson only.')
   lines.push('  Stay inside the selected runtime/model. Do not route work to a hidden LLM.')
   lines.push('  Event format: {"timestamp":"ISO","type":"...","data":{}}')

@@ -1,6 +1,6 @@
 /**
- * Auto-Fix Loop v5 — retry failed validation checks by routing back
- * to the owning runtime expert up to N times.
+ * Auto-Fix Gate v7 — retry failed validation checks by routing back
+ * to the same selected runtime once by default.
  */
 
 import { createLogger } from './logger.js'
@@ -28,7 +28,7 @@ export interface AutoFixLoopResult {
 }
 
 export async function runAutoFixLoop(options: AutoFixLoopOptions): Promise<AutoFixLoopResult> {
-  const maxRetries = options.maxRetries ?? 3
+  const maxRetries = options.maxRetries ?? 1
   let attempts = 0
 
   log.info('Auto-fix loop starting', { questId: options.questId, maxRetries })

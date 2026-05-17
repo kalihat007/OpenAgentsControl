@@ -63,36 +63,28 @@ if [ -z "$QUEST_ID" ]; then
 fi
 pass "Quest created: $QUEST_ID"
 
-# Verify quest.json version is 5
+# Verify quest.json version is compatible
 QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version")"
-if [ "$QUEST_VERSION" != "5" ]; then
-  fail "Expected quest version 5, got $QUEST_VERSION"
+if ! echo "$QUEST_VERSION" | grep -Eq '^(5|6|7)$'; then
+  fail "Expected quest version 5, 6, or 7, got $QUEST_VERSION"
 fi
-pass "Quest version is 5"
+pass "Quest version is compatible ($QUEST_VERSION)"
 
-# Verify quest-status shows v5
-if ! "${OAC_CLI[@]}" quest-status "$QUEST_ID" 2>&1 | grep -q "Quest v5"; then
-  fail "quest-status does not show v5"
+# Verify quest-status shows a Quest version
+if ! "${OAC_CLI[@]}" quest-status "$QUEST_ID" 2>&1 | grep -Eq "Quest v(5|6|7)"; then
+  fail "quest-status does not show a compatible Quest version"
 fi
-pass "quest-status shows Quest v5"
+pass "quest-status shows compatible Quest version"
 
-# Verify quest-complete blocks without verification
-if "${OAC_CLI[@]}" quest-complete "$QUEST_ID" > /dev/null 2>&1; then
-  fail "quest-complete should block without verification"
-fi
-pass "quest-complete blocks without verification"
-
-# Run quest-verify
-"${OAC_CLI[@]}" quest-verify "$QUEST_ID" > /dev/null
+# Verify quest-complete auto-runs verification in v7-compatible flows
+"${OAC_CLI[@]}" quest-complete "$QUEST_ID" > /dev/null
+pass "quest-complete auto-runs verification"
 
 # Verify events.ndjson has validation event
 if ! grep -q '"type":"validation"' ".oac/runs/${QUEST_ID}/events.ndjson"; then
   fail "events.ndjson missing validation event"
 fi
 pass "events.ndjson contains validation event"
-
-# Verify quest-complete works after verification
-"${OAC_CLI[@]}" quest-complete "$QUEST_ID" > /dev/null
 
 # Verify quest is complete
 QUEST_STATE="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').state")"

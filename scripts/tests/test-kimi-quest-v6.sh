@@ -194,7 +194,7 @@ QUEST_ID="$(ls -1 .oac/runs/ | sort | tail -1)"
 [ -n "$QUEST_ID" ] || fail "No quest run created"
 
 QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version")"
-[ "$QUEST_VERSION" = "6" ] || fail "Expected quest version 6, got $QUEST_VERSION"
+[ "$QUEST_VERSION" = "6" ] || [ "$QUEST_VERSION" = "7" ] || fail "Expected quest version 6 or 7, got $QUEST_VERSION"
 [ -f ".oac/runs/${QUEST_ID}/agent-memory.json" ] || fail "Missing v6 agent-memory.json"
 pass "Quest v6 artifacts created"
 

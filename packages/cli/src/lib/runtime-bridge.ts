@@ -111,7 +111,7 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
   const { questId, objective, runDir } = options
   const tasks = options.tasks ?? []
   return [
-    `Execute this OpenAgent Quest v5/v6: ${objective}`,
+    `Execute this OpenAgent Quest v7: ${objective}`,
     `Quest ID: ${questId}`,
     `Load the run artifacts from ${runDir}:\n`,
     `  - spec.json (execution spec)`,

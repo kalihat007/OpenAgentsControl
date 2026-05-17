@@ -5,8 +5,10 @@
 import { type Command } from 'commander'
 import { log, info, success, warn, dim, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
-import { loadReconciledQuest, buildStateChangeEvent } from '../lib/quest-reconciler.js'
+import { loadReconciledQuest, buildStateChangeEvent, buildValidationEvent } from '../lib/quest-reconciler.js'
 import { appendQuestEvent, questExists, writeTaskGraph } from '../lib/quest-run.js'
+import { runQuestVerification } from '../lib/quest-verification.js'
+import { extractQuestMemory } from '../lib/memory-extraction.js'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -14,6 +16,7 @@ import { join } from 'node:path'
 
 export type QuestCompleteOptions = {
   skipGates?: boolean
+  extractMemory?: boolean
 }
 
 // ── Command Handler ───────────────────────────────────────────────────────────
@@ -28,7 +31,7 @@ export async function questCompleteCommand(
     throw new CommandUsageError(`Quest '${questId}' not found in .oac/runs/`)
   }
 
-  const quest = await loadReconciledQuest(projectRoot, questId)
+  let quest = await loadReconciledQuest(projectRoot, questId)
   if (!quest) {
     throw new CommandUsageError(`Quest '${questId}' has no quest.json.`)
   }
@@ -41,7 +44,18 @@ export async function questCompleteCommand(
   info(`Trust: ${quest.trustLabel}`)
   log('')
 
-  // Gate: verification must have passed with real checks
+  // Gate: verification must have passed with real checks. v7 runs verification
+  // automatically before COMPLETE unless the user explicitly skips gates.
+  if (!quest.verification && !options.skipGates) {
+    info('Running verification before COMPLETE...')
+    const autoVerification = await runQuestVerification(projectRoot)
+    await appendQuestEvent(projectRoot, questId, buildValidationEvent(autoVerification))
+    quest = await loadReconciledQuest(projectRoot, questId)
+    if (!quest) {
+      throw new CommandUsageError(`Quest '${questId}' could not be reconciled after verification.`)
+    }
+  }
+
   const verification = quest.verification
   const requiredChecks = ['test', 'build', 'lint']
   const hasRunChecks =
@@ -137,6 +151,15 @@ export async function questCompleteCommand(
   success('Quest marked COMPLETE')
   dim(`Summary: ${join(runDir, 'summary.md')}`)
   dim(`Summary JSON: ${join(runDir, 'summary.json')}`)
+
+  if (options.extractMemory !== false) {
+    const finalQuest = await loadReconciledQuest(projectRoot, questId)
+    if (finalQuest?.state === 'COMPLETE') {
+      const extraction = await extractQuestMemory(projectRoot, finalQuest)
+      dim(`Memory extraction: ${extraction.promotedLessons} lesson(s), ${extraction.promotedCommands} command(s), ${extraction.candidates} candidate(s)`)
+    }
+  }
+
   log('')
 }
 
@@ -251,7 +274,11 @@ export function registerQuestCompleteCommand(program: Command): void {
     .description('Finalize a Quest, generate summary artifacts, and mark COMPLETE')
     .option('--skip-gates', 'Complete even if verification gates have not passed', false)
     .option('--force', 'Alias for --skip-gates', false)
-    .action(async (questId: string, opts: { skipGates?: boolean; force?: boolean }) => {
-      await questCompleteCommand(questId, { skipGates: opts.skipGates ?? opts.force ?? false })
+    .option('--no-extract-memory', 'Skip deterministic v7 team-memory extraction')
+    .action(async (questId: string, opts: { skipGates?: boolean; force?: boolean; extractMemory?: boolean }) => {
+      await questCompleteCommand(questId, {
+        skipGates: opts.skipGates ?? opts.force ?? false,
+        extractMemory: opts.extractMemory !== false,
+      })
     })
 }

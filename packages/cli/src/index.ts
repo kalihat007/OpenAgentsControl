@@ -53,6 +53,8 @@ async function main(): Promise<void> {
     { registerIncidentResolveCommand },
     { registerIncidentPostmortemCommand },
     { registerProjectIntelligenceCommand },
+    { registerQuestRunCommand },
+    { registerQuestDaemonCommand },
   ] = await Promise.all([
     import('./commands/init.js'),
     import('./commands/update.js'),
@@ -78,6 +80,8 @@ async function main(): Promise<void> {
     import('./commands/incident-resolve.js'),
     import('./commands/incident-postmortem.js'),
     import('./commands/project-intelligence.js'),
+    import('./commands/quest-run.js'),
+    import('./commands/quest-daemon.js'),
   ])
 
   registerInitCommand(program)
@@ -104,6 +108,8 @@ async function main(): Promise<void> {
   registerIncidentResolveCommand(program)
   registerIncidentPostmortemCommand(program)
   registerProjectIntelligenceCommand(program)
+  registerQuestRunCommand(program)
+  registerQuestDaemonCommand(program)
 
   // Unknown commands: print a helpful error and exit 1
   program.on('command:*', (operands: string[]) => {
