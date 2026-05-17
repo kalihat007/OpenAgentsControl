@@ -834,7 +834,7 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
-Quest v3 adds a small lifecycle and durable run identity so long sessions stay predictable:
+Quest v4 adds a small lifecycle, durable run identity, and append-only event reconciliation so long sessions stay predictable:
 
 ```text
 NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
@@ -854,7 +854,7 @@ summary.json
 handoff.json
 ```
 
-Use `oac quest-status` to list or inspect runs and `oac quest-resume <quest-id>` to print OpenCode, Kimi, and Claude resume commands. Resume does not change models; OpenAgent continues with the selected runtime model.
+Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state and `oac quest-resume <quest-id>` to print OpenCode, Kimi, and Claude resume commands. Resume does not change models; OpenAgent continues with the selected runtime model.
 
 You can verify the Kimi Quest cycle locally:
 

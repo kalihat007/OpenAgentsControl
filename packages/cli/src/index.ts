@@ -44,6 +44,9 @@ async function main(): Promise<void> {
     { registerSwarmStatusCommand },
     { registerQuestStatusCommand },
     { registerQuestResumeCommand },
+    { registerQuestVerifyCommand },
+    { registerQuestCompleteCommand },
+    { registerQuestAmendCommand },
   ] = await Promise.all([
     import('./commands/init.js'),
     import('./commands/update.js'),
@@ -60,6 +63,9 @@ async function main(): Promise<void> {
     import('./commands/swarm-status.js'),
     import('./commands/quest-status.js'),
     import('./commands/quest-resume.js'),
+    import('./commands/quest-verify.js'),
+    import('./commands/quest-complete.js'),
+    import('./commands/quest-amend.js'),
   ])
 
   registerInitCommand(program)
@@ -77,6 +83,9 @@ async function main(): Promise<void> {
   registerSwarmStatusCommand(program)
   registerQuestStatusCommand(program)
   registerQuestResumeCommand(program)
+  registerQuestVerifyCommand(program)
+  registerQuestCompleteCommand(program)
+  registerQuestAmendCommand(program)
 
   // Unknown commands: print a helpful error and exit 1
   program.on('command:*', (operands: string[]) => {

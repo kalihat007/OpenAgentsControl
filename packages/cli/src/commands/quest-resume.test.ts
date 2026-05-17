@@ -18,7 +18,7 @@ describe('questResumeCommand', () => {
     await writeFile(
       join(runsDir, 'quest.json'),
       JSON.stringify({
-        version: '3',
+        version: '4',
         questId: 'swarm-test123',
         runId: 'swarm-test123',
         objective: 'test objective',

@@ -17,7 +17,7 @@ describe('questStatusCommand', () => {
     await writeFile(
       join(runsDir, 'quest.json'),
       JSON.stringify({
-        version: '3',
+        version: '4',
         questId: 'swarm-test123',
         runId: 'swarm-test123',
         objective: 'test objective',
@@ -53,6 +53,39 @@ describe('questStatusCommand', () => {
 
   it('lists Quest runs when no id is given', async () => {
     await expect(questStatusCommand()).resolves.toBeUndefined()
+  })
+
+  it('lists reconciled Quest state from events', async () => {
+    const runsDir = join(tmpRoot, '.oac', 'runs', 'swarm-test123')
+    await writeFile(
+      join(runsDir, 'events.ndjson'),
+      JSON.stringify({
+        timestamp: new Date().toISOString(),
+        type: 'validation',
+        data: {
+          result: {
+            timestamp: new Date().toISOString(),
+            checks: [{ name: 'test', command: 'npm test', passed: true }],
+            overallPassed: true,
+            summary: '1/1 checks passed',
+          },
+        },
+      }) + '\n',
+    )
+
+    const originalLog = console.log
+    const output: string[] = []
+    console.log = (message?: unknown) => {
+      output.push(String(message ?? ''))
+    }
+
+    try {
+      await questStatusCommand()
+    } finally {
+      console.log = originalLog
+    }
+
+    expect(output.join('\n')).toContain('tested')
   })
 
   it('shows Quest details for a valid id', async () => {

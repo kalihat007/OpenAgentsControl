@@ -160,7 +160,7 @@ describe('expertsCommand', () => {
     expect(spec.objective).toContain('JWT')
     const questRaw = await readFile(join(runsDir, sessions[0]!, 'quest.json'), 'utf-8')
     const quest = JSON.parse(questRaw) as { objective: string; version: string; state: string; runtimes: { kimi: { command: string } } }
-    expect(quest.version).toBe('3')
+    expect(quest.version).toBe('4')
     expect(quest.state).toBe('SPEC')
     expect(quest.objective).toContain('JWT')
     expect(quest.runtimes.kimi.command).toBe(KIMI_CODE_COMMAND)
@@ -302,6 +302,9 @@ describe('expertsCommand', () => {
     const handoffPath = join(runsDir, sessions[0]!, 'handoff.json')
     const handoffRaw = await readFile(handoffPath, 'utf-8')
     expect(JSON.parse(handoffRaw).objective).toContain('JWT')
+    const taskGraphRaw = await readFile(join(runsDir, sessions[0]!, 'task-graph.json'), 'utf-8')
+    const taskGraph = JSON.parse(taskGraphRaw) as { tasks: unknown[] }
+    expect(taskGraph.tasks.length).toBeGreaterThan(0)
   })
 
   it('--run --no-quality-gate skips gate and does not throw on failure', async () => {

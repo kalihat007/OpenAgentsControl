@@ -1,14 +1,15 @@
 /**
- * oac quest-status — List and inspect durable OpenAgent Quest v3 runs.
+ * oac quest-status — List and inspect durable OpenAgent Quest v4 runs.
  */
 
 import type { Command } from 'commander'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { log, info, success, dim, warn } from '../ui/logger.js'
+import { log, info, success, dim, warn, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
 import { createLogger } from '../lib/logger.js'
-import { listQuestRunIds, loadQuestRun, type QuestRun } from '../lib/quest-run.js'
+import { listQuestRunIds } from '../lib/quest-run.js'
+import { loadReconciledQuest, type ReconciledQuestRun } from '../lib/quest-reconciler.js'
 
 const cmdLog = createLogger('cmd:quest-status')
 
@@ -19,12 +20,34 @@ interface RunSummary {
   qualityGate?: { passed: boolean; overallScore: number; grade: string } | null
 }
 
-interface SwarmEvent {
-  type: string
-  message: string
+export type QuestStatusOptions = {
+  verbose?: boolean
 }
 
-export async function questStatusCommand(questId?: string): Promise<void> {
+function trustIcon(label: string): string {
+  switch (label) {
+    case 'tested':
+    case 'pushed':
+      return '✓'
+    case 'changed':
+      return '⟳'
+    case 'inspected_only':
+      return '👁'
+    case 'planned_only':
+      return '◎'
+    case 'blocked':
+      return '⊘'
+    case 'failed':
+      return '✗'
+    default:
+      return '?'
+  }
+}
+
+export async function questStatusCommand(
+  questId: string | undefined,
+  _options: QuestStatusOptions = {},
+): Promise<void> {
   const projectRoot = process.cwd()
   const runIds = await listQuestRunIds(projectRoot)
 
@@ -38,20 +61,26 @@ export async function questStatusCommand(questId?: string): Promise<void> {
 
   if (!questId) {
     log('')
-    info(`OpenAgent Quest runs (${runIds.length}):`)
+    bold(`OpenAgent Quest runs (${runIds.length})`)
     log('')
+    dim('  ID                        Date       State    Trust label        Progress')
     for (const id of runIds.slice(0, 20)) {
-      const quest = await loadQuestRun(projectRoot, id)
+      const quest = await loadReconciledQuest(projectRoot, id)
       const summary = quest ? null : await loadSummary(projectRoot, id)
-      log(`  ${id}`)
       if (quest) {
+        const date = quest.updatedAt.slice(0, 10)
+        const state = quest.state.padEnd(8)
+        const trust = `${trustIcon(quest.trustLabel)} ${quest.trustLabel}`.padEnd(18)
+        const done = quest.tasks.filter((t) => t.status === 'completed').length
+        const total = quest.tasks.length
+        log(`  ${id}  ${date}  ${state}  ${trust}  ${done}/${total} tasks`)
         dim(`    ${truncate(quest.objective, 72)}`)
-        dim(`    ${quest.state} · ${quest.scenario} · ${quest.intensity} · ${quest.trustLabel}`)
       } else if (summary) {
+        log(`  ${id}  legacy`)
         dim(`    ${truncate(summary.objective ?? '(legacy run)', 72)}`)
-        dim(`    legacy · ${summary.executionMode ?? 'plan-only'}${formatAcceptance(summary)}`)
+        dim(`    ${summary.executionMode ?? 'plan-only'}${formatAcceptance(summary)}`)
       } else {
-        dim('    legacy · no quest.json')
+        log(`  ${id}  legacy · no quest.json`)
       }
     }
     if (runIds.length > 20) {
@@ -68,9 +97,8 @@ export async function questStatusCommand(questId?: string): Promise<void> {
     )
   }
 
-  const quest = await loadQuestRun(projectRoot, questId)
+  const quest = await loadReconciledQuest(projectRoot, questId)
   const summary = await loadSummary(projectRoot, questId)
-  const events = await loadEvents(projectRoot, questId)
 
   log('')
   success(`Quest: ${questId}`)
@@ -95,10 +123,12 @@ export async function questStatusCommand(questId?: string): Promise<void> {
     log('')
   }
 
-  if (events.length > 0) {
-    info(`Recent events (last ${Math.min(events.length, 10)} of ${events.length}):`)
-    for (const event of events.slice(-10)) {
-      dim(`  [${event.type}] ${event.message}`)
+  if (quest && quest.verification) {
+    info('Verification:')
+    const v = quest.verification
+    log(`  ${v.overallPassed ? '✓ PASSED' : '✗ FAILED'} — ${v.summary}`)
+    for (const check of v.checks) {
+      log(`    ${check.passed ? '✓' : '✗'} ${check.name}`)
     }
     log('')
   }
@@ -106,14 +136,17 @@ export async function questStatusCommand(questId?: string): Promise<void> {
   dim(`Artifacts: ${join(process.cwd(), '.oac', 'runs', questId)}`)
 }
 
-function printQuest(quest: QuestRun): void {
-  info('Quest v3:')
-  log(`  Objective: ${quest.objective}`)
-  log(`  State: ${quest.state}`)
-  log(`  Scenario: ${quest.scenario}`)
-  log(`  Intensity: ${quest.intensity}`)
-  log(`  Trust Label: ${quest.trustLabel}`)
-  log(`  Updated: ${quest.updatedAt}`)
+function printQuest(quest: ReconciledQuestRun): void {
+  info('Quest v4:')
+  log(`  Objective:   ${quest.objective}`)
+  log(`  State:       ${quest.state}`)
+  log(`  Scenario:    ${quest.scenario}`)
+  log(`  Intensity:   ${quest.intensity}`)
+  log(`  Trust:       ${trustIcon(quest.trustLabel)} ${quest.trustLabel}`)
+  log(`  Updated:     ${quest.updatedAt}`)
+  if (quest.changedFiles && quest.changedFiles.length > 0) {
+    log(`  Changed:     ${quest.changedFiles.length} file(s)`)
+  }
   log('')
 
   if (quest.experts.length > 0) {
@@ -125,11 +158,28 @@ function printQuest(quest: QuestRun): void {
   if (quest.tasks.length > 0) {
     info(`Tasks (${quest.tasks.length}):`)
     for (const task of quest.tasks.slice(0, 10)) {
-      log(`  ${task.status}: ${task.id} · ${task.expert} · ${truncate(task.title, 80)}`)
+      const icon =
+        task.status === 'completed'
+          ? '✓'
+          : task.status === 'in_progress'
+            ? '→'
+            : task.status === 'blocked'
+              ? '⊘'
+              : task.status === 'failed'
+                ? '✗'
+                : '○'
+      log(`  ${icon} ${task.status.padEnd(11)} ${task.title}`)
     }
     if (quest.tasks.length > 10) dim(`  ... ${quest.tasks.length - 10} more task(s)`)
     log('')
   }
+
+  info('Checkpoint:')
+  log(`  Next action: ${quest.nextSuggestedAction}`)
+  if (quest.changedFiles && quest.changedFiles.length > 0) {
+    dim(`  Changed files: ${quest.changedFiles.join(', ')}`)
+  }
+  log('')
 
   info('Resume:')
   log(`  OpenCode: ${quest.runtimes.opencode.command}`)
@@ -148,17 +198,7 @@ async function loadSummary(projectRoot: string, runId: string): Promise<RunSumma
   }
 }
 
-async function loadEvents(projectRoot: string, runId: string): Promise<SwarmEvent[]> {
-  try {
-    const raw = await readFile(join(projectRoot, '.oac', 'runs', runId, 'events.ndjson'), 'utf-8')
-    return raw
-      .split('\n')
-      .filter(Boolean)
-      .map((line) => JSON.parse(line) as SwarmEvent)
-  } catch {
-    return []
-  }
-}
+
 
 function formatAcceptance(summary: RunSummary): string {
   if (!summary.acceptance) return ''
@@ -172,7 +212,8 @@ function truncate(str: string, max: number): string {
 export function registerQuestStatusCommand(program: Command): void {
   program
     .command('quest-status [quest-id]')
-    .description('List or inspect durable OpenAgent Quest v3 runs under .oac/runs/')
+    .description('List or inspect durable OpenAgent Quest v4 runs under .oac/runs/')
+    .option('--verbose', 'Show extra detail', false)
     .addHelpText(
       'after',
       `
@@ -181,7 +222,7 @@ Examples:
   oac quest-status swarm-m123abc        Show Quest state, tasks, artifacts, and resume commands
 `,
     )
-    .action(async (questId: string | undefined) => {
-      await questStatusCommand(questId)
+    .action(async (questId: string | undefined, opts: { verbose?: boolean }) => {
+      await questStatusCommand(questId, { verbose: opts.verbose ?? false })
     })
 }

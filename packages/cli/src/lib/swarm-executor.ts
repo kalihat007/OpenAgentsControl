@@ -34,6 +34,8 @@ import {
   buildQuestRun,
   persistQuestRun,
   questArtifactsFromRunArtifacts,
+  writeTaskGraph,
+  type QuestRunTask,
 } from './quest-run.js'
 
 const log = createLogger('swarm-executor')
@@ -139,6 +141,7 @@ export interface RunArtifacts {
   planPath: string
   specPath: string
   eventsPath: string
+  taskGraphPath: string
   acceptanceReportPath: string
   summaryPath: string
 }
@@ -1020,6 +1023,7 @@ export async function persistRunArtifacts(
   const planPath = join(runDir, 'plan.json')
   const specPath = join(runDir, 'spec.json')
   const eventsPath = join(runDir, 'events.ndjson')
+  const taskGraphPath = join(runDir, 'task-graph.json')
   const acceptanceReportPath = join(runDir, 'acceptance-report.md')
   const summaryPath = join(runDir, 'summary.json')
   const artifacts: RunArtifacts = {
@@ -1027,6 +1031,7 @@ export async function persistRunArtifacts(
     planPath,
     specPath,
     eventsPath,
+    taskGraphPath,
     acceptanceReportPath,
     summaryPath,
   }
@@ -1041,6 +1046,16 @@ export async function persistRunArtifacts(
   if (spec) {
     await writeFile(specPath, JSON.stringify(spec, null, 2) + '\n')
   }
+  await writeTaskGraph(
+    projectRoot,
+    plan.session.id,
+    session.tasks.map((task) => ({
+      id: task.id,
+      title: task.title,
+      status: toQuestTaskGraphStatus(task.status),
+      dependsOn: task.dependsOn ?? [],
+    })),
+  )
   await writeFile(eventsPath, session.events.map((event) => JSON.stringify(event)).join('\n') + '\n')
   await writeFile(
     acceptanceReportPath,
@@ -1078,6 +1093,20 @@ export async function persistRunArtifacts(
   }
 
   return artifacts
+}
+
+function toQuestTaskGraphStatus(status: string | undefined): QuestRunTask['status'] {
+  if (
+    status === 'pending' ||
+    status === 'completed' ||
+    status === 'blocked' ||
+    status === 'failed' ||
+    status === 'cancelled'
+  ) {
+    return status
+  }
+  if (status === 'ready' || status === 'running') return 'in_progress'
+  return 'pending'
 }
 
 function serializablePlan(plan: ExecutionPlan): Record<string, unknown> {

@@ -531,6 +531,7 @@ ensure_oac_config() {
 
     if [ ! -f "$oac_config" ]; then
         mkdir -p "$oac_dir"
+        mkdir -p "$oac_dir/runs"
         cat > "$oac_config" << 'EOF'
 {
   "version": "1",
@@ -579,6 +580,9 @@ print_execution_workflow() {
     echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
     echo -e "  ${CYAN}oac experts --plan-only \"<objective>\"${NC}       Save structured plan for handoff"
     echo -e "  ${CYAN}oac experts --run \"<objective>\"${NC}             Simulated swarm pipeline (default)"
+    echo -e "  ${CYAN}oac quest-status${NC}                            List durable Quest runs"
+    echo -e "  ${CYAN}oac quest-status <quest-id>${NC}                 Inspect Quest state, tasks, artifacts"
+    echo -e "  ${CYAN}oac quest-resume <quest-id>${NC}                 Print runtime resume commands"
     echo ""
     print_info "Headless OpenCode spawn (oac experts --run --live) is optional — use OpenCode TUI, Claude, or Kimi for primary execution."
     echo ""

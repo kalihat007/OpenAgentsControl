@@ -1,11 +1,12 @@
 /**
- * Quest run — durable v3 status document for Quest + Experts sessions.
+ * Quest run — durable v4 status document for Quest + Experts sessions.
  *
  * `spec.json` remains the compatibility SSOT. `quest.json` is the user-facing
  * lifecycle/status sidecar used by quest-status and quest-resume.
  */
 
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, readFile, writeFile, appendFile, stat, open, rm } from 'node:fs/promises'
+import { setTimeout as sleep } from 'node:timers/promises'
 import { join } from 'node:path'
 import type { QuestScenario, RouterResult } from './task-router.js'
 import type { ExecutionPlan, ExecutionResult, RunArtifacts } from './swarm-executor.js'
@@ -16,7 +17,7 @@ import {
   OPENCODE_TUI_COMMAND,
 } from './run-handoff.js'
 
-export const QUEST_RUN_VERSION = '3' as const
+export const QUEST_RUN_VERSION = '4' as const
 
 export type QuestRunState =
   | 'NEW'
@@ -56,6 +57,7 @@ export interface QuestRunArtifacts {
   spec: string
   plan?: string
   events?: string
+  taskGraph?: string
   acceptanceReport?: string
   summary?: string
   handoff?: string
@@ -64,6 +66,36 @@ export interface QuestRunArtifacts {
 export interface QuestRunRuntime {
   command: string
   resumePrompt: string
+}
+
+export interface QuestEvent {
+  timestamp: string
+  type: 'state_change' | 'task_update' | 'validation' | 'file_change' | 'error' | 'note' | 'amendment'
+  data: Record<string, unknown>
+}
+
+export interface TaskGraph {
+  tasks: Array<{
+    id: string
+    title: string
+    status: QuestRunTask['status']
+    dependsOn?: string[]
+  }>
+}
+
+export interface QuestVerificationResult {
+  timestamp: string
+  checks: Array<{
+    name: string
+    command: string
+    passed: boolean
+    output?: string
+    durationMs?: number
+  }>
+  overallPassed: boolean
+  summary: string
+  forced?: boolean
+  noChecks?: boolean
 }
 
 export interface QuestRun {
@@ -87,6 +119,10 @@ export interface QuestRun {
     kimi: QuestRunRuntime
     claude: QuestRunRuntime
   }
+  /** v4: accumulated changed files (also tracked via events). */
+  changedFiles?: string[]
+  /** v4: latest verification result. */
+  verification?: QuestVerificationResult
 }
 
 export interface BuildQuestRunOptions {
@@ -172,6 +208,247 @@ export async function listQuestRunIds(projectRoot: string): Promise<string[]> {
   }
 }
 
+// ── Standalone durable-quest helpers (Quest v4) ───────────────────────────────
+
+/**
+ * Generate the next Quest ID in the form quest-YYYYMMDD-NNN.
+ * Scans .oac/runs/ for existing IDs and increments the daily sequence.
+ */
+export async function generateQuestId(projectRoot: string): Promise<string> {
+  const runsDir = join(projectRoot, '.oac', 'runs')
+  const today = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  const prefix = `quest-${today}-`
+
+  let maxSeq = 0
+  try {
+    const entries = await readdir(runsDir)
+    for (const entry of entries) {
+      if (entry.startsWith(prefix)) {
+        const seq = parseInt(entry.slice(prefix.length), 10)
+        if (!Number.isNaN(seq) && seq > maxSeq) {
+          maxSeq = seq
+        }
+      }
+    }
+  } catch {
+    // runs dir doesn't exist yet — start at 0
+  }
+
+  const nextSeq = String(maxSeq + 1).padStart(3, '0')
+  return `${prefix}${nextSeq}`
+}
+
+/** Check whether a Quest artifact exists on disk. */
+export async function questExists(
+  projectRoot: string,
+  questId: string,
+): Promise<boolean> {
+  try {
+    const s = await stat(join(projectRoot, '.oac', 'runs', questId, 'quest.json'))
+    return s.isFile()
+  } catch {
+    return false
+  }
+}
+
+/** Append a single event to events.ndjson. */
+export async function appendQuestEvent(
+  projectRoot: string,
+  questId: string,
+  event: QuestEvent,
+): Promise<void> {
+  const runDir = join(projectRoot, '.oac', 'runs', questId)
+  await mkdir(runDir, { recursive: true })
+  const path = join(runDir, 'events.ndjson')
+  const line = JSON.stringify(event) + '\n'
+  await withEventAppendLock(join(runDir, 'events.ndjson.lock'), async () => {
+    await appendFile(path, line)
+  })
+}
+
+async function withEventAppendLock<T>(
+  lockPath: string,
+  fn: () => Promise<T>,
+  timeoutMs = 5000,
+): Promise<T> {
+  const startedAt = Date.now()
+  let lockHandle: Awaited<ReturnType<typeof open>> | undefined
+
+  while (!lockHandle) {
+    try {
+      lockHandle = await open(lockPath, 'wx')
+      await lockHandle.writeFile(`${process.pid}:${new Date().toISOString()}\n`)
+    } catch (err) {
+      if (!isFileExistsError(err)) throw err
+
+      if (Date.now() - startedAt > timeoutMs) {
+        throw new Error(`Timed out waiting for Quest event lock: ${lockPath}`)
+      }
+
+      await sleep(25)
+    }
+  }
+
+  try {
+    return await fn()
+  } finally {
+    await lockHandle.close()
+    await rm(lockPath, { force: true })
+  }
+}
+
+function isFileExistsError(err: unknown): boolean {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'code' in err &&
+    (err as { code?: unknown }).code === 'EEXIST'
+  )
+}
+
+/** Write task-graph.json for a quest. */
+export async function writeTaskGraph(
+  projectRoot: string,
+  questId: string,
+  tasks: TaskGraph['tasks'],
+): Promise<void> {
+  const runDir = join(projectRoot, '.oac', 'runs', questId)
+  await mkdir(runDir, { recursive: true })
+  const graph: TaskGraph = { tasks }
+  await writeFile(join(runDir, 'task-graph.json'), JSON.stringify(graph, null, 2) + '\n')
+}
+
+// ── Formatting ────────────────────────────────────────────────────────────────
+
+/** Format a runtime-specific handoff block for copy-pasting into an IDE. */
+export function formatRuntimeHandoff(
+  quest: QuestRun,
+  runtime: 'opencode' | 'kimi' | 'claude',
+): string {
+  const rt = quest.runtimes[runtime]
+  const lines: string[] = [
+    `OpenAgent Quest v4 — ${runtime.toUpperCase()} Resume`,
+    `Quest ID:    ${quest.questId}`,
+    `State:       ${quest.state}`,
+    `Trust:       ${quest.trustLabel}`,
+    ``,
+    `Objective:   ${quest.objective}`,
+    `Scenario:    ${quest.scenario}`,
+    `Intensity:   ${quest.intensity}`,
+    ``,
+    'Tasks:',
+  ]
+
+  for (const task of quest.tasks) {
+    const icon =
+      task.status === 'completed'
+        ? '✓'
+        : task.status === 'in_progress'
+          ? '→'
+          : task.status === 'blocked'
+            ? '⊘'
+            : task.status === 'failed'
+              ? '✗'
+              : '○'
+    lines.push(`  ${icon} ${task.status}: ${task.title}`)
+  }
+
+  lines.push('')
+  lines.push('Checkpoint:')
+  lines.push(`  Next action: ${quest.nextSuggestedAction}`)
+
+  lines.push('')
+  lines.push('Runtime command:')
+  lines.push(`  ${rt.command}`)
+  lines.push(`  (Load quest from ${quest.artifacts.runDir}/quest.json)`)
+  lines.push('')
+  lines.push('Resume prompt:')
+  lines.push(`  ${rt.resumePrompt}`)
+  lines.push('')
+  lines.push('v4 Runtime Write-Back Contract:')
+  lines.push('  DO NOT rewrite quest.json. Append events to events.ndjson only.')
+  lines.push('  Event format: {"timestamp":"ISO","type":"...","data":{}}')
+  lines.push('')
+  lines.push('  task_update  → {"type":"task_update","data":{"taskId":"1","status":"in_progress"}}')
+  lines.push('  state_change → {"type":"state_change","data":{"from":"EXECUTE","to":"VERIFY"}}')
+  lines.push('  file_change  → {"type":"file_change","data":{"added":"src/index.ts"}}')
+  lines.push('  validation   → {"type":"validation","data":{"result":{"overallPassed":true,...}}}')
+  lines.push('  error        → {"type":"error","data":{"taskId":"1","critical":false}}')
+  lines.push('  note         → {"type":"note","data":{"message":"Reasoning..."}}')
+  lines.push('')
+  lines.push('  The CLI reconciler reads base quest.json + events.ndjson to produce live state.')
+  lines.push('  Run "oac quest-status <id>" to see reconciled state.')
+
+  return lines.join('\n')
+}
+
+/** Generate summary.md content. */
+export function formatQuestSummary(quest: QuestRun): string {
+  const lines: string[] = [
+    `# Quest Summary — ${quest.questId}`,
+    '',
+    `- **Objective:** ${quest.objective}`,
+    `- **Scenario:** ${quest.scenario}`,
+    `- **Intensity:** ${quest.intensity}`,
+    `- **State:** ${quest.state}`,
+    `- **Trust Label:** ${quest.trustLabel}`,
+    `- **Created:** ${quest.createdAt}`,
+    `- **Updated:** ${quest.updatedAt}`,
+    '',
+    '## Tasks',
+    '',
+  ]
+
+  for (const task of quest.tasks) {
+    lines.push(`- [${task.status === 'completed' ? 'x' : ' '}] ${task.title} \`(${task.status})\``)
+  }
+
+  lines.push('')
+  lines.push('## Next Action')
+  lines.push(quest.nextSuggestedAction)
+  lines.push('')
+  return lines.join('\n')
+}
+
+/** Generate acceptance-report.md content. */
+export function formatAcceptanceReport(quest: QuestRun): string {
+  const lines: string[] = [
+    `# Acceptance Report — ${quest.questId}`,
+    '',
+    `- **Objective:** ${quest.objective}`,
+    `- **Final State:** ${quest.state}`,
+    `- **Trust Label:** ${quest.trustLabel}`,
+    `- **Completed At:** ${quest.updatedAt}`,
+    '',
+    '## Acceptance Criteria',
+    '',
+  ]
+
+  for (const criterion of quest.acceptanceCriteria) {
+    lines.push(`- ${criterion}`)
+  }
+
+  const completed = quest.tasks.filter((t) => t.status === 'completed').length
+  const total = quest.tasks.length
+  lines.push(`- ${completed} of ${total} tasks completed`)
+
+  lines.push('')
+  lines.push('## Remaining Risks')
+  lines.push('')
+  const blocked = quest.tasks.filter((t) => t.status === 'blocked')
+  const failed = quest.tasks.filter((t) => t.status === 'failed')
+  if (blocked.length === 0 && failed.length === 0) {
+    lines.push('_No blocked or failed tasks._')
+  } else {
+    for (const t of [...blocked, ...failed]) {
+      lines.push(`- **${t.title}** — \`${t.status}\``)
+    }
+  }
+
+  lines.push('')
+  return lines.join('\n')
+}
+
 export function inferQuestIntensity(
   routerResult: RouterResult,
   plan: ExecutionPlan,
@@ -194,6 +471,7 @@ export function questArtifactsFromRunArtifacts(artifacts: RunArtifacts): Partial
     plan: basename(artifacts.planPath),
     spec: basename(artifacts.specPath),
     events: basename(artifacts.eventsPath),
+    taskGraph: basename(artifacts.taskGraphPath),
     acceptanceReport: basename(artifacts.acceptanceReportPath),
     summary: basename(artifacts.summaryPath),
   }

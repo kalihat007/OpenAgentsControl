@@ -3,11 +3,18 @@
  */
 
 import type { Command } from 'commander'
-import { log, info, success, dim } from '../ui/logger.js'
+import { log, info, success, dim, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
-import { listQuestRunIds, loadQuestRun } from '../lib/quest-run.js'
+import { listQuestRunIds, loadQuestRun, formatRuntimeHandoff } from '../lib/quest-run.js'
 
-export async function questResumeCommand(questId: string | undefined): Promise<void> {
+export type QuestResumeOptions = {
+  runtime?: 'opencode' | 'kimi' | 'claude'
+}
+
+export async function questResumeCommand(
+  questId: string | undefined,
+  options: QuestResumeOptions = {},
+): Promise<void> {
   const projectRoot = process.cwd()
   const runIds = await listQuestRunIds(projectRoot)
 
@@ -26,6 +33,15 @@ export async function questResumeCommand(questId: string | undefined): Promise<v
     throw new CommandUsageError(
       `Quest '${questId}' is a legacy run without quest.json. Use oac swarm-status ${questId} for details.`,
     )
+  }
+
+  if (options.runtime) {
+    log('')
+    bold(`Resume ${options.runtime.toUpperCase()}`)
+    log('')
+    log(formatRuntimeHandoff(quest, options.runtime))
+    log('')
+    return
   }
 
   log('')
@@ -47,14 +63,24 @@ export function registerQuestResumeCommand(program: Command): void {
   program
     .command('quest-resume <quest-id>')
     .description('Print OpenCode, Kimi, and Claude resume commands for a durable OpenAgent Quest')
+    .option('--runtime <name>', 'Show handoff for a single runtime (opencode, kimi, claude)')
     .addHelpText(
       'after',
       `
 Examples:
   oac quest-resume swarm-m123abc
+  oac quest-resume swarm-m123abc --runtime kimi
 `,
     )
-    .action(async (questId: string | undefined) => {
-      await questResumeCommand(questId)
+    .action(async (questId: string | undefined, opts: { runtime?: string }) => {
+      const runtime = opts.runtime
+        ? (opts.runtime as 'opencode' | 'kimi' | 'claude')
+        : undefined
+      if (runtime && !['opencode', 'kimi', 'claude'].includes(runtime)) {
+        throw new CommandUsageError(
+          `Invalid runtime '${runtime}'. Choose: opencode, kimi, claude`,
+        )
+      }
+      await questResumeCommand(questId, { runtime })
     })
 }
