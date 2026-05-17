@@ -7,6 +7,8 @@ export type SwarmTaskStatus =
   | "failed"
   | "cancelled";
 
+export type RuntimeType = "opencode" | "kimi" | "claude" | "local";
+
 export type SwarmEventType =
   | "session.created"
   | "module.claimed"
@@ -18,11 +20,17 @@ export type SwarmEventType =
   | "task.failed"
   | "batch.planned"
   | "handoff.ready"
+  | "handoff.outgoing"
+  | "handoff.incoming"
   | "sync.required"
   | "sync.completed"
   | "lock.conflict"
   | "incident.created"
+  | "incident.resolved"
   | "checkpoint.created"
+  | "runtime.assigned"
+  | "runtime.spawned"
+  | "runtime.completed"
   | "gate.required"
   | "gate.passed";
 
@@ -101,6 +109,8 @@ export interface SwarmTask {
   status?: SwarmTaskStatus;
   stage?: string;
   executionMode?: SwarmExecutionMode;
+  runtime?: RuntimeType;
+  background?: boolean;
   parentTaskId?: string;
   chunkIndex?: number;
   chunkTotal?: number;

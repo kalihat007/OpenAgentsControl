@@ -90,7 +90,7 @@ export interface PipelineConfig {
   dryRun: boolean
   verbose: boolean
   maxConcurrency: number
-  /** simulate (default), handoff, or runtime — runtime spawns real execution */
+  /** simulate (default), handoff, runtime, or distributed — runtime modes spawn real execution */
   executionMode: ExecutionMode
   /** Run real quality gate on changed files after execution (--run default) */
   runQualityGate: boolean

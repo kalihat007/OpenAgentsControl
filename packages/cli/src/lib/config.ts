@@ -2,6 +2,31 @@ import { z } from "zod";
 import { mkdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 
+export const OacV6PreferencesSchema = z.object({
+  enabled: z.boolean().default(false),
+  distributedSwarm: z.object({
+    enabled: z.boolean().default(false),
+    defaultRuntime: z.enum(["opencode", "kimi", "claude", "local"]).default("kimi"),
+    allowMultiRuntime: z.boolean().default(true),
+    maxConcurrentRuntimes: z.number().int().min(1).max(10).default(3),
+  }).default({}),
+  teamMemory: z.object({
+    enabled: z.boolean().default(true),
+    maxLessons: z.number().int().min(10).max(2000).default(500),
+    autoLearnFromSuccess: z.boolean().default(true),
+    autoLearnFromFailure: z.boolean().default(true),
+  }).default({}),
+  worktrees: z.object({
+    enabled: z.boolean().default(false),
+    mergeStrategy: z.enum(["manual", "auto-squash", "auto-rebase"]).default("manual"),
+  }).default({}),
+  incidents: z.object({
+    enabled: z.boolean().default(true),
+    autoCreateOnFailure: z.boolean().default(true),
+    requirePostMortem: z.boolean().default(false),
+  }).default({}),
+});
+
 export const OacPreferencesSchema = z.object({
   yoloMode: z.boolean(),
   autoBackup: z.boolean(),
@@ -10,12 +35,15 @@ export const OacPreferencesSchema = z.object({
   maxParallelAgents: z.number().int().min(1).max(20),
   maxApiCallsPerSession: z.number().int().min(10).max(10000),
 });
+
 export const OacConfigSchema = z.object({
   version: z.literal("1"),
   preferences: OacPreferencesSchema,
+  v6: OacV6PreferencesSchema.optional(),
 });
 
 export type OacPreferences = z.infer<typeof OacPreferencesSchema>;
+export type OacV6Preferences = z.infer<typeof OacV6PreferencesSchema>;
 export type OacConfig = z.infer<typeof OacConfigSchema>;
 
 export const DEFAULT_MAX_PARALLEL_AGENTS = 2;
@@ -33,6 +61,7 @@ export const createDefaultConfig = (): OacConfig => ({
     maxParallelAgents: DEFAULT_MAX_PARALLEL_AGENTS,
     maxApiCallsPerSession: 500,
   },
+  v6: OacV6PreferencesSchema.parse({}),
 });
 
 // Pure — returns new object, no mutation
@@ -56,6 +85,12 @@ export const getMaxParallelAgents = (config: OacConfig): number =>
 
 export const getMaxApiCallsPerSession = (config: OacConfig): number =>
   config.preferences.maxApiCallsPerSession;
+
+export const isV6Enabled = (config: OacConfig): boolean =>
+  config.v6?.enabled ?? false;
+
+export const getV6Preferences = (config: OacConfig): OacV6Preferences | undefined =>
+  config.v6;
 
 export async function readConfig(projectRoot: string): Promise<OacConfig | null> {
   const configPath = getConfigPath(projectRoot);

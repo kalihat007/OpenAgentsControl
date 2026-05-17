@@ -117,6 +117,18 @@ describe("chunkSwarmTask", () => {
     expect(chunks[0]!.executionMode).toBe("parallel");
   });
 
+  test("preserves parent runtime fields unless a chunk overrides them", () => {
+    const chunks = chunkSwarmTask({ ...parent, runtime: "kimi", background: false }, [
+      { id: "c-1", title: "inherit runtime" },
+      { id: "c-2", title: "override runtime", runtime: "opencode", background: true },
+    ]);
+
+    expect(chunks[0]!.runtime).toBe("kimi");
+    expect(chunks[0]!.background).toBe(false);
+    expect(chunks[1]!.runtime).toBe("opencode");
+    expect(chunks[1]!.background).toBe(true);
+  });
+
   test("sets status to pending on all chunks", () => {
     const chunks = chunkSwarmTask(parent, [
       { id: "c-1", title: "chunk 1" },
@@ -391,6 +403,41 @@ describe("planSwarmBatches", () => {
     const readyEvents = result.events.filter((e) => e.type === "task.ready");
     expect(batchEvents).toHaveLength(1);
     expect(readyEvents).toHaveLength(2);
+  });
+
+  test("emits runtime.assigned events for runtime-owned tasks", () => {
+    const tasks = [
+      makeTask({ id: "t-1", runtime: "kimi" }),
+      makeTask({ id: "t-2", runtime: "opencode" }),
+    ];
+    const result = planSwarmBatches(tasks, { maxConcurrency: 10 });
+    const runtimeEvents = result.events.filter((event) => event.type === "runtime.assigned");
+
+    expect(runtimeEvents).toHaveLength(2);
+    expect(runtimeEvents[0]!.data).toMatchObject({ taskId: "t-1", runtime: "kimi" });
+  });
+
+  test("separates same-runtime foreground tasks into different batches", () => {
+    const tasks = [
+      makeTask({ id: "t-1", runtime: "kimi" }),
+      makeTask({ id: "t-2", runtime: "kimi" }),
+      makeTask({ id: "t-3", runtime: "opencode" }),
+    ];
+    const result = planSwarmBatches(tasks, { maxConcurrency: 10 });
+
+    expect(result.batches[0]!.tasks.map((task) => task.id).sort()).toEqual(["t-1", "t-3"]);
+    expect(result.batches[1]!.tasks.map((task) => task.id)).toEqual(["t-2"]);
+  });
+
+  test("allows same-runtime tasks in one batch when background is enabled", () => {
+    const tasks = [
+      makeTask({ id: "t-1", runtime: "kimi", background: true }),
+      makeTask({ id: "t-2", runtime: "kimi", background: true }),
+    ];
+    const result = planSwarmBatches(tasks, { maxConcurrency: 10 });
+
+    expect(result.batches).toHaveLength(1);
+    expect(result.batches[0]!.tasks.map((task) => task.id)).toEqual(["t-1", "t-2"]);
   });
 
   test("events have valid timestamps", () => {

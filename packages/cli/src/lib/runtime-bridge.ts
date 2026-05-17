@@ -1,20 +1,20 @@
 /**
- * Runtime Bridge v5 — unified interface for spawning real execution
+ * Runtime Bridge v5/v6 — unified interface for spawning real execution
  * in OpenCode, Kimi, or Claude runtimes.
  *
  * Each runtime receives a prompt that loads the quest artifacts
- * and follows the v5 write-back contract (append-only events.ndjson).
+ * and follows the append-only write-back contract (events.ndjson).
  */
 
 import { spawn, spawnSync, type SpawnOptions } from 'node:child_process'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { createLogger } from './logger.js'
-import { appendQuestEvent, writeRunPid } from './quest-run.js'
+import { appendQuestEvent, writeRunPid, writeRuntimePid } from './quest-run.js'
 
 const log = createLogger('runtime-bridge')
 
-export type RuntimeType = 'opencode' | 'kimi' | 'claude'
+export type RuntimeType = 'opencode' | 'kimi' | 'claude' | 'local'
 
 export interface RuntimeBridgeOptions {
   questId: string
@@ -22,6 +22,7 @@ export interface RuntimeBridgeOptions {
   projectRoot: string
   runDir: string
   runtime: RuntimeType
+  workDir?: string
   tasks?: Array<{
     id: string
     title: string
@@ -99,6 +100,7 @@ export function runtimeUnavailableMessage(runtime: RuntimeType): string {
     opencode: 'Install the OpenCode CLI (npm install -g opencode-ai).',
     kimi: 'Install the Kimi CLI (see https://kimi.com).',
     claude: 'Install Claude Code (npm install -g @anthropics/claude-code).',
+    local: 'Local runtime requires no external CLI.',
   }
   return `${runtime} CLI is not available. ${installHints[runtime]}`
 }
@@ -109,14 +111,16 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
   const { questId, objective, runDir } = options
   const tasks = options.tasks ?? []
   return [
-    `Execute this OpenAgent Quest v5: ${objective}`,
+    `Execute this OpenAgent Quest v5/v6: ${objective}`,
     `Quest ID: ${questId}`,
     `Load the run artifacts from ${runDir}:\n`,
     `  - spec.json (execution spec)`,
     `  - plan.json (task plan)`,
     `  - quest.json (quest state)`,
+    `  - agent-memory.json when present (continuity context only)`,
     ``,
     `Follow Quest Mode + Experts Mode. Execute all tasks in the plan.`,
+    `Use the currently selected ${options.runtime} runtime/model throughout. Do not route work to a hidden LLM or fallback model.`,
     tasks.length > 0 ? `Task write-back requirements:` : `Task write-back requirements: load task IDs from plan.json.`,
     ...tasks.map((task) => `  - ${task.id}: ${task.title} (${task.agent})`),
     `For every listed task, append one task_update event with status "in_progress" before work and one task_update event with status "completed", "failed", or "blocked" after work.`,
@@ -127,6 +131,94 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
     `If no file change is required, still append task_update completion events and a note event explaining that the task was a no-op.`,
     `After finishing, mark the quest state as COMPLETE or BLOCKED via a state_change event.`,
   ].join('\n')
+}
+
+// ── Distributed runtime spawning ──────────────────────────────────────────────
+
+export interface DistributedRuntimeBatch {
+  runtime: RuntimeType
+  tasks: Array<{ id: string; title: string; agent: string }>
+  background?: boolean
+  workDir?: string
+}
+
+export interface DistributedRuntimeOptions {
+  questId: string
+  objective: string
+  projectRoot: string
+  runDir: string
+  batches: DistributedRuntimeBatch[]
+  timeoutMs?: number
+}
+
+export interface DistributedRuntimeResult {
+  results: Array<{
+    runtime: RuntimeType
+    ok: boolean
+    exitCode: number | null
+    errorMessage?: string
+    durationMs: number
+  }>
+  overallOk: boolean
+}
+
+export async function spawnDistributedRuntimes(
+  options: DistributedRuntimeOptions,
+): Promise<DistributedRuntimeResult> {
+  const { batches, questId, projectRoot } = options
+
+  log.info('Spawning distributed runtimes', {
+    questId,
+    runtimeCount: batches.length,
+    runtimes: batches.map((b) => b.runtime),
+  })
+
+  const spawnPromises = batches.map(async (batch) => {
+    const result = await spawnRuntime({
+      questId: options.questId,
+      objective: options.objective,
+      projectRoot: options.projectRoot,
+      workDir: batch.workDir,
+      runDir: options.runDir,
+      runtime: batch.runtime,
+      tasks: batch.tasks,
+      timeoutMs: options.timeoutMs,
+      background: batch.background ?? false,
+    })
+
+    if (!batch.background) {
+      await appendQuestEvent(projectRoot, questId, {
+        timestamp: new Date().toISOString(),
+        type: 'runtime.completed',
+        data: {
+          runtime: batch.runtime,
+          ok: result.ok,
+          exitCode: result.exitCode,
+          durationMs: result.durationMs,
+          taskIds: batch.tasks.map((task) => task.id),
+        },
+      })
+    }
+
+    return {
+      runtime: batch.runtime,
+      ok: result.ok,
+      exitCode: result.exitCode,
+      errorMessage: result.errorMessage,
+      durationMs: result.durationMs,
+    }
+  })
+
+  const results = await Promise.all(spawnPromises)
+  const overallOk = results.every((r) => r.ok)
+
+  log.info('Distributed runtimes finished', {
+    questId,
+    overallOk,
+    results: results.map((r) => ({ runtime: r.runtime, ok: r.ok })),
+  })
+
+  return { results, overallOk }
 }
 
 // ── Dispatcher ────────────────────────────────────────────────────────────────
@@ -181,6 +273,30 @@ export async function spawnRuntime(options: RuntimeBridgeOptions): Promise<Runti
   return result
 }
 
+async function recordRuntimeSpawned(
+  options: RuntimeBridgeOptions,
+  pid: number | undefined,
+): Promise<void> {
+  await appendQuestEvent(options.projectRoot, options.questId, {
+    timestamp: new Date().toISOString(),
+    type: 'runtime.spawned',
+    data: {
+      runtime: options.runtime,
+      ...(pid !== undefined && { pid }),
+      background: options.background ?? false,
+      workDir: options.workDir ?? options.projectRoot,
+      taskIds: options.tasks?.map((task) => task.id) ?? [],
+    },
+  })
+
+  if (options.background && pid !== undefined) {
+    await Promise.all([
+      writeRunPid(options.projectRoot, options.questId, pid),
+      writeRuntimePid(options.projectRoot, options.questId, options.runtime, pid),
+    ])
+  }
+}
+
 function dispatchSpawn(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> {
   switch (options.runtime) {
     case 'opencode':
@@ -189,6 +305,16 @@ function dispatchSpawn(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResu
       return spawnKimi(options)
     case 'claude':
       return spawnClaude(options)
+    case 'local':
+      return Promise.resolve({
+        ok: false,
+        exitCode: null,
+        signal: null,
+        stdout: '',
+        stderr: '',
+        durationMs: 0,
+        errorMessage: 'Local runtime is reserved for future in-process execution.',
+      })
   }
 }
 
@@ -198,11 +324,12 @@ function spawnOpencode(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResu
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   const start = Date.now()
   const prompt = buildRuntimePrompt(options)
+  const workDir = options.workDir ?? options.projectRoot
 
   const args = [
     'run',
     '--agent', 'OpenAgent',
-    '--dir', options.projectRoot,
+    '--dir', workDir,
     '--format', 'json',
     '--dangerously-skip-permissions',
     prompt,
@@ -230,7 +357,7 @@ function spawnOpencode(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResu
     }
 
     const spawnOpts: SpawnOptions = {
-      cwd: options.projectRoot,
+      cwd: workDir,
       stdio: options.background ? 'ignore' : ['ignore', 'pipe', 'pipe'],
       detached: options.background,
       env: process.env,
@@ -247,7 +374,7 @@ function spawnOpencode(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResu
     if (options.background && child.pid) {
       const pid = child.pid
       child.unref()
-      writeRunPid(options.projectRoot, options.questId, pid)
+      recordRuntimeSpawned(options, pid)
         .then(() => finish({ ok: true, exitCode: 0, stdout: '', stderr: '' }))
         .catch((err: unknown) => {
           finish({
@@ -256,6 +383,13 @@ function spawnOpencode(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResu
         })
       return
     }
+
+    void recordRuntimeSpawned(options, child.pid).catch((err: unknown) => {
+      log.warn('Failed to record runtime.spawned event', {
+        runtime: options.runtime,
+        error: err instanceof Error ? err.message : String(err),
+      })
+    })
 
     timer = setTimeout(() => {
       child.kill('SIGTERM')
@@ -288,9 +422,10 @@ function spawnKimi(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> 
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   const start = Date.now()
   const prompt = buildRuntimePrompt(options)
+  const workDir = options.workDir ?? options.projectRoot
 
   const args = [
-    '--work-dir', options.projectRoot,
+    '--work-dir', workDir,
     '--agent-file', getKimiAgentFile(),
     '--print',
     '--final-message-only',
@@ -322,7 +457,7 @@ function spawnKimi(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> 
     }
 
     const spawnOpts: SpawnOptions = {
-      cwd: options.projectRoot,
+      cwd: workDir,
       stdio: options.background ? 'ignore' : ['ignore', 'pipe', 'pipe'],
       detached: options.background,
       env: process.env,
@@ -339,7 +474,7 @@ function spawnKimi(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> 
     if (options.background && child.pid) {
       const pid = child.pid
       child.unref()
-      writeRunPid(options.projectRoot, options.questId, pid)
+      recordRuntimeSpawned(options, pid)
         .then(() => finish({ ok: true, exitCode: 0, stdout: '', stderr: '' }))
         .catch((err: unknown) => {
           finish({
@@ -348,6 +483,13 @@ function spawnKimi(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> 
         })
       return
     }
+
+    void recordRuntimeSpawned(options, child.pid).catch((err: unknown) => {
+      log.warn('Failed to record runtime.spawned event', {
+        runtime: options.runtime,
+        error: err instanceof Error ? err.message : String(err),
+      })
+    })
 
     timer = setTimeout(() => {
       child.kill('SIGTERM')
@@ -380,6 +522,7 @@ function spawnClaude(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   const start = Date.now()
   const prompt = buildRuntimePrompt(options)
+  const workDir = options.workDir ?? options.projectRoot
 
   const args = [
     '--plugin-dir', getClaudePluginDir(),
@@ -409,7 +552,7 @@ function spawnClaude(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult
     }
 
     const spawnOpts: SpawnOptions = {
-      cwd: options.projectRoot,
+      cwd: workDir,
       stdio: options.background ? 'ignore' : ['ignore', 'pipe', 'pipe'],
       detached: options.background,
       env: process.env,
@@ -426,7 +569,7 @@ function spawnClaude(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult
     if (options.background && child.pid) {
       const pid = child.pid
       child.unref()
-      writeRunPid(options.projectRoot, options.questId, pid)
+      recordRuntimeSpawned(options, pid)
         .then(() => finish({ ok: true, exitCode: 0, stdout: '', stderr: '' }))
         .catch((err: unknown) => {
           finish({
@@ -435,6 +578,13 @@ function spawnClaude(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult
         })
       return
     }
+
+    void recordRuntimeSpawned(options, child.pid).catch((err: unknown) => {
+      log.warn('Failed to record runtime.spawned event', {
+        runtime: options.runtime,
+        error: err instanceof Error ? err.message : String(err),
+      })
+    })
 
     timer = setTimeout(() => {
       child.kill('SIGTERM')

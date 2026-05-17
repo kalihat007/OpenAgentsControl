@@ -17,7 +17,7 @@ import { persistQuestRun, type QuestRun } from './quest-run.js'
 function makeBaseQuest(): QuestRun {
   const now = new Date().toISOString()
   return {
-    version: '5',
+    version: '6',
     questId: 'test-q-001',
     runId: 'test-q-001',
     objective: 'Test quest',
@@ -233,6 +233,99 @@ describe('quest-reconciler', () => {
     const live = reconcileQuestRun(base, events)
     expect(live.state).toBe(base.state)
     expect(live.tasks).toHaveLength(base.tasks.length)
+  })
+
+  it('reconcileQuestRun tracks v6 runtime progress events', () => {
+    const base = makeBaseQuest()
+    const events = [
+      {
+        timestamp: '2026-05-17T00:00:00.000Z',
+        type: 'runtime.assigned' as const,
+        data: { runtime: 'kimi', taskIds: ['1', '2'] },
+      },
+      {
+        timestamp: '2026-05-17T00:00:01.000Z',
+        type: 'runtime.spawned' as const,
+        data: { runtime: 'kimi', pid: 1234 },
+      },
+      {
+        timestamp: '2026-05-17T00:00:02.000Z',
+        type: 'runtime.completed' as const,
+        data: { runtime: 'kimi', ok: true },
+      },
+    ]
+
+    const live = reconcileQuestRun(base, events)
+
+    expect(live.runtimeProgress.kimi?.assigned).toBe(2)
+    expect(live.runtimeProgress.kimi?.completed).toBe(1)
+    expect(live.runtimeProgress.kimi?.pid).toBe(1234)
+    expect(live.runtimeProgress.kimi?.alive).toBe(false)
+    expect((live.tasks[0] as unknown as { runtime?: string }).runtime).toBe('kimi')
+  })
+
+  it('reconcileQuestRun records outgoing and accepted handoffs', () => {
+    const base = makeBaseQuest()
+    const events = [
+      {
+        timestamp: '2026-05-17T00:00:00.000Z',
+        type: 'handoff.outgoing' as const,
+        data: {
+          fromRuntime: 'kimi',
+          toRuntime: 'opencode',
+          taskIds: ['1'],
+          changedFiles: ['packages/cli/src/lib/team-memory.ts'],
+          nextAction: 'continue status work',
+          risks: ['verify JSON output'],
+        },
+      },
+      {
+        timestamp: '2026-05-17T00:00:01.000Z',
+        type: 'handoff.incoming' as const,
+        data: {
+          fromRuntime: 'kimi',
+          toRuntime: 'opencode',
+          acceptedTaskIds: ['1'],
+        },
+      },
+    ]
+
+    const live = reconcileQuestRun(base, events)
+
+    expect(live.handoffs).toHaveLength(1)
+    expect(live.handoffs[0]?.accepted).toBe(true)
+    expect(live.handoffs[0]?.acceptedTaskIds).toEqual(['1'])
+  })
+
+  it('reconcileQuestRun records and resolves incidents', () => {
+    const base = makeBaseQuest()
+    const events = [
+      {
+        timestamp: '2026-05-17T00:00:00.000Z',
+        type: 'incident.created' as const,
+        data: {
+          incidentId: 'inc-1',
+          taskId: '2',
+          severity: 'critical',
+          summary: 'Runtime failed before write-back',
+        },
+      },
+      {
+        timestamp: '2026-05-17T00:00:01.000Z',
+        type: 'incident.resolved' as const,
+        data: {
+          incidentId: 'inc-1',
+          resolution: 'Retried with corrected command',
+        },
+      },
+    ]
+
+    const live = reconcileQuestRun(base, events)
+
+    expect(live.tasks[1].status).toBe('failed')
+    expect(live.trustLabel).toBe('failed')
+    expect(live.incidents[0]?.status).toBe('resolved')
+    expect(live.incidents[0]?.resolution).toBe('Retried with corrected command')
   })
 
   // ── Disk integration ────────────────────────────────────────────────────────

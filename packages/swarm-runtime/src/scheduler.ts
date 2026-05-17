@@ -1,5 +1,6 @@
 import type {
   LockConflict,
+  RuntimeType,
   SchedulerOptions,
   SchedulerResult,
   SwarmBatch,
@@ -16,6 +17,8 @@ export interface SwarmTaskChunkInput {
   writes?: string[];
   dependsOn?: string[];
   acceptanceCriteria?: string[];
+  runtime?: RuntimeType;
+  background?: boolean;
   metadata?: Record<string, unknown>;
 }
 
@@ -34,6 +37,8 @@ export function chunkSwarmTask(
     chunkTotal,
     stage: parent.stage,
     executionMode: parent.executionMode,
+    runtime: chunk.runtime ?? parent.runtime,
+    background: chunk.background ?? parent.background,
     status: "pending",
     dependsOn: unique([...(parent.dependsOn ?? []), ...(chunk.dependsOn ?? [])]),
     reads: chunk.reads ?? parent.reads ?? [],
@@ -94,6 +99,13 @@ export function planSwarmBatches(
         taskId: task.id,
         batchId: batch.id,
       }));
+      if (task.runtime) {
+        events.push(createEvent("runtime.assigned", `Task ${task.id} assigned to ${task.runtime}`, {
+          taskId: task.id,
+          runtime: task.runtime,
+          background: task.background ?? false,
+        }));
+      }
     }
   }
 
@@ -185,11 +197,25 @@ function buildSafeBatch(
       continue;
     }
 
-    const hasConflict = tasks.some(
+    const hasLockConflict = tasks.some(
       (selected) => detectLockConflicts(candidate, selected, options).length > 0,
     );
 
-    if (hasConflict) {
+    if (hasLockConflict) {
+      blockedTaskIds.push(candidate.id);
+      continue;
+    }
+
+    const hasRuntimeConflict = tasks.some(
+      (selected) =>
+        candidate.runtime != null &&
+        selected.runtime != null &&
+        candidate.runtime === selected.runtime &&
+        !candidate.background &&
+        !selected.background,
+    );
+
+    if (hasRuntimeConflict) {
       blockedTaskIds.push(candidate.id);
       continue;
     }

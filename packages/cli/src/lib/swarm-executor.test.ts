@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { routeTask } from './task-router.js'
-import { SessionBudgetExceededError } from './errors.js'
+import { SessionBudgetExceededError, SwarmExecutionError } from './errors.js'
 import { buildRunSpec } from './run-spec.js'
 import {
   executeSwarm,
@@ -132,6 +132,42 @@ describe('swarm-executor automatic decomposition', () => {
     ).rejects.toBeInstanceOf(SessionBudgetExceededError)
   })
 
+  it('does not silently simulate distributed runtime mode', async () => {
+    const plan = planComplexObjective()
+
+    await expect(
+      executeSwarm(plan, { mode: 'distributed' }),
+    ).rejects.toBeInstanceOf(SwarmExecutionError)
+  })
+
+  it('distributed runtime mode records real runtime failures and incidents', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-distributed-runtime-'))
+    try {
+      const routed = routeTask('write a small docs update', tmpRoot)
+      const plan = planExecution(routed, { maxConcurrency: 2, defaultRuntime: 'local' })
+
+      const result = await executeSwarm(plan, {
+        mode: 'distributed',
+        projectRoot: tmpRoot,
+        runtime: 'local',
+        routerResult: routed,
+      })
+
+      expect(result.executionMode).toBe('distributed')
+      expect(result.completedTasks).toHaveLength(0)
+      expect(result.failedTasks.length).toBeGreaterThan(0)
+      expect(result.acceptanceChecks.some((check) => check.status === 'failed')).toBe(true)
+
+      const rawEvents = await readFile(join(tmpRoot, '.oac', 'runs', plan.session.id, 'events.ndjson'), 'utf8')
+      const rawIncidents = await readFile(join(tmpRoot, '.oac', 'incidents.jsonl'), 'utf8')
+      expect(rawEvents).toContain('"type":"runtime.completed"')
+      expect(rawEvents).toContain('"type":"incident.created"')
+      expect(rawIncidents).toContain('"category":"runtime_crash"')
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
   it('estimateExecution reports batch and API call proxy', () => {
     const plan = planComplexObjective()
     const estimate = estimateExecution(plan, {
@@ -177,9 +213,32 @@ describe('swarm-executor automatic decomposition', () => {
       await persistRunArtifacts(tmpRoot, plan)
 
       const rawEvents = await readFile(eventsPath, 'utf8')
+      const teamMemory = await readFile(join(tmpRoot, '.oac', 'team-memory.json'), 'utf8')
       expect(rawEvents).toContain('"type":"task_update"')
       expect(rawEvents).toContain('"task_id"')
       expect(rawEvents).toContain('"type":"session.created"')
+      expect(teamMemory).toContain('"version": "1"')
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('scaffolds per-agent memory when persisting Quest artifacts with routing context', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-agent-memory-artifacts-'))
+    try {
+      const routed = routeTask('write a small docs update', tmpRoot)
+      const plan = planExecution(routed, { maxConcurrency: 1 })
+
+      await persistRunArtifacts(tmpRoot, plan, undefined, { routerResult: routed })
+
+      const rawMemory = await readFile(
+        join(tmpRoot, '.oac', 'runs', plan.session.id, 'agent-memory.json'),
+        'utf8',
+      )
+      const memory = JSON.parse(rawMemory)
+
+      expect(memory.questId).toBe(plan.session.id)
+      expect(Object.keys(memory.agents).length).toBeGreaterThan(0)
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }

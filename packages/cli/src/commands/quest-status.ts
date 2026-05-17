@@ -9,7 +9,12 @@ import { log, info, success, dim, warn, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
 import { createLogger } from '../lib/logger.js'
 import { listQuestRunIds, readRunPid, isRunPidAlive } from '../lib/quest-run.js'
-import { loadReconciledQuest, type ReconciledQuestRun } from '../lib/quest-reconciler.js'
+import {
+  loadEvents,
+  loadReconciledQuest,
+  type ReconciledQuestRun,
+  type ReconcilerEvent,
+} from '../lib/quest-reconciler.js'
 
 const cmdLog = createLogger('cmd:quest-status')
 
@@ -22,6 +27,33 @@ interface RunSummary {
 
 export type QuestStatusOptions = {
   verbose?: boolean
+  json?: boolean
+  watch?: boolean
+}
+
+interface QuestStatusJson {
+  questId: string
+  state: string
+  trustLabel: string
+  objective: string
+  scenario: string
+  intensity: string
+  progress: ReturnType<typeof progressForQuest>
+  runtimes: ReconciledQuestRun['runtimeProgress']
+  tasks: Array<{
+    id: string
+    title: string
+    status: string
+    expert: string
+    runtime?: string
+    dependsOn: string[]
+  }>
+  recentEvents: ReconcilerEvent[]
+  handoffs: ReconciledQuestRun['handoffs']
+  incidents: ReconciledQuestRun['incidents']
+  changedFiles: string[]
+  nextAction: string
+  backgroundRun?: { pid: number; alive: boolean }
 }
 
 function trustIcon(label: string): string {
@@ -46,20 +78,35 @@ function trustIcon(label: string): string {
 
 export async function questStatusCommand(
   questId: string | undefined,
-  _options: QuestStatusOptions = {},
+  options: QuestStatusOptions = {},
 ): Promise<void> {
   const projectRoot = process.cwd()
   const runIds = await listQuestRunIds(projectRoot)
 
   cmdLog.debug('quest-status', { questId, runCount: runIds.length })
 
+  if (options.watch && questId) {
+    await watchQuestStatus(projectRoot, questId, options.json ?? false)
+    return
+  }
+
   if (runIds.length === 0) {
+    if (options.json) {
+      console.log('[]')
+      return
+    }
     warn('No Quest runs found.')
     dim('  Run `oac experts --plan-only "<objective>"` or `oac experts --run --live "<objective>"` first.')
     return
   }
 
   if (!questId) {
+    if (options.json) {
+      const summaries = await Promise.all(runIds.map((id) => buildQuestListJson(projectRoot, id)))
+      console.log(JSON.stringify(summaries, null, 2))
+      return
+    }
+
     log('')
     bold(`OpenAgent Quest runs (${runIds.length})`)
     log('')
@@ -99,6 +146,17 @@ export async function questStatusCommand(
 
   const quest = await loadReconciledQuest(projectRoot, questId)
   const summary = await loadSummary(projectRoot, questId)
+  const events = quest ? await loadEvents(projectRoot, questId) : []
+  const pid = await readRunPid(projectRoot, questId)
+
+  if (options.json) {
+    if (quest) {
+      console.log(JSON.stringify(await buildQuestStatusJson(projectRoot, quest, events, pid), null, 2))
+    } else {
+      console.log(JSON.stringify({ questId, legacy: true, summary }, null, 2))
+    }
+    return
+  }
 
   log('')
   success(`Quest: ${questId}`)
@@ -112,7 +170,6 @@ export async function questStatusCommand(
 
   // Background run status
   if (questId) {
-    const pid = await readRunPid(projectRoot, questId)
     if (pid) {
       const alive = isRunPidAlive(pid)
       info(`Background run: ${alive ? `running (pid ${pid})` : 'finished'}`)
@@ -146,8 +203,178 @@ export async function questStatusCommand(
   dim(`Artifacts: ${join(process.cwd(), '.oac', 'runs', questId)}`)
 }
 
+async function watchQuestStatus(
+  projectRoot: string,
+  questId: string,
+  json: boolean,
+): Promise<void> {
+  if (!await loadReconciledQuest(projectRoot, questId)) {
+    warn(`Quest '${questId}' not found.`)
+    return
+  }
+
+  const INTERVAL_MS = 2000
+
+  const render = async (): Promise<void> => {
+    const quest = await loadReconciledQuest(projectRoot, questId)
+    if (!quest) return
+    const events = await loadEvents(projectRoot, questId)
+    const pid = await readRunPid(projectRoot, questId)
+
+    // Clear screen and move cursor to top-left
+    process.stdout.write('\x1B[2J\x1B[H')
+
+    if (json) {
+      console.log(JSON.stringify(await buildQuestStatusJson(projectRoot, quest, events, pid), null, 2))
+      return
+    }
+
+    const progress = progressForQuest(quest)
+    const pct = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0
+    const bar = '█'.repeat(Math.round(pct / 5)) + '░'.repeat(20 - Math.round(pct / 5))
+
+    log('┌─ OpenAgent Quest v6 ───────────────────────────────────────────┐')
+    log(`│ ${quest.questId} │ State: ${quest.state.padEnd(8)} │ Trust: ${quest.trustLabel.padEnd(12)} │`)
+    log(`│ Progress: ${progress.completed}/${progress.total} tasks ${bar} ${pct}% │`)
+
+    const rtNames = Object.keys(quest.runtimeProgress)
+    if (rtNames.length > 0) {
+      const rtSummary = rtNames.map((name) => {
+        const p = quest.runtimeProgress[name]!
+        return `${name}(${p.completed}/${p.assigned})`
+      }).join(' ')
+      log(`│ Runtimes: ${rtSummary.padEnd(56)} │`)
+    }
+    log('├─ Tasks ────────────────────────────────────────────────────────┤')
+
+    const tasksByRuntime = new Map<string, typeof quest.tasks>()
+    for (const task of quest.tasks) {
+      const rt = runtimeForTask(task) ?? 'unassigned'
+      const list = tasksByRuntime.get(rt) ?? []
+      list.push(task)
+      tasksByRuntime.set(rt, list)
+    }
+    for (const [rt, tasks] of tasksByRuntime) {
+      const taskLine = tasks.map((t) => {
+        const icon = t.status === 'completed' ? '✓' : t.status === 'in_progress' ? '→' : t.status === 'blocked' ? '⊘' : t.status === 'failed' ? '✗' : '○'
+        return `${icon} ${t.id}`
+      }).join('  ')
+      log(`│ ${rt.padEnd(10)} ${taskLine.slice(0, 50).padEnd(50)} │`)
+    }
+
+    log('├─ Recent Events ────────────────────────────────────────────────┤')
+    for (const event of events.slice(-5)) {
+      const time = event.timestamp.slice(11, 19)
+      log(`│ ${time}  ${event.type.padEnd(22)} ${String(event.data?.taskId ?? event.data?.runtime ?? '').slice(0, 24).padEnd(24)} │`)
+    }
+
+    const blocked = quest.tasks.filter((t) => t.status === 'blocked' || t.status === 'failed')
+    if (blocked.length > 0) {
+      log('├─ Blocked / Failing ────────────────────────────────────────────┤')
+      for (const t of blocked.slice(0, 3)) {
+        log(`│ ⊘ ${t.id} ${t.status} — ${t.title.slice(0, 48).padEnd(48)} │`)
+      }
+    }
+
+    log('└─ Press Ctrl+C to exit ─────────────────────────────────────────┘')
+  }
+
+  await render()
+  const timer = setInterval(render, INTERVAL_MS)
+
+  return new Promise((resolve) => {
+    process.on('SIGINT', () => {
+      clearInterval(timer)
+      process.stdout.write('\x1B[2J\x1B[H')
+      log('Watch stopped.')
+      resolve()
+      process.exit(0)
+    })
+  })
+}
+
+async function buildQuestListJson(projectRoot: string, questId: string): Promise<Record<string, unknown>> {
+  const quest = await loadReconciledQuest(projectRoot, questId)
+  if (quest) {
+    return {
+      questId,
+      state: quest.state,
+      trustLabel: quest.trustLabel,
+      objective: quest.objective,
+      updatedAt: quest.updatedAt,
+      progress: progressForQuest(quest),
+    }
+  }
+
+  const summary = await loadSummary(projectRoot, questId)
+  return {
+    questId,
+    legacy: true,
+    objective: summary?.objective,
+    executionMode: summary?.executionMode ?? null,
+    acceptance: summary?.acceptance ?? null,
+  }
+}
+
+async function buildQuestStatusJson(
+  _projectRoot: string,
+  quest: ReconciledQuestRun,
+  events: ReconcilerEvent[],
+  pid: number | null,
+): Promise<QuestStatusJson> {
+  return {
+    questId: quest.questId,
+    state: quest.state,
+    trustLabel: quest.trustLabel,
+    objective: quest.objective,
+    scenario: quest.scenario,
+    intensity: quest.intensity,
+    progress: progressForQuest(quest),
+    runtimes: quest.runtimeProgress,
+    tasks: quest.tasks.map((task) => ({
+      id: task.id,
+      title: task.title,
+      status: task.status,
+      expert: task.expert,
+      runtime: runtimeForTask(task),
+      dependsOn: task.dependsOn,
+    })),
+    recentEvents: events.slice(-20),
+    handoffs: quest.handoffs,
+    incidents: quest.incidents,
+    changedFiles: quest.changedFiles,
+    nextAction: quest.nextSuggestedAction,
+    backgroundRun: pid ? { pid, alive: isRunPidAlive(pid) } : undefined,
+  }
+}
+
+function progressForQuest(quest: ReconciledQuestRun): {
+  completed: number
+  inProgress: number
+  pending: number
+  blocked: number
+  failed: number
+  cancelled: number
+  total: number
+} {
+  return {
+    completed: quest.tasks.filter((task) => task.status === 'completed').length,
+    inProgress: quest.tasks.filter((task) => task.status === 'in_progress').length,
+    pending: quest.tasks.filter((task) => task.status === 'pending').length,
+    blocked: quest.tasks.filter((task) => task.status === 'blocked').length,
+    failed: quest.tasks.filter((task) => task.status === 'failed').length,
+    cancelled: quest.tasks.filter((task) => task.status === 'cancelled').length,
+    total: quest.tasks.length,
+  }
+}
+
+function runtimeForTask(task: ReconciledQuestRun['tasks'][number]): string | undefined {
+  const runtime = (task as unknown as { runtime?: unknown }).runtime
+  return typeof runtime === 'string' ? runtime : undefined
+}
+
 function printQuest(quest: ReconciledQuestRun): void {
-  info('Quest v5:')
+  info('Quest v5/v6:')
   log(`  Objective:   ${quest.objective}`)
   log(`  State:       ${quest.state}`)
   log(`  Scenario:    ${quest.scenario}`)
@@ -156,6 +383,13 @@ function printQuest(quest: ReconciledQuestRun): void {
   log(`  Updated:     ${quest.updatedAt}`)
   if (quest.changedFiles && quest.changedFiles.length > 0) {
     log(`  Changed:     ${quest.changedFiles.length} file(s)`)
+  }
+  const runtimeNames = Object.keys(quest.runtimeProgress)
+  if (runtimeNames.length > 0) {
+    log(`  Runtimes:    ${runtimeNames.map((name) => {
+      const progress = quest.runtimeProgress[name]!
+      return `${name}(${progress.completed}/${progress.assigned})`
+    }).join(', ')}`)
   }
   log('')
 
@@ -186,6 +420,12 @@ function printQuest(quest: ReconciledQuestRun): void {
 
   info('Checkpoint:')
   log(`  Next action: ${quest.nextSuggestedAction}`)
+  if (quest.handoffs.length > 0) {
+    dim(`  Handoffs: ${quest.handoffs.length} recorded`)
+  }
+  if (quest.incidents.length > 0) {
+    dim(`  Incidents: ${quest.incidents.filter((incident) => incident.status === 'open').length} open / ${quest.incidents.length} total`)
+  }
   if (quest.changedFiles && quest.changedFiles.length > 0) {
     dim(`  Changed files: ${quest.changedFiles.join(', ')}`)
   }
@@ -224,15 +464,23 @@ export function registerQuestStatusCommand(program: Command): void {
     .command('quest-status [quest-id]')
     .description('List or inspect durable OpenAgent Quest v5 runs under .oac/runs/')
     .option('--verbose', 'Show extra detail', false)
+    .option('--json', 'Print machine-readable Quest status JSON', false)
+    .option('--watch', 'Poll and refresh Quest status every 2 seconds', false)
     .addHelpText(
       'after',
       `
 Examples:
   oac quest-status                      List recent Quest runs
   oac quest-status swarm-m123abc        Show Quest state, tasks, artifacts, and resume commands
+  oac quest-status swarm-m123abc --json Print reconciled machine-readable status
+  oac quest-status swarm-m123abc --watch Live updating dashboard
 `,
     )
-    .action(async (questId: string | undefined, opts: { verbose?: boolean }) => {
-      await questStatusCommand(questId, { verbose: opts.verbose ?? false })
+    .action(async (questId: string | undefined, opts: { verbose?: boolean; json?: boolean; watch?: boolean }) => {
+      await questStatusCommand(questId, {
+        verbose: opts.verbose ?? false,
+        json: opts.json ?? false,
+        watch: opts.watch ?? false,
+      })
     })
 }

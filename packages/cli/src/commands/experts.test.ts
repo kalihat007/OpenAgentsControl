@@ -122,6 +122,29 @@ describe('assertQualityGatePassed', () => {
   })
 })
 
+describe('resolveExecutionMode', () => {
+  it('selects v6 distributed execution when requested', async () => {
+    const { resolveExecutionMode } = await import('./experts.js')
+
+    expect(resolveExecutionMode({
+      simulate: true,
+      live: false,
+      distributed: true,
+      runtime: 'kimi',
+    })).toBe('distributed')
+  })
+
+  it('keeps strict single-runtime mode when only --runtime is provided', async () => {
+    const { resolveExecutionMode } = await import('./experts.js')
+
+    expect(resolveExecutionMode({
+      simulate: true,
+      live: false,
+      runtime: 'kimi',
+    })).toBe('runtime')
+  })
+})
+
 // ── Integration: expertsCommand ───────────────────────────────────────────────
 
 describe('expertsCommand', () => {
@@ -145,6 +168,7 @@ describe('expertsCommand', () => {
       quality: false,
       simulate: true,
       live: false,
+      distributed: false,
       noQualityGate: false,
     })
     const output = stopCapture()
@@ -160,7 +184,7 @@ describe('expertsCommand', () => {
     expect(spec.objective).toContain('JWT')
     const questRaw = await readFile(join(runsDir, sessions[0]!, 'quest.json'), 'utf-8')
     const quest = JSON.parse(questRaw) as { objective: string; version: string; state: string; runtimes: { kimi: { command: string } } }
-    expect(quest.version).toBe('5')
+    expect(quest.version).toBe('6')
     expect(quest.state).toBe('SPEC')
     expect(quest.objective).toContain('JWT')
     expect(quest.runtimes.kimi.command).toBe(KIMI_CODE_COMMAND)
@@ -186,6 +210,7 @@ describe('expertsCommand', () => {
       quality: false,
       simulate: true,
       live: false,
+      distributed: false,
       noQualityGate: false,
     })
     const output = stopCapture()
@@ -214,6 +239,7 @@ describe('expertsCommand', () => {
       quality: false,
       simulate: true,
       live: false,
+      distributed: false,
       noQualityGate: true,
     })
     const output = stopCapture()
@@ -243,6 +269,7 @@ describe('expertsCommand', () => {
       quality: false,
       simulate: false,
       live: true,
+      distributed: false,
       noQualityGate: true,
     })
     const output = stopCapture()
@@ -288,6 +315,7 @@ describe('expertsCommand', () => {
       quality: false,
       simulate: true,
       live: true,
+      distributed: false,
       noQualityGate: false,
     })
     const output = stopCapture()
@@ -341,6 +369,7 @@ describe('expertsCommand', () => {
         quality: false,
         simulate: true,
         live: false,
+        distributed: false,
         noQualityGate: true,
       }),
     ).resolves.toBeUndefined()
@@ -381,6 +410,7 @@ describe('expertsCommand', () => {
         quality: false,
         simulate: true,
         live: false,
+        distributed: false,
         noQualityGate: false,
       }),
     ).rejects.toBeInstanceOf(QualityGateFailedError)

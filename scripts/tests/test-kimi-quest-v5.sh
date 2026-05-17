@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 #############################################################################
-# Kimi Quest v5 Test
-# Tests the v5 workflow through the Kimi runtime if available,
+# Kimi Quest v5/v6 Compatibility Test
+# Tests the durable Quest workflow through the Kimi runtime if available,
 # or validates the CLI path and artifacts when Kimi is not installed.
 #############################################################################
 
@@ -30,7 +30,7 @@ trap cleanup EXIT
 
 echo -e "${CYAN}${BOLD}"
 echo "╔════════════════════════════════════════════════════════════════╗"
-echo "║              Kimi OpenAgent Quest v5 Test                     ║"
+echo "║           Kimi OpenAgent Quest v5/v6 Test                      ║"
 echo "╚════════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
@@ -59,26 +59,26 @@ fi
 pass "Quest created: $QUEST_ID"
 
 QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version")"
-if [ "$QUEST_VERSION" != "5" ]; then
-  fail "Expected quest version 5, got $QUEST_VERSION"
+if [ "$QUEST_VERSION" != "5" ] && [ "$QUEST_VERSION" != "6" ]; then
+  fail "Expected quest version 5 or 6, got $QUEST_VERSION"
 fi
-pass "Quest version is 5"
+pass "Quest version is $QUEST_VERSION"
 
-if ! "${OAC_CLI[@]}" quest-status "$QUEST_ID" 2>&1 | grep -q "Quest v5"; then
-  fail "quest-status does not show v5"
+if ! "${OAC_CLI[@]}" quest-status "$QUEST_ID" 2>&1 | grep -Eq "Quest v(5|6)"; then
+  fail "quest-status does not show a durable Quest version"
 fi
-pass "quest-status shows Quest v5"
+pass "quest-status shows durable Quest version"
 
 # Runtime availability check
 if ! command -v kimi >/dev/null 2>&1; then
   warn "Kimi CLI not found; skipping live runtime test"
-  pass "Kimi Quest v5 CLI artifacts validated"
+  pass "Kimi Quest CLI artifacts validated"
   exit 0
 fi
 
 if [ ! -f "$AGENT_FILE" ]; then
   warn "Kimi OpenAgent adapter not found at $AGENT_FILE; skipping live runtime test"
-  pass "Kimi Quest v5 CLI artifacts validated"
+  pass "Kimi Quest CLI artifacts validated"
   exit 0
 fi
 
@@ -93,4 +93,4 @@ if ! grep -q 'kimi-v5-runtime-ok' "$RUNTIME_EVENTS"; then
   fail "Kimi runtime note was not preserved in events.ndjson"
 fi
 
-pass "Kimi Quest v5 workflow validated"
+pass "Kimi Quest v5/v6 compatibility workflow validated"

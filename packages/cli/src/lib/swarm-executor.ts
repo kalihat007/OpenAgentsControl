@@ -25,6 +25,7 @@ import {
   DEFAULT_MAX_PARALLEL_AGENTS,
   getMaxApiCallsPerSession,
   getMaxParallelAgents,
+  getV6Preferences,
   readConfig,
 } from './config.js'
 import { SessionBudgetExceededError, SwarmExecutionError } from './errors.js'
@@ -38,8 +39,22 @@ import {
   writeTaskGraph,
   type QuestRunTask,
 } from './quest-run.js'
-import { spawnRuntime, type RuntimeType } from './runtime-bridge.js'
+import {
+  spawnDistributedRuntimes,
+  spawnRuntime,
+  type RuntimeType,
+  type DistributedRuntimeBatch,
+} from './runtime-bridge.js'
 import { loadEvents } from './quest-reconciler.js'
+import { ensureAgentMemory } from './agent-memory.js'
+import { ensureTeamMemory } from './team-memory.js'
+import { createIncident } from './incident-tracker.js'
+import {
+  createAgentWorktrees,
+  cleanupWorktrees,
+  mergeWorktree,
+  verifyWorktree,
+} from './worktree-manager.js'
 
 const log = createLogger('swarm-executor')
 import type {
@@ -61,8 +76,8 @@ import {
 } from '@nextsystems/oac-swarm-runtime'
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-/** simulate = CLI scheduling only; handoff = defer execution to IDE; runtime = real headless execution */
-export type ExecutionMode = 'simulate' | 'handoff' | 'runtime'
+/** simulate = CLI scheduling only; handoff = defer execution to IDE; runtime = real headless execution; distributed = multi-runtime swarm */
+export type ExecutionMode = 'simulate' | 'handoff' | 'runtime' | 'distributed'
 
 export interface SessionBudgetLimits {
   maxApiCallsPerSession: number
@@ -163,6 +178,9 @@ export interface PlanExecutionOptions {
   autoDecompose?: boolean
   sequentialSubtasks?: boolean
   maxSubTasks?: number
+  runtimeAssignments?: Record<string, RuntimeType>
+  defaultRuntime?: RuntimeType
+  backgroundTasks?: Record<string, boolean>
 }
 
 export interface ExecuteSwarmOptions {
@@ -173,6 +191,8 @@ export interface ExecuteSwarmOptions {
   projectRoot?: string
   routerResult?: RouterResult
   background?: boolean
+  /** v6: runtime assignments per task id for distributed mode */
+  runtimeAssignments?: Record<string, RuntimeType>
 }
 
 function isExecutorCallbacks(value: ExecutorCallbacks | ExecuteSwarmOptions): value is ExecutorCallbacks {
@@ -260,7 +280,7 @@ export function planExecution(
   resetTaskCounter()
 
   const planned = createPlannedTasks(routerResult, options)
-  const tasks = planned.tasks
+  const tasks = applyRuntimePlanning(planned.tasks, options)
 
   if (tasks.length === 0) {
     throw new SwarmExecutionError(
@@ -290,6 +310,10 @@ export function planExecution(
   const schedulerResult = planSwarmBatches(tasks, {
     maxConcurrency,
   })
+  const sessionWithPlanEvents: SwarmSession = {
+    ...session,
+    events: [...session.events, ...schedulerResult.events],
+  }
 
   log.debug('Execution plan ready', {
     batches: schedulerResult.batches.length,
@@ -297,7 +321,7 @@ export function planExecution(
   })
 
   return {
-    session,
+    session: sessionWithPlanEvents,
     schedulerResult,
     stages: stagesFromBatches(schedulerResult.batches),
     decomposition: planned.decomposition,
@@ -386,7 +410,7 @@ export async function executeSwarm(
 
   const start = Date.now()
   let session = plan.session
-  const { schedulerResult } = plan
+  let { schedulerResult } = plan
   const completedTasks: string[] = []
   const failedTasks: string[] = []
   const budgetUsage: SessionBudgetUsage = { apiCalls: 0, peakParallelAgents: 0 }
@@ -415,6 +439,221 @@ export async function executeSwarm(
       'Run deferred to IDE runtime — see handoff.json for OpenCode TUI and Claude plugin commands',
       { executionMode: mode, runId: session.id },
     )
+  }
+
+  if (mode === 'distributed') {
+    if (!options.projectRoot) {
+      throw new SwarmExecutionError('Distributed mode requires projectRoot.')
+    }
+
+    const config = (await readConfig(options.projectRoot)) ?? createDefaultConfig()
+    const v6 = getV6Preferences(config)
+    const maxConcurrentRuntimes =
+      v6?.distributedSwarm.maxConcurrentRuntimes ?? session.maxConcurrency
+    const defaultRuntime =
+      options.runtime ?? v6?.distributedSwarm.defaultRuntime ?? 'kimi'
+    const runtimeTasks = assignRuntimeForExecution(
+      session.tasks,
+      options,
+      defaultRuntime,
+    )
+
+    schedulerResult = planSwarmBatches(runtimeTasks, {
+      maxConcurrency: Math.min(session.maxConcurrency, maxConcurrentRuntimes),
+    })
+    const baseEvents = session.events.filter(
+      (event) =>
+        event.type !== 'batch.planned' &&
+        event.type !== 'task.ready' &&
+        event.type !== 'runtime.assigned',
+    )
+    session = {
+      ...session,
+      tasks: runtimeTasks,
+      events: [...baseEvents, ...schedulerResult.events],
+      maxConcurrency: Math.min(session.maxConcurrency, maxConcurrentRuntimes),
+    }
+
+    const runtimePlan: ExecutionPlan = {
+      ...plan,
+      session,
+      schedulerResult,
+      stages: stagesFromBatches(schedulerResult.batches),
+    }
+    const runDir = join(options.projectRoot, '.oac', 'runs', session.id)
+    await persistRunArtifacts(options.projectRoot, runtimePlan, undefined, {
+      routerResult: options.routerResult,
+    })
+
+    const worktreeByAgent =
+      v6?.worktrees.enabled === true
+        ? await createAgentWorktrees(
+            options.projectRoot,
+            session.id,
+            unique(runtimeTasks.map((task) => task.agent)),
+          )
+        : {}
+
+    for (let i = 0; i < schedulerResult.batches.length; i++) {
+      const batch = schedulerResult.batches[i]!
+      enforceParallelLimit(batch.tasks.length, budgetUsage, limits)
+      trackApiCall(budgetUsage, limits)
+      callbacks.onBatchStart?.(batch, i, schedulerResult.batches.length)
+
+      session = appendSwarmEvent(session, 'task.ready', `[distributed] Batch ${batch.id} starting (${batch.tasks.length} task(s))`, {
+        batchId: batch.id,
+        taskIds: batch.tasks.map((task) => task.id),
+        executionMode: mode,
+      })
+
+      const runtimeBatches = distributedBatchesForSwarmBatch(batch, {
+        defaultRuntime,
+        background: options.background ?? false,
+        worktreeByAgent,
+      })
+      for (let runtimeIndex = 0; runtimeIndex < runtimeBatches.length; runtimeIndex += 1) {
+        trackApiCall(budgetUsage, limits)
+      }
+
+      const distributedResult = await spawnDistributedRuntimes({
+        questId: session.id,
+        objective: session.objective,
+        projectRoot: options.projectRoot,
+        runDir,
+        batches: runtimeBatches,
+        timeoutMs: 10 * 60 * 1000,
+      })
+
+      const events = await loadEvents(options.projectRoot, session.id)
+      const taskStatus = taskWriteBackStatus(events)
+
+      for (const task of batch.tasks) {
+        const status = taskStatus.get(task.id)
+        const runtimeResult = distributedResult.results.find(
+          (result) => result.runtime === (task.runtime ?? defaultRuntime),
+        )
+        const missingWriteback =
+          !options.background &&
+          runtimeResult?.ok === true &&
+          status === undefined
+
+        if (status === 'completed') {
+          completedTasks.push(task.id)
+          callbacks.onTaskComplete?.(task, i)
+          session = appendSwarmEvent(session, 'task.completed', `[distributed] ${task.agent} completed`, {
+            taskId: task.id,
+            agent: task.agent,
+            runtime: task.runtime ?? defaultRuntime,
+            executionMode: mode,
+          })
+        } else if (
+          status === 'failed' ||
+          status === 'blocked' ||
+          runtimeResult?.ok === false ||
+          missingWriteback
+        ) {
+          failedTasks.push(task.id)
+          const failureReason = runtimeResult?.errorMessage ??
+            (missingWriteback ? 'Runtime finished without task_update write-back events.' : `Task reported ${status ?? 'unknown failure'}.`)
+          session = appendSwarmEvent(session, 'task.failed', `[distributed] ${task.agent} failed`, {
+            taskId: task.id,
+            agent: task.agent,
+            runtime: task.runtime ?? defaultRuntime,
+            executionMode: mode,
+            failureReason,
+            missingRuntimeWriteback: missingWriteback,
+          })
+          await recordExecutionIncident(options.projectRoot, session.id, {
+            taskId: task.id,
+            category: runtimeResult?.ok === false ? 'runtime_crash' : 'task_failure',
+            summary: `[distributed] ${task.agent} failed: ${failureReason}`,
+            evidence: [
+              `runtime=${task.runtime ?? defaultRuntime}`,
+              `batch=${batch.id}`,
+              `mode=${mode}`,
+            ],
+            severity: runtimeResult?.ok === false ? 'high' : 'medium',
+          })
+        } else if (options.background) {
+          session = appendSwarmEvent(session, 'task.ready', `[distributed] ${task.agent} running in background`, {
+            taskId: task.id,
+            agent: task.agent,
+            runtime: task.runtime ?? defaultRuntime,
+            executionMode: mode,
+            background: true,
+          })
+        }
+      }
+
+      trackApiCall(budgetUsage, limits)
+      session = appendSwarmEvent(session, 'sync.completed', `Distributed batch ${batch.id} sync completed`, {
+        batchId: batch.id,
+        taskIds: batch.tasks.map((task) => task.id),
+      })
+      callbacks.onBatchComplete?.(batch, i)
+    }
+
+    if (v6?.worktrees.enabled === true) {
+      for (const [agentId, worktreePath] of Object.entries(worktreeByAgent)) {
+        const verification = await verifyWorktree(options.projectRoot, worktreePath)
+        if (!verification.passed) {
+          await recordExecutionIncident(options.projectRoot, session.id, {
+            category: 'verification_failure',
+            summary: `Worktree verification failed for ${agentId}`,
+            evidence: verification.errors,
+            severity: 'high',
+          })
+          continue
+        }
+
+        if (v6.worktrees.mergeStrategy !== 'manual') {
+          const merge = await mergeWorktree(
+            options.projectRoot,
+            agentId,
+            session.id,
+            v6.worktrees.mergeStrategy,
+          )
+          if (!merge.merged) {
+            await recordExecutionIncident(options.projectRoot, session.id, {
+              category: 'blocked_run',
+              summary: `Worktree merge blocked for ${agentId}`,
+              evidence: merge.conflicts,
+              severity: 'high',
+            })
+          }
+        }
+      }
+
+      if (v6.worktrees.mergeStrategy !== 'manual') {
+        await cleanupWorktrees(options.projectRoot, session.id)
+      }
+    }
+
+    const elapsedMs = Date.now() - start
+    const result: ExecutionResult = {
+      session,
+      schedulerResult,
+      completedTasks,
+      failedTasks,
+      acceptanceChecks: buildAcceptanceChecks(runtimePlan, completedTasks, failedTasks, mode),
+      elapsedMs,
+      executionMode: mode,
+      budgetUsage,
+    }
+
+    await persistRunArtifacts(options.projectRoot, runtimePlan, result, {
+      routerResult: options.routerResult,
+    })
+
+    log.info('Swarm distributed execution complete', {
+      sessionId: session.id,
+      completed: completedTasks.length,
+      failed: failedTasks.length,
+      elapsedMs,
+      apiCalls: budgetUsage.apiCalls,
+    })
+
+    return result
   }
 
   if (mode === 'runtime') {
@@ -454,6 +693,20 @@ export async function executeSwarm(
       background: options.background,
     })
 
+    if (!options.background) {
+      await appendQuestEvent(options.projectRoot, session.id, {
+        timestamp: new Date().toISOString(),
+        type: 'runtime.completed',
+        data: {
+          runtime: options.runtime,
+          ok: runtimeResult.ok,
+          exitCode: runtimeResult.exitCode,
+          durationMs: runtimeResult.durationMs,
+          taskIds: session.tasks.map((task) => task.id),
+        },
+      })
+    }
+
     // Reconcile events written by the runtime
     const events = await loadEvents(options.projectRoot, session.id)
     const completedSet = new Set<string>()
@@ -485,6 +738,12 @@ export async function executeSwarm(
           critical: true,
         },
       })
+      await recordExecutionIncident(options.projectRoot, session.id, {
+        category: 'task_failure',
+        summary: `Runtime ${options.runtime} finished without task_update write-back events.`,
+        evidence: [`runtime=${options.runtime}`, 'missingRuntimeWriteback=true'],
+        severity: 'high',
+      })
     }
 
     for (const task of session.tasks) {
@@ -504,6 +763,7 @@ export async function executeSwarm(
         })
       } else if (!runtimeResult.ok || missingRuntimeWriteback) {
         failedTasks.push(task.id)
+        const failureReason = runtimeResult.ok ? 'missing write-back' : runtimeResult.errorMessage ?? 'runtime error'
         session = appendSwarmEvent(
           session,
           'task.failed',
@@ -516,6 +776,13 @@ export async function executeSwarm(
             missingRuntimeWriteback,
           },
         )
+        await recordExecutionIncident(options.projectRoot, session.id, {
+          taskId: task.id,
+          category: runtimeResult.ok ? 'task_failure' : 'runtime_crash',
+          summary: `[runtime] ${task.agent} failed: ${failureReason}`,
+          evidence: [`runtime=${options.runtime}`, `mode=${mode}`],
+          severity: runtimeResult.ok ? 'medium' : 'high',
+        })
       }
     }
 
@@ -653,6 +920,97 @@ async function simulateTaskExecution(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, 80))
 }
 
+function assignRuntimeForExecution(
+  tasks: SwarmTask[],
+  options: ExecuteSwarmOptions,
+  defaultRuntime: RuntimeType,
+): SwarmTask[] {
+  return tasks.map((task) => ({
+    ...task,
+    runtime: options.runtimeAssignments?.[task.id] ?? task.runtime ?? defaultRuntime,
+    background: options.background ?? task.background,
+  }))
+}
+
+function distributedBatchesForSwarmBatch(
+  batch: SwarmBatch,
+  options: {
+    defaultRuntime: RuntimeType
+    background: boolean
+    worktreeByAgent: Record<string, string>
+  },
+): DistributedRuntimeBatch[] {
+  const groups = new Map<string, DistributedRuntimeBatch>()
+
+  for (const task of batch.tasks) {
+    const runtime = (task.runtime ?? options.defaultRuntime) as RuntimeType
+    const workDir = options.worktreeByAgent[task.agent]
+    const key = `${runtime}:${workDir ?? ''}`
+    const existing = groups.get(key)
+    const taskRef = { id: task.id, title: task.title, agent: task.agent }
+    if (existing) {
+      existing.tasks.push(taskRef)
+      continue
+    }
+    groups.set(key, {
+      runtime,
+      tasks: [taskRef],
+      background: options.background,
+      ...(workDir && { workDir }),
+    })
+  }
+
+  return [...groups.values()]
+}
+
+function taskWriteBackStatus(events: Awaited<ReturnType<typeof loadEvents>>): Map<string, string> {
+  const statuses = new Map<string, string>()
+  for (const event of events) {
+    const taskId = (event.data.taskId ?? event.data.task_id) as unknown
+    if (event.type === 'task_update' && typeof taskId === 'string') {
+      const status = event.data.status
+      if (typeof status === 'string') {
+        statuses.set(taskId, status)
+      }
+    }
+  }
+  return statuses
+}
+
+async function recordExecutionIncident(
+  projectRoot: string,
+  questId: string,
+  params: {
+    taskId?: string
+    category: 'task_failure' | 'verification_failure' | 'blocked_run' | 'retry_exhaustion' | 'runtime_crash'
+    summary: string
+    evidence?: string[]
+    severity?: 'low' | 'medium' | 'high' | 'critical'
+  },
+): Promise<void> {
+  const incidentId = await createIncident(projectRoot, {
+    questId,
+    taskId: params.taskId,
+    category: params.category,
+    summary: params.summary,
+    evidence: params.evidence,
+    severity: params.severity,
+  })
+  await appendQuestEvent(projectRoot, questId, {
+    timestamp: new Date().toISOString(),
+    type: 'incident.created',
+    data: {
+      incidentId,
+      questId,
+      taskId: params.taskId,
+      category: params.category,
+      summary: params.summary,
+      evidence: params.evidence ?? [],
+      severity: params.severity ?? 'medium',
+    },
+  })
+}
+
 // ── Planning helpers ─────────────────────────────────────────────────────────
 
 function createPlannedTasks(
@@ -704,6 +1062,21 @@ function createPlannedTasks(
     ),
     decomposition: singleObjectiveSummary(),
   }
+}
+
+function applyRuntimePlanning(
+  tasks: SwarmTask[],
+  options: PlanExecutionOptions,
+): SwarmTask[] {
+  if (!options.runtimeAssignments && !options.defaultRuntime && !options.backgroundTasks) {
+    return tasks
+  }
+
+  return tasks.map((task) => ({
+    ...task,
+    runtime: options.runtimeAssignments?.[task.id] ?? task.runtime ?? options.defaultRuntime,
+    background: options.backgroundTasks?.[task.id] ?? task.background,
+  }))
 }
 
 function tasksFromDecomposition(
@@ -1131,15 +1504,15 @@ export async function persistRunSpec(
   await mkdir(runDir, { recursive: true })
   const specPath = join(runDir, 'spec.json')
   const spec = buildRunSpec(routerResult, plan)
+  const quest = buildQuestRun(routerResult, plan, {
+    state: 'SPEC',
+    trustLabel: 'planned_only',
+    artifacts: { spec: 'spec.json' },
+  })
   await writeFile(specPath, JSON.stringify(spec, null, 2) + '\n')
-  await persistQuestRun(
-    projectRoot,
-    buildQuestRun(routerResult, plan, {
-      state: 'SPEC',
-      trustLabel: 'planned_only',
-      artifacts: { spec: 'spec.json' },
-    }),
-  )
+  await persistQuestRun(projectRoot, quest)
+  await ensureAgentMemory(projectRoot, quest.questId, quest.tasks)
+  await ensureTeamMemory(projectRoot)
   return specPath
 }
 
@@ -1215,14 +1588,14 @@ export async function persistRunArtifacts(
   }, null, 2) + '\n')
 
   if (options.routerResult) {
-    await persistQuestRun(
-      projectRoot,
-      buildQuestRun(options.routerResult, plan, {
-        result,
-        artifacts: questArtifactsFromRunArtifacts(artifacts),
-      }),
-    )
+    const quest = buildQuestRun(options.routerResult, plan, {
+      result,
+      artifacts: questArtifactsFromRunArtifacts(artifacts),
+    })
+    await persistQuestRun(projectRoot, quest)
+    await ensureAgentMemory(projectRoot, quest.questId, quest.tasks)
   }
+  await ensureTeamMemory(projectRoot)
 
   return artifacts
 }

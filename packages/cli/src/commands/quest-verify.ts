@@ -13,6 +13,7 @@ import { appendQuestEvent, questExists } from '../lib/quest-run.js'
 import { runQuestVerification } from '../lib/quest-verification.js'
 import { runAutoFixLoop } from '../lib/auto-fix-loop.js'
 import type { RuntimeType } from '../lib/runtime-bridge.js'
+import { createIncident } from '../lib/incident-tracker.js'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -104,6 +105,29 @@ export async function questVerifyCommand(
   // Persist validation event
   const event = buildValidationEvent(verification)
   await appendQuestEvent(projectRoot, questId, event)
+
+  if (!verification.overallPassed && !(verification.noChecks && options.force)) {
+    const failedChecks = verification.checks.filter((check) => !check.passed)
+    const incidentId = await createIncident(projectRoot, {
+      questId,
+      category: 'verification_failure',
+      summary: `Quest verification failed: ${verification.summary}`,
+      evidence: failedChecks.map((check) => `${check.name}: ${check.command}`),
+      severity: 'high',
+    })
+    await appendQuestEvent(projectRoot, questId, {
+      timestamp: new Date().toISOString(),
+      type: 'incident.created',
+      data: {
+        incidentId,
+        questId,
+        category: 'verification_failure',
+        summary: `Quest verification failed: ${verification.summary}`,
+        evidence: failedChecks.map((check) => `${check.name}: ${check.command}`),
+        severity: 'high',
+      },
+    })
+  }
 
   dim(`Event appended to .oac/runs/${questId}/events.ndjson`)
   dim(`Trust label updated: ${quest.trustLabel} → ${verification.overallPassed ? 'tested' : verification.noChecks ? 'inspected_only' : 'failed'}`)

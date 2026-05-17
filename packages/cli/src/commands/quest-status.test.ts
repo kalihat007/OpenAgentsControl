@@ -91,4 +91,41 @@ describe('questStatusCommand', () => {
   it('shows Quest details for a valid id', async () => {
     await expect(questStatusCommand('swarm-test123')).resolves.toBeUndefined()
   })
+
+  it('prints machine-readable reconciled JSON for a quest', async () => {
+    const runsDir = join(tmpRoot, '.oac', 'runs', 'swarm-test123')
+    await writeFile(
+      join(runsDir, 'events.ndjson'),
+      [
+        JSON.stringify({
+          timestamp: '2026-05-17T00:00:00.000Z',
+          type: 'runtime.assigned',
+          data: { runtime: 'kimi', taskIds: ['task-1'] },
+        }),
+        JSON.stringify({
+          timestamp: '2026-05-17T00:00:01.000Z',
+          type: 'handoff.outgoing',
+          data: { fromRuntime: 'kimi', toRuntime: 'opencode', taskIds: ['task-1'] },
+        }),
+      ].join('\n') + '\n',
+    )
+
+    const originalLog = console.log
+    const output: string[] = []
+    console.log = (message?: unknown) => {
+      output.push(String(message ?? ''))
+    }
+
+    try {
+      await questStatusCommand('swarm-test123', { json: true })
+    } finally {
+      console.log = originalLog
+    }
+
+    const parsed = JSON.parse(output.join('\n'))
+    expect(parsed.questId).toBe('swarm-test123')
+    expect(parsed.runtimes.kimi.assigned).toBe(1)
+    expect(parsed.handoffs).toHaveLength(1)
+    expect(parsed.recentEvents).toHaveLength(2)
+  })
 })

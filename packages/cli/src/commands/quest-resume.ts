@@ -6,6 +6,7 @@ import type { Command } from 'commander'
 import { log, info, success, dim, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
 import { listQuestRunIds, loadQuestRun, formatRuntimeHandoff } from '../lib/quest-run.js'
+import { formatAllAgentMemoryForPrompt, loadAgentMemory } from '../lib/agent-memory.js'
 
 export type QuestResumeOptions = {
   runtime?: 'opencode' | 'kimi' | 'claude'
@@ -36,10 +37,16 @@ export async function questResumeCommand(
   }
 
   if (options.runtime) {
+    const memory = await loadAgentMemory(projectRoot, questId)
     log('')
     bold(`Resume ${options.runtime.toUpperCase()}`)
     log('')
     log(formatRuntimeHandoff(quest, options.runtime))
+    const memoryPrompt = formatAllAgentMemoryForPrompt(memory)
+    if (memoryPrompt) {
+      log('')
+      log(memoryPrompt)
+    }
     log('')
     return
   }
@@ -54,6 +61,15 @@ export async function questResumeCommand(
   log('')
   info('Paste this prompt:')
   log(`  ${quest.runtimes.opencode.resumePrompt}`)
+  const memory = await loadAgentMemory(projectRoot, quest.questId)
+  const memoryPrompt = formatAllAgentMemoryForPrompt(memory)
+  if (memoryPrompt) {
+    log('')
+    info('Memory context:')
+    for (const line of memoryPrompt.split('\n').slice(0, 12)) {
+      log(`  ${line}`)
+    }
+  }
   log('')
   dim(`Artifacts: ${quest.artifacts.runDir}/quest.json`)
   dim('The selected runtime/model stays in control; no LLM routing or hidden fallback is used.')

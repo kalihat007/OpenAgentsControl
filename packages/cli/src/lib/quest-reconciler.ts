@@ -1,5 +1,5 @@
 /**
- * Quest Reconciler v4 — builds live quest state from base quest.json + events.ndjson.
+ * Quest Reconciler — builds live quest state from base quest.json + events.ndjson.
  *
  * Core principle: runtimes NEVER rewrite quest.json directly.
  * They append events to events.ndjson. The CLI reconciles events
@@ -22,6 +22,13 @@ export type ReconcilerEventType =
   | 'amendment'
   | 'error'
   | 'note'
+  | 'runtime.assigned'
+  | 'runtime.spawned'
+  | 'runtime.completed'
+  | 'handoff.outgoing'
+  | 'handoff.incoming'
+  | 'incident.created'
+  | 'incident.resolved'
 
 export interface ReconcilerEvent {
   timestamp: string
@@ -51,6 +58,46 @@ export interface ReconciledQuestRun extends QuestRun {
   verification?: QuestVerificationResult
   /** Amendments applied after quest creation. */
   amendments: ReconcilerEvent[]
+  /** Runtime handoffs recorded by v6-compatible runtimes. */
+  handoffs: HandoffRecord[]
+  /** Runtime ownership/progress summary. */
+  runtimeProgress: Record<string, RuntimeProgress>
+  /** Incident state recorded from v6-compatible events. */
+  incidents: IncidentRecord[]
+}
+
+export interface RuntimeProgress {
+  assigned: number
+  completed: number
+  failed: number
+  pid?: number
+  alive?: boolean
+  lastEventAt?: string
+}
+
+export interface HandoffRecord {
+  id: string
+  timestamp: string
+  fromRuntime?: string
+  toRuntime?: string
+  taskIds: string[]
+  changedFiles: string[]
+  nextAction?: string
+  risks: string[]
+  accepted: boolean
+  acceptedAt?: string
+  acceptedTaskIds?: string[]
+}
+
+export interface IncidentRecord {
+  incidentId: string
+  timestamp: string
+  status: 'open' | 'resolved'
+  summary: string
+  severity?: 'low' | 'medium' | 'high' | 'critical'
+  taskId?: string
+  resolution?: string
+  resolvedAt?: string
 }
 
 // ── Event Application ─────────────────────────────────────────────────────────
@@ -153,6 +200,144 @@ function applyError(quest: ReconciledQuestRun, data: Record<string, unknown>): v
   }
 }
 
+function applyRuntimeAssigned(
+  quest: ReconciledQuestRun,
+  event: ReconcilerEvent,
+): void {
+  const runtime = asString(event.data.runtime ?? event.data.assignedRuntime ?? event.data.toRuntime) ?? 'unknown'
+  const taskIds = taskIdsFromData(event.data)
+  const progress = ensureRuntimeProgress(quest, runtime)
+  progress.assigned += Math.max(1, taskIds.length)
+  progress.lastEventAt = event.timestamp
+
+  for (const taskId of taskIds) {
+    const task = quest.tasks.find((candidate) => candidate.id === taskId)
+    if (task) {
+      ;(task as unknown as Record<string, unknown>).runtime = runtime
+    }
+  }
+}
+
+function applyRuntimeSpawned(
+  quest: ReconciledQuestRun,
+  event: ReconcilerEvent,
+): void {
+  const runtime = asString(event.data.runtime) ?? 'unknown'
+  const progress = ensureRuntimeProgress(quest, runtime)
+  const pid = asNumber(event.data.pid)
+  if (pid !== undefined) progress.pid = pid
+  progress.alive = event.data.alive === undefined ? true : Boolean(event.data.alive)
+  progress.lastEventAt = event.timestamp
+}
+
+function applyRuntimeCompleted(
+  quest: ReconciledQuestRun,
+  event: ReconcilerEvent,
+): void {
+  const runtime = asString(event.data.runtime) ?? 'unknown'
+  const progress = ensureRuntimeProgress(quest, runtime)
+  const ok = event.data.ok === true || event.data.status === 'completed' || event.data.status === 'ok'
+  const failed = event.data.ok === false || event.data.status === 'failed' || event.data.status === 'blocked'
+  const count = Math.max(1, taskIdsFromData(event.data).length)
+  if (ok) progress.completed += count
+  if (failed) progress.failed += count
+  progress.alive = false
+  progress.lastEventAt = event.timestamp
+}
+
+function applyHandoffOutgoing(
+  quest: ReconciledQuestRun,
+  event: ReconcilerEvent,
+): void {
+  quest.handoffs.push({
+    id: asString(event.data.handoffId) ?? `handoff-${quest.handoffs.length + 1}`,
+    timestamp: event.timestamp,
+    fromRuntime: asString(event.data.fromRuntime),
+    toRuntime: asString(event.data.toRuntime),
+    taskIds: taskIdsFromData(event.data),
+    changedFiles: stringArray(event.data.changedFiles),
+    nextAction: asString(event.data.nextAction),
+    risks: stringArray(event.data.risks),
+    accepted: false,
+  })
+}
+
+function applyHandoffIncoming(
+  quest: ReconciledQuestRun,
+  event: ReconcilerEvent,
+): void {
+  const fromRuntime = asString(event.data.fromRuntime)
+  const toRuntime = asString(event.data.toRuntime)
+  const acceptedTaskIds = stringArray(event.data.acceptedTaskIds ?? event.data.taskIds)
+  const handoff = [...quest.handoffs]
+    .reverse()
+    .find((candidate) =>
+      !candidate.accepted &&
+      (!fromRuntime || candidate.fromRuntime === fromRuntime) &&
+      (!toRuntime || candidate.toRuntime === toRuntime),
+    )
+
+  if (handoff) {
+    handoff.accepted = true
+    handoff.acceptedAt = event.timestamp
+    handoff.acceptedTaskIds = acceptedTaskIds
+    return
+  }
+
+  quest.handoffs.push({
+    id: asString(event.data.handoffId) ?? `handoff-${quest.handoffs.length + 1}`,
+    timestamp: event.timestamp,
+    fromRuntime,
+    toRuntime,
+    taskIds: acceptedTaskIds,
+    changedFiles: stringArray(event.data.loadedFiles),
+    risks: [],
+    accepted: true,
+    acceptedAt: event.timestamp,
+    acceptedTaskIds,
+  })
+}
+
+function applyIncidentCreated(
+  quest: ReconciledQuestRun,
+  event: ReconcilerEvent,
+): void {
+  const taskId = asString(event.data.taskId ?? event.data.task_id)
+  const severity = normalizeSeverity(asString(event.data.severity))
+  const incident: IncidentRecord = {
+    incidentId: asString(event.data.incidentId) ?? `incident-${quest.incidents.length + 1}`,
+    timestamp: event.timestamp,
+    status: 'open',
+    summary: asString(event.data.summary) ?? asString(event.data.message) ?? 'Incident recorded',
+    severity,
+    taskId,
+  }
+  quest.incidents.push(incident)
+
+  if (taskId) {
+    const task = quest.tasks.find((candidate) => candidate.id === taskId)
+    if (task) task.status = 'failed'
+  }
+  if (severity === 'critical') {
+    quest.trustLabel = 'failed'
+  }
+}
+
+function applyIncidentResolved(
+  quest: ReconciledQuestRun,
+  event: ReconcilerEvent,
+): void {
+  const incidentId = asString(event.data.incidentId)
+  const incident = incidentId
+    ? quest.incidents.find((candidate) => candidate.incidentId === incidentId)
+    : quest.incidents.find((candidate) => candidate.status === 'open')
+  if (!incident) return
+
+  incident.status = 'resolved'
+  incident.resolution = asString(event.data.resolution)
+  incident.resolvedAt = event.timestamp
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function normalizeStatus(status: string | undefined): QuestRunTask['status'] | undefined {
@@ -170,6 +355,7 @@ function normalizeStatus(status: string | undefined): QuestRunTask['status'] | u
 }
 
 function deepCopyQuestRun(base: QuestRun): ReconciledQuestRun {
+  const withV6Fields = base as QuestRun & Partial<Pick<ReconciledQuestRun, 'handoffs' | 'runtimeProgress' | 'incidents'>>
   return {
     ...base,
     tasks: base.tasks.map((t) => ({ ...t })),
@@ -184,6 +370,15 @@ function deepCopyQuestRun(base: QuestRun): ReconciledQuestRun {
     changedFiles: [...(base.changedFiles ?? [])],
     verification: base.verification ? { ...base.verification, checks: base.verification.checks.map((c) => ({ ...c })) } : undefined,
     amendments: [],
+    handoffs: (withV6Fields.handoffs ?? []).map((handoff) => ({
+      ...handoff,
+      taskIds: [...handoff.taskIds],
+      changedFiles: [...handoff.changedFiles],
+      risks: [...handoff.risks],
+      acceptedTaskIds: handoff.acceptedTaskIds ? [...handoff.acceptedTaskIds] : undefined,
+    })),
+    runtimeProgress: copyRuntimeProgress(withV6Fields.runtimeProgress),
+    incidents: (withV6Fields.incidents ?? []).map((incident) => ({ ...incident })),
   }
 }
 
@@ -223,6 +418,27 @@ export function reconcileQuestRun(
       case 'note':
         // Notes are informational only — no state mutation
         break
+      case 'runtime.assigned':
+        applyRuntimeAssigned(quest, event)
+        break
+      case 'runtime.spawned':
+        applyRuntimeSpawned(quest, event)
+        break
+      case 'runtime.completed':
+        applyRuntimeCompleted(quest, event)
+        break
+      case 'handoff.outgoing':
+        applyHandoffOutgoing(quest, event)
+        break
+      case 'handoff.incoming':
+        applyHandoffIncoming(quest, event)
+        break
+      case 'incident.created':
+        applyIncidentCreated(quest, event)
+        break
+      case 'incident.resolved':
+        applyIncidentResolved(quest, event)
+        break
     }
   }
 
@@ -231,6 +447,55 @@ export function reconcileQuestRun(
   quest.updatedAt = new Date().toISOString()
 
   return quest
+}
+
+function ensureRuntimeProgress(
+  quest: ReconciledQuestRun,
+  runtime: string,
+): RuntimeProgress {
+  quest.runtimeProgress[runtime] ??= { assigned: 0, completed: 0, failed: 0 }
+  return quest.runtimeProgress[runtime]
+}
+
+function copyRuntimeProgress(
+  input: ReconciledQuestRun['runtimeProgress'] | undefined,
+): ReconciledQuestRun['runtimeProgress'] {
+  const output: ReconciledQuestRun['runtimeProgress'] = {}
+  for (const [runtime, progress] of Object.entries(input ?? {})) {
+    output[runtime] = { ...progress }
+  }
+  return output
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() ? value : undefined
+}
+
+function asNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined
+}
+
+function stringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string' && item.length > 0)
+    : []
+}
+
+function taskIdsFromData(data: Record<string, unknown>): string[] {
+  const single = asString(data.taskId ?? data.task_id)
+  const many = stringArray(data.taskIds ?? data.task_ids)
+  return unique([...(single ? [single] : []), ...many])
+}
+
+function unique(values: string[]): string[] {
+  return [...new Set(values)]
+}
+
+function normalizeSeverity(value: string | undefined): IncidentRecord['severity'] {
+  if (value === 'low' || value === 'medium' || value === 'high' || value === 'critical') {
+    return value
+  }
+  return undefined
 }
 
 /**

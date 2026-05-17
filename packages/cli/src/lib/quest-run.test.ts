@@ -48,12 +48,12 @@ function routerResult(objective: string): RouterResult {
 }
 
 describe('quest-run', () => {
-  it('builds a v5 Quest sidecar from a plan', () => {
+  it('builds a v6 Quest sidecar from a plan', () => {
     const routed = routerResult('build JWT auth API')
     const plan = planExecution(routed, { autoDecompose: false, maxConcurrency: 1 })
     const quest = buildQuestRun(routed, plan, { state: 'SPEC' })
 
-    expect(quest.version).toBe('5')
+    expect(quest.version).toBe('6')
     expect(quest.questId).toBe(plan.session.id)
     expect(quest.state).toBe('SPEC')
     expect(quest.tasks.length).toBeGreaterThan(0)

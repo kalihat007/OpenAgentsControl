@@ -48,6 +48,11 @@ async function main(): Promise<void> {
     { registerQuestCompleteCommand },
     { registerQuestAmendCommand },
     { registerQuestAttachCommand },
+    { registerIncidentListCommand },
+    { registerIncidentSearchCommand },
+    { registerIncidentResolveCommand },
+    { registerIncidentPostmortemCommand },
+    { registerProjectIntelligenceCommand },
   ] = await Promise.all([
     import('./commands/init.js'),
     import('./commands/update.js'),
@@ -68,6 +73,11 @@ async function main(): Promise<void> {
     import('./commands/quest-complete.js'),
     import('./commands/quest-amend.js'),
     import('./commands/quest-attach.js'),
+    import('./commands/incident-list.js'),
+    import('./commands/incident-search.js'),
+    import('./commands/incident-resolve.js'),
+    import('./commands/incident-postmortem.js'),
+    import('./commands/project-intelligence.js'),
   ])
 
   registerInitCommand(program)
@@ -89,6 +99,11 @@ async function main(): Promise<void> {
   registerQuestCompleteCommand(program)
   registerQuestAmendCommand(program)
   registerQuestAttachCommand(program)
+  registerIncidentListCommand(program)
+  registerIncidentSearchCommand(program)
+  registerIncidentResolveCommand(program)
+  registerIncidentPostmortemCommand(program)
+  registerProjectIntelligenceCommand(program)
 
   // Unknown commands: print a helpful error and exit 1
   program.on('command:*', (operands: string[]) => {

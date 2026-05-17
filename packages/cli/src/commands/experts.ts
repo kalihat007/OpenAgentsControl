@@ -78,6 +78,7 @@ export async function expertsCommand(
     quality: boolean
     simulate: boolean
     live: boolean
+    distributed: boolean
     noQualityGate: boolean
     runtime?: RuntimeType
     background: boolean
@@ -200,7 +201,11 @@ export async function expertsCommand(
 
   if (options.run) {
     const executionMode = resolveExecutionMode(options)
-    if (executionMode === 'runtime' && options.runtime && !isRuntimeAvailable(options.runtime)) {
+    if (
+      (executionMode === 'runtime' || executionMode === 'distributed') &&
+      options.runtime &&
+      !isRuntimeAvailable(options.runtime)
+    ) {
       throw new CommandUsageError(runtimeUnavailableMessage(options.runtime))
     }
     const limits = await loadSessionBudgetLimits(projectRoot)
@@ -227,11 +232,17 @@ export async function expertsCommand(
 
 // ── Pipeline-based execution ──────────────────────────────────────────────────
 
-function resolveExecutionMode(options: { simulate: boolean; live: boolean; runtime?: RuntimeType }): ExecutionMode {
-  if (options.live && options.simulate) {
-    throw new CommandUsageError('Use either --live or --simulate, not both.')
+export function resolveExecutionMode(options: {
+  simulate: boolean
+  live: boolean
+  distributed?: boolean
+  runtime?: RuntimeType
+}): ExecutionMode {
+  if (options.live && (options.distributed || options.runtime)) {
+    throw new CommandUsageError('Use --live for handoff, or use --runtime/--distributed for execution.')
   }
   if (options.live) return 'handoff'
+  if (options.distributed) return 'distributed'
   if (options.runtime) return 'runtime'
   return 'simulate'
 }
@@ -326,6 +337,8 @@ async function runPipelineMode(
   const modeLabel =
     options.executionMode === 'handoff'
       ? 'handoff'
+      : options.executionMode === 'distributed'
+        ? `distributed (${options.runtime ?? 'configured runtimes'})`
       : options.executionMode === 'runtime'
         ? `runtime (${options.runtime})`
         : 'simulated'
@@ -352,14 +365,16 @@ async function runPipelineMode(
 
   const simulated = options.executionMode === 'simulate'
   const handoff = options.executionMode === 'handoff'
-  const runtime = options.executionMode === 'runtime'
+  const runtime = options.executionMode === 'runtime' || options.executionMode === 'distributed'
   spinner.succeed(
     handoff
       ? 'Expert pipeline complete (handoff)'
       : simulated
         ? 'Expert pipeline complete (simulated)'
-        : runtime
-          ? `Expert pipeline complete (runtime: ${options.runtime})`
+        : options.executionMode === 'distributed'
+          ? `Expert pipeline complete (distributed: ${options.runtime ?? 'configured runtimes'})`
+          : runtime
+            ? `Expert pipeline complete (runtime: ${options.runtime})`
           : 'Expert pipeline complete',
   )
   log('')
@@ -640,6 +655,7 @@ export function registerExpertsCommand(program: Command): void {
     .option('--simulate', 'Simulate execution — no real agents (default for --run)', true)
     .option('--live', 'Write IDE handoff manifest (.oac/runs/{id}/handoff.json) for OpenCode TUI or Claude plugin — does not spawn agents', false)
     .option('--runtime <name>', 'Real execution via runtime: opencode, kimi, or claude')
+    .option('--distributed', 'Execute with v6 distributed runtime swarms (uses --runtime as the default owner when provided)', false)
     .option('--background', 'Detach the runtime process and run in background', false)
     .option('--plan-only', 'Create and save the structured expert plan without execution', false)
     .option('--dry-run', 'Show the execution plan without running', false)
@@ -668,6 +684,7 @@ Examples:
   oac experts --run "build a JWT auth API"            Execute via swarm-runtime (simulated)
   oac experts --run --runtime opencode "build it"     Real execution in OpenCode runtime
   oac experts --run --runtime kimi --background "x"   Background execution in Kimi
+  oac experts --run --distributed --runtime kimi "x"   v6 distributed execution using Kimi as default runtime
   oac experts --run --live "build a JWT auth API"     Plan + handoff for OpenCode TUI / Claude plugin
   oac experts --plan-only --live "build a JWT auth API"  Plan artifacts + handoff only
   oac experts --run --full "build a JWT auth API"     Full pipeline with all features
@@ -714,6 +731,7 @@ Examples:
         quality: Boolean(opts['quality']),
         simulate: opts['simulate'] !== false,
         live: Boolean(opts['live']),
+        distributed: Boolean(opts['distributed']),
         noQualityGate: Boolean(opts['noQualityGate']),
         runtime,
         background: Boolean(opts['background']),

@@ -1,5 +1,5 @@
 /**
- * Quest run — durable v4 status document for Quest + Experts sessions.
+ * Quest run — durable v6 status document with v5 compatibility.
  *
  * `spec.json` remains the compatibility SSOT. `quest.json` is the user-facing
  * lifecycle/status sidecar used by quest-status and quest-resume.
@@ -17,7 +17,7 @@ import {
   OPENCODE_TUI_COMMAND,
 } from './run-handoff.js'
 
-export const QUEST_RUN_VERSION = '5' as const
+export const QUEST_RUN_VERSION = '6' as const
 
 export type QuestRunState =
   | 'NEW'
@@ -55,6 +55,7 @@ export interface QuestRunArtifacts {
   runDir: string
   quest: string
   spec: string
+  agentMemory?: string
   plan?: string
   events?: string
   taskGraph?: string
@@ -70,7 +71,21 @@ export interface QuestRunRuntime {
 
 export interface QuestEvent {
   timestamp: string
-  type: 'state_change' | 'task_update' | 'validation' | 'file_change' | 'error' | 'note' | 'amendment'
+  type:
+    | 'state_change'
+    | 'task_update'
+    | 'validation'
+    | 'file_change'
+    | 'error'
+    | 'note'
+    | 'amendment'
+    | 'runtime.assigned'
+    | 'runtime.spawned'
+    | 'runtime.completed'
+    | 'handoff.outgoing'
+    | 'handoff.incoming'
+    | 'incident.created'
+    | 'incident.resolved'
   data: Record<string, unknown>
 }
 
@@ -99,7 +114,7 @@ export interface QuestVerificationResult {
 }
 
 export interface QuestRun {
-  version: typeof QUEST_RUN_VERSION
+  version: '5' | '6'
   questId: string
   runId: string
   objective: string
@@ -119,9 +134,9 @@ export interface QuestRun {
     kimi: QuestRunRuntime
     claude: QuestRunRuntime
   }
-  /** v4: accumulated changed files (also tracked via events). */
+  /** Accumulated changed files (also tracked via events). */
   changedFiles?: string[]
-  /** v4: latest verification result. */
+  /** Latest verification result. */
   verification?: QuestVerificationResult
 }
 
@@ -144,6 +159,7 @@ export function buildQuestRun(
     runDir,
     quest: 'quest.json',
     spec: 'spec.json',
+    agentMemory: 'agent-memory.json',
     ...options.artifacts,
   }
 
@@ -330,6 +346,17 @@ export async function writeRunPid(
   await writeFile(join(runDir, 'run.pid'), String(pid))
 }
 
+export async function writeRuntimePid(
+  projectRoot: string,
+  questId: string,
+  runtime: string,
+  pid: number,
+): Promise<void> {
+  const runDir = join(projectRoot, '.oac', 'runs', questId)
+  await mkdir(runDir, { recursive: true })
+  await writeFile(join(runDir, `${runtime}.pid`), String(pid))
+}
+
 export async function readRunPid(
   projectRoot: string,
   questId: string,
@@ -361,7 +388,7 @@ export function formatRuntimeHandoff(
 ): string {
   const rt = quest.runtimes[runtime]
   const lines: string[] = [
-    `OpenAgent Quest v5 — ${runtime.toUpperCase()} Resume`,
+    `OpenAgent Quest v5/v6 — ${runtime.toUpperCase()} Resume`,
     `Quest ID:    ${quest.questId}`,
     `State:       ${quest.state}`,
     `Trust:       ${quest.trustLabel}`,
@@ -399,8 +426,9 @@ export function formatRuntimeHandoff(
   lines.push('Resume prompt:')
   lines.push(`  ${rt.resumePrompt}`)
   lines.push('')
-  lines.push('v5 Runtime Write-Back Contract:')
+  lines.push('v5/v6 Runtime Write-Back Contract:')
   lines.push('  DO NOT rewrite quest.json. Append events to events.ndjson only.')
+  lines.push('  Stay inside the selected runtime/model. Do not route work to a hidden LLM.')
   lines.push('  Event format: {"timestamp":"ISO","type":"...","data":{}}')
   lines.push('')
   lines.push('  task_update  → {"type":"task_update","data":{"taskId":"1","status":"in_progress"}}')
@@ -409,6 +437,8 @@ export function formatRuntimeHandoff(
   lines.push('  validation   → {"type":"validation","data":{"result":{"overallPassed":true,...}}}')
   lines.push('  error        → {"type":"error","data":{"taskId":"1","critical":false}}')
   lines.push('  note         → {"type":"note","data":{"message":"Reasoning..."}}')
+  lines.push('  runtime.*    → record assignment/spawn/completion metadata when runtime ownership changes')
+  lines.push('  handoff.*    → record outgoing/incoming continuity between allowed runtimes')
   lines.push('')
   lines.push('  The CLI reconciler reads base quest.json + events.ndjson to produce live state.')
   lines.push('  Run "oac quest-status <id>" to see reconciled state.')
