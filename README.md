@@ -363,9 +363,11 @@ claude --plugin-dir ~/.claude/plugins/openagents-control-bridge
 ```bash
 oac experts "Create a user authentication system"
 oac experts --plan-only "Create a user authentication system"
+oac quest-status
+oac quest-resume <quest-id>
 ```
 
-Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --live` writes `.oac/runs/{id}/handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`) and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`); real execution happens in those runtimes, not headless from the CLI.
+Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --live` writes `.oac/runs/{id}/quest.json` and `handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`), Kimi Code (`kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml`), and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`); real execution happens in those runtimes, not headless from the CLI.
 
 ### Step 3: Approve & Ship
 
@@ -790,6 +792,9 @@ Or persist that explicit choice:
 }
 ```
 
+When `small_model` is present, keep it identical to `model` so OpenCode does not
+silently fall back to a different provider for smaller internal work.
+
 **Provider overload recovery:** `429 rate_limit_error` / `engine is currently overloaded` means the selected provider/model is at capacity before OpenAgent can respond. OpenAgent keeps the selected model, retries with backoff, reduces parallel work, and splits large coding tasks into smaller sequential expert steps. To change providers, pass a different model explicitly:
 
 ```bash
@@ -829,13 +834,27 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
-Quest v2 adds a small lifecycle so long sessions stay predictable:
+Quest v3 adds a small lifecycle and durable run identity so long sessions stay predictable:
 
 ```text
 NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
 ```
 
 After one substantial request completes and Kimi returns to the input box, the next substantial input in that same session starts a fresh `OpenAgent Quest Spec` with `State: NEW` unless you explicitly say it is a continuation. The visible spec also carries `Intensity` (`lite`, `standard`, `deep`) and an honest `Trust Label` (`planned_only`, `inspected_only`, `changed`, `tested`, `pushed`).
+
+Durable Quest runs are stored under `.oac/runs/{quest-id}/`:
+
+```text
+quest.json
+spec.json
+plan.json
+events.ndjson
+acceptance-report.md
+summary.json
+handoff.json
+```
+
+Use `oac quest-status` to list or inspect runs and `oac quest-resume <quest-id>` to print OpenCode, Kimi, and Claude resume commands. Resume does not change models; OpenAgent continues with the selected runtime model.
 
 You can verify the Kimi Quest cycle locally:
 
@@ -849,30 +868,9 @@ And verify the OpenCode Quest cycle:
 bash scripts/tests/test-opencode-quest-cycle.sh
 ```
 
-Configure models per agent only if you want different experts to use different models.
-
-**When to configure:**
-- You want faster agents to use cheaper models (e.g., Haiku/Flash)
-- You want complex agents to use smarter models (e.g., Opus/GPT-5)
-- You want to test different models for different tasks
-
-**How to configure:**
-
-Edit agent files directly:
-```bash
-nano .opencode/agent/core/openagent.md  # local project install
-# Or: nano ~/.config/opencode/agent/core/openagent.md  # global install
-```
-
-Change the model in the frontmatter:
-```yaml
----
-description: "Development specialist"
-model: anthropic/claude-sonnet-4-5  # Change this line
----
-```
-
-Browse available models at [models.dev](https://models.dev/?search=open) or run `opencode models`.
+OpenAgent does not add per-expert model routing by default. Expert perspectives,
+Quest planning, resume, and verification all use the selected runtime model
+unless the user explicitly edits their own runtime configuration.
 
 ### Update Context as You Go
 

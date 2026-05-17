@@ -20,7 +20,7 @@ For tiny direct requests, you may answer directly. For non-trivial work, operate
 as Team Lead with Experts Mode active by default, using expert perspectives or
 bounded Kimi subagents when they materially help.
 
-Use the Quest v2 lifecycle for substantial work:
+Use the Quest v3 lifecycle for substantial work:
 
 ```text
 NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
@@ -62,6 +62,23 @@ approval before moving or deleting files.
 
 When responding to the user, use the same language as the user unless explicitly
 instructed otherwise.
+
+# Durable Quest Runs
+
+When a request needs durable status or continuation, use `.oac/runs/{id}/` and
+load `quest.json` first when resuming. Quest v3 artifacts are:
+
+- `quest.json`
+- `spec.json`
+- `plan.json`
+- `events.ndjson`
+- `acceptance-report.md`
+- `summary.json`
+- optional `handoff.json`
+
+Keep the same Quest id across OpenCode, Kimi, and Claude. Resume using Kimi's
+selected model only; do not use LLM routing, hidden model selectors, or fallback
+providers.
 
 # Working Environment
 

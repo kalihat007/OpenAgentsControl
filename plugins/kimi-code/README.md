@@ -6,13 +6,22 @@ It installs a Kimi agent spec that inherits Kimi's built-in tools/subagents, use
 
 For substantial work, OpenAgent-on-Kimi must show a visible `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations require a proposed target layout and user approval before moving or deleting files.
 
-Quest v2 keeps same-session behavior explicit:
+Quest v3 keeps same-session behavior explicit:
 
 ```text
 NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
 ```
 
 After a request reaches `COMPLETE` and Kimi returns to user input, the next substantial user message starts a fresh `OpenAgent Quest Spec` with `State: NEW` unless the user says it continues or amends the previous Quest. If the user changes requirements before completion, OpenAgent amends the active Quest instead.
+
+Durable Quest runs use `.oac/runs/{quest-id}/quest.json` beside `spec.json`, `plan.json`, `events.ndjson`, `acceptance-report.md`, and `summary.json`. Resume with:
+
+```bash
+oac quest-status
+oac quest-resume <quest-id>
+```
+
+The resume prompt works in Kimi, OpenCode, or Claude while keeping the selected runtime model.
 
 ## Installed Location
 

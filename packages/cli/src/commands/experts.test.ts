@@ -5,7 +5,7 @@ import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { createDefaultConfig, mergeConfig } from '../lib/config.js'
 import { QualityGateFailedError } from '../lib/errors.js'
-import { OPENCODE_TUI_COMMAND, CLAUDE_BRIDGE_COMMAND } from '../lib/run-handoff.js'
+import { OPENCODE_TUI_COMMAND, KIMI_CODE_COMMAND, CLAUDE_BRIDGE_COMMAND } from '../lib/run-handoff.js'
 import type { PipelineResult } from '../lib/expert-pipeline.js'
 import type { SwarmQualityGateResult } from '../lib/swarm-quality-gate.js'
 
@@ -125,7 +125,7 @@ describe('assertQualityGatePassed', () => {
 // ── Integration: expertsCommand ───────────────────────────────────────────────
 
 describe('expertsCommand', () => {
-  it('--plan-only always persists spec.json', async () => {
+  it('--plan-only always persists spec.json and quest.json', async () => {
     const { expertsCommand } = await import('./experts.js')
     startCapture()
     await expertsCommand('build JWT auth API', {
@@ -158,6 +158,12 @@ describe('expertsCommand', () => {
     const spec = JSON.parse(specRaw) as { objective: string; version: string }
     expect(spec.version).toBe('1')
     expect(spec.objective).toContain('JWT')
+    const questRaw = await readFile(join(runsDir, sessions[0]!, 'quest.json'), 'utf-8')
+    const quest = JSON.parse(questRaw) as { objective: string; version: string; state: string; runtimes: { kimi: { command: string } } }
+    expect(quest.version).toBe('3')
+    expect(quest.state).toBe('SPEC')
+    expect(quest.objective).toContain('JWT')
+    expect(quest.runtimes.kimi.command).toBe(KIMI_CODE_COMMAND)
   })
 
   it('--dry-run prints pre-run plan without executing', async () => {
@@ -242,6 +248,7 @@ describe('expertsCommand', () => {
     const output = stopCapture()
 
     expect(output).toContain(OPENCODE_TUI_COMMAND)
+    expect(output).toContain(KIMI_CODE_COMMAND)
     expect(output).toContain(CLAUDE_BRIDGE_COMMAND)
     expect(output).toContain('handoff')
 
@@ -251,11 +258,14 @@ describe('expertsCommand', () => {
     const handoffRaw = await readFile(join(runsDir, sessions[0]!, 'handoff.json'), 'utf-8')
     const handoff = JSON.parse(handoffRaw) as {
       version: string
-      runtimes: { opencode: { command: string }; claude: { command: string } }
+      runtimes: { opencode: { command: string }; kimi: { command: string }; claude: { command: string } }
     }
     expect(handoff.version).toBe('1')
     expect(handoff.runtimes.opencode.command).toBe(OPENCODE_TUI_COMMAND)
+    expect(handoff.runtimes.kimi.command).toBe(KIMI_CODE_COMMAND)
     expect(handoff.runtimes.claude.command).toBe(CLAUDE_BRIDGE_COMMAND)
+    const questRaw = await readFile(join(runsDir, sessions[0]!, 'quest.json'), 'utf-8')
+    expect(JSON.parse(questRaw).state).toBe('WAITING')
   })
 
   it('--plan-only --live writes handoff without running pipeline', async () => {
@@ -283,6 +293,7 @@ describe('expertsCommand', () => {
     const output = stopCapture()
 
     expect(output).toContain(OPENCODE_TUI_COMMAND)
+    expect(output).toContain(KIMI_CODE_COMMAND)
     expect(output).toContain(CLAUDE_BRIDGE_COMMAND)
 
     const runsDir = join(tmpRoot, '.oac', 'runs')

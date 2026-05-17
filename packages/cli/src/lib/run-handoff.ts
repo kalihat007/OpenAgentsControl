@@ -14,6 +14,8 @@ import type { RunSpec } from './run-spec.js'
 export const HANDOFF_VERSION = '1' as const
 
 export const OPENCODE_TUI_COMMAND = 'opencode --agent OpenAgent'
+export const KIMI_AGENT_FILE = '~/.kimi/agents/openagents-control/openagent.yaml'
+export const KIMI_CODE_COMMAND = `kimi --work-dir . --agent-file ${KIMI_AGENT_FILE}`
 export const CLAUDE_BRIDGE_PLUGIN_DIR = '~/.claude/plugins/openagents-control-bridge'
 export const CLAUDE_BRIDGE_COMMAND = `claude --plugin-dir ${CLAUDE_BRIDGE_PLUGIN_DIR}`
 
@@ -42,6 +44,7 @@ export interface RunHandoff {
   }
   runtimes: {
     opencode: HandoffRuntime
+    kimi: HandoffRuntime
     claude: HandoffRuntime
   }
   experts: Array<{
@@ -119,6 +122,7 @@ export function buildRunHandoff(options: BuildRunHandoffOptions): RunHandoff {
     },
     runtimes: {
       opencode: buildRuntime(OPENCODE_TUI_COMMAND, sessionPath, routerResult.objective),
+      kimi: buildRuntime(KIMI_CODE_COMMAND, sessionPath, routerResult.objective),
       claude: buildRuntime(CLAUDE_BRIDGE_COMMAND, sessionPath, routerResult.objective),
     },
     experts,
@@ -142,6 +146,7 @@ export function formatHandoffCliLines(handoff: RunHandoff, handoffPath: string):
   return [
     'Handoff ready — execute in your IDE runtime (not headless from oac):',
     `  OpenCode TUI:  ${handoff.runtimes.opencode.command}`,
+    `  Kimi Code:     ${handoff.runtimes.kimi.command}`,
     `  Claude Code:   ${handoff.runtimes.claude.command}`,
     `  Run artifacts: ${handoffPath}`,
     `  Session:       ${handoff.artifacts.runDir}/`,

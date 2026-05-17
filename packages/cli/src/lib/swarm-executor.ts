@@ -30,6 +30,11 @@ import {
 import { SessionBudgetExceededError, SwarmExecutionError } from './errors.js'
 import { buildRunSpec, type RunSpec } from './run-spec.js'
 import type { SwarmQualityGateResult } from './swarm-quality-gate.js'
+import {
+  buildQuestRun,
+  persistQuestRun,
+  questArtifactsFromRunArtifacts,
+} from './quest-run.js'
 
 const log = createLogger('swarm-executor')
 import type {
@@ -992,6 +997,14 @@ export async function persistRunSpec(
   const specPath = join(runDir, 'spec.json')
   const spec = buildRunSpec(routerResult, plan)
   await writeFile(specPath, JSON.stringify(spec, null, 2) + '\n')
+  await persistQuestRun(
+    projectRoot,
+    buildQuestRun(routerResult, plan, {
+      state: 'SPEC',
+      trustLabel: 'planned_only',
+      artifacts: { spec: 'spec.json' },
+    }),
+  )
   return specPath
 }
 
@@ -1009,6 +1022,14 @@ export async function persistRunArtifacts(
   const eventsPath = join(runDir, 'events.ndjson')
   const acceptanceReportPath = join(runDir, 'acceptance-report.md')
   const summaryPath = join(runDir, 'summary.json')
+  const artifacts: RunArtifacts = {
+    runDir,
+    planPath,
+    specPath,
+    eventsPath,
+    acceptanceReportPath,
+    summaryPath,
+  }
 
   const session = result?.session ?? plan.session
   const acceptanceChecks = result?.acceptanceChecks ?? plannedAcceptanceChecks(plan)
@@ -1046,7 +1067,17 @@ export async function persistRunArtifacts(
     acceptance: summarizeAcceptance(acceptanceChecks),
   }, null, 2) + '\n')
 
-  return { runDir, planPath, specPath, eventsPath, acceptanceReportPath, summaryPath }
+  if (options.routerResult) {
+    await persistQuestRun(
+      projectRoot,
+      buildQuestRun(options.routerResult, plan, {
+        result,
+        artifacts: questArtifactsFromRunArtifacts(artifacts),
+      }),
+    )
+  }
+
+  return artifacts
 }
 
 function serializablePlan(plan: ExecutionPlan): Record<string, unknown> {

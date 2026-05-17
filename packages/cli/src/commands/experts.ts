@@ -45,6 +45,7 @@ import {
   formatHandoffCliLines,
 } from '../lib/run-handoff.js'
 import { buildRunSpec } from '../lib/run-spec.js'
+import { buildQuestRun, persistQuestRun } from '../lib/quest-run.js'
 import { createLogger } from '../lib/logger.js'
 import type { InteractiveMode } from '../lib/interactive-mode.js'
 import { DEFAULT_MAX_PARALLEL_AGENTS } from '../lib/config.js'
@@ -169,10 +170,14 @@ export async function expertsCommand(
     const specPath = await persistRunSpec(projectRoot, plan, result)
     info(`Saved spec: ${specPath}`)
 
-    if (options.save) {
+    if (options.save || options.live) {
       const artifacts = await persistRunArtifacts(projectRoot, plan, undefined, { routerResult: result })
-      info(`Saved plan: ${artifacts.planPath}`)
-      info(`Saved report: ${artifacts.acceptanceReportPath}`)
+      if (options.save) {
+        info(`Saved plan: ${artifacts.planPath}`)
+        info(`Saved report: ${artifacts.acceptanceReportPath}`)
+      } else {
+        dim(`Saved handoff plan: ${artifacts.planPath}`)
+      }
     }
 
     if (options.live) {
@@ -228,9 +233,21 @@ async function writeAndPrintHandoff(
   const spec = buildRunSpec(routerResult, plan)
   const handoff = buildRunHandoff({ projectRoot, routerResult, plan, spec })
   const handoffPath = await persistRunHandoff(projectRoot, handoff)
+  const questPath = await persistQuestRun(
+    projectRoot,
+    buildQuestRun(routerResult, plan, {
+      state: 'WAITING',
+      trustLabel: 'planned_only',
+      artifacts: {
+        spec: 'spec.json',
+        plan: 'plan.json',
+        handoff: 'handoff.json',
+      },
+    }),
+  )
   log('')
   for (const line of formatHandoffCliLines(handoff, handoffPath)) {
-    if (line.startsWith('  OpenCode') || line.startsWith('  Claude')) {
+    if (line.startsWith('  OpenCode') || line.startsWith('  Kimi') || line.startsWith('  Claude')) {
       success(line.trim())
     } else if (line.length > 0) {
       info(line)
@@ -238,6 +255,7 @@ async function writeAndPrintHandoff(
       log('')
     }
   }
+  dim(`Quest state: ${questPath}`)
 }
 
 async function runPipelineMode(
@@ -325,15 +343,19 @@ async function runPipelineMode(
 
   const routing = routerResult ?? pipelineResult.routing[0]
   if (pipelineResult.plan && routing) {
-    if (options.save) {
+    if (options.save || handoff) {
       const artifacts = await persistRunArtifacts(
         projectRoot,
         pipelineResult.plan,
         pipelineResult.executionResults ?? undefined,
         { routerResult: routing },
       )
-      info(`Saved run: ${artifacts.runDir}`)
-      info(`Saved report: ${artifacts.acceptanceReportPath}`)
+      if (options.save) {
+        info(`Saved run: ${artifacts.runDir}`)
+        info(`Saved report: ${artifacts.acceptanceReportPath}`)
+      } else {
+        dim(`Saved handoff plan: ${artifacts.planPath}`)
+      }
     } else {
       const specPath = await persistRunSpec(projectRoot, pipelineResult.plan, routing)
       dim(`Saved spec: ${specPath}`)

@@ -1,4 +1,4 @@
-<!-- Context: core/quest-mode | Priority: critical | Version: 2.0 | Updated: 2026-05-17 -->
+<!-- Context: core/quest-mode | Priority: critical | Version: 3.0 | Updated: 2026-05-17 -->
 
 # OpenAgent Quest Mode
 
@@ -17,9 +17,9 @@ Vendor terminology and feature framing: [Quest overview](https://docs.qoder.com/
 - Safe local work runs immediately. High-risk actions still require an explicit gate.
 - No hidden LLM routing is allowed. OpenAgent and its expert perspectives use the user's selected runtime model unless the user explicitly changes it.
 
-## Quest v2 Lifecycle
+## Quest v3 Lifecycle
 
-OpenAgent Quest v2 tracks each substantial request through a simple lifecycle:
+OpenAgent Quest v3 tracks each substantial request through a simple lifecycle and durable run identity:
 
 ```text
 NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
@@ -37,6 +37,30 @@ Use this lifecycle to decide whether a user message starts a new Quest or amends
 | `WAITING` | The CLI/session has returned to user input after completion | A new substantial input starts a fresh Quest Spec unless the user says it is a continuation |
 
 If the user adds requirements while a Quest is still in progress, amend the current Quest. If the previous task has completed and the session is waiting for input, treat the next substantial message as `NEW`.
+
+## Durable Quest Runs
+
+For planned, live handoff, simulated, background, or long-running work, persist a Quest sidecar under `.oac/runs/{quest-id}/quest.json` alongside the existing swarm artifacts. The Quest id and run id are the same value.
+
+Required v3 artifacts when available:
+
+- `quest.json` - user-facing Quest state, scenario, intensity, trust label, tasks, experts, runtime resume commands, and next suggested action
+- `spec.json` - compatibility SSOT for requirements, scenario, experts, and acceptance criteria
+- `plan.json` - scheduler task graph and batch plan
+- `events.ndjson` - append-only progress events
+- `acceptance-report.md` - acceptance checks and evidence
+- `summary.json` - machine-readable execution summary
+- `handoff.json` - optional IDE handoff manifest
+
+Use these CLI commands for durable status and continuation:
+
+```bash
+oac quest-status
+oac quest-status <quest-id>
+oac quest-resume <quest-id>
+```
+
+`quest-resume` prints OpenCode, Kimi, and Claude commands plus a resume prompt. It does not change the selected model. The active runtime model remains the only model used.
 
 ## Intensity And Trust
 
@@ -152,7 +176,7 @@ Use a task list for substantial work:
 }
 ```
 
-For large tasks, persist progress under `.oac/runs/{session-id}/` (CLI artifacts: `plan.json`, `spec.json`, optional `handoff.json`, `events.ndjson`, `acceptance-report.md`, `summary.json`).
+For large tasks, persist progress under `.oac/runs/{session-id}/` (CLI artifacts: `quest.json`, `plan.json`, `spec.json`, optional `handoff.json`, `events.ndjson`, `acceptance-report.md`, `summary.json`).
 
 **Execution surface:** Quest/Experts work runs in **OpenCode TUI** (`opencode --agent OpenAgent`) or **Claude Code** (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge`). The `oac experts` CLI plans and hands off; it does not replace those runtimes.
 

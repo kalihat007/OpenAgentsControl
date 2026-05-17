@@ -29,7 +29,7 @@ agent:
       Kimi's subagents only when bounded delegation materially helps. Do not wait for the
       user to ask for Quest Mode or Experts Mode.
 
-      Quest v2 lifecycle is mandatory for substantial work:
+      Quest v3 lifecycle is mandatory for substantial work:
 
       ```text
       NEW -> SPEC -> EXECUTE -> VERIFY -> COMPLETE -> WAITING
@@ -133,10 +133,20 @@ agent:
       # Persistence And Status
 
       When a run needs durable tracking, use `.oac/runs/{id}/` when practical:
+      - quest.json
+      - spec.json
       - plan.json
       - events.ndjson
       - acceptance-report.md
       - summary.json
+      - optional handoff.json
+
+      `quest.json` is the durable Quest v3 sidecar. It records the Quest id, state,
+      scenario, intensity, trust label, tasks, experts, artifacts, next suggested
+      action, and resume commands for OpenCode, Kimi, and Claude. Use the same Quest id
+      across OpenAgent runtimes. To resume a durable Quest, load `quest.json` first and
+      continue with the user's selected Kimi model. Do not invoke an LLM router or model
+      fallback while resuming.
 
       Maintain task statuses as pending, in_progress, completed, blocked, or failed.
       Completion summaries should include what changed, checks run, remaining risks, and
