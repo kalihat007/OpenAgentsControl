@@ -88,6 +88,35 @@ print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
 print_error()   { echo -e "${RED}✗${NC} $1" >&2; }
 print_step()    { echo -e "\n${CYAN}${BOLD}▶${NC} $1\n"; }
 
+# Remove install targets reliably on Linux (busy/partial rm -rf on nested agent trees).
+safe_rm_rf() {
+    local target="$1"
+    [ -n "$target" ] || return 0
+    [ -e "$target" ] || return 0
+
+    if command -v chmod >/dev/null 2>&1; then
+        chmod -R u+w "$target" 2>/dev/null || true
+    fi
+
+    if rm -rf "$target" 2>/dev/null; then
+        return 0
+    fi
+
+    if [ -d "$target" ] && command -v find >/dev/null 2>&1; then
+        find "$target" -mindepth 1 -delete 2>/dev/null || true
+        rmdir "$target" 2>/dev/null || rm -rf "$target" 2>/dev/null || true
+        [ ! -e "$target" ] && return 0
+    fi
+
+    local quarantine="${target}.oac-remove.$$"
+    if [ -e "$target" ]; then
+        mv "$target" "$quarantine" 2>/dev/null || return 1
+        rm -rf "$quarantine" 2>/dev/null || true
+        [ -e "$quarantine" ] && return 1
+    fi
+    return 0
+}
+
 curl_fetch() {
     curl \
         -fsSL \
@@ -288,7 +317,7 @@ install_kimi_integration() {
     fi
 
     mkdir -p "$HOME/.kimi/agents"
-    rm -rf "$plugin_dest"
+    safe_rm_rf "$plugin_dest"
     mkdir -p "$plugin_dest"
     cp -R "$plugin_source"/. "$plugin_dest"/
 
@@ -332,7 +361,10 @@ install_claude_integration() {
     mkdir -p "$HOME/.claude/plugins"
 
     if [ -d "$plugin_dest" ]; then
-        rm -rf "$plugin_dest"
+        safe_rm_rf "$plugin_dest" || {
+            print_warning "Could not remove existing Claude plugin; retrying in-place refresh"
+            find "$plugin_dest" -mindepth 1 -delete 2>/dev/null || true
+        }
     fi
 
     if [ -d "$plugin_source" ]; then

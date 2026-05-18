@@ -4,7 +4,7 @@
   "description": "OAC CLI — install, manage, and update AI agents and context files",
   "type": "module",
   "bin": {
-    "oac": "./dist/index.js"
+    "oac": "./bin/oac"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

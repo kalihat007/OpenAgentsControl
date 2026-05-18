@@ -28,6 +28,31 @@ async function fileExists(path: string): Promise<boolean> {
   }
 }
 
+async function commandOnPath(command: string): Promise<boolean> {
+  try {
+    await execAsync(`command -v ${command}`, { encoding: 'utf-8' })
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** Pick npm/bun for package.json script checks (bun.lock prefers bun; else npm when present, else bun). */
+export async function resolveNodeScriptRunner(
+  projectRoot: string,
+): Promise<'bun' | 'npm' | null> {
+  const hasBunLock =
+    (await fileExists(join(projectRoot, 'bun.lockb'))) ||
+    (await fileExists(join(projectRoot, 'bun.lock')))
+  const bunAvailable = await commandOnPath('bun')
+  const npmAvailable = await commandOnPath('npm')
+
+  if (hasBunLock && bunAvailable) return 'bun'
+  if (npmAvailable) return 'npm'
+  if (bunAvailable) return 'bun'
+  return null
+}
+
 export async function detectChecks(projectRoot: string): Promise<DetectedCheck[]> {
   const checks: DetectedCheck[] = []
 
@@ -38,6 +63,7 @@ export async function detectChecks(projectRoot: string): Promise<DetectedCheck[]
       scripts?: Record<string, string>
     }
     const scripts = pkg.scripts || {}
+    const runner = await resolveNodeScriptRunner(projectRoot)
 
     const scriptMappings: Array<[string, string, number]> = [
       ['test', 'test', 1],
@@ -46,23 +72,12 @@ export async function detectChecks(projectRoot: string): Promise<DetectedCheck[]
       ['lint', 'lint', 4],
     ]
 
-    for (const [scriptName, checkName, priority] of scriptMappings) {
-      if (scripts[scriptName]) {
-        checks.push({
-          name: checkName,
-          command: `npm run ${scriptName}`,
-          priority,
-        })
-      }
-    }
-
-    // Bun-specific fallback
-    if (await fileExists(join(projectRoot, 'bun.lockb')) || await fileExists(join(projectRoot, 'bun.lock'))) {
+    if (runner) {
       for (const [scriptName, checkName, priority] of scriptMappings) {
-        if (scripts[scriptName] && !checks.some((c) => c.name === checkName)) {
+        if (scripts[scriptName]) {
           checks.push({
             name: checkName,
-            command: `bun run ${scriptName}`,
+            command: `${runner} run ${scriptName}`,
             priority,
           })
         }

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+resolve_script_dir() {
+  local source="${BASH_SOURCE[0]}"
+  while [ -L "$source" ]; do
+    local dir
+    dir="$(cd -P "$(dirname "$source")" && pwd)"
+    source="$(readlink "$source")"
+    [[ "$source" != /* ]] && source="$dir/$source"
+  done
+  cd -P "$(dirname "$source")" && pwd
+}
+
+SCRIPT_DIR="$(resolve_script_dir)"
+CLI_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+if command -v bun >/dev/null 2>&1; then
+  exec bun "$CLI_ROOT/dist/index.js" "$@"
+fi
+if [ -x "${BUN_INSTALL:-$HOME/.bun}/bin/bun" ]; then
+  exec "${BUN_INSTALL:-$HOME/.bun}/bin/bun" "$CLI_ROOT/dist/index.js" "$@"
+fi
+echo "oac: bun runtime not found (install from https://bun.sh)" >&2
+exit 1
