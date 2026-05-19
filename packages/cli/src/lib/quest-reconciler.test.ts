@@ -16,6 +16,7 @@ import {
   buildReviewRejectedEvent,
   buildTaskInjectedEvent,
   buildPriorityChangedEvent,
+  buildTaskProgressEvent,
 } from './quest-reconciler.js'
 import { persistQuestRun, type QuestRun } from './quest-run.js'
 
@@ -222,6 +223,31 @@ describe('quest-reconciler', () => {
     const live = reconcileQuestRun(base, events)
     expect(live.objective).toBe('Updated objective')
     expect(live.amendments).toHaveLength(1)
+  })
+
+  it('reconcileQuestRun creates new tasks from amendment text', () => {
+    const base = makeBaseQuest()
+    const events = [buildAmendmentEvent('Updated objective', 'Add OAuth integration')]
+
+    const live = reconcileQuestRun(base, events)
+    expect(live.tasks.length).toBeGreaterThan(2)
+    const amendedTask = live.tasks.find((t) => t.title.startsWith('Amended:'))
+    expect(amendedTask).toBeDefined()
+    expect(amendedTask?.status).toBe('pending')
+    expect(amendedTask?.dependsOn).toContain('2') // depends on in_progress task
+    expect(live.objective).toBe('Updated objective')
+  })
+
+  it('reconcileQuestRun blocks amendment tasks that create cycles', () => {
+    const base = makeBaseQuest()
+    base.tasks[0].dependsOn = ['2']
+    base.tasks[1].dependsOn = ['1']
+    const events = [buildAmendmentEvent('Updated objective', 'Add OAuth integration')]
+
+    const live = reconcileQuestRun(base, events)
+    const amendedTask = live.tasks.find((t) => t.title.startsWith('Amended:'))
+    expect(amendedTask?.status).toBe('blocked')
+    expect(live.trustLabel).toBe('blocked')
   })
 
   it('reconcileQuestRun applies error events and marks tasks failed', () => {
@@ -481,5 +507,39 @@ describe('quest-reconciler', () => {
       },
     ])
     expect(live.tasks[0].priority).toBe(1)
+  })
+
+  it('task.progress records percent, checkpoint, and lastMessage', () => {
+    const base = makeBaseQuest()
+    const live = reconcileQuestRun(base, [
+      buildTaskProgressEvent('2', 42, 'auth-service.ts:verifyToken()', 'Implementing JWT verification'),
+    ])
+    expect(live.taskProgress).toBeDefined()
+    expect(live.taskProgress!['2']!.percent).toBe(42)
+    expect(live.taskProgress!['2']!.checkpoint).toBe('auth-service.ts:verifyToken()')
+    expect(live.taskProgress!['2']!.lastMessage).toBe('Implementing JWT verification')
+    expect(live.taskProgress!['2']!.updatedAt).toBeDefined()
+  })
+
+  it('task.progress clamps percent to [0, 100]', () => {
+    const base = makeBaseQuest()
+    const live = reconcileQuestRun(base, [
+      buildTaskProgressEvent('1', -10),
+      buildTaskProgressEvent('2', 150),
+    ])
+    expect(live.taskProgress!['1']!.percent).toBe(0)
+    expect(live.taskProgress!['2']!.percent).toBe(100)
+  })
+
+  it('task.progress ignores events without taskId or percent', () => {
+    const base = makeBaseQuest()
+    const live = reconcileQuestRun(base, [
+      {
+        timestamp: new Date().toISOString(),
+        type: 'task.progress',
+        data: { task_id: '1' },
+      } as unknown as Parameters<typeof reconcileQuestRun>[1][number],
+    ])
+    expect(Object.keys(live.taskProgress || {})).toHaveLength(0)
   })
 })

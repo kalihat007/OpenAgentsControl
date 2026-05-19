@@ -264,6 +264,17 @@ function resetTaskCounter(): void {
   taskCounter = 0
 }
 
+/**
+ * Compute runtime timeout based on task chunk estimates.
+ * Gives 2x buffer over the longest task chunk, with a 10-minute floor
+ * and a 30-minute ceiling.
+ */
+function computeRuntimeTimeout(tasks: SwarmTask[]): number {
+  if (tasks.length === 0) return 10 * 60 * 1000
+  const maxChunkMs = Math.max(...tasks.map((t) => (t.maxChunkMinutes ?? 10) * 60 * 1000))
+  return Math.min(Math.max(maxChunkMs * 2, 10 * 60 * 1000), 30 * 60 * 1000)
+}
+
 // ── Plan ──────────────────────────────────────────────────────────────────────
 
 export function resolvePlanConcurrency(options: PlanExecutionOptions = {}): number {
@@ -515,13 +526,14 @@ export async function executeSwarm(
         trackApiCall(budgetUsage, limits)
       }
 
+      const timeoutMs = computeRuntimeTimeout(session.tasks)
       const distributedResult = await spawnDistributedRuntimes({
         questId: session.id,
         objective: session.objective,
         projectRoot: options.projectRoot,
         runDir,
         batches: runtimeBatches,
-        timeoutMs: 10 * 60 * 1000,
+        timeoutMs,
       })
 
       const events = await loadEvents(options.projectRoot, session.id)
@@ -679,6 +691,7 @@ export async function executeSwarm(
       routerResult: options.routerResult,
     })
 
+    const timeoutMs = computeRuntimeTimeout(session.tasks)
     const runtimeResult = await spawnRuntime({
       questId: session.id,
       objective: session.objective,
@@ -690,6 +703,7 @@ export async function executeSwarm(
         title: task.title,
         agent: task.agent,
       })),
+      timeoutMs,
       background: options.background,
     })
 

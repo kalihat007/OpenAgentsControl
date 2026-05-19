@@ -34,6 +34,7 @@ export type ReconcilerEventType =
   | 'review.approved'
   | 'review.rejected'
   | 'task.injected'
+  | 'task.progress'
   | 'priority.changed'
 
 export interface ReconcilerEvent {
@@ -68,8 +69,17 @@ export interface ReconciledQuestRun extends QuestRun {
   handoffs: HandoffRecord[]
   /** Runtime ownership/progress summary. */
   runtimeProgress: Record<string, RuntimeProgress>
+  /** Per-task progress recorded from task.progress events. */
+  taskProgress: Record<string, TaskProgress>
   /** Incident state recorded from v6-compatible events. */
   incidents: IncidentRecord[]
+}
+
+export interface TaskProgress {
+  percent: number
+  checkpoint?: string
+  lastMessage?: string
+  updatedAt: string
 }
 
 export interface RuntimeProgress {
@@ -192,7 +202,31 @@ function applyAmendment(quest: ReconciledQuestRun, data: Record<string, unknown>
     quest.objective = data.objective as string
   }
   if (data.amendmentText) {
-    // No-op for now — amendment is recorded in the event itself
+    const text = asString(data.amendmentText)
+    if (text) {
+      const taskId = `amend-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+      const newTask: QuestRunTask = {
+        id: taskId,
+        title: `Amended: ${text.slice(0, 120)}${text.length > 120 ? '…' : ''}`,
+        status: 'pending',
+        expert: asString(data.expert) || 'auto',
+        dependsOn: quest.tasks
+          .filter((t) => t.status === 'in_progress' || t.status === 'completed')
+          .map((t) => t.id),
+        acceptanceCriteria: [],
+      }
+      quest.tasks.push(newTask)
+
+      // Validate DAG for cycles
+      const cycle = detectCycles(quest.tasks)
+      if (cycle) {
+        newTask.status = 'blocked'
+        ;(newTask as unknown as Record<string, unknown>).blockReason = `Cycle detected: ${cycle.join(' → ')}`
+        quest.trustLabel = 'blocked'
+      }
+
+      quest.nextSuggestedAction = `Amendment queued as ${taskId}. Run oac quest-status ${quest.questId} to view updated tasks.`
+    }
   }
 }
 
@@ -389,6 +423,7 @@ function deepCopyQuestRun(base: QuestRun): ReconciledQuestRun {
       acceptedTaskIds: handoff.acceptedTaskIds ? [...handoff.acceptedTaskIds] : undefined,
     })),
     runtimeProgress: copyRuntimeProgress(withV6Fields.runtimeProgress),
+    taskProgress: { ...(withV6Fields.taskProgress ?? {}) },
     incidents: (withV6Fields.incidents ?? []).map((incident) => ({ ...incident })),
   }
 }
@@ -461,6 +496,9 @@ export function reconcileQuestRun(
         break
       case 'task.injected':
         applyTaskInjected(quest, event)
+        break
+      case 'task.progress':
+        applyTaskProgress(quest, event)
         break
       case 'priority.changed':
         applyPriorityChanged(quest, event)
@@ -600,6 +638,23 @@ function applyTaskInjected(quest: ReconciledQuestRun, event: ReconcilerEvent): v
     newTask.status = 'blocked'
     ;(newTask as unknown as Record<string, unknown>).blockReason = `Cycle detected: ${cycle.join(' → ')}`
     quest.trustLabel = 'blocked'
+  }
+}
+
+function applyTaskProgress(quest: ReconciledQuestRun, event: ReconcilerEvent): void {
+  const data = flattenTaskEventData(event.data)
+  const taskId = taskIdFromData(data)
+  const percent = asNumber(data.percent ?? data.percentage ?? data.progress)
+  if (!taskId || percent === undefined) return
+
+  const checkpoint = asString(data.checkpoint ?? data.checkpointId)
+  const message = asString(data.message ?? data.note ?? data.status)
+
+  quest.taskProgress[taskId] = {
+    percent: Math.min(100, Math.max(0, percent)),
+    ...(checkpoint && { checkpoint }),
+    ...(message && { lastMessage: message }),
+    updatedAt: event.timestamp,
   }
 }
 
@@ -879,5 +934,21 @@ export function buildPriorityChangedEvent(
     timestamp: new Date().toISOString(),
     type: 'priority.changed',
     data: { taskId, priority },
+  }
+}
+
+/**
+ * Build a write-back event for task progress checkpoint.
+ */
+export function buildTaskProgressEvent(
+  taskId: string,
+  percent: number,
+  checkpoint?: string,
+  message?: string,
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'task.progress',
+    data: { taskId, percent, checkpoint, message },
   }
 }

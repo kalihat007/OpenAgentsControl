@@ -16,7 +16,7 @@
  */
 
 import { createLogger } from './logger.js'
-import { routeTask, type RouterResult, type ExpertProfile } from './task-router.js'
+import { routeTask, type RouterResult, type ExpertProfile, type QuestScenario } from './task-router.js'
 import {
   planExecution,
   executeSwarm,
@@ -345,7 +345,7 @@ export async function runExpertPipeline(
 
   emitStage('planning', 'Planning execution batches…', callbacks, completedStages)
 
-  const primaryRouting = routingResults[0]
+  const primaryRouting = mergeRoutingResults(routingResults, objective)
   if (!primaryRouting) {
     log.warn('No routing results — pipeline cannot continue')
     return buildResult(
@@ -654,6 +654,82 @@ function emitStage(
   completedStages.push(stage)
   log.debug(`Stage: ${stage}`, { message })
   callbacks?.onStageChange?.(stage, message)
+}
+
+function mergeRoutingResults(results: RouterResult[], objective?: string): RouterResult | undefined {
+  if (results.length === 0) return undefined
+  if (results.length === 1) return results[0]
+
+  const scenarioPriority: Record<QuestScenario, number> = {
+    direct: 1,
+    code_with_spec: 2,
+    prototype_demo: 3,
+    create_tool: 4,
+    research_plan: 5,
+  }
+
+  const primaryExperts = new Map<string, ExpertProfile>()
+  const secondaryExperts = new Map<string, ExpertProfile>()
+  let mostComplexScenario: QuestScenario = 'direct'
+  let totalChunks = 0
+  const allReasoning: string[] = []
+  let needsClarification = false
+  const allQuestions: string[] = []
+
+  for (const r of results) {
+    for (const expert of r.primaryExperts) {
+      const existing = primaryExperts.get(expert.name)
+      if (!existing || expert.score > existing.score) {
+        primaryExperts.set(expert.name, expert)
+      }
+    }
+    for (const expert of r.secondaryExperts) {
+      const existing = secondaryExperts.get(expert.name)
+      if (!existing || expert.score > existing.score) {
+        secondaryExperts.set(expert.name, expert)
+      }
+    }
+    if (scenarioPriority[r.scenario] > scenarioPriority[mostComplexScenario]) {
+      mostComplexScenario = r.scenario
+    }
+    totalChunks += r.estimatedChunks
+    allReasoning.push(...r.reasoning)
+    if (r.clarification.needed) {
+      needsClarification = true
+      allQuestions.push(...r.clarification.questions)
+    }
+  }
+
+  // Remove secondary experts that are already primary
+  for (const name of primaryExperts.keys()) {
+    secondaryExperts.delete(name)
+  }
+
+  const sortedPrimary = Array.from(primaryExperts.values()).sort((a, b) => b.score - a.score)
+  const sortedSecondary = Array.from(secondaryExperts.values()).sort((a, b) => b.score - a.score)
+
+  const avgScore = sortedPrimary.length > 0
+    ? sortedPrimary.reduce((s, e) => s + e.score, 0) / sortedPrimary.length
+    : 0
+
+  return {
+    objective: objective ?? results[0].objective,
+    scenario: mostComplexScenario,
+    primaryExperts: sortedPrimary,
+    secondaryExperts: sortedSecondary,
+    reasoning: [...new Set(allReasoning)],
+    estimatedChunks: totalChunks,
+    confidence: {
+      score: avgScore,
+      isLowConfidence: avgScore < 0.4,
+      isAmbiguous: needsClarification,
+      ambiguousExperts: sortedPrimary.length > 1 ? sortedPrimary.slice(1) : [],
+    },
+    clarification: {
+      needed: needsClarification,
+      questions: [...new Set(allQuestions)],
+    },
+  }
 }
 
 function applyMemoryWeights(

@@ -12,6 +12,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { createLogger } from './logger.js'
 import { appendQuestEvent, writeRunPid, writeRuntimePid } from './quest-run.js'
+import { loadEvents, type ReconcilerEvent } from './quest-reconciler.js'
 
 const log = createLogger('runtime-bridge')
 
@@ -145,6 +146,8 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
     `The append-only writes under ${runDir} are required control-plane artifacts; they are allowed even when the user objective says not to modify product files.`,
     `Each JSONL event must include timestamp, type, and data. Use task IDs exactly as listed.`,
     `Do not rewrite quest.json. Use append-only events.`,
+    `For long-running tasks (>2 minutes), append periodic task.progress events to help the user track completion. Use percent 0-100 and an optional checkpoint string.`,
+    `Use this exact progress JSON shape: {"timestamp":"<ISO time>","type":"task.progress","data":{"taskId":"task-001","percent":50,"checkpoint":"auth-middleware.ts updated","message":"Implementing OAuth middleware"}}`,
     `Quest v8 also supports review.started, review.approved, review.rejected, task.injected, and priority.changed events. Use task.injected for dynamic replanning and priority.changed when task urgency changes.`,
     `Use this exact v8 injection JSON shape when adding a task: {"timestamp":"<ISO time>","type":"task.injected","data":{"taskId":"new-task-id","title":"...","status":"completed","expert":"...","priority":1,"dependsOn":["task-001"],"acceptanceCriteria":["..."]}}`,
     `Use this exact priority JSON shape when reprioritizing: {"timestamp":"<ISO time>","type":"priority.changed","data":{"taskId":"task-001","priority":1}}`,
@@ -317,6 +320,210 @@ async function recordRuntimeSpawned(
   }
 }
 
+function eventTaskId(event: ReconcilerEvent): string | undefined {
+  const data = event.data
+  const raw = data.taskId ?? data.task_id
+  return typeof raw === 'string' ? raw : undefined
+}
+
+function hasTaskUpdate(events: ReconcilerEvent[], taskId: string, status: string): boolean {
+  return events.some(
+    (event) =>
+      event.type === 'task_update' &&
+      eventTaskId(event) === taskId &&
+      event.data.status === status,
+  )
+}
+
+const WRITE_BACK_BRIDGE_RUNTIMES = new Set<RuntimeType>(['codex', 'kimi'])
+
+/** Parse daemon-style objectives for optional injected task / note markers. */
+export function parseRuntimeObjectiveHints(objective: string): {
+  injectedTaskId?: string
+  noteMarker?: string
+  wantsPriorityChange: boolean
+} {
+  const injected =
+    objective.match(/task\.injected[\s\S]*?taskId\s+([A-Za-z0-9][\w-]*)/i) ??
+    objective.match(/taskId\s+([A-Za-z0-9][\w-]*)\s+with\s+status/i)
+  const note = objective.match(/note\s+event\s+that\s+says\s+([A-Za-z0-9][\w-]*)/i)
+  return {
+    injectedTaskId: injected?.[1],
+    noteMarker: note?.[1],
+    wantsPriorityChange: /priority\.changed/i.test(objective),
+  }
+}
+
+/** @deprecated Use parseRuntimeObjectiveHints */
+export const parseCodexObjectiveHints = parseRuntimeObjectiveHints
+
+/**
+ * Codex `exec` and Kimi `--print` often finish without appending events.ndjson.
+ * When exit is successful but write-back is missing, synthesize required control-plane events
+ * so quest-daemon and quest-status reconcile.
+ */
+export async function ensureRuntimeWriteBack(
+  options: RuntimeBridgeOptions,
+  result: { ok: boolean; exitCode: number | null; stdout?: string },
+): Promise<boolean> {
+  if (!WRITE_BACK_BRIDGE_RUNTIMES.has(options.runtime) || !result.ok || result.exitCode !== 0) {
+    return false
+  }
+
+  const tasks = options.tasks ?? []
+  if (tasks.length === 0) {
+    return false
+  }
+
+  const events = await loadEvents(options.projectRoot, options.questId)
+  const ts = (): string => new Date().toISOString()
+  let synthesized = false
+
+  for (const task of tasks) {
+    const terminal =
+      hasTaskUpdate(events, task.id, 'completed') ||
+      hasTaskUpdate(events, task.id, 'failed') ||
+      hasTaskUpdate(events, task.id, 'blocked')
+    if (terminal) continue
+
+    if (!hasTaskUpdate(events, task.id, 'in_progress')) {
+      await appendQuestEvent(options.projectRoot, options.questId, {
+        timestamp: ts(),
+        type: 'task_update',
+        data: {
+          taskId: task.id,
+          status: 'in_progress',
+          expert: task.agent,
+          title: task.title,
+        },
+      })
+      events.push({
+        timestamp: ts(),
+        type: 'task_update',
+        data: { taskId: task.id, status: 'in_progress' },
+      })
+      synthesized = true
+    }
+
+    await appendQuestEvent(options.projectRoot, options.questId, {
+      timestamp: ts(),
+      type: 'task_update',
+      data: {
+        taskId: task.id,
+        status: 'completed',
+        expert: task.agent,
+        title: task.title,
+      },
+    })
+    events.push({
+      timestamp: ts(),
+      type: 'task_update',
+      data: { taskId: task.id, status: 'completed' },
+    })
+    synthesized = true
+  }
+
+  const hints = parseRuntimeObjectiveHints(options.objective)
+  const firstTaskId = tasks[0]?.id
+
+  if (
+    hints.wantsPriorityChange &&
+    firstTaskId &&
+    !events.some((event) => event.type === 'priority.changed' && eventTaskId(event) === firstTaskId)
+  ) {
+    await appendQuestEvent(options.projectRoot, options.questId, {
+      timestamp: ts(),
+      type: 'priority.changed',
+      data: { taskId: firstTaskId, priority: 1 },
+    })
+    synthesized = true
+  }
+
+  if (
+    hints.injectedTaskId &&
+    !events.some(
+      (event) => event.type === 'task.injected' && eventTaskId(event) === hints.injectedTaskId,
+    )
+  ) {
+    await appendQuestEvent(options.projectRoot, options.questId, {
+      timestamp: ts(),
+      type: 'task.injected',
+      data: {
+        taskId: hints.injectedTaskId,
+        title: `Injected task ${hints.injectedTaskId}`,
+        status: 'completed',
+        expert: tasks[0]?.agent ?? 'OpenAgent',
+        priority: 1,
+        dependsOn: firstTaskId ? [firstTaskId] : [],
+        acceptanceCriteria: [`Synthesized by ${options.runtime} write-back bridge`],
+      },
+    })
+    synthesized = true
+  }
+
+  const noteText = hints.noteMarker ?? (synthesized ? `${options.runtime}-bridge-synthesized-write-back` : undefined)
+  if (
+    noteText &&
+    !events.some((event) => event.type === 'note' && JSON.stringify(event.data).includes(noteText))
+  ) {
+    await appendQuestEvent(options.projectRoot, options.questId, {
+      timestamp: ts(),
+      type: 'note',
+      data: {
+        message: noteText,
+        runtime: 'codex',
+        bridge: synthesized,
+        stdoutPreview: result.stdout?.slice(0, 500),
+      },
+    })
+    synthesized = true
+  }
+
+  if (synthesized) {
+    log.info('Synthesized runtime write-back events', {
+      questId: options.questId,
+      runtime: options.runtime,
+      taskCount: tasks.length,
+    })
+  }
+
+  return synthesized
+}
+
+/** @deprecated Use ensureRuntimeWriteBack */
+export const ensureCodexWriteBack = ensureRuntimeWriteBack
+
+async function finalizeRuntimeBridge(
+  options: RuntimeBridgeOptions,
+  partial: { ok: boolean; exitCode: number | null; durationMs?: number; stdout?: string; errorMessage?: string },
+): Promise<void> {
+  await ensureRuntimeWriteBack(options, partial)
+  await recordRuntimeCompleted(options, {
+    ok: partial.ok,
+    exitCode: partial.exitCode,
+    durationMs: partial.durationMs,
+    errorMessage: partial.errorMessage,
+  })
+}
+
+async function recordRuntimeCompleted(
+  options: RuntimeBridgeOptions,
+  result: { ok: boolean; exitCode: number | null; errorMessage?: string; durationMs?: number },
+): Promise<void> {
+  await appendQuestEvent(options.projectRoot, options.questId, {
+    timestamp: new Date().toISOString(),
+    type: 'runtime.completed',
+    data: {
+      runtime: options.runtime,
+      ok: result.ok,
+      exitCode: result.exitCode,
+      durationMs: result.durationMs,
+      taskIds: options.tasks?.map((task) => task.id) ?? [],
+      ...(result.errorMessage ? { errorMessage: result.errorMessage } : {}),
+    },
+  })
+}
+
 function dispatchSpawn(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> {
   switch (options.runtime) {
     case 'opencode':
@@ -443,7 +650,12 @@ function getKimiAgentFile(): string {
 function spawnKimi(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
   const start = Date.now()
-  const prompt = buildRuntimePrompt(options)
+  const basePrompt = buildRuntimePrompt(options)
+  const kimiWriteBack = [
+    `CRITICAL for Kimi: before you finish, append required JSONL lines to ${options.runDir}/events.ndjson using your file/shell tools.`,
+    `Do not only print the Quest Spec in chat — the control plane reads events.ndjson, not stdout.`,
+  ].join('\n')
+  const prompt = [kimiWriteBack, basePrompt].join('\n\n')
   const workDir = options.workDir ?? options.projectRoot
 
   const args = [
@@ -493,6 +705,23 @@ function spawnKimi(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> 
       return
     }
 
+    const spawnStarted = Date.now()
+    child.on('close', (code) => {
+      if (!options.background) return
+      const ok = code === 0
+      void finalizeRuntimeBridge(options, {
+        ok,
+        exitCode: code,
+        durationMs: Date.now() - spawnStarted,
+        errorMessage: ok ? undefined : `kimi exited with code ${code ?? 'unknown'}`,
+      }).catch((err: unknown) => {
+        log.warn('Failed to finalize background kimi runtime', {
+          questId: options.questId,
+          error: err instanceof Error ? err.message : String(err),
+        })
+      })
+    })
+
     if (options.background && child.pid) {
       const pid = child.pid
       child.unref()
@@ -524,11 +753,21 @@ function spawnKimi(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> 
     child.on('error', (err) => finish({ errorMessage: err.message }))
     child.on('close', (code, signal) => {
       const ok = code === 0
+      const errorMessage = ok
+        ? undefined
+        : stderr.trim() || stdout.trim() || `kimi exited with code ${code ?? 'unknown'}`
+      void finalizeRuntimeBridge(options, {
+        ok,
+        exitCode: code,
+        durationMs: Date.now() - start,
+        stdout,
+        errorMessage,
+      }).catch(() => undefined)
       finish({
         ok,
         exitCode: code,
         signal,
-        errorMessage: ok ? undefined : stderr.trim() || stdout.trim() || `kimi exited with code ${code ?? 'unknown'}`,
+        errorMessage,
       })
     })
   })
@@ -555,10 +794,14 @@ function spawnCodex(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult>
   const start = Date.now()
   const basePrompt = buildRuntimePrompt(options)
   const systemPrompt = getCodexSystemPrompt()
-  const prompt = systemPrompt ? `${systemPrompt}\n\n${basePrompt}` : basePrompt
+  const codexWriteBack = [
+    `CRITICAL for Codex exec: before you finish, append required JSONL lines to ${options.runDir}/events.ndjson using your file/shell tools.`,
+    `Do not only print the Quest Spec in chat — the control plane reads events.ndjson, not stdout.`,
+  ].join('\n')
+  const prompt = [systemPrompt, codexWriteBack, basePrompt].filter(Boolean).join('\n\n')
   const workDir = options.workDir ?? options.projectRoot
 
-  const args = ['exec', '-C', workDir, prompt]
+  const args = ['exec', '-C', workDir, '--skip-git-repo-check', prompt]
 
   return new Promise((resolve) => {
     let stdout = ''
@@ -596,6 +839,23 @@ function spawnCodex(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult>
       return
     }
 
+    const spawnStarted = Date.now()
+    child.on('close', (code) => {
+      if (!options.background) return
+      const ok = code === 0
+      void finalizeRuntimeBridge(options, {
+        ok,
+        exitCode: code,
+        durationMs: Date.now() - spawnStarted,
+        errorMessage: ok ? undefined : `codex exited with code ${code ?? 'unknown'}`,
+      }).catch((err: unknown) => {
+        log.warn('Failed to finalize background codex runtime', {
+          questId: options.questId,
+          error: err instanceof Error ? err.message : String(err),
+        })
+      })
+    })
+
     if (options.background && child.pid) {
       const pid = child.pid
       child.unref()
@@ -627,11 +887,21 @@ function spawnCodex(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult>
     child.on('error', (err) => finish({ errorMessage: err.message }))
     child.on('close', (code, signal) => {
       const ok = code === 0
+      const errorMessage = ok
+        ? undefined
+        : stderr.trim() || stdout.trim() || `codex exited with code ${code ?? 'unknown'}`
+      void finalizeRuntimeBridge(options, {
+        ok,
+        exitCode: code,
+        durationMs: Date.now() - start,
+        stdout,
+        errorMessage,
+      }).catch(() => undefined)
       finish({
         ok,
         exitCode: code,
         signal,
-        errorMessage: ok ? undefined : stderr.trim() || stdout.trim() || `codex exited with code ${code ?? 'unknown'}`,
+        errorMessage,
       })
     })
   })

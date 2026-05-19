@@ -12,9 +12,11 @@ import {
   type QuestRuntimeName,
 } from '../lib/quest-run.js'
 import { formatAllAgentMemoryForPrompt, loadAgentMemory } from '../lib/agent-memory.js'
+import { loadReconciledQuest } from '../lib/quest-reconciler.js'
 
 export type QuestResumeOptions = {
   runtime?: QuestRuntimeName
+  fromCheckpoint?: boolean
 }
 
 export async function questResumeCommand(
@@ -41,12 +43,31 @@ export async function questResumeCommand(
     )
   }
 
+  const reconciled = options.fromCheckpoint
+    ? await loadReconciledQuest(projectRoot, questId)
+    : undefined
+
+  const inProgressTask = reconciled?.tasks.find((t) => t.status === 'in_progress')
+  const checkpoint = reconciled && inProgressTask
+    ? reconciled.taskProgress?.[inProgressTask.id]
+    : undefined
+
   if (options.runtime) {
     const memory = await loadAgentMemory(projectRoot, questId)
     log('')
     bold(`Resume ${options.runtime.toUpperCase()}`)
     log('')
     log(formatRuntimeHandoff(quest, options.runtime))
+    if (checkpoint && inProgressTask) {
+      log('')
+      info('Checkpoint:')
+      log(`  Task:    ${inProgressTask.id} — ${inProgressTask.title}`)
+      log(`  File:    ${checkpoint.checkpoint ?? 'N/A'}`)
+      log(`  Progress: ${checkpoint.percent}%`)
+      if (checkpoint.lastMessage) {
+        log(`  Last:    ${checkpoint.lastMessage}`)
+      }
+    }
     const memoryPrompt = formatAllAgentMemoryForPrompt(memory)
     if (memoryPrompt) {
       log('')
@@ -66,7 +87,19 @@ export async function questResumeCommand(
   log(`  Codex:    ${quest.runtimes.codex.command}`)
   log('')
   info('Paste this prompt:')
-  log(`  ${quest.runtimes.opencode.resumePrompt}`)
+  if (checkpoint && inProgressTask) {
+    const checkpointBlock = [
+      `Resume Quest ${quest.questId}.`,
+      `Continue task ${inProgressTask.id} (${inProgressTask.title}).`,
+      checkpoint.checkpoint ? `Checkpoint: ${checkpoint.checkpoint}` : '',
+      `Progress: ${checkpoint.percent}%`,
+      checkpoint.lastMessage ? `Last status: ${checkpoint.lastMessage}` : '',
+      `Load artifacts from ${quest.artifacts.runDir}/ and append events only to events.ndjson.`,
+    ].filter(Boolean).join(' ')
+    log(`  ${checkpointBlock}`)
+  } else {
+    log(`  ${quest.runtimes.opencode.resumePrompt}`)
+  }
   const memory = await loadAgentMemory(projectRoot, quest.questId)
   const memoryPrompt = formatAllAgentMemoryForPrompt(memory)
   if (memoryPrompt) {
@@ -86,6 +119,7 @@ export function registerQuestResumeCommand(program: Command): void {
     .command('quest-resume <quest-id>')
     .description('Print OpenCode, Kimi, Claude, and Codex resume commands for a durable OpenAgent Quest')
     .option('--runtime <name>', 'Show handoff for a single runtime (opencode, kimi, claude, codex)')
+    .option('--from-checkpoint', 'Resume from the last recorded task checkpoint (reconciles events.ndjson)')
     .addHelpText(
       'after',
       `
@@ -93,15 +127,17 @@ Examples:
   oac quest-resume swarm-m123abc
   oac quest-resume swarm-m123abc --runtime kimi
   oac quest-resume swarm-m123abc --runtime codex
+  oac quest-resume swarm-m123abc --from-checkpoint
+  oac quest-resume swarm-m123abc --runtime kimi --from-checkpoint
 `,
     )
-    .action(async (questId: string | undefined, opts: { runtime?: string }) => {
+    .action(async (questId: string | undefined, opts: { runtime?: string; fromCheckpoint?: boolean }) => {
       const runtime = opts.runtime ? (opts.runtime as QuestRuntimeName) : undefined
       if (runtime && !['opencode', 'kimi', 'claude', 'codex'].includes(runtime)) {
         throw new CommandUsageError(
           `Invalid runtime '${runtime}'. Choose: opencode, kimi, claude, codex`,
         )
       }
-      await questResumeCommand(questId, { runtime })
+      await questResumeCommand(questId, { runtime, fromCheckpoint: opts.fromCheckpoint })
     })
 }

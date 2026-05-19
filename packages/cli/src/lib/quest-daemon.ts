@@ -314,7 +314,9 @@ export async function runDaemonLoop(options: DaemonOptions): Promise<void> {
       const allActions = await loadDaemonActions(projectRoot, questId)
       const actions = allActions.slice(state.actionCursor)
       if (actions.length > 0) {
-        await processActions(projectRoot, questId, state, actions, plan.tasks)
+        const reconciled = await loadReconciledQuest(projectRoot, questId)
+        const taskGraph = reconciled?.tasks ?? plan.tasks
+        await processActions(projectRoot, questId, state, actions, taskGraph)
         state.actionCursor += actions.length
         await saveDaemonState(projectRoot, state)
         state = await loadDaemonState(projectRoot, questId) ?? state

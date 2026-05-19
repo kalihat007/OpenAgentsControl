@@ -95,6 +95,7 @@ export interface QuestEvent {
     | 'review.approved'
     | 'review.rejected'
     | 'task.injected'
+    | 'task.progress'
     | 'priority.changed'
   data: Record<string, unknown>
 }

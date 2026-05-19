@@ -92,6 +92,17 @@ Fast install refresh (Codex adapter only):
 OAC_CODEX_ONLY=1 ./update.sh --with-codex
 ```
 
+## Background daemon write-back
+
+`codex exec` is one-shot: it often answers in stdout without appending `events.ndjson`.
+OAC compensates in `packages/cli/src/lib/runtime-bridge.ts`:
+
+1. The spawn prompt tells Codex to **write** `events.ndjson` (not only chat output).
+2. On successful exit, **`ensureCodexWriteBack`** appends missing `task_update`, `runtime.completed`, and daemon-style `task.injected` / `priority.changed` / `note` events parsed from the objective.
+
+That keeps `oac quest-run --background --runtime codex` and quest-daemon aligned with Kimi.
+For full agent-authored write-back (not synthesized), use interactive `codex -C .` with tools enabled.
+
 ## Quest v8 comprehensive test
 
 ```bash

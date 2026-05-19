@@ -206,6 +206,31 @@ describe('Decomposition integration', () => {
       expect(result.routing.length).toBeGreaterThanOrEqual(result.subTasks.length)
     }
   })
+
+  it('merges routing results from all decomposed subtasks into the plan', async () => {
+    const result = await runExpertPipeline(
+      'build a React frontend and a REST API backend with database migrations and deploy it',
+      process.cwd(),
+      { ...getQuickConfig(), useDecomposition: true },
+    )
+
+    if (result.decomposed && result.plan) {
+      // The plan should contain experts from multiple subtask routings,
+      // not just the first subtask's routing.
+      const planExpertNames = new Set(result.plan.session.tasks.map((t) => t.agent))
+      const routingExpertNames = new Set(result.routing.flatMap((r) =>
+        [...r.primaryExperts, ...r.secondaryExperts].map((e) => e.name),
+      ))
+      // At least one expert from the merged routing should appear in the plan
+      let overlapCount = 0
+      for (const name of planExpertNames) {
+        if (routingExpertNames.has(name)) overlapCount++
+      }
+      expect(overlapCount).toBeGreaterThan(0)
+      // The plan should have more than just a single subtask's worth of experts
+      expect(result.plan.session.tasks.length).toBeGreaterThanOrEqual(2)
+    }
+  })
 })
 
 // ── Memory integration ────────────────────────────────────────────────────────

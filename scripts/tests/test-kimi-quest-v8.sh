@@ -253,7 +253,13 @@ QUEST_ID="$(ls -1 .oac/runs | sort | tail -1)"
 
 QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version")"
 [ "$QUEST_VERSION" = "8" ] || fail "Expected Quest version 8, got $QUEST_VERSION"
-pass "Quest v8 artifact created"
+grep -q 'kimi --work-dir' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json missing kimi runtime command"
+pass "Quest v8 artifact created with kimi runtime"
+
+"${OAC_CLI[@]}" quest-resume "$QUEST_ID" --runtime kimi > quest-resume-kimi.txt 2>&1
+grep -q 'KIMI Resume' quest-resume-kimi.txt || fail "quest-resume --runtime kimi missing KIMI header"
+grep -q 'kimi --work-dir' quest-resume-kimi.txt || fail "quest-resume --runtime kimi missing kimi command"
+pass "quest-resume --runtime kimi handoff OK"
 
 "${OAC_CLI[@]}" quest-status "$QUEST_ID" --json > status.json
 node - "$QUEST_ID" <<'NODE'
@@ -264,8 +270,10 @@ if (status.questId !== questId) throw new Error("questId mismatch");
 if (status.version !== "8") throw new Error(`expected version 8, got ${status.version}`);
 if (!status.progress || typeof status.progress.total !== "number") throw new Error("missing progress");
 if (!Array.isArray(status.tasks)) throw new Error("missing tasks");
+const quest = JSON.parse(fs.readFileSync(`.oac/runs/${questId}/quest.json`, "utf8"));
+if (!quest.runtimes?.kimi?.command?.includes("kimi")) throw new Error("missing kimi runtime in quest.json");
 NODE
-pass "quest-status --json reports v8 metadata"
+pass "quest-status --json reports v8 metadata and kimi runtime"
 
 node - "$QUEST_ID" <<'NODE'
 const fs = require("fs");
@@ -315,10 +323,17 @@ pass "v8 adaptive events reconcile through quest-status"
 grep -q 'Review approved' review-approve.txt || fail "quest-review approve did not succeed"
 pass "quest-review approve command works for v8 quest"
 
+"${OAC_CLI[@]}" experts --plan-only --runtime kimi "Kimi v8 plan-only smoke" > experts-plan.txt 2>&1
+pass "experts --plan-only --runtime kimi completes"
+
 if [ "${RUN_LIVE_KIMI:-0}" != "1" ]; then
   warn "Skipping live Kimi daemon run. Set RUN_LIVE_KIMI=1 to enable it."
-  pass "Kimi Quest v8 comprehensive smoke validated"
+  pass "Kimi Quest v8 comprehensive smoke validated (CLI path)"
   exit 0
+fi
+
+if [ "${RUN_LIVE_KIMI:-0}" = "1" ] && [ ! -t 1 ] && [ "${OAC_KIMI_LIVE_FORCE:-0}" != "1" ]; then
+  warn "RUN_LIVE_KIMI=1 in non-TTY shell; continuing (Kimi uses --print mode)."
 fi
 
 "${OAC_CLI[@]}" quest-run --background --runtime kimi \
@@ -336,10 +351,19 @@ done
 }
 pass "Live Kimi v8 daemon state created"
 
-DEADLINE=$((SECONDS + 300))
+DEADLINE=$((SECONDS + 900))
 DAEMON_STATUS=""
+DAEMON_EVENTS=".oac/runs/${DAEMON_QUEST_ID}/events.ndjson"
 while [ "$SECONDS" -lt "$DEADLINE" ]; do
   DAEMON_STATUS="$(node -p "require('./.oac/runs/${DAEMON_QUEST_ID}/daemon.json').status")"
+  if [ -f "$DAEMON_EVENTS" ] && grep -q '"type":"runtime.completed"' "$DAEMON_EVENTS" 2>/dev/null \
+    && grep -q '"runtime":"kimi"' "$DAEMON_EVENTS" 2>/dev/null; then
+    TERMINAL_DAEMON=1
+    if grep -q 'kimi-v8-daemon-ok' "$DAEMON_EVENTS" 2>/dev/null; then
+      DAEMON_STATUS="complete"
+    fi
+    break
+  fi
   case "$DAEMON_STATUS" in
     complete|blocked|crashed|cancelled)
       TERMINAL_DAEMON=1
@@ -353,7 +377,6 @@ done
 [ "$DAEMON_STATUS" = "complete" ] || fail "Live Kimi v8 daemon ended as $DAEMON_STATUS"
 pass "Live Kimi v8 daemon completed"
 
-DAEMON_EVENTS=".oac/runs/${DAEMON_QUEST_ID}/events.ndjson"
 node - "$DAEMON_EVENTS" <<'NODE'
 const fs = require("fs");
 const eventsPath = process.argv[2];

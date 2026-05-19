@@ -4,6 +4,7 @@
 
 import type { Command } from 'commander'
 import { readFile } from 'node:fs/promises'
+import { watch, type FSWatcher } from 'node:fs'
 import { join } from 'node:path'
 import { log, info, success, dim, warn, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
@@ -224,9 +225,16 @@ async function watchQuestStatus(
     return
   }
 
-  const INTERVAL_MS = 2000
+  const eventsPath = join(projectRoot, '.oac', 'runs', questId, 'events.ndjson')
+
+  let debounceTimer: ReturnType<typeof setTimeout> | null = null
+  let watcher: FSWatcher | null = null
+  let needsRender = true
 
   const render = async (): Promise<void> => {
+    if (!needsRender) return
+    needsRender = false
+
     const quest = await loadReconciledQuest(projectRoot, questId)
     if (!quest) return
     const events = await loadEvents(projectRoot, questId)
@@ -242,7 +250,8 @@ async function watchQuestStatus(
     }
 
     const progress = progressForQuest(quest)
-    const pct = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0
+    const weightedPct = weightedProgressForQuest(quest)
+    const pct = progress.total > 0 ? Math.round(weightedPct) : 0
     const bar = '█'.repeat(Math.round(pct / 5)) + '░'.repeat(20 - Math.round(pct / 5))
 
     const reviewIndicator = quest.state === 'REVIEW' ? ' 👁 REVIEW' : ''
@@ -285,7 +294,9 @@ async function watchQuestStatus(
       const taskLine = tasks.map((t) => {
         const icon = t.status === 'completed' ? '✓' : t.status === 'in_progress' ? '→' : t.status === 'blocked' ? '⊘' : t.status === 'failed' ? '✗' : '○'
         const pri = t.priority ? `P${t.priority}` : ''
-        return `${icon}${pri} ${t.id}`
+        const progress = (quest as ReconciledQuestRun).taskProgress?.[t.id]
+        const pct = progress && t.status === 'in_progress' ? ` ${progress.percent}%` : ''
+        return `${icon}${pri} ${t.id}${pct}`
       }).join('  ')
       log(`│ ${rt.padEnd(10)} ${taskLine.slice(0, 50).padEnd(50)} │`)
     }
@@ -307,17 +318,47 @@ async function watchQuestStatus(
     log('└─ Press Ctrl+C to exit ─────────────────────────────────────────┘')
   }
 
+  const scheduleRender = (): void => {
+    needsRender = true
+    if (debounceTimer) clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => {
+      void render()
+    }, 150)
+  }
+
+  try {
+    watcher = watch(eventsPath, (eventType) => {
+      if (eventType === 'change') {
+        scheduleRender()
+      }
+    })
+  } catch {
+    cmdLog.warn('File watcher failed; falling back to polling', { path: eventsPath })
+  }
+
+  // Fallback heartbeat for daemon/pid state not driven by file changes
+  const FALLBACK_MS = 10000
+  const timer = setInterval(() => {
+    needsRender = true
+    void render()
+  }, FALLBACK_MS)
+
   await render()
-  const timer = setInterval(render, INTERVAL_MS)
 
   return new Promise((resolve) => {
-    process.on('SIGINT', () => {
+    const cleanup = (): void => {
+      if (debounceTimer) clearTimeout(debounceTimer)
       clearInterval(timer)
+      if (watcher) {
+        watcher.close()
+        watcher = null
+      }
       process.stdout.write('\x1B[2J\x1B[H')
       log('Watch stopped.')
       resolve()
       process.exit(0)
-    })
+    }
+    process.on('SIGINT', cleanup)
   })
 }
 
@@ -400,6 +441,25 @@ function progressForQuest(quest: ReconciledQuestRun): {
   }
 }
 
+/**
+ * Compute a weighted progress percentage that accounts for per-task progress
+ * events. Completed tasks count as 100%, in-progress tasks count as their
+ * reported percent (default 10%), and all other tasks count as 0%.
+ */
+function weightedProgressForQuest(quest: ReconciledQuestRun): number {
+  if (quest.tasks.length === 0) return 0
+  let total = 0
+  for (const task of quest.tasks) {
+    if (task.status === 'completed') {
+      total += 100
+    } else if (task.status === 'in_progress') {
+      const progress = quest.taskProgress?.[task.id]
+      total += progress?.percent ?? 10
+    }
+  }
+  return total / quest.tasks.length
+}
+
 function runtimeForTask(task: ReconciledQuestRun['tasks'][number]): string | undefined {
   const runtime = (task as unknown as { runtime?: unknown }).runtime
   return typeof runtime === 'string' ? runtime : undefined
@@ -448,7 +508,9 @@ function printQuest(quest: ReconciledQuestRun): void {
                 ? '✗'
                 : '○'
       const priorityBadge = task.priority ? `[P${task.priority}] ` : ''
-      log(`  ${icon} ${task.status.padEnd(11)} ${priorityBadge}${task.title}`)
+      const progress = quest.taskProgress?.[task.id]
+      const pct = progress && task.status === 'in_progress' ? ` ${progress.percent}%` : ''
+      log(`  ${icon} ${task.status.padEnd(11)} ${priorityBadge}${task.title}${pct}`)
     }
     if (quest.tasks.length > 10) dim(`  ... ${quest.tasks.length - 10} more task(s)`)
     log('')
