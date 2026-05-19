@@ -85,7 +85,7 @@ oac quest-resume <quest-id> --runtime codex
 
 **Features**:
 - Direct OpenAgent Quest + Experts behavior inside Codex CLI
-- Custom agent at `~/.codex/agents/openagent.toml`
+- Custom agent at `~/.codex/agents/openagents-control/openagent.toml`
 - Quest v8 lifecycle and durable `.oac/runs/` sidecars
 - Works without OpenCode
 

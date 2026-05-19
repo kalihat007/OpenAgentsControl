@@ -1216,7 +1216,7 @@ install_codex_integration() {
     local plugin_source
     plugin_source="$(codex_plugin_source_dir)"
     local plugin_dest="$HOME/.codex/agents/openagents-control"
-    local agent_link="$HOME/.codex/agents/openagent.toml"
+    local legacy_agent_link="$HOME/.codex/agents/openagent.toml"
 
     if [ -z "$plugin_source" ]; then
         print_warning "Codex adapter source not found. Run install.sh from the OpenAgentsControl repository."
@@ -1238,7 +1238,11 @@ install_codex_integration() {
         return 1
     fi
 
-    ln -sf "openagents-control/openagent.toml" "$agent_link"
+    # Codex scans ~/.codex/agents recursively; a top-level symlink duplicates
+    # openagents-control/openagent.toml and triggers "duplicate agent role name".
+    if [ -L "$legacy_agent_link" ] || [ -f "$legacy_agent_link" ]; then
+        rm -f "$legacy_agent_link"
+    fi
 
     print_success "Codex CLI integration installed!"
     print_info "Agent file: $plugin_dest/openagent.toml"

@@ -110,9 +110,9 @@ grep -q 'task.injected' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing
 grep -q 'priority.changed' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing priority.changed"
 pass "Codex adapter advertises Quest v8 adaptive protocol"
 
-readlink -f "$HOME/.codex/agents/openagent.toml" 2>/dev/null | grep -q 'openagents-control/openagent.toml' \
-  || fail "Discovery symlink missing at ~/.codex/agents/openagent.toml"
-pass "Codex discovery symlink OK"
+[ ! -e "$HOME/.codex/agents/openagent.toml" ] \
+  || fail "Remove legacy ~/.codex/agents/openagent.toml symlink (duplicate openagent role)"
+pass "No duplicate top-level openagent.toml symlink"
 
 mkdir -p "$TEST_DIR/work/.oac"
 cd "$TEST_DIR/work"

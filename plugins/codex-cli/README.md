@@ -13,8 +13,11 @@ primary-session contract.
 ```text
 ~/.codex/agents/openagents-control/openagent.toml
 ~/.codex/agents/openagents-control/openagent-system.md
-~/.codex/agents/openagent.toml          # symlink for Codex discovery
 ```
+
+Codex discovers agents recursively under `~/.codex/agents/`. Do **not** add a
+top-level `~/.codex/agents/openagent.toml` symlink — it duplicates the role and
+Codex warns: `duplicate agent role name openagent`.
 
 ## Install
 

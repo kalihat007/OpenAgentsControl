@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 INSTALLED_TOML="$HOME/.codex/agents/openagents-control/openagent.toml"
 INSTALLED_SYSTEM="$HOME/.codex/agents/openagents-control/openagent-system.md"
-AGENT_LINK="$HOME/.codex/agents/openagent.toml"
+LEGACY_AGENT_LINK="$HOME/.codex/agents/openagent.toml"
 SOURCE_DIR="$REPO_ROOT/plugins/codex-cli"
 
 pass() { printf "✓ %s\n" "$1"; }
@@ -43,15 +43,10 @@ if [ ! -f "$INSTALLED_SYSTEM" ]; then
 fi
 pass "Installed openagent-system.md exists"
 
-if [ ! -L "$AGENT_LINK" ] && [ ! -f "$AGENT_LINK" ]; then
-  fail "Discovery symlink missing: $AGENT_LINK"
+if [ -e "$LEGACY_AGENT_LINK" ]; then
+  fail "Legacy discovery symlink still present (causes duplicate openagent role): $LEGACY_AGENT_LINK"
 fi
-
-link_resolved="$(readlink -f "$AGENT_LINK" 2>/dev/null || readlink "$AGENT_LINK" 2>/dev/null || echo "")"
-if [ "$link_resolved" != "$INSTALLED_TOML" ]; then
-  fail "Symlink does not resolve to installed toml (got: $link_resolved)"
-fi
-pass "Discovery symlink resolves correctly"
+pass "No duplicate top-level openagent.toml symlink"
 
 cmp -s "$SOURCE_DIR/openagent.toml" "$INSTALLED_TOML" \
   || fail "Installed openagent.toml differs from repo. Run: ./update.sh --with-codex"
