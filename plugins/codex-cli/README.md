@@ -31,6 +31,36 @@ From the OpenAgentsControl repository:
 
 ## Run
 
+### Why Codex does not auto-enter Quest mode (important)
+
+Installing `openagent.toml` registers a **custom subagent** named `openagent`.
+Codex’s **main interactive session** stays the default agent unless you also set
+session instructions.
+
+`install.sh --with-codex` / `update.sh --with-codex` append
+`developer_instructions` to `~/.codex/config.toml` so **every** `codex -C .`
+session follows Quest v8 in the main thread (visible `OpenAgent Quest Spec` on
+substantial work). Codex only spawns the `openagent` **subagent** when you
+explicitly ask it to.
+
+If Quest mode still does not appear, check:
+
+```bash
+grep -A2 'OpenAgents Control — Codex Quest v8 default' ~/.codex/config.toml
+```
+
+If you already had `developer_instructions` set, merge
+`plugins/codex-cli/codex-quest-default.toml.example` manually (do not copy into
+`~/.codex/agents/` — Codex treats every `.toml` there as an agent role).
+
+Per-project override: copy the marker block into `.codex/config.toml` in your
+repo, or run:
+
+```bash
+bash plugins/codex-cli/configure-codex-quest-default.sh
+# then source and call configure_codex_project_quest_default /path/to/project
+```
+
 ### Interactive (recommended)
 
 ```bash
@@ -38,14 +68,11 @@ cd /path/to/your/project
 codex -C .
 ```
 
-On the first turn, ask Codex to operate as OpenAgent and follow the installed
-contract, for example:
+After install, substantial work should start with an **OpenAgent Quest Spec**
+block automatically. You do not need a separate “operate as openagent” message
+unless you disabled `developer_instructions`.
 
-```text
-Operate as the openagent custom agent for this session. Read
-~/.codex/agents/openagents-control/openagent-system.md and follow Quest v8 for
-all substantial work.
-```
+Optional explicit subagent delegation:
 
 ### Subagent delegation
 

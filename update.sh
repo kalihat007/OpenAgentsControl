@@ -378,7 +378,7 @@ install_codex_integration() {
     mkdir -p "$HOME/.codex/agents"
     safe_rm_rf "$plugin_dest"
     mkdir -p "$plugin_dest"
-    cp -R "$plugin_source"/. "$plugin_dest"/
+    cp "$plugin_source/openagent.toml" "$plugin_source/openagent-system.md" "$plugin_dest"/
 
     if [ ! -f "$plugin_dest/openagent.toml" ]; then
         print_warning "Codex OpenAgent spec missing after update"
@@ -389,9 +389,17 @@ install_codex_integration() {
         rm -f "$legacy_agent_link"
     fi
 
+  local codex_cfg_script
+  codex_cfg_script="$(codex_plugin_source_dir)/configure-codex-quest-default.sh"
+  if [ -f "$codex_cfg_script" ]; then
+    # shellcheck source=/dev/null
+    . "$codex_cfg_script"
+    configure_codex_quest_default_session || print_warning "Could not set Codex Quest v8 default in ~/.codex/config.toml"
+  fi
+
     print_success "Codex CLI integration updated!"
     print_info "Agent file: $plugin_dest/openagent.toml"
-    print_info "Run: codex -C .  (see plugins/codex-cli/README.md)"
+    print_info "Run: codex -C .  (Quest v8 applies to the main session)"
 }
 
 install_claude_integration() {

@@ -43,6 +43,12 @@ if [ ! -f "$INSTALLED_SYSTEM" ]; then
 fi
 pass "Installed openagent-system.md exists"
 
+extra_toml="$(find "$HOME/.codex/agents/openagents-control" -maxdepth 1 -name '*.toml' ! -name 'openagent.toml' 2>/dev/null | head -1)"
+if [ -n "$extra_toml" ]; then
+  fail "Unexpected agent TOML in install dir (causes Codex malformed role warnings): $extra_toml"
+fi
+pass "Only openagent.toml installed under openagents-control"
+
 if [ -e "$LEGACY_AGENT_LINK" ]; then
   fail "Legacy discovery symlink still present (causes duplicate openagent role): $LEGACY_AGENT_LINK"
 fi
