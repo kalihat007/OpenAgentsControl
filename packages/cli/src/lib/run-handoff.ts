@@ -19,6 +19,8 @@ export const KIMI_CODE_COMMAND = `kimi --work-dir . --agent-file ${KIMI_AGENT_FI
 export const CLAUDE_BRIDGE_PLUGIN_DIR = '~/.claude/plugins/openagents-control-bridge'
 export const CLAUDE_OPENAGENT_SYSTEM_PROMPT = `"$(cat ${CLAUDE_BRIDGE_PLUGIN_DIR}/openagent-system.md)"`
 export const CLAUDE_BRIDGE_COMMAND = `claude --plugin-dir ${CLAUDE_BRIDGE_PLUGIN_DIR} --append-system-prompt ${CLAUDE_OPENAGENT_SYSTEM_PROMPT}`
+export const CODEX_AGENT_FILE = '~/.codex/agents/openagents-control/openagent-system.md'
+export const CODEX_COMMAND = `codex exec -C . "$(cat ${CODEX_AGENT_FILE})"`
 
 export interface HandoffRuntime {
   /** Shell one-liner to start the runtime */
@@ -47,6 +49,7 @@ export interface RunHandoff {
     opencode: HandoffRuntime
     kimi: HandoffRuntime
     claude: HandoffRuntime
+    codex: HandoffRuntime
   }
   experts: Array<{
     name: string
@@ -125,6 +128,7 @@ export function buildRunHandoff(options: BuildRunHandoffOptions): RunHandoff {
       opencode: buildRuntime(OPENCODE_TUI_COMMAND, sessionPath, routerResult.objective),
       kimi: buildRuntime(KIMI_CODE_COMMAND, sessionPath, routerResult.objective),
       claude: buildRuntime(CLAUDE_BRIDGE_COMMAND, sessionPath, routerResult.objective),
+      codex: buildRuntime(CODEX_COMMAND, sessionPath, routerResult.objective),
     },
     experts,
     suggestedPrompt,
@@ -149,6 +153,7 @@ export function formatHandoffCliLines(handoff: RunHandoff, handoffPath: string):
     `  OpenCode TUI:  ${handoff.runtimes.opencode.command}`,
     `  Kimi Code:     ${handoff.runtimes.kimi.command}`,
     `  Claude Code:   ${handoff.runtimes.claude.command}`,
+    `  Codex CLI:     ${handoff.runtimes.codex.command}`,
     `  Run artifacts: ${handoffPath}`,
     `  Session:       ${handoff.artifacts.runDir}/`,
     '',

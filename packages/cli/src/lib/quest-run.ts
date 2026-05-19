@@ -13,11 +13,14 @@ import type { ExecutionPlan, ExecutionResult, RunArtifacts } from './swarm-execu
 import type { RunSpecExpert } from './run-spec.js'
 import {
   CLAUDE_BRIDGE_COMMAND,
+  CODEX_COMMAND,
   KIMI_CODE_COMMAND,
   OPENCODE_TUI_COMMAND,
 } from './run-handoff.js'
 
 export const QUEST_RUN_VERSION = '8' as const
+
+export type QuestRuntimeName = 'opencode' | 'kimi' | 'claude' | 'codex'
 
 export type QuestRunState =
   | 'NEW'
@@ -140,6 +143,7 @@ export interface QuestRun {
     opencode: QuestRunRuntime
     kimi: QuestRunRuntime
     claude: QuestRunRuntime
+    codex: QuestRunRuntime
   }
   /** Accumulated changed files (also tracked via events). */
   changedFiles?: string[]
@@ -214,13 +218,28 @@ export async function persistQuestRun(
   return questPath
 }
 
+/** Backfill runtime hints for quests saved before Codex support. */
+export function normalizeQuestRun(quest: QuestRun): QuestRun {
+  const runDir = quest.artifacts?.runDir ?? `.oac/runs/${quest.questId}`
+  const hints = buildRuntimeHints(quest.questId, quest.objective, runDir)
+  return {
+    ...quest,
+    runtimes: {
+      opencode: quest.runtimes?.opencode ?? hints.opencode,
+      kimi: quest.runtimes?.kimi ?? hints.kimi,
+      claude: quest.runtimes?.claude ?? hints.claude,
+      codex: quest.runtimes?.codex ?? hints.codex,
+    },
+  }
+}
+
 export async function loadQuestRun(
   projectRoot: string,
   questId: string,
 ): Promise<QuestRun | null> {
   try {
     const raw = await readFile(join(projectRoot, '.oac', 'runs', questId, 'quest.json'), 'utf-8')
-    return JSON.parse(raw) as QuestRun
+    return normalizeQuestRun(JSON.parse(raw) as QuestRun)
   } catch {
     return null
   }
@@ -395,7 +414,7 @@ export function isRunPidAlive(pid: number): boolean {
 /** Format a runtime-specific handoff block for copy-pasting into an IDE. */
 export function formatRuntimeHandoff(
   quest: QuestRun,
-  runtime: 'opencode' | 'kimi' | 'claude',
+  runtime: QuestRuntimeName,
 ): string {
   const rt = quest.runtimes[runtime]
   const lines: string[] = [
@@ -623,6 +642,10 @@ function buildRuntimeHints(
     },
     claude: {
       command: CLAUDE_BRIDGE_COMMAND,
+      resumePrompt,
+    },
+    codex: {
+      command: CODEX_COMMAND,
       resumePrompt,
     },
   }

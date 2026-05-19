@@ -10,8 +10,10 @@ import {
   appendQuestEvent,
   writeTaskGraph,
   formatRuntimeHandoff,
+  normalizeQuestRun,
   formatQuestSummary,
   formatAcceptanceReport,
+  type QuestRun,
 } from './quest-run.js'
 import { planExecution } from './swarm-executor.js'
 import type { RouterResult } from './task-router.js'
@@ -161,6 +163,33 @@ describe('quest-run', () => {
     expect(text).toContain(quest.questId)
     expect(text).toContain('kimi --work-dir')
     expect(text).toContain('Resume prompt:')
+  })
+
+  it('formatRuntimeHandoff includes codex command', () => {
+    const routed = routerResult('build JWT auth API')
+    const plan = planExecution(routed, { autoDecompose: false, maxConcurrency: 1 })
+    const quest = buildQuestRun(routed, plan, { state: 'SPEC' })
+
+    const text = formatRuntimeHandoff(quest, 'codex')
+    expect(text).toContain('CODEX Resume')
+    expect(text).toContain('codex exec -C .')
+  })
+
+  it('normalizeQuestRun backfills codex for legacy quest.json', () => {
+    const routed = routerResult('build JWT auth API')
+    const plan = planExecution(routed, { autoDecompose: false, maxConcurrency: 1 })
+    const quest = buildQuestRun(routed, plan, { state: 'SPEC' })
+    const legacy = {
+      ...quest,
+      runtimes: {
+        opencode: quest.runtimes.opencode,
+        kimi: quest.runtimes.kimi,
+        claude: quest.runtimes.claude,
+      },
+    } as QuestRun
+
+    const normalized = normalizeQuestRun(legacy)
+    expect(normalized.runtimes.codex.command).toContain('codex exec -C .')
   })
 
   it('formatQuestSummary produces markdown', () => {

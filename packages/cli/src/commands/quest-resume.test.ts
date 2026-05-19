@@ -5,7 +5,7 @@ import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { questResumeCommand } from './quest-resume.js'
 import { CommandUsageError } from '../lib/errors.js'
-import { CLAUDE_BRIDGE_COMMAND } from '../lib/run-handoff.js'
+import { CLAUDE_BRIDGE_COMMAND, CODEX_COMMAND } from '../lib/run-handoff.js'
 
 describe('questResumeCommand', () => {
   let tmpRoot: string
@@ -55,5 +55,15 @@ describe('questResumeCommand', () => {
 
   it('requires a Quest id', async () => {
     await expect(questResumeCommand(undefined)).rejects.toBeInstanceOf(CommandUsageError)
+  })
+
+  it('supports --runtime codex handoff for legacy quests without codex field', async () => {
+    await questResumeCommand('swarm-test123', { runtime: 'codex' })
+  })
+
+  it('backfills codex runtime when loading quest.json', async () => {
+    const { loadQuestRun } = await import('../lib/quest-run.js')
+    const quest = await loadQuestRun(process.cwd(), 'swarm-test123')
+    expect(quest?.runtimes.codex.command).toBe(CODEX_COMMAND)
   })
 })

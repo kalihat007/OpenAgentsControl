@@ -376,6 +376,7 @@ function deepCopyQuestRun(base: QuestRun): ReconciledQuestRun {
       opencode: { ...base.runtimes.opencode },
       kimi: { ...base.runtimes.kimi },
       claude: { ...base.runtimes.claude },
+      codex: { ...base.runtimes.codex },
     },
     changedFiles: [...(base.changedFiles ?? [])],
     verification: base.verification ? { ...base.verification, checks: base.verification.checks.map((c) => ({ ...c })) } : undefined,

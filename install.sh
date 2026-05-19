@@ -86,6 +86,7 @@ NON_INTERACTIVE=false
 CUSTOM_INSTALL_DIR=""  # Set via --install-dir argument
 WITH_CLAUDE=false        # Set via --with-claude flag
 WITH_KIMI=false          # Set via --with-kimi flag
+WITH_CODEX=false         # Set via --with-codex flag
 
 #############################################################################
 # Utility Functions
@@ -1187,6 +1188,64 @@ install_kimi_integration() {
     print_info "Run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
 }
 
+#############################################################################
+# Codex CLI Integration
+#############################################################################
+
+codex_plugin_source_dir() {
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -f "${script_dir}/plugins/codex-cli/openagent.toml" ]; then
+        echo "${script_dir}/plugins/codex-cli"
+    fi
+}
+
+maybe_enable_codex_from_repo() {
+    if [ "$WITH_CODEX" = true ]; then
+        return 0
+    fi
+    if [ -n "$(codex_plugin_source_dir)" ] && { command -v codex >/dev/null 2>&1 || [ -d "$HOME/.codex" ]; }; then
+        WITH_CODEX=true
+        print_info "Codex CLI adapter found in repo — installing to ~/.codex/agents/openagents-control"
+    fi
+}
+
+install_codex_integration() {
+    print_step "Setting up Codex CLI integration..."
+
+    local plugin_source
+    plugin_source="$(codex_plugin_source_dir)"
+    local plugin_dest="$HOME/.codex/agents/openagents-control"
+    local agent_link="$HOME/.codex/agents/openagent.toml"
+
+    if [ -z "$plugin_source" ]; then
+        print_warning "Codex adapter source not found. Run install.sh from the OpenAgentsControl repository."
+        return 1
+    fi
+
+    if ! command -v codex >/dev/null 2>&1; then
+        print_warning "Codex CLI not found on PATH. Installing adapter files anyway."
+        print_info "Install Codex CLI, then run: codex -C . (see plugins/codex-cli/README.md)"
+    fi
+
+    mkdir -p "$HOME/.codex/agents"
+    safe_rm_rf "$plugin_dest"
+    mkdir -p "$plugin_dest"
+    cp -R "$plugin_source"/. "$plugin_dest"/
+
+    if [ ! -f "$plugin_dest/openagent.toml" ]; then
+        print_warning "Codex OpenAgent spec missing after install"
+        return 1
+    fi
+
+    ln -sf "openagents-control/openagent.toml" "$agent_link"
+
+    print_success "Codex CLI integration installed!"
+    print_info "Agent file: $plugin_dest/openagent.toml"
+    print_info "System prompt: $plugin_dest/openagent-system.md"
+    print_info "Run: codex -C .  (then operate as openagent — see plugins/codex-cli/README.md)"
+}
+
 install_claude_integration() {
     print_step "Setting up Claude Code integration..."
     
@@ -1488,6 +1547,10 @@ perform_installation() {
     if [ "$WITH_KIMI" = true ]; then
         install_kimi_integration
     fi
+
+    if [ "$WITH_CODEX" = true ]; then
+        install_codex_integration
+    fi
     
     show_post_install
 }
@@ -1609,6 +1672,12 @@ print_execution_workflow() {
         echo -e "  Kimi Code:     ${CYAN}./install.sh advanced --with-kimi${NC} (from repo clone)"
         echo "                 then: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
     fi
+    if [ -f "$HOME/.codex/agents/openagents-control/openagent.toml" ]; then
+        echo -e "  Codex CLI:     ${CYAN}codex -C .${NC}  (operate as openagent — see plugins/codex-cli/README.md)"
+    else
+        echo -e "  Codex CLI:     ${CYAN}./install.sh advanced --with-codex${NC} (from repo clone)"
+        echo "                 then: codex -C .  (see plugins/codex-cli/README.md)"
+    fi
     echo ""
     echo -e "${BOLD}CLI orchestration (oac — planning, routing, handoff artifacts):${NC}"
     echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
@@ -1621,7 +1690,7 @@ print_execution_workflow() {
     echo -e "  ${CYAN}oac quest-resume <quest-id>${NC}                 Print runtime resume commands"
     echo ""
     print_info "Use --runtime for strict headless bridge checks; use --live for handoff commands."
-    print_info "Use install.sh / update.sh + OpenCode TUI, Claude, or Kimi for day-to-day execution."
+    print_info "Use install.sh / update.sh + OpenCode TUI, Claude, Kimi, or Codex for day-to-day execution."
     echo ""
     echo "  If a provider is overloaded, retry after a pause or pick a model explicitly:"
     echo -e "  ${CYAN}opencode --agent OpenAgent --model <provider/model>${NC}"
@@ -1791,6 +1860,10 @@ main() {
                 WITH_KIMI=true
                 shift
                 ;;
+            --with-codex)
+                WITH_CODEX=true
+                shift
+                ;;
             --help|-h|help)
                 print_header
                 echo "Usage: $0 [PROFILE] [OPTIONS]"
@@ -1807,6 +1880,7 @@ main() {
                 echo "                            (default: .opencode)"
                 echo "  --with-claude             Also install Claude Code integration"
                 echo "  --with-kimi               Also install Kimi Code direct agent integration"
+                echo "  --with-codex              Also install Codex CLI direct agent integration"
                 echo "  list, --list              List all available components"
                 echo "  help, --help, -h          Show this help message"
                 echo ""
@@ -1833,6 +1907,9 @@ main() {
                 echo ""
                 echo -e "  ${CYAN}# Install with Kimi Code direct support${NC}"
                 echo "  $0 advanced --with-kimi"
+                echo ""
+                echo -e "  ${CYAN}# Install with Codex CLI direct support${NC}"
+                echo "  $0 advanced --with-codex"
                 echo ""
                 echo -e "  ${CYAN}# Install to global location (Linux/macOS)${NC}"
                 echo "  $0 advanced --install-dir ~/.config/opencode"
@@ -1867,6 +1944,12 @@ main() {
                 ;;
         esac
     done
+
+    if [ "${OAC_CODEX_ONLY:-}" = "1" ]; then
+        maybe_enable_codex_from_repo
+        install_codex_integration
+        exit $?
+    fi
     
     # Apply custom install directory if specified (CLI arg overrides env var)
     if [ -n "$CUSTOM_INSTALL_DIR" ]; then
@@ -1887,6 +1970,7 @@ main() {
     check_dependencies
     maybe_enable_claude_from_repo
     maybe_enable_kimi_from_repo
+    maybe_enable_codex_from_repo
     fetch_registry
 
     if [ -z "$PROFILE" ] && [ ! -t 0 ]; then

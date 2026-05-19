@@ -15,7 +15,7 @@ import { appendQuestEvent, writeRunPid, writeRuntimePid } from './quest-run.js'
 
 const log = createLogger('runtime-bridge')
 
-export type RuntimeType = 'opencode' | 'kimi' | 'claude' | 'local'
+export type RuntimeType = 'opencode' | 'kimi' | 'claude' | 'codex' | 'local'
 
 export interface RuntimeBridgeOptions {
   questId: string
@@ -55,6 +55,8 @@ export function isRuntimeAvailable(runtime: RuntimeType): boolean {
       return isKimiAvailable()
     case 'claude':
       return isClaudeAvailable()
+    case 'codex':
+      return isCodexAvailable()
     default:
       return false
   }
@@ -96,11 +98,24 @@ function isClaudeAvailable(): boolean {
   }
 }
 
+function isCodexAvailable(): boolean {
+  try {
+    const result = spawnSync('codex', ['--version'], {
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+    return result.status === 0
+  } catch {
+    return false
+  }
+}
+
 export function runtimeUnavailableMessage(runtime: RuntimeType): string {
   const installHints: Record<RuntimeType, string> = {
     opencode: 'Install the OpenCode CLI (npm install -g opencode-ai).',
     kimi: 'Install the Kimi CLI (see https://kimi.com).',
     claude: 'Install Claude Code (npm install -g @anthropics/claude-code).',
+    codex: 'Install Codex CLI (npm install -g @openai/codex).',
     local: 'Local runtime requires no external CLI.',
   }
   return `${runtime} CLI is not available. ${installHints[runtime]}`
@@ -310,6 +325,8 @@ function dispatchSpawn(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResu
       return spawnKimi(options)
     case 'claude':
       return spawnClaude(options)
+    case 'codex':
+      return spawnCodex(options)
     case 'local':
       return Promise.resolve({
         ok: false,
@@ -512,6 +529,109 @@ function spawnKimi(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> 
         exitCode: code,
         signal,
         errorMessage: ok ? undefined : stderr.trim() || stdout.trim() || `kimi exited with code ${code ?? 'unknown'}`,
+      })
+    })
+  })
+}
+
+// ── Codex bridge ──────────────────────────────────────────────────────────────
+
+function getCodexAgentFile(): string {
+  return process.env.CODEX_AGENT_FILE ?? join(homedir(), '.codex', 'agents', 'openagents-control', 'openagent-system.md')
+}
+
+function getCodexSystemPrompt(): string | undefined {
+  const promptPath = getCodexAgentFile()
+  if (!existsSync(promptPath)) return undefined
+  try {
+    return readFileSync(promptPath, 'utf8')
+  } catch {
+    return undefined
+  }
+}
+
+function spawnCodex(options: RuntimeBridgeOptions): Promise<RuntimeBridgeResult> {
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
+  const start = Date.now()
+  const basePrompt = buildRuntimePrompt(options)
+  const systemPrompt = getCodexSystemPrompt()
+  const prompt = systemPrompt ? `${systemPrompt}\n\n${basePrompt}` : basePrompt
+  const workDir = options.workDir ?? options.projectRoot
+
+  const args = ['exec', '-C', workDir, prompt]
+
+  return new Promise((resolve) => {
+    let stdout = ''
+    let stderr = ''
+    let settled = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const finish = (partial: Partial<RuntimeBridgeResult>): void => {
+      if (settled) return
+      settled = true
+      if (timer) clearTimeout(timer)
+      resolve({
+        ok: false,
+        exitCode: null,
+        signal: null,
+        stdout,
+        stderr,
+        durationMs: Date.now() - start,
+        ...partial,
+      })
+    }
+
+    const spawnOpts: SpawnOptions = {
+      cwd: workDir,
+      stdio: options.background ? 'ignore' : ['ignore', 'pipe', 'pipe'],
+      detached: options.background,
+      env: process.env,
+    }
+
+    let child: ReturnType<typeof spawn>
+    try {
+      child = spawn('codex', args, spawnOpts)
+    } catch (err) {
+      finish({ errorMessage: err instanceof Error ? err.message : String(err) })
+      return
+    }
+
+    if (options.background && child.pid) {
+      const pid = child.pid
+      child.unref()
+      recordRuntimeSpawned(options, pid)
+        .then(() => finish({ ok: true, exitCode: 0, stdout: '', stderr: '' }))
+        .catch((err: unknown) => {
+          finish({
+            errorMessage: err instanceof Error ? err.message : String(err),
+          })
+        })
+      return
+    }
+
+    void recordRuntimeSpawned(options, child.pid).catch((err: unknown) => {
+      log.warn('Failed to record runtime.spawned event', {
+        runtime: options.runtime,
+        error: err instanceof Error ? err.message : String(err),
+      })
+    })
+
+    timer = setTimeout(() => {
+      child.kill('SIGTERM')
+      setTimeout(() => child.kill('SIGKILL'), 3000)
+      finish({ signal: 'SIGTERM', errorMessage: `codex timed out after ${timeoutMs}ms` })
+    }, timeoutMs)
+
+    child.stdout?.on('data', (chunk: Buffer) => { stdout += chunk.toString() })
+    child.stderr?.on('data', (chunk: Buffer) => { stderr += chunk.toString() })
+    child.on('error', (err) => finish({ errorMessage: err.message }))
+    child.on('close', (code, signal) => {
+      const ok = code === 0
+      finish({
+        ok,
+        exitCode: code,
+        signal,
+        errorMessage: ok ? undefined : stderr.trim() || stdout.trim() || `codex exited with code ${code ?? 'unknown'}`,
       })
     })
   })

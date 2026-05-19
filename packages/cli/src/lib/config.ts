@@ -6,7 +6,7 @@ export const OacV6PreferencesSchema = z.object({
   enabled: z.boolean().default(false),
   distributedSwarm: z.object({
     enabled: z.boolean().default(false),
-    defaultRuntime: z.enum(["opencode", "kimi", "claude", "local"]).default("kimi"),
+    defaultRuntime: z.enum(["opencode", "kimi", "claude", "codex", "local"]).default("kimi"),
     allowMultiRuntime: z.boolean().default(true),
     maxConcurrentRuntimes: z.number().int().min(1).max(10).default(3),
   }).default({}),

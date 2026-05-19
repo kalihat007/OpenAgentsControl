@@ -5,7 +5,7 @@ import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { createDefaultConfig, mergeConfig } from '../lib/config.js'
 import { QualityGateFailedError } from '../lib/errors.js'
-import { OPENCODE_TUI_COMMAND, KIMI_CODE_COMMAND, CLAUDE_BRIDGE_COMMAND } from '../lib/run-handoff.js'
+import { OPENCODE_TUI_COMMAND, KIMI_CODE_COMMAND, CLAUDE_BRIDGE_COMMAND, CODEX_COMMAND } from '../lib/run-handoff.js'
 import type { PipelineResult } from '../lib/expert-pipeline.js'
 import type { SwarmQualityGateResult } from '../lib/swarm-quality-gate.js'
 
@@ -277,6 +277,7 @@ describe('expertsCommand', () => {
     expect(output).toContain(OPENCODE_TUI_COMMAND)
     expect(output).toContain(KIMI_CODE_COMMAND)
     expect(output).toContain(CLAUDE_BRIDGE_COMMAND)
+    expect(output).toContain(CODEX_COMMAND)
     expect(output).toContain('handoff')
 
     const runsDir = join(tmpRoot, '.oac', 'runs')
@@ -285,12 +286,13 @@ describe('expertsCommand', () => {
     const handoffRaw = await readFile(join(runsDir, sessions[0]!, 'handoff.json'), 'utf-8')
     const handoff = JSON.parse(handoffRaw) as {
       version: string
-      runtimes: { opencode: { command: string }; kimi: { command: string }; claude: { command: string } }
+      runtimes: { opencode: { command: string }; kimi: { command: string }; claude: { command: string }; codex: { command: string } }
     }
     expect(handoff.version).toBe('1')
     expect(handoff.runtimes.opencode.command).toBe(OPENCODE_TUI_COMMAND)
     expect(handoff.runtimes.kimi.command).toBe(KIMI_CODE_COMMAND)
     expect(handoff.runtimes.claude.command).toBe(CLAUDE_BRIDGE_COMMAND)
+    expect(handoff.runtimes.codex.command).toBe(CODEX_COMMAND)
     const questRaw = await readFile(join(runsDir, sessions[0]!, 'quest.json'), 'utf-8')
     expect(JSON.parse(questRaw).state).toBe('WAITING')
   })

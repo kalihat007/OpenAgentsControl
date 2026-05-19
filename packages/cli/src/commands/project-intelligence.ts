@@ -152,6 +152,7 @@ async function generateRuntimeCompatibilityDoc(): Promise<string> {
     '| Kimi Code | `kimi` | Active | `--agent-file ~/.kimi/agents/openagents-control/openagent.yaml` |',
     '| OpenCode | `opencode` | Active | `--agent OpenAgent` |',
     '| Claude Code | `claude` | Active | `--plugin-dir ~/.claude/plugins/openagents-control-bridge` |',
+    '| Codex CLI | `codex` | Active | `codex exec -C .` with custom agent under `~/.codex/agents/` |',
     '',
     '## Cross-Runtime Contract',
     '',

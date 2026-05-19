@@ -336,6 +336,14 @@ export class AdapterRegistry {
     } catch (error) {
       // Adapter not yet implemented - skip silently
     }
+
+    try {
+      // Codex CLI
+      const { CodexAdapter } = await import("../adapters/CodexAdapter.js");
+      this.register(new CodexAdapter(), ["codex-cli", "openai-codex"]);
+    } catch (error) {
+      // Adapter not yet implemented - skip silently
+    }
   }
 }
 

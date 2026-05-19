@@ -91,4 +91,51 @@ describe('runtime-bridge', () => {
       await rm(tmpRoot, { recursive: true, force: true })
     }
   })
+
+  it('spawnRuntime passes Codex exec prompt with system prompt prepended without a live provider call', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-runtime-bridge-'))
+    try {
+      const binDir = join(tmpRoot, 'bin')
+      const codexAgentDir = join(tmpRoot, '.codex', 'agents', 'openagents-control')
+      const argvFile = join(tmpRoot, 'codex-argv.json')
+      await mkdir(binDir, { recursive: true })
+      await mkdir(codexAgentDir, { recursive: true })
+      await writeFile(join(codexAgentDir, 'openagent-system.md'), 'OPENAGENT_CODEX_SYSTEM_PROMPT_TEST')
+      const fakeCodex = join(binDir, 'codex')
+      await writeFile(
+        fakeCodex,
+        [
+          '#!/usr/bin/env node',
+          'const fs = require("fs");',
+          'if (process.argv.includes("--version")) { console.log("codex-test 0.0.0"); process.exit(0); }',
+          'fs.writeFileSync(process.env.CODEX_ARGV_FILE, JSON.stringify(process.argv.slice(2)));',
+          'console.log("fake codex ok");',
+        ].join('\n') + '\n',
+      )
+      await chmod(fakeCodex, 0o755)
+
+      setEnv('PATH', `${binDir}:${process.env.PATH ?? ''}`)
+      setEnv('CODEX_AGENT_FILE', join(codexAgentDir, 'openagent-system.md'))
+      setEnv('CODEX_ARGV_FILE', argvFile)
+
+      const result = await spawnRuntime({
+        questId: 'swarm-test',
+        objective: 'Do not modify product files.',
+        projectRoot: tmpRoot,
+        runDir: join(tmpRoot, '.oac', 'runs', 'swarm-test'),
+        runtime: 'codex',
+        tasks: [{ id: 'task-001', title: 'Validate write-back', agent: 'TechLeadAgent' }],
+        timeoutMs: 5000,
+      })
+
+      expect(result.ok).toBe(true)
+      const argv = JSON.parse(await readFile(argvFile, 'utf8')) as string[]
+      expect(argv).toContain('exec')
+      expect(argv).toContain('-C')
+      expect(argv.at(-1)).toContain('OPENAGENT_CODEX_SYSTEM_PROMPT_TEST')
+      expect(argv.at(-1)).toContain('allowed even when the user objective says not to modify product files')
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
 })

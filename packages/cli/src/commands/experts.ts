@@ -269,7 +269,7 @@ async function writeAndPrintHandoff(
   )
   log('')
   for (const line of formatHandoffCliLines(handoff, handoffPath)) {
-    if (line.startsWith('  OpenCode') || line.startsWith('  Kimi') || line.startsWith('  Claude')) {
+    if (line.startsWith('  OpenCode') || line.startsWith('  Kimi') || line.startsWith('  Claude') || line.startsWith('  Codex')) {
       success(line.trim())
     } else if (line.length > 0) {
       info(line)
@@ -654,7 +654,7 @@ export function registerExpertsCommand(program: Command): void {
     .option('--run', 'Execute the swarm through the runtime (simulated by default)', false)
     .option('--simulate', 'Simulate execution — no real agents (default for --run)', true)
     .option('--live', 'Write IDE handoff manifest (.oac/runs/{id}/handoff.json) for OpenCode TUI or Claude plugin — does not spawn agents', false)
-    .option('--runtime <name>', 'Real execution via runtime: opencode, kimi, or claude')
+    .option('--runtime <name>', 'Real execution via runtime: opencode, kimi, claude, or codex')
     .option('--distributed', 'Execute with v6 distributed runtime swarms (uses --runtime as the default owner when provided)', false)
     .option('--background', 'Detach the runtime process and run in background', false)
     .option('--plan-only', 'Create and save the structured expert plan without execution', false)
@@ -705,7 +705,7 @@ Examples:
         : 'supervised'
 
       const runtimeRaw = opts['runtime'] ? String(opts['runtime']) : undefined
-      const validRuntimes = ['opencode', 'kimi', 'claude']
+      const validRuntimes = ['opencode', 'kimi', 'claude', 'codex']
       if (runtimeRaw && !validRuntimes.includes(runtimeRaw)) {
         throw new CommandUsageError(`Invalid runtime '${runtimeRaw}'. Use one of: ${validRuntimes.join(', ')}`)
       }

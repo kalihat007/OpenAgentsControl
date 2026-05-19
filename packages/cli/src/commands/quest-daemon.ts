@@ -139,6 +139,6 @@ function normalizeTask(value: unknown): QuestDaemonTask | null {
 }
 
 function normalizeRuntime(value: unknown): RuntimeType | undefined {
-  if (value === 'opencode' || value === 'kimi' || value === 'claude') return value
+  if (value === 'opencode' || value === 'kimi' || value === 'claude' || value === 'codex') return value
   return undefined
 }

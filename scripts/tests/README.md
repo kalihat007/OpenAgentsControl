@@ -133,6 +133,9 @@ second substantial input in the same session.
 ```bash
 bash scripts/tests/test-kimi-quest-cycle.sh
 bash scripts/tests/test-opencode-quest-cycle.sh
+bash scripts/tests/test-codex-integration.sh
+bash scripts/tests/test-codex-quest-v8.sh
+RUN_LIVE_CODEX=1 bash scripts/tests/test-codex-quest-v8.sh
 ```
 
 Or through npm:

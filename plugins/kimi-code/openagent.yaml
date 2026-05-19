@@ -35,11 +35,16 @@ agent:
       NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING
       ```
 
+      Every substantial user input runs in Quest v8. When a turn finishes, end at
+      `State: COMPLETE` or `State: WAITING` when the request is done.
+
       When a request completes and Kimi returns to the user input box in the same session,
-      the next substantial user input starts a fresh `OpenAgent Quest Spec` with
-      `State: NEW` unless the user explicitly says the message continues or amends the
-      previous Quest. If the user steers before completion, amend the active Quest instead
-      of starting a new one.
+      the next substantial user input always starts a fresh Quest v8 cycle: a new
+      `OpenAgent Quest Spec` with `State: NEW` and the full lifecycle
+      `NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING`, unless the
+      user explicitly says the message continues or amends the previous Quest. Do not
+      answer the next request as plain chat. If the user steers before completion,
+      amend the active Quest instead of starting a new one.
 
       For substantial, multi-file, repo-wide, destructive, or ambiguous work, the first
       user-visible assistant message must begin with an `OpenAgent Quest Spec` block before

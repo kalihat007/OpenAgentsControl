@@ -65,6 +65,7 @@ OPENAGENT_SMALL_MODEL="${OPENAGENT_SMALL_MODEL:-$OPENAGENT_SELECTED_MODEL}"
 CUSTOM_INSTALL_DIR=""
 WITH_CLAUDE=false
 WITH_KIMI=false
+WITH_CODEX=false
 
 # Track backup files for cleanup on exit
 BACKUP_FILES=()
@@ -139,12 +140,13 @@ print_header() {
 }
 
 print_usage() {
-    echo "Usage: $0 [--install-dir PATH] [--with-claude] [--with-kimi]"
+    echo "Usage: $0 [--install-dir PATH] [--with-claude] [--with-kimi] [--with-codex]"
     echo ""
     echo "Options:"
     echo "  --install-dir PATH   Update a specific installation directory"
     echo "  --with-claude        Also update Claude Code integration"
     echo "  --with-kimi          Also update Kimi Code direct agent integration"
+    echo "  --with-codex         Also update Codex CLI direct agent integration"
     echo "  --help               Show this help message"
     echo ""
     echo "Environment variables:"
@@ -162,6 +164,9 @@ print_usage() {
     echo ""
     echo "  # Update with Kimi Code direct integration"
     echo "  $0 --with-kimi"
+    echo ""
+    echo "  # Update with Codex CLI direct integration"
+    echo "  $0 --with-codex"
     echo ""
     echo "  # Update a global installation"
     echo "  $0 --install-dir ~/.config/opencode"
@@ -329,6 +334,62 @@ install_kimi_integration() {
     print_success "Kimi Code integration updated!"
     print_info "Agent file: $plugin_dest/openagent.yaml"
     print_info "Run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+}
+
+#############################################################################
+# Codex CLI Integration
+#############################################################################
+
+codex_plugin_source_dir() {
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [ -f "${script_dir}/plugins/codex-cli/openagent.toml" ]; then
+        echo "${script_dir}/plugins/codex-cli"
+    fi
+}
+
+maybe_enable_codex_from_repo() {
+    if [ "$WITH_CODEX" = true ]; then
+        return 0
+    fi
+    if [ -n "$(codex_plugin_source_dir)" ] && { command -v codex >/dev/null 2>&1 || [ -d "$HOME/.codex" ]; }; then
+        WITH_CODEX=true
+        print_info "Codex CLI adapter found in repo — refreshing ~/.codex/agents/openagents-control"
+    fi
+}
+
+install_codex_integration() {
+    print_step "Updating Codex CLI integration..."
+
+    local plugin_source
+    plugin_source="$(codex_plugin_source_dir)"
+    local plugin_dest="$HOME/.codex/agents/openagents-control"
+    local agent_link="$HOME/.codex/agents/openagent.toml"
+
+    if [ -z "$plugin_source" ]; then
+        print_warning "Codex adapter source not found. Run update.sh from the OpenAgentsControl repository."
+        return 1
+    fi
+
+    if ! command -v codex >/dev/null 2>&1; then
+        print_warning "Codex CLI not found on PATH. Updating adapter files anyway."
+    fi
+
+    mkdir -p "$HOME/.codex/agents"
+    safe_rm_rf "$plugin_dest"
+    mkdir -p "$plugin_dest"
+    cp -R "$plugin_source"/. "$plugin_dest"/
+
+    if [ ! -f "$plugin_dest/openagent.toml" ]; then
+        print_warning "Codex OpenAgent spec missing after update"
+        return 1
+    fi
+
+    ln -sf "openagents-control/openagent.toml" "$agent_link"
+
+    print_success "Codex CLI integration updated!"
+    print_info "Agent file: $plugin_dest/openagent.toml"
+    print_info "Run: codex -C .  (see plugins/codex-cli/README.md)"
 }
 
 install_claude_integration() {
@@ -619,6 +680,12 @@ print_execution_workflow() {
         echo -e "  Kimi Code:     ${CYAN}./update.sh --with-kimi${NC} (from repo clone)"
         echo "                 then: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
     fi
+    if [ -f "$HOME/.codex/agents/openagents-control/openagent.toml" ]; then
+        echo -e "  Codex CLI:     ${CYAN}codex -C .${NC}  (operate as openagent — see plugins/codex-cli/README.md)"
+    else
+        echo -e "  Codex CLI:     ${CYAN}./update.sh --with-codex${NC} (from repo clone)"
+        echo "                 then: codex -C .  (see plugins/codex-cli/README.md)"
+    fi
     echo ""
     echo -e "${BOLD}CLI orchestration (oac — planning, routing, handoff artifacts):${NC}"
     echo -e "  ${CYAN}oac experts \"<objective>\"${NC}                 Expert roster / routing"
@@ -676,6 +743,10 @@ parse_args() {
                 WITH_KIMI=true
                 shift
                 ;;
+            --with-codex)
+                WITH_CODEX=true
+                shift
+                ;;
             --help|-h)
                 print_usage
                 exit 0
@@ -696,8 +767,15 @@ parse_args() {
 main() {
     parse_args "$@"
 
+    if [ "${OAC_CODEX_ONLY:-}" = "1" ]; then
+        maybe_enable_codex_from_repo
+        install_codex_integration
+        exit $?
+    fi
+
     maybe_enable_claude_from_repo
     maybe_enable_kimi_from_repo
+    maybe_enable_codex_from_repo
 
     print_header
 
@@ -745,6 +823,10 @@ main() {
 
     if [ "$WITH_KIMI" = true ]; then
         install_kimi_integration
+    fi
+
+    if [ "$WITH_CODEX" = true ]; then
+        install_codex_integration
     fi
 
     print_success "Update complete! OpenAgent Quest Mode + Experts Mode + Agent Swarm + ISO 21434/24089 are active."

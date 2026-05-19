@@ -96,7 +96,7 @@ export interface PipelineConfig {
   runQualityGate: boolean
   /** Cap from .oac/config.json — clamps planner concurrency before scheduling */
   maxParallelAgents?: number
-  /** Selected runtime for real execution (opencode, kimi, claude) */
+  /** Selected runtime for real execution (opencode, kimi, claude, codex) */
   runtime?: RuntimeType
   /** Run the runtime in detached background mode */
   background?: boolean

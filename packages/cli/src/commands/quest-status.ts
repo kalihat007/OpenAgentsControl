@@ -471,6 +471,7 @@ function printQuest(quest: ReconciledQuestRun): void {
   log(`  OpenCode: ${quest.runtimes.opencode.command}`)
   log(`  Kimi:     ${quest.runtimes.kimi.command}`)
   log(`  Claude:   ${quest.runtimes.claude.command}`)
+  log(`  Codex:    ${quest.runtimes.codex.command}`)
   dim(`  Prompt: ${quest.runtimes.opencode.resumePrompt}`)
   log('')
 }

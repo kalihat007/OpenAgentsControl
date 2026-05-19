@@ -96,6 +96,7 @@ export async function questRunCommand(objective: string, options: QuestRunOption
     log(`  OpenCode: ${handoff.runtimes.opencode.command}`)
     log(`  Kimi:     ${handoff.runtimes.kimi.command}`)
     log(`  Claude:   ${handoff.runtimes.claude.command}`)
+    log(`  Codex:    ${handoff.runtimes.codex.command}`)
     log('')
     return
   }
@@ -122,7 +123,7 @@ export function registerQuestRunCommand(program: Command): void {
     .command('quest-run <objective>')
     .description('Plan and execute a Quest. Use --background for daemon mode.')
     .option('--background', 'Run as a background daemon process', false)
-    .option('--runtime <name>', 'Runtime for inline execution: opencode, kimi, or claude')
+    .option('--runtime <name>', 'Runtime for inline execution: opencode, kimi, claude, or codex')
     .option('--distributed', 'Use distributed multi-runtime mode', false)
     .option('--skip-review', 'Skip the review gate for this Quest (v8)', false)
     .action(async (objective: string, opts: QuestRunOptions) => {
@@ -130,7 +131,7 @@ export function registerQuestRunCommand(program: Command): void {
     })
 }
 
-function normalizeRuntime(value: string): 'opencode' | 'kimi' | 'claude' {
-  if (value === 'opencode' || value === 'kimi' || value === 'claude') return value
-  throw new CommandUsageError(`Invalid runtime '${value}'. Use one of: opencode, kimi, claude`)
+function normalizeRuntime(value: string): 'opencode' | 'kimi' | 'claude' | 'codex' {
+  if (value === 'opencode' || value === 'kimi' || value === 'claude' || value === 'codex') return value
+  throw new CommandUsageError(`Invalid runtime '${value}'. Use one of: opencode, kimi, claude, codex`)
 }

@@ -166,7 +166,7 @@ export function registerQuestVerifyCommand(program: Command): void {
     .option('--force', 'Record verification even if no checks are detected, without marking tested', false)
     .option('--no-auto-fix', 'Disable the auto-fix retry loop on failure', false)
     .option('--max-retries <n>', 'Max auto-fix retries (default 1)', (v) => parseInt(v, 10), 1)
-    .option('--runtime <name>', 'Runtime to use for auto-fix: opencode, kimi, or claude')
+    .option('--runtime <name>', 'Runtime to use for auto-fix: opencode, kimi, claude, or codex')
     .action(async (questId: string, opts: { force?: boolean; autoFix?: boolean; maxRetries?: number; runtime?: string }) => {
       const runtime = opts.runtime as RuntimeType | undefined
       await questVerifyCommand(questId, {

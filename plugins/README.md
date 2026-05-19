@@ -7,14 +7,11 @@ This directory contains IDE-specific plugin implementations for OpenAgents Contr
 ```
 plugins/
 ├── claude-code/          # Claude Code plugin
-└── kimi-code/            # Kimi Code direct agent adapter
-    ├── .claude-plugin/   # Plugin manifest
-    ├── skills/           # Claude-specific skills
-    ├── agents/           # Claude-specific agents
-    ├── hooks/            # Event-driven automation
-    ├── commands/         # Custom slash commands
-    ├── context/          # Symlink to .opencode/context/
-    └── README.md         # Plugin documentation
+├── kimi-code/            # Kimi Code direct agent adapter
+└── codex-cli/            # Codex CLI direct agent adapter
+    ├── openagent.toml    # Custom agent definition
+    ├── openagent-system.md
+    └── README.md
 ```
 
 ## Available Plugins
@@ -67,6 +64,33 @@ kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
 
 **Documentation**: See `kimi-code/README.md`
 
+### Codex CLI (`codex-cli/`)
+
+**Integration Name**: `openagents-control`
+
+**Installation**:
+```bash
+./install.sh advanced --with-codex
+# or refresh later
+./update.sh --with-codex
+```
+
+**Usage**:
+```bash
+codex -C .
+oac quest-resume <quest-id> --runtime codex
+# On first turn, ask Codex to operate as the openagent custom agent
+# (see plugins/codex-cli/README.md)
+```
+
+**Features**:
+- Direct OpenAgent Quest + Experts behavior inside Codex CLI
+- Custom agent at `~/.codex/agents/openagent.toml`
+- Quest v8 lifecycle and durable `.oac/runs/` sidecars
+- Works without OpenCode
+
+**Documentation**: See `codex-cli/README.md`
+
 ## Future Plugins
 
 - **Cursor** - Planned
@@ -88,4 +112,4 @@ Each plugin is self-contained and can be developed/tested independently.
 
 ---
 
-**Last Updated**: 2026-02-16
+**Last Updated**: 2026-05-19
