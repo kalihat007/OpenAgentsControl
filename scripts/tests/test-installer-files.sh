@@ -19,7 +19,7 @@ NC='\033[0m'
 # Configuration
 BRANCH="main"
 RAW_URL="https://raw.githubusercontent.com/kalihat007/OpenAgentsControl/${BRANCH}"
-TEMP_DIR="/tmp/opencode-installer-test-$$"
+TEMP_DIR="${TMPDIR:-/tmp}/opencode-installer-test-$$"
 
 # Allow local testing (useful for CI/CD or when testing changes before pushing)
 USE_LOCAL=false

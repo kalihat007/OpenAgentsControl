@@ -28,6 +28,7 @@ export type QuestRunState =
   | 'EXECUTE'
   | 'REVIEW'
   | 'VERIFY'
+  | 'REFLECT'
   | 'COMPLETE'
   | 'WAITING'
   | 'BLOCKED'
@@ -65,6 +66,7 @@ export interface QuestRunArtifacts {
   events?: string
   taskGraph?: string
   acceptanceReport?: string
+  reflection?: string
   summary?: string
   handoff?: string
 }

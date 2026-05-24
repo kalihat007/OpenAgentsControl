@@ -50,7 +50,7 @@ print_step() {
 test_no_collisions() {
     print_step "Test 1: No Existing Files"
     
-    local test_dir="/tmp/opencode-test-$$"
+    local test_dir="${TMPDIR:-/tmp}/opencode-test-$$"
     mkdir -p "$test_dir"
     cd "$test_dir"
     
@@ -79,7 +79,7 @@ test_no_collisions() {
 test_partial_collisions() {
     print_step "Test 2: Partial Collisions"
     
-    local test_dir="/tmp/opencode-test-$$"
+    local test_dir="${TMPDIR:-/tmp}/opencode-test-$$"
     mkdir -p "$test_dir/.opencode/agent"
     mkdir -p "$test_dir/.opencode/command"
     cd "$test_dir"
@@ -122,7 +122,7 @@ test_partial_collisions() {
 test_all_collisions() {
     print_step "Test 3: All Files Exist"
     
-    local test_dir="/tmp/opencode-test-$$"
+    local test_dir="${TMPDIR:-/tmp}/opencode-test-$$"
     mkdir -p "$test_dir/.opencode/agent"
     mkdir -p "$test_dir/.opencode/command"
     cd "$test_dir"
@@ -163,7 +163,7 @@ test_all_collisions() {
 test_collision_grouping() {
     print_step "Test 4: Collision Grouping by Type"
     
-    local test_dir="/tmp/opencode-test-$$"
+    local test_dir="${TMPDIR:-/tmp}/opencode-test-$$"
     mkdir -p "$test_dir/.opencode/agent/subagents"
     mkdir -p "$test_dir/.opencode/command"
     mkdir -p "$test_dir/.opencode/context/core"
@@ -220,7 +220,7 @@ test_collision_grouping() {
 test_backup_strategy() {
     print_step "Test 5: Backup Strategy Simulation"
     
-    local test_dir="/tmp/opencode-test-$$"
+    local test_dir="${TMPDIR:-/tmp}/opencode-test-$$"
     mkdir -p "$test_dir/.opencode/agent"
     cd "$test_dir"
     

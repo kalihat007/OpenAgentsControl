@@ -89,7 +89,7 @@ print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
 print_error()   { echo -e "${RED}✗${NC} $1" >&2; }
 print_step()    { echo -e "\n${CYAN}${BOLD}▶${NC} $1\n"; }
 
-# Remove install targets reliably on Linux (busy/partial rm -rf on nested agent trees).
+# Remove install targets reliably across platforms (busy/partial rm -rf on nested trees).
 safe_rm_rf() {
     local target="$1"
     [ -n "$target" ] || return 0

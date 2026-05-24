@@ -17,7 +17,7 @@ NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-TEST_DIR="/tmp/oac-opencode-quest-v5-$$"
+TEST_DIR="${TMPDIR:-/tmp}/oac-opencode-quest-v5-$$"
 OAC_CLI=(bun "${REPO_ROOT}/packages/cli/dist/index.js")
 
 pass() { echo -e "${GREEN}✓${NC} $1"; }

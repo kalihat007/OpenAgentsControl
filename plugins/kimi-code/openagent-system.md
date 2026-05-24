@@ -23,13 +23,14 @@ bounded Kimi subagents when they materially help.
 Use the Quest v8 lifecycle for substantial work:
 
 ```text
-NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING
+NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING
 ```
 
 Every substantial user input runs in Quest v8. There is no plain-chat mode for
 non-trivial work. When a turn finishes, advance the visible spec through the v8
 lifecycle and end at `State: COMPLETE` or `State: WAITING` when the request is
-done.
+done. On `standard` and `deep` quests, enter `State: REFLECT` after `VERIFY` to
+extract learnings, metrics, and pattern suggestions before `COMPLETE`.
 
 After a request completes (`COMPLETE` / `WAITING`) and Kimi returns to the input
 box, the next substantial user message in the same session always starts a fresh

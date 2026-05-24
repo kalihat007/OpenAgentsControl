@@ -50,9 +50,15 @@ if [ "$FORCE" = false ]; then
   [[ "$confirm" =~ ^[Yy]$ ]] || { echo "Cancelled."; exit 0; }
 fi
 
-# Delete
-[ -n "$SESSION_FILES"  ] && echo "$SESSION_FILES"  | xargs rm -rf
-[ -n "$TASK_FILES"     ] && echo "$TASK_FILES"     | xargs rm -rf
-[ -n "$EXTERNAL_FILES" ] && echo "$EXTERNAL_FILES" | xargs rm -rf
+# Delete (safe for paths containing spaces)
+if [ -n "$SESSION_FILES" ]; then
+  printf '%s\n' "$SESSION_FILES" | while IFS= read -r f; do [ -n "$f" ] && rm -rf "$f"; done
+fi
+if [ -n "$TASK_FILES" ]; then
+  printf '%s\n' "$TASK_FILES" | while IFS= read -r f; do [ -n "$f" ] && rm -rf "$f"; done
+fi
+if [ -n "$EXTERNAL_FILES" ]; then
+  printf '%s\n' "$EXTERNAL_FILES" | while IFS= read -r f; do [ -n "$f" ] && rm -rf "$f"; done
+fi
 
 echo "{\"status\":\"success\",\"deleted\":{\"sessions\":${SESSION_COUNT},\"tasks\":${TASK_COUNT},\"external\":${EXTERNAL_COUNT}},\"summary\":\"Cleaned up ${TOTAL} old temporary items.\"}"

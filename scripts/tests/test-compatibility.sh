@@ -135,7 +135,7 @@ fi
 # Test 10: Temp directory creation
 echo ""
 echo "Test 10: Temp Directory Operations"
-test_temp="/tmp/opencode-test-$$"
+test_temp="${TMPDIR:-/tmp}/opencode-test-$$"
 mkdir -p "$test_temp"
 if [ -d "$test_temp" ]; then
     pass "Temp directory creation works"
@@ -147,7 +147,7 @@ fi
 # Test 11: File operations
 echo ""
 echo "Test 11: File Operations"
-test_file="/tmp/opencode-test-$$.txt"
+test_file="${TMPDIR:-/tmp}/opencode-test-$$.txt"
 echo "test" > "$test_file"
 if [ -f "$test_file" ]; then
     content=$(cat "$test_file")

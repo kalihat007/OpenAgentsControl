@@ -296,8 +296,8 @@ echo -e "${YELLOW}[5/5] Saving Results${NC}"
 mkdir -p "$VARIANT_RESULTS_DIR"
 
 # Save the test output for reference
-if [[ -f "/tmp/test-output-$AGENT_NAME.txt" ]]; then
-    cp "/tmp/test-output-$AGENT_NAME.txt" "$VARIANT_RESULTS_DIR/$PROMPT_VARIANT-output.log"
+if [[ -f "${TMPDIR:-/tmp}/test-output-$AGENT_NAME.txt" ]]; then
+    cp "${TMPDIR:-/tmp}/test-output-$AGENT_NAME.txt" "$VARIANT_RESULTS_DIR/$PROMPT_VARIANT-output.log"
     echo "      Saved test output to: $VARIANT_RESULTS_DIR/$PROMPT_VARIANT-output.log"
 fi
 

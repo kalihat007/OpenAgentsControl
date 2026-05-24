@@ -73,7 +73,7 @@ INSTALL_DIR="${OPENCODE_INSTALL_DIR:-.opencode}"  # Allow override via environme
 DEFAULT_PROFILE="${OAC_PROFILE:-${OPENCODE_DEFAULT_PROFILE:-advanced}}"  # Default quick/non-interactive profile (name or 1-5)
 OPENAGENT_SELECTED_MODEL="${OPENAGENT_MODEL:-${OPENAGENT_DEFAULT_MODEL:-}}"
 OPENAGENT_SMALL_MODEL="${OPENAGENT_SMALL_MODEL:-$OPENAGENT_SELECTED_MODEL}"
-TEMP_DIR="/tmp/opencode-installer-$$"
+TEMP_DIR="${TMPDIR:-/tmp}/opencode-installer-$$"
 
 # Cleanup temp directory on exit (success or failure)
 trap 'rm -rf "$TEMP_DIR" 2>/dev/null || true' EXIT INT TERM
@@ -131,7 +131,7 @@ print_step() {
     echo -e "\n${MAGENTA}${BOLD}▶${NC} $1\n"
 }
 
-# Remove install targets reliably on Linux (busy/partial rm -rf on nested agent trees).
+# Remove install targets reliably across platforms (busy/partial rm -rf on nested trees).
 safe_rm_rf() {
     local target="$1"
     [ -n "$target" ] || return 0

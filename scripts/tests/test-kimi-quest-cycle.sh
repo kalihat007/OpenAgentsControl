@@ -18,7 +18,7 @@ NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-TEST_DIR="/tmp/oac-kimi-quest-cycle-$$"
+TEST_DIR="${TMPDIR:-/tmp}/oac-kimi-quest-cycle-$$"
 INSTALLED_AGENT_FILE="$HOME/.kimi/agents/openagents-control/openagent.yaml"
 AGENT_FILE="${KIMI_OPENAGENT_FILE:-$INSTALLED_AGENT_FILE}"
 

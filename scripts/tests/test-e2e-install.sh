@@ -11,7 +11,7 @@ NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-TEST_DIR="/tmp/opencode-e2e-test-$$"
+TEST_DIR="${TMPDIR:-/tmp}/opencode-e2e-test-$$"
 PASSED=0
 FAILED=0
 
