@@ -1,12 +1,13 @@
 {
-  "version": "11",
-  "enabled": true,
-  "capsules": [
+  "version": "12",
+  "traces": [
     {
-      "id": "review-patch-1",
-      "sourceFinding": "high-impact",
-      "severity": "warning",
+      "id": "trace-patch-001",
       "patchCapsuleId": "patch-001",
+      "requirements": [
+        "Implement requested coding change for: Quest v12 verified knowledgebase smoke",
+        "Change 24 file(s) to satisfy: Quest v12 verified knowledgebase smoke"
+      ],
       "files": [
         ".opencode/agent/core/openagent.md",
         ".opencode/context/core/quest-mode.md",
@@ -33,6 +34,12 @@
         "scripts/tests/test-kimi-quest-v8.sh",
         "scripts/tests/test-opencode-quest-v8.sh"
       ],
+      "evidenceFactIds": [
+        "objective",
+        "affected-files",
+        "smart-tests",
+        "security-gate"
+      ],
       "validationCommands": [
         "git diff --check",
         "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
@@ -40,33 +47,10 @@
         "npm run build -w packages/cli",
         "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
       ],
-      "status": "planned"
-    },
-    {
-      "id": "review-patch-2",
-      "sourceFinding": "generated-artifacts",
-      "severity": "info",
-      "files": [
-        " M packages/cli/.opencode/.expert-memory.json"
+      "assumptions": [
+        "security-gate: Security/secrets gate verdict is review."
       ],
-      "validationCommands": [
-        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
-        "git diff --check",
-        "npm run build -w packages/cli"
-      ],
-      "status": "planned"
+      "status": "traceable"
     }
-  ],
-  "loop": [
-    "Pick the highest-severity review capsule.",
-    "Patch only the listed files.",
-    "Run capsule validation commands.",
-    "Refresh coding intelligence and continue with the next capsule.",
-    "Stop when a capsule is blocked or all findings are resolved."
-  ],
-  "stopConditions": [
-    "A patch requires files outside the pre-edit contract.",
-    "A validation command fails twice.",
-    "A finding requires user approval or product direction."
   ]
 }

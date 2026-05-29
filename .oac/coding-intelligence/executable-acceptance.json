@@ -9,9 +9,9 @@
   "checks": [
     {
       "id": "accept-command-1",
-      "title": "Run bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+      "title": "Run bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
       "kind": "command",
-      "command": "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
       "required": true,
       "status": "pending",
       "source": "smart-test-matrix"
@@ -71,15 +71,6 @@
       "source": "smart-test-matrix"
     },
     {
-      "id": "accept-command-8",
-      "title": "Run npm run typecheck -w packages/swarm-runtime",
-      "kind": "command",
-      "command": "npm run typecheck -w packages/swarm-runtime",
-      "required": true,
-      "status": "pending",
-      "source": "smart-test-matrix"
-    },
-    {
       "id": "accept-artifact-1",
       "title": "Refresh coding-intelligence.json",
       "kind": "artifact",
@@ -108,6 +99,33 @@
     },
     {
       "id": "accept-artifact-4",
+      "title": "Refresh verified-knowledgebase.json",
+      "kind": "artifact",
+      "artifact": "verified-knowledgebase.json",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-artifact-5",
+      "title": "Refresh evidence-ledger.json",
+      "kind": "artifact",
+      "artifact": "evidence-ledger.json",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-artifact-6",
+      "title": "Refresh hallucination-gate.json",
+      "kind": "artifact",
+      "artifact": "hallucination-gate.json",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-artifact-7",
       "title": "Refresh coding-review.md",
       "kind": "artifact",
       "artifact": "coding-review.md",
@@ -116,10 +134,19 @@
       "source": "quest-coding-execution"
     },
     {
-      "id": "accept-artifact-5",
+      "id": "accept-artifact-8",
       "title": "Refresh pr-auto-packager.md",
       "kind": "artifact",
       "artifact": "pr-auto-packager.md",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-artifact-9",
+      "title": "Refresh verified-knowledgebase.md",
+      "kind": "artifact",
+      "artifact": "verified-knowledgebase.md",
       "required": true,
       "status": "pending",
       "source": "quest-coding-execution"

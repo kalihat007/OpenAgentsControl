@@ -109,6 +109,11 @@ grep -q 'executable-acceptance.json' "$AGENT_FILE" || fail "Kimi adapter does no
 grep -q 'runtime-compatibility-matrix.json' "$AGENT_FILE" || fail "Kimi adapter does not mention runtime compatibility matrix"
 grep -q 'security-secrets-gate.json' "$AGENT_FILE" || fail "Kimi adapter does not mention security secrets gate"
 grep -q 'pr-auto-packager.md' "$AGENT_FILE" || fail "Kimi adapter does not mention PR auto-packager"
+grep -q 'verified-knowledgebase.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Verified Knowledgebase"
+grep -q 'evidence-ledger.json' "$AGENT_FILE" || fail "Kimi adapter does not mention evidence ledger"
+grep -q 'hallucination-gate.json' "$AGENT_FILE" || fail "Kimi adapter does not mention hallucination gate"
+grep -q 'source-to-patch-trace.json' "$AGENT_FILE" || fail "Kimi adapter does not mention source-to-patch trace"
+grep -q 'behavior-oracle.json' "$AGENT_FILE" || fail "Kimi adapter does not mention behavior oracle"
 grep -q 'context.loaded' "$AGENT_FILE" || fail "Kimi adapter does not mention context.loaded"
 grep -q 'request.received' "$AGENT_FILE" || fail "Kimi adapter does not mention request.received"
 grep -q 'research.assessed' "$AGENT_FILE" || fail "Kimi adapter does not mention research.assessed"
@@ -118,7 +123,7 @@ grep -q 'quest-v9' "$AGENT_FILE" || fail "Kimi adapter does not mention quest-v9
 grep -q 'coding.intent' "$AGENT_FILE" || fail "Kimi adapter does not mention coding.intent"
 grep -q 'tests.selected' "$AGENT_FILE" || fail "Kimi adapter does not mention tests.selected"
 grep -q 'next_steps.suggested' "$AGENT_FILE" || fail "Kimi adapter does not mention next_steps.suggested"
-pass "Kimi adapter advertises Quest v8 adaptive protocol and Quest v9 coding intelligence"
+pass "Kimi adapter advertises Quest v8 adaptive protocol and Quest v9-v12 coding intelligence"
 
 mkdir -p "$TEST_DIR/work/.oac"
 cd "$TEST_DIR/work"
@@ -178,7 +183,7 @@ cat > .oac/config.json <<'JSON'
 JSON
 
 DIRECT_OUT="$TEST_DIR/direct-v8.txt"
-DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, and Coding Execution sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
+DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
 run_with_timeout 120 kimi \
   --work-dir "$TEST_DIR/work" \
   --agent-file "$AGENT_FILE" \
@@ -210,6 +215,11 @@ const checks = {
   smartTestMatrix: /smart-test-matrix\.json/i.test(text),
   runtimeMatrix: /runtime-compatibility-matrix\.json/i.test(text),
   securityGate: /security-secrets-gate\.json/i.test(text),
+  verifiedKnowledgebase: /verified-knowledgebase\.json/i.test(text),
+  evidenceLedger: /evidence-ledger\.json/i.test(text),
+  hallucinationGate: /hallucination-gate\.json/i.test(text),
+  sourceToPatchTrace: /source-to-patch-trace\.json/i.test(text),
+  behaviorOracle: /behavior-oracle\.json/i.test(text),
   patchCapsule: /patch\.capsule/i.test(text),
   testsSelected: /tests\.selected/i.test(text),
 };
@@ -319,6 +329,17 @@ grep -q 'kimi --work-dir' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json m
 [ -f ".oac/runs/${QUEST_ID}/security-secrets-gate.json" ] || fail "Missing security secrets gate"
 [ -f ".oac/runs/${QUEST_ID}/pr-auto-packager.json" ] || fail "Missing PR auto-packager JSON"
 [ -f ".oac/runs/${QUEST_ID}/pr-auto-packager.md" ] || fail "Missing PR auto-packager brief"
+[ -f ".oac/runs/${QUEST_ID}/verified-knowledgebase.json" ] || fail "Missing Verified Knowledgebase"
+[ -f ".oac/runs/${QUEST_ID}/knowledgebase-index.json" ] || fail "Missing knowledgebase index"
+[ -f ".oac/runs/${QUEST_ID}/evidence-ledger.json" ] || fail "Missing evidence ledger"
+[ -f ".oac/runs/${QUEST_ID}/hallucination-gate.json" ] || fail "Missing hallucination gate"
+[ -f ".oac/runs/${QUEST_ID}/contract-facts.json" ] || fail "Missing contract facts"
+[ -f ".oac/runs/${QUEST_ID}/source-to-patch-trace.json" ] || fail "Missing source-to-patch trace"
+[ -f ".oac/runs/${QUEST_ID}/stale-knowledge-report.json" ] || fail "Missing stale knowledge report"
+[ -f ".oac/runs/${QUEST_ID}/dependency-research-cache.json" ] || fail "Missing dependency research cache"
+[ -f ".oac/runs/${QUEST_ID}/behavior-oracle.json" ] || fail "Missing behavior oracle"
+[ -f ".oac/runs/${QUEST_ID}/test-authoring-plan.json" ] || fail "Missing test authoring plan"
+[ -f ".oac/runs/${QUEST_ID}/verified-knowledgebase.md" ] || fail "Missing Verified Knowledgebase brief"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
@@ -328,11 +349,14 @@ const intelligence = JSON.parse(fs.readFileSync(`.oac/runs/${questId}/coding-int
 if (intelligence.version !== "9") throw new Error(`expected Quest v9 coding intelligence, got ${intelligence.version}`);
 if (!intelligence.codingAutopilot || intelligence.codingAutopilot.version !== "10") throw new Error("missing Coding Autopilot v10");
 if (!intelligence.codingExecution || intelligence.codingExecution.version !== "11") throw new Error("missing Coding Execution v11");
+if (!intelligence.verifiedKnowledgebase || intelligence.verifiedKnowledgebase.version !== "12") throw new Error("missing Verified Knowledgebase v12");
+if (!intelligence.verifiedKnowledgebase.evidenceLedger?.facts?.length) throw new Error("missing v12 evidence ledger facts");
+if (!intelligence.verifiedKnowledgebase.hallucinationGate?.checks?.length) throw new Error("missing v12 hallucination gate checks");
 if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with kimi runtime and Quest v9 sidecars"
+pass "Quest v8 artifact created with kimi runtime and Quest v9-v12 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -342,7 +366,10 @@ grep -q 'smart-test-matrix.json' quest-v9.txt || fail "quest-v9 output missing s
 grep -q 'coding-execution.json' quest-v9.txt || fail "quest-v9 output missing coding-execution artifact"
 grep -q 'executable-acceptance.json' quest-v9.txt || fail "quest-v9 output missing executable-acceptance artifact"
 grep -q 'security-secrets-gate.json' quest-v9.txt || fail "quest-v9 output missing security-secrets gate artifact"
-pass "quest-v9 command refreshes coding intelligence"
+grep -q 'verified-knowledgebase.json' quest-v9.txt || fail "quest-v9 output missing verified-knowledgebase artifact"
+grep -q 'evidence-ledger.json' quest-v9.txt || fail "quest-v9 output missing evidence ledger artifact"
+grep -q 'hallucination-gate.json' quest-v9.txt || fail "quest-v9 output missing hallucination gate artifact"
+pass "quest-v9 command refreshes coding intelligence and Verified Knowledgebase"
 
 "${OAC_CLI[@]}" quest-resume "$QUEST_ID" --runtime kimi > quest-resume-kimi.txt 2>&1
 grep -q 'KIMI Resume' quest-resume-kimi.txt || fail "quest-resume --runtime kimi missing KIMI header"
@@ -451,7 +478,7 @@ if [ "${RUN_LIVE_KIMI:-0}" = "1" ] && [ ! -t 1 ] && [ "${OAC_KIMI_LIVE_FORCE:-0}
 fi
 
 "${OAC_CLI[@]}" quest-run --background --runtime kimi \
-  "Do not modify product files. Complete the Kimi Quest v8 daemon smoke with Quest v9 coding intelligence, Coding Autopilot, and Coding Execution. Inspect local run artifacts first, including coding-autopilot.json, smart-test-matrix.json, coding-execution.json, executable-acceptance.json, and security-secrets-gate.json when present, append a research.assessed event with needed:false, append coding.intent, impact.analyzed, patch.capsule, tests.selected, and review.signals events, append task_update completion events for every assigned task, append a priority.changed event for the first assigned task with priority 1, append a task.injected event for taskId kimi-v8-dynamic-task with status completed and priority 1, append a next_steps.suggested event with at least two choices, and append a note event that says kimi-v8-daemon-ok." \
+  "Do not modify product files. Complete the Kimi Quest v8 daemon smoke with Quest v9 coding intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase. Inspect local run artifacts first, including coding-autopilot.json, smart-test-matrix.json, coding-execution.json, executable-acceptance.json, security-secrets-gate.json, verified-knowledgebase.json, evidence-ledger.json, and hallucination-gate.json when present, append a research.assessed event with needed:false, append coding.intent, impact.analyzed, patch.capsule, tests.selected, and review.signals events, append task_update completion events for every assigned task, append a priority.changed event for the first assigned task with priority 1, append a task.injected event for taskId kimi-v8-dynamic-task with status completed and priority 1, append a next_steps.suggested event with at least two choices, and append a note event that says kimi-v8-daemon-ok." \
   > daemon-run.txt 2>&1
 
 DAEMON_QUEST_ID="$(ls -1 .oac/runs | sort | tail -1)"
@@ -470,6 +497,10 @@ done
 [ -f ".oac/runs/${DAEMON_QUEST_ID}/coding-execution.json" ] || fail "Missing live daemon Coding Execution"
 [ -f ".oac/runs/${DAEMON_QUEST_ID}/executable-acceptance.json" ] || fail "Missing live daemon executable acceptance"
 [ -f ".oac/runs/${DAEMON_QUEST_ID}/security-secrets-gate.json" ] || fail "Missing live daemon security secrets gate"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/verified-knowledgebase.json" ] || fail "Missing live daemon Verified Knowledgebase"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/evidence-ledger.json" ] || fail "Missing live daemon evidence ledger"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/hallucination-gate.json" ] || fail "Missing live daemon hallucination gate"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/behavior-oracle.json" ] || fail "Missing live daemon behavior oracle"
 pass "Live Kimi v8 daemon state created"
 
 DEADLINE=$((SECONDS + 900))
@@ -478,17 +509,29 @@ DAEMON_EVENTS=".oac/runs/${DAEMON_QUEST_ID}/events.ndjson"
 TERMINAL_SEEN_AT=0
 kimi_required_events_ready() {
   [ -f "$DAEMON_EVENTS" ] || return 1
-  grep -q '"type":"runtime.completed"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q '"runtime":"kimi"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q '"type":"task_update"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q '"type":"research.assessed"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q '"type":"priority.changed"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q '"type":"task.injected"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q '"type":"coding.intent"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q '"type":"tests.selected"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q '"type":"next_steps.suggested"' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  grep -q 'kimi-v8-daemon-ok' "$DAEMON_EVENTS" 2>/dev/null || return 1
-  return 0
+  node - "$DAEMON_EVENTS" <<'NODE' >/dev/null 2>&1
+const fs = require("fs");
+const events = fs.readFileSync(process.argv[2], "utf8")
+  .split(/\r?\n/)
+  .filter((line) => line.trim())
+  .map((line) => JSON.parse(line));
+const hasType = (type) => events.some((event) => event.type === type);
+const hasRuntime = events.some((event) => event.data?.runtime === "kimi");
+const hasMarker = events.some((event) => JSON.stringify(event).includes("kimi-v8-daemon-ok"));
+for (const type of [
+  "runtime.completed",
+  "task_update",
+  "research.assessed",
+  "priority.changed",
+  "task.injected",
+  "coding.intent",
+  "tests.selected",
+  "next_steps.suggested",
+]) {
+  if (!hasType(type)) process.exit(1);
+}
+if (!hasRuntime || !hasMarker) process.exit(1);
+NODE
 }
 while [ "$SECONDS" -lt "$DEADLINE" ]; do
   DAEMON_STATUS="$(node -p "require('./.oac/runs/${DAEMON_QUEST_ID}/daemon.json').status")"

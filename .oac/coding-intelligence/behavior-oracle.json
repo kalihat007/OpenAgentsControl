@@ -1,0 +1,225 @@
+{
+  "version": "12",
+  "signals": [
+    {
+      "id": "behavior-patch-001",
+      "behavior": "Change 24 file(s) to satisfy: Quest v12 verified knowledgebase smoke",
+      "evidence": [
+        {
+          "source": "patch-capsule",
+          "path": ".opencode/agent/core/openagent.md",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".opencode/context/core/quest-mode.md",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "README.md",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/commands/quest-v9.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/quest-coding-execution.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/quest-run.test.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/quest-run.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/runtime-bridge.test.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/runtime-bridge.ts",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/README.md",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/codex-cli/README.md",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/codex-cli/codex-quest-default.toml.example",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/codex-cli/openagent-system.md",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/codex-cli/openagent.toml",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/kimi-code/README.md",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/kimi-code/openagent-system.md",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "plugins/kimi-code/openagent.yaml",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+        }
+      ],
+      "validation": [
+        "git diff --check",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "npm run typecheck -w packages/cli",
+        "npm run build -w packages/cli",
+        "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "acceptance-behavior-1",
+      "behavior": "All required command checks are run or explicitly reported as blocked.",
+      "evidence": [
+        {
+          "source": "executable-acceptance",
+          "detail": "All required command checks are run or explicitly reported as blocked."
+        }
+      ],
+      "validation": [
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "git diff --check",
+        "npm run build -w packages/cli",
+        "npm run test:quest-v8:codex",
+        "npm run test:quest-v8:kimi",
+        "npm run test:quest-v8:opencode",
+        "npm run typecheck -w packages/cli"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "acceptance-behavior-2",
+      "behavior": "All patch ledger entries have validation evidence or a documented reason.",
+      "evidence": [
+        {
+          "source": "executable-acceptance",
+          "detail": "All patch ledger entries have validation evidence or a documented reason."
+        }
+      ],
+      "validation": [
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "git diff --check",
+        "npm run build -w packages/cli",
+        "npm run test:quest-v8:codex",
+        "npm run test:quest-v8:kimi",
+        "npm run test:quest-v8:opencode",
+        "npm run typecheck -w packages/cli"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "acceptance-behavior-3",
+      "behavior": "Automatic review, security gate, runtime parity, and PR package have no blocking findings.",
+      "evidence": [
+        {
+          "source": "executable-acceptance",
+          "detail": "Automatic review, security gate, runtime parity, and PR package have no blocking findings."
+        }
+      ],
+      "validation": [
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "git diff --check",
+        "npm run build -w packages/cli",
+        "npm run test:quest-v8:codex",
+        "npm run test:quest-v8:kimi",
+        "npm run test:quest-v8:opencode",
+        "npm run typecheck -w packages/cli"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "acceptance-behavior-4",
+      "behavior": "The user receives suggested next steps and QuestMode waits for a decision.",
+      "evidence": [
+        {
+          "source": "executable-acceptance",
+          "detail": "The user receives suggested next steps and QuestMode waits for a decision."
+        }
+      ],
+      "validation": [
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "git diff --check",
+        "npm run build -w packages/cli",
+        "npm run test:quest-v8:codex",
+        "npm run test:quest-v8:kimi",
+        "npm run test:quest-v8:opencode",
+        "npm run typecheck -w packages/cli"
+      ],
+      "status": "planned"
+    }
+  ],
+  "completionRules": [
+    "The final answer must separate verified results from unrun validation.",
+    "A task cannot be marked complete when the hallucination gate is blocked.",
+    "A runtime-facing change requires the matching runtime harness or an explicit blocked note.",
+    "Next steps are recommendations only; wait for the user before executing follow-ups."
+  ]
+}

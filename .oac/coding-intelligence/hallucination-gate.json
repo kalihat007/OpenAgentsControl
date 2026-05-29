@@ -1,0 +1,66 @@
+{
+  "version": "12",
+  "verdict": "pass",
+  "checks": [
+    {
+      "id": "files-grounded",
+      "title": "Referenced patch files are present in scope, index, or repo wiki",
+      "status": "pass",
+      "evidence": [
+        "All patch files are locally grounded."
+      ],
+      "recommendation": "Proceed with scoped edits."
+    },
+    {
+      "id": "commands-grounded",
+      "title": "Validation commands are grounded in known local scripts or shell checks",
+      "status": "pass",
+      "evidence": [
+        "All commands are locally grounded."
+      ],
+      "recommendation": "Run selected validation commands."
+    },
+    {
+      "id": "runtime-sidecars-declared",
+      "title": "Quest v12 sidecars are declared for runtime handoff",
+      "status": "pass",
+      "evidence": [
+        "verified-knowledgebase.json",
+        "knowledgebase-index.json",
+        "evidence-ledger.json",
+        "hallucination-gate.json",
+        "contract-facts.json",
+        "source-to-patch-trace.json",
+        "stale-knowledge-report.json",
+        "dependency-research-cache.json",
+        "behavior-oracle.json",
+        "test-authoring-plan.json",
+        "verified-knowledgebase.md"
+      ],
+      "recommendation": "Keep runtime prompts, installer/update scripts, and smoke harnesses aligned with these sidecars."
+    },
+    {
+      "id": "security-not-blocked",
+      "title": "Security/secrets gate is not blocked",
+      "status": "pass",
+      "evidence": [
+        "securitySecretsGate.verdict=review"
+      ],
+      "recommendation": "Continue with normal validation."
+    },
+    {
+      "id": "stale-or-unknown-facts",
+      "title": "Evidence ledger has no stale or unknown core facts",
+      "status": "pass",
+      "evidence": [],
+      "recommendation": "Evidence is sufficient for this scope."
+    }
+  ],
+  "unknownReferences": [],
+  "rules": [
+    "Do not claim files, symbols, commands, APIs, or test results without local evidence.",
+    "Mark uncertain facts as assumed or unknown and refresh evidence before completion.",
+    "Use official/current research only when local repository evidence cannot answer a correctness-sensitive question.",
+    "Tie every patch capsule to source evidence and validation commands before reporting completion."
+  ]
+}

@@ -318,8 +318,12 @@ function buildExecutableAcceptance(
     'coding-intelligence.json',
     'coding-autopilot.json',
     'coding-execution.json',
+    'verified-knowledgebase.json',
+    'evidence-ledger.json',
+    'hallucination-gate.json',
     'coding-review.md',
     'pr-auto-packager.md',
+    'verified-knowledgebase.md',
   ].map((artifact, index) => ({
     id: `accept-artifact-${index + 1}`,
     title: `Refresh ${artifact}`,
@@ -543,6 +547,7 @@ function buildRegressionSnapshots(
         'coding-intelligence.json',
         'coding-autopilot.json',
         'coding-execution.json',
+        'verified-knowledgebase.json',
         'executable-acceptance.json',
         'runtime-compatibility-matrix.json',
       ],
@@ -552,7 +557,7 @@ function buildRegressionSnapshots(
       name: 'coding artifact JSON versions',
       kind: 'artifact-shape' as const,
       source: '.oac/runs/{quest-id}/',
-      expectedSignals: ['version:9', 'codingAutopilot.version:10', 'codingExecution.version:11'],
+      expectedSignals: ['version:9', 'codingAutopilot.version:10', 'codingExecution.version:11', 'verifiedKnowledgebase.version:12'],
     },
   ]
   if (parity.kimi || files.some((file) => file.includes('kimi'))) {
@@ -562,7 +567,7 @@ function buildRegressionSnapshots(
       kind: 'runtime-prompt',
       source: 'scripts/tests/test-kimi-quest-v8.sh',
       command: 'npm run test:quest-v8:kimi',
-      expectedSignals: ['OpenAgent Quest Spec', 'REFLECT', 'coding-execution.json', 'executable-acceptance.json'],
+      expectedSignals: ['OpenAgent Quest Spec', 'REFLECT', 'coding-execution.json', 'executable-acceptance.json', 'verified-knowledgebase.json'],
     })
   }
   if (autopilot.runtimeParityEnforcer.requiredRuntimes.length > 0) {
@@ -595,6 +600,9 @@ function buildRuntimeCompatibilityMatrix(
     'coding-intelligence.json',
     'coding-autopilot.json',
     'coding-execution.json',
+    'verified-knowledgebase.json',
+    'evidence-ledger.json',
+    'hallucination-gate.json',
     'executable-acceptance.json',
     'runtime-compatibility-matrix.json',
   ]

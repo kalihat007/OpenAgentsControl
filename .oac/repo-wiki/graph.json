@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "generatedAt": "2026-05-29T05:34:43.715Z",
+  "generatedAt": "2026-05-29T19:18:34.504Z",
   "nodes": [
     {
       "id": "root",
@@ -320,7 +320,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 1479
+        "sizeBytes": 1175
       }
     },
     {
@@ -332,7 +332,19 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 4537
+        "sizeBytes": 3040
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/behavior-oracle.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/behavior-oracle.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 9456
       }
     },
     {
@@ -344,7 +356,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 463602
+        "sizeBytes": 216819
       }
     },
     {
@@ -356,7 +368,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 60719
+        "sizeBytes": 42077
       }
     },
     {
@@ -368,7 +380,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 571801
+        "sizeBytes": 363931
       }
     },
     {
@@ -380,7 +392,7 @@
         "tags": [
           "docs"
         ],
-        "sizeBytes": 5384
+        "sizeBytes": 3768
       }
     },
     {
@@ -392,7 +404,31 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 15857
+        "sizeBytes": 10918
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/contract-facts.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/contract-facts.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 17183
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/dependency-research-cache.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/dependency-research-cache.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 7954
       }
     },
     {
@@ -404,7 +440,19 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 1473
+        "sizeBytes": 1362
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/evidence-ledger.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/evidence-ledger.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 9974
       }
     },
     {
@@ -416,7 +464,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 5402
+        "sizeBytes": 5651
       }
     },
     {
@@ -441,7 +489,31 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 4941
+        "sizeBytes": 3046
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/hallucination-gate.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/hallucination-gate.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 2273
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/knowledgebase-index.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/knowledgebase-index.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 15350
       }
     },
     {
@@ -453,7 +525,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 10695
+        "sizeBytes": 5154
       }
     },
     {
@@ -465,7 +537,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 3560
+        "sizeBytes": 1934
       }
     },
     {
@@ -477,7 +549,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 8064
+        "sizeBytes": 4883
       }
     },
     {
@@ -489,7 +561,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 7026
+        "sizeBytes": 4419
       }
     },
     {
@@ -501,7 +573,7 @@
         "tags": [
           "docs"
         ],
-        "sizeBytes": 2016
+        "sizeBytes": 1645
       }
     },
     {
@@ -513,7 +585,7 @@
         "tags": [
           "docs"
         ],
-        "sizeBytes": 3091
+        "sizeBytes": 1845
       }
     },
     {
@@ -525,7 +597,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 3886
+        "sizeBytes": 2143
       }
     },
     {
@@ -537,7 +609,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 1698
+        "sizeBytes": 1820
       }
     },
     {
@@ -549,7 +621,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 4838
+        "sizeBytes": 2885
       }
     },
     {
@@ -561,7 +633,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 2728
+        "sizeBytes": 3152
       }
     },
     {
@@ -585,7 +657,7 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 1157
+        "sizeBytes": 1010
       }
     },
     {
@@ -597,7 +669,31 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 2471
+        "sizeBytes": 1810
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/source-to-patch-trace.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/source-to-patch-trace.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 2271
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/stale-knowledge-report.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/stale-knowledge-report.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 3302
       }
     },
     {
@@ -609,7 +705,19 @@
         "tags": [
           "config"
         ],
-        "sizeBytes": 408076
+        "sizeBytes": 185976
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/test-authoring-plan.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/test-authoring-plan.json",
+      "metadata": {
+        "kind": "test",
+        "tags": [
+          "test"
+        ],
+        "sizeBytes": 2401
       }
     },
     {
@@ -621,7 +729,31 @@
         "tags": [
           "test"
         ],
-        "sizeBytes": 2841
+        "sizeBytes": 1390
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/verified-knowledgebase.json",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/verified-knowledgebase.json",
+      "metadata": {
+        "kind": "config",
+        "tags": [
+          "config"
+        ],
+        "sizeBytes": 74563
+      }
+    },
+    {
+      "id": "file:.oac/coding-intelligence/verified-knowledgebase.md",
+      "kind": "file",
+      "label": ".oac/coding-intelligence/verified-knowledgebase.md",
+      "metadata": {
+        "kind": "docs",
+        "tags": [
+          "docs"
+        ],
+        "sizeBytes": 1307
       }
     },
     {
@@ -745,7 +877,7 @@
           "agent",
           "opencode"
         ],
-        "sizeBytes": 72283
+        "sizeBytes": 72753
       }
     },
     {
@@ -3631,7 +3763,7 @@
           "opencode",
           "quest"
         ],
-        "sizeBytes": 22524
+        "sizeBytes": 24232
       }
     },
     {
@@ -8806,7 +8938,7 @@
         "tags": [
           "docs"
         ],
-        "sizeBytes": 52806
+        "sizeBytes": 53772
       }
     },
     {
@@ -17780,7 +17912,7 @@
           "memory",
           "opencode"
         ],
-        "sizeBytes": 3222
+        "sizeBytes": 6069
       }
     },
     {
@@ -18241,7 +18373,7 @@
           "quest",
           "source"
         ],
-        "sizeBytes": 5878
+        "sizeBytes": 7474
       }
     },
     {
@@ -18912,7 +19044,7 @@
           "quest",
           "source"
         ],
-        "sizeBytes": 34500
+        "sizeBytes": 34827
       }
     },
     {
@@ -18925,7 +19057,7 @@
           "quest",
           "test"
         ],
-        "sizeBytes": 7534
+        "sizeBytes": 9445
       }
     },
     {
@@ -18938,7 +19070,7 @@
           "quest",
           "source"
         ],
-        "sizeBytes": 21660
+        "sizeBytes": 22476
       }
     },
     {
@@ -19152,7 +19284,7 @@
           "quest",
           "test"
         ],
-        "sizeBytes": 13133
+        "sizeBytes": 15052
       }
     },
     {
@@ -19165,7 +19297,7 @@
           "quest",
           "source"
         ],
-        "sizeBytes": 34620
+        "sizeBytes": 37668
       }
     },
     {
@@ -19192,6 +19324,19 @@
           "source"
         ],
         "sizeBytes": 5925
+      }
+    },
+    {
+      "id": "file:packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "kind": "file",
+      "label": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "metadata": {
+        "kind": "source",
+        "tags": [
+          "quest",
+          "source"
+        ],
+        "sizeBytes": 40781
       }
     },
     {
@@ -19311,7 +19456,7 @@
         "tags": [
           "test"
         ],
-        "sizeBytes": 15328
+        "sizeBytes": 17368
       }
     },
     {
@@ -19323,7 +19468,7 @@
         "tags": [
           "source"
         ],
-        "sizeBytes": 42375
+        "sizeBytes": 47428
       }
     },
     {
@@ -21171,7 +21316,7 @@
         "tags": [
           "plugin"
         ],
-        "sizeBytes": 3556
+        "sizeBytes": 3889
       }
     },
     {
@@ -21875,7 +22020,7 @@
           "codex",
           "plugin"
         ],
-        "sizeBytes": 7913
+        "sizeBytes": 8441
       }
     },
     {
@@ -21889,7 +22034,7 @@
           "plugin",
           "quest"
         ],
-        "sizeBytes": 4055
+        "sizeBytes": 5002
       }
     },
     {
@@ -21903,7 +22048,7 @@
           "plugin",
           "quest"
         ],
-        "sizeBytes": 5597
+        "sizeBytes": 8041
       }
     },
     {
@@ -21916,7 +22061,7 @@
           "codex",
           "plugin"
         ],
-        "sizeBytes": 11300
+        "sizeBytes": 12315
       }
     },
     {
@@ -21929,7 +22074,7 @@
           "codex",
           "plugin"
         ],
-        "sizeBytes": 4515
+        "sizeBytes": 5464
       }
     },
     {
@@ -21947,7 +22092,7 @@
           "kimi",
           "plugin"
         ],
-        "sizeBytes": 5951
+        "sizeBytes": 6435
       }
     },
     {
@@ -21960,7 +22105,7 @@
           "kimi",
           "plugin"
         ],
-        "sizeBytes": 11135
+        "sizeBytes": 12150
       }
     },
     {
@@ -21973,7 +22118,7 @@
           "kimi",
           "plugin"
         ],
-        "sizeBytes": 16425
+        "sizeBytes": 17878
       }
     },
     {
@@ -22409,7 +22554,7 @@
           "quest",
           "test"
         ],
-        "sizeBytes": 27067
+        "sizeBytes": 29896
       }
     },
     {
@@ -22529,7 +22674,7 @@
           "quest",
           "test"
         ],
-        "sizeBytes": 29775
+        "sizeBytes": 33097
       }
     },
     {
@@ -22583,7 +22728,7 @@
           "quest",
           "test"
         ],
-        "sizeBytes": 23636
+        "sizeBytes": 26849
       }
     },
     {
@@ -22924,6 +23069,11 @@
     },
     {
       "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/behavior-oracle.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
       "to": "file:.oac/coding-intelligence/coding-autopilot.json",
       "relation": "contains"
     },
@@ -22949,7 +23099,22 @@
     },
     {
       "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/contract-facts.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/dependency-research-cache.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
       "to": "file:.oac/coding-intelligence/dependency-research-gate.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/evidence-ledger.json",
       "relation": "contains"
     },
     {
@@ -22965,6 +23130,16 @@
     {
       "from": "dir:.oac/coding-intelligence",
       "to": "file:.oac/coding-intelligence/guarded-autofix-runner.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/hallucination-gate.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/knowledgebase-index.json",
       "relation": "contains"
     },
     {
@@ -23034,12 +23209,37 @@
     },
     {
       "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/source-to-patch-trace.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/stale-knowledge-report.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
       "to": "file:.oac/coding-intelligence/symbol-graph.json",
       "relation": "contains"
     },
     {
       "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/test-authoring-plan.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
       "to": "file:.oac/coding-intelligence/test-gap-finder.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/verified-knowledgebase.json",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:.oac/coding-intelligence",
+      "to": "file:.oac/coding-intelligence/verified-knowledgebase.md",
       "relation": "contains"
     },
     {
@@ -31600,6 +31800,11 @@
     {
       "from": "dir:packages/cli/src/lib",
       "to": "file:packages/cli/src/lib/quest-verification.ts",
+      "relation": "contains"
+    },
+    {
+      "from": "dir:packages/cli/src/lib",
+      "to": "file:packages/cli/src/lib/quest-verified-knowledgebase.ts",
       "relation": "contains"
     },
     {

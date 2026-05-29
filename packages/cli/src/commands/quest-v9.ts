@@ -56,6 +56,13 @@ export async function questV9Command(
   info(`Runtime matrix: ${intelligence.codingExecution.runtimeCompatibilityMatrix.allRequiredCovered ? 'covered' : 'needs test'}`)
   info(`Security gate: ${intelligence.codingExecution.securitySecretsGate.verdict}`)
   info(`PR package: ${intelligence.codingExecution.prAutoPackager.ready ? 'ready' : 'needs work'}`)
+  info(`Verified knowledgebase sources: ${intelligence.verifiedKnowledgebase.knowledgebaseIndex.summary.sources}`)
+  info(`Evidence ledger: ${intelligence.verifiedKnowledgebase.evidenceLedger.summary.verified} verified / ${intelligence.verifiedKnowledgebase.evidenceLedger.summary.assumed} assumed / ${intelligence.verifiedKnowledgebase.evidenceLedger.summary.unknown} unknown`)
+  info(`Hallucination gate: ${intelligence.verifiedKnowledgebase.hallucinationGate.verdict}`)
+  info(`Contract facts: ${intelligence.verifiedKnowledgebase.contractFacts.facts.length}`)
+  info(`Stale knowledge: ${intelligence.verifiedKnowledgebase.staleKnowledgeReport.staleItems} stale/missing`)
+  info(`Behavior oracle: ${intelligence.verifiedKnowledgebase.behaviorOracle.signals.length} signals`)
+  info(`Test-authoring candidates: ${intelligence.verifiedKnowledgebase.testAuthoringPlan.candidates.length}`)
 
   if (intelligence.reviewSignals.length > 0) {
     warn(`Review signals: ${intelligence.reviewSignals.length}`)
@@ -105,13 +112,24 @@ export async function questV9Command(
   log(`  - ${join(artifactDir, 'security-secrets-gate.json')}`)
   log(`  - ${join(artifactDir, 'pr-auto-packager.json')}`)
   log(`  - ${join(artifactDir, 'pr-auto-packager.md')}`)
+  log(`  - ${join(artifactDir, 'verified-knowledgebase.json')}`)
+  log(`  - ${join(artifactDir, 'knowledgebase-index.json')}`)
+  log(`  - ${join(artifactDir, 'evidence-ledger.json')}`)
+  log(`  - ${join(artifactDir, 'hallucination-gate.json')}`)
+  log(`  - ${join(artifactDir, 'contract-facts.json')}`)
+  log(`  - ${join(artifactDir, 'source-to-patch-trace.json')}`)
+  log(`  - ${join(artifactDir, 'stale-knowledge-report.json')}`)
+  log(`  - ${join(artifactDir, 'dependency-research-cache.json')}`)
+  log(`  - ${join(artifactDir, 'behavior-oracle.json')}`)
+  log(`  - ${join(artifactDir, 'test-authoring-plan.json')}`)
+  log(`  - ${join(artifactDir, 'verified-knowledgebase.md')}`)
   log('')
 }
 
 export function registerQuestV9Command(program: Command): void {
   program
     .command('quest-v9 [quest-id]')
-    .description('Refresh and inspect Quest v9 coding intelligence, Coding Autopilot, and Coding Execution artifacts')
+    .description('Refresh and inspect Quest v9 coding intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase artifacts')
     .option('--json', 'Print machine-readable coding intelligence', false)
     .option('--objective <text>', 'Objective to use when no quest id is supplied')
     .option('--changed-file <path...>', 'Changed file path(s) to include in the analysis')

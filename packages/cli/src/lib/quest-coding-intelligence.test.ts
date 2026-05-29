@@ -81,9 +81,16 @@ describe('quest-coding-intelligence', () => {
       expect(intelligence.codingExecution.executableAcceptance.checks.length).toBeGreaterThan(0)
       expect(intelligence.codingExecution.runtimeCompatibilityMatrix.runtimes.some((runtime) => runtime.runtime === 'kimi')).toBe(true)
       expect(intelligence.codingExecution.securitySecretsGate.patternsChecked).toContain('api-key-assignment')
+      expect(intelligence.verifiedKnowledgebase.version).toBe('12')
+      expect(intelligence.verifiedKnowledgebase.knowledgebaseIndex.summary.sources).toBeGreaterThan(0)
+      expect(intelligence.verifiedKnowledgebase.evidenceLedger.facts.length).toBeGreaterThan(0)
+      expect(intelligence.verifiedKnowledgebase.hallucinationGate.checks.length).toBeGreaterThan(0)
+      expect(intelligence.verifiedKnowledgebase.contractFacts.facts.length).toBeGreaterThan(0)
+      expect(intelligence.verifiedKnowledgebase.behaviorOracle.signals.length).toBeGreaterThan(0)
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Quest v9 Coding Intelligence')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Autopilot')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Execution')
+      expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Verified Knowledgebase')
       for (const artifact of [
         'coding-autopilot.json',
         'symbol-graph.json',
@@ -108,9 +115,20 @@ describe('quest-coding-intelligence', () => {
         'security-secrets-gate.json',
         'pr-auto-packager.json',
         'pr-auto-packager.md',
+        'verified-knowledgebase.json',
+        'knowledgebase-index.json',
+        'evidence-ledger.json',
+        'hallucination-gate.json',
+        'contract-facts.json',
+        'source-to-patch-trace.json',
+        'stale-knowledge-report.json',
+        'dependency-research-cache.json',
+        'behavior-oracle.json',
+        'test-authoring-plan.json',
+        'verified-knowledgebase.md',
       ]) {
         const content = await readFile(join(tmpRoot, '.oac', 'coding-intelligence', artifact), 'utf-8')
-        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact.endsWith('.md') ? 'Summary' : 'version')
+        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact.endsWith('.md') ? 'Summary' : 'version')
       }
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
@@ -139,16 +157,22 @@ describe('quest-coding-intelligence', () => {
         runtimeParity: { kimi: boolean }
         codingAutopilot: { runtimeParityEnforcer: { requiredRuntimes: string[] } }
         codingExecution: { runtimeCompatibilityMatrix: { runtimes: Array<{ runtime: string }> } }
+        verifiedKnowledgebase: { hallucinationGate: { verdict: string } }
       }
       expect(parsed.version).toBe('9')
       expect(parsed.reason).toBe('quest.file_change')
       expect(parsed.runtimeParity.kimi).toBe(true)
       expect(parsed.codingAutopilot.runtimeParityEnforcer.requiredRuntimes).toContain('kimi')
       expect(parsed.codingExecution.runtimeCompatibilityMatrix.runtimes.some((runtime) => runtime.runtime === 'kimi')).toBe(true)
+      expect(parsed.verifiedKnowledgebase.hallucinationGate.verdict).toMatch(/pass|review|blocked/)
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'patch-capsules.json'), 'utf-8')).toContain('patch-')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-autopilot.json'), 'utf-8')).toContain('"version": "10"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-execution.json'), 'utf-8')).toContain('"version": "11"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'executable-acceptance.json'), 'utf-8')).toContain('"version": "11"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'verified-knowledgebase.json'), 'utf-8')).toContain('"version": "12"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'evidence-ledger.json'), 'utf-8')).toContain('"version": "12"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'hallucination-gate.json'), 'utf-8')).toContain('"version": "12"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'verified-knowledgebase.md'), 'utf-8')).toContain('Verified Knowledgebase')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'pr-auto-packager.md'), 'utf-8')).toContain('Summary')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'symbol-graph.json'), 'utf-8')).toContain('openagent.yaml')
     } finally {

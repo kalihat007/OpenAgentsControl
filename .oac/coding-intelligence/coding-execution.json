@@ -1,6 +1,6 @@
 {
   "version": "11",
-  "generatedAt": "2026-05-29T05:19:09.049Z",
+  "generatedAt": "2026-05-29T09:00:07.976Z",
   "executableAcceptance": {
     "version": "11",
     "doneDefinition": [
@@ -12,9 +12,9 @@
     "checks": [
       {
         "id": "accept-command-1",
-        "title": "Run bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+        "title": "Run bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "kind": "command",
-        "command": "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "required": true,
         "status": "pending",
         "source": "smart-test-matrix"
@@ -74,15 +74,6 @@
         "source": "smart-test-matrix"
       },
       {
-        "id": "accept-command-8",
-        "title": "Run npm run typecheck -w packages/swarm-runtime",
-        "kind": "command",
-        "command": "npm run typecheck -w packages/swarm-runtime",
-        "required": true,
-        "status": "pending",
-        "source": "smart-test-matrix"
-      },
-      {
         "id": "accept-artifact-1",
         "title": "Refresh coding-intelligence.json",
         "kind": "artifact",
@@ -111,6 +102,33 @@
       },
       {
         "id": "accept-artifact-4",
+        "title": "Refresh verified-knowledgebase.json",
+        "kind": "artifact",
+        "artifact": "verified-knowledgebase.json",
+        "required": true,
+        "status": "pending",
+        "source": "quest-coding-execution"
+      },
+      {
+        "id": "accept-artifact-5",
+        "title": "Refresh evidence-ledger.json",
+        "kind": "artifact",
+        "artifact": "evidence-ledger.json",
+        "required": true,
+        "status": "pending",
+        "source": "quest-coding-execution"
+      },
+      {
+        "id": "accept-artifact-6",
+        "title": "Refresh hallucination-gate.json",
+        "kind": "artifact",
+        "artifact": "hallucination-gate.json",
+        "required": true,
+        "status": "pending",
+        "source": "quest-coding-execution"
+      },
+      {
+        "id": "accept-artifact-7",
         "title": "Refresh coding-review.md",
         "kind": "artifact",
         "artifact": "coding-review.md",
@@ -119,10 +137,19 @@
         "source": "quest-coding-execution"
       },
       {
-        "id": "accept-artifact-5",
+        "id": "accept-artifact-8",
         "title": "Refresh pr-auto-packager.md",
         "kind": "artifact",
         "artifact": "pr-auto-packager.md",
+        "required": true,
+        "status": "pending",
+        "source": "quest-coding-execution"
+      },
+      {
+        "id": "accept-artifact-9",
+        "title": "Refresh verified-knowledgebase.md",
+        "kind": "artifact",
+        "artifact": "verified-knowledgebase.md",
         "required": true,
         "status": "pending",
         "source": "quest-coding-execution"
@@ -167,7 +194,7 @@
     "queue": [
       {
         "id": "autofix-1",
-        "command": "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "reason": "Run the minimum credible check and patch only owned files if it fails."
       },
       {
@@ -199,53 +226,21 @@
         "id": "autofix-7",
         "command": "npm run typecheck -w packages/cli",
         "reason": "Run the minimum credible check and patch only owned files if it fails."
-      },
-      {
-        "id": "autofix-8",
-        "command": "npm run typecheck -w packages/swarm-runtime",
-        "reason": "Run the minimum credible check and patch only owned files if it fails."
       }
     ],
     "writableFiles": [
-      ".oac/coding-intelligence/",
-      ".oac/repo-wiki/",
       ".opencode/agent/core/openagent.md",
       ".opencode/context/core/quest-mode.md",
       "README.md",
-      "package.json",
-      "packages/cli/.opencode/.expert-memory.json",
-      "packages/cli/src/commands/memory-promote.ts",
-      "packages/cli/src/commands/quest-complete.test.ts",
-      "packages/cli/src/commands/quest-complete.ts",
-      "packages/cli/src/commands/quest-status.test.ts",
-      "packages/cli/src/commands/quest-status.ts",
       "packages/cli/src/commands/quest-v9.ts",
-      "packages/cli/src/commands/repo-wiki.ts",
-      "packages/cli/src/index.ts",
-      "packages/cli/src/lib/memory-indexer.ts",
-      "packages/cli/src/lib/quest-coding-autopilot.ts",
       "packages/cli/src/lib/quest-coding-execution.ts",
       "packages/cli/src/lib/quest-coding-intelligence.test.ts",
       "packages/cli/src/lib/quest-coding-intelligence.ts",
-      "packages/cli/src/lib/quest-interaction-memory.test.ts",
-      "packages/cli/src/lib/quest-interaction-memory.ts",
-      "packages/cli/src/lib/quest-memory-graph.test.ts",
-      "packages/cli/src/lib/quest-memory-graph.ts",
-      "packages/cli/src/lib/quest-memory-promotion.test.ts",
-      "packages/cli/src/lib/quest-memory-promotion.ts",
-      "packages/cli/src/lib/quest-next-steps.test.ts",
-      "packages/cli/src/lib/quest-next-steps.ts",
-      "packages/cli/src/lib/quest-reconciler.test.ts",
-      "packages/cli/src/lib/quest-reconciler.ts",
       "packages/cli/src/lib/quest-run.test.ts",
       "packages/cli/src/lib/quest-run.ts",
-      "packages/cli/src/lib/reflection-engine.test.ts",
-      "packages/cli/src/lib/reflection-engine.ts",
-      "packages/cli/src/lib/repo-wiki.test.ts",
-      "packages/cli/src/lib/repo-wiki.ts",
+      "packages/cli/src/lib/quest-verified-knowledgebase.ts",
       "packages/cli/src/lib/runtime-bridge.test.ts",
       "packages/cli/src/lib/runtime-bridge.ts",
-      "packages/swarm-runtime/src/types.ts",
       "plugins/README.md",
       "plugins/codex-cli/README.md",
       "plugins/codex-cli/codex-quest-default.toml.example",
@@ -256,10 +251,6 @@
       "plugins/kimi-code/openagent-system.md",
       "plugins/kimi-code/openagent.yaml",
       "scripts/tests/test-codex-quest-v8.sh",
-      "scripts/tests/test-kimi-quest-cycle.sh",
-      "scripts/tests/test-kimi-quest-v5.sh",
-      "scripts/tests/test-kimi-quest-v6.sh",
-      "scripts/tests/test-kimi-quest-v7.sh",
       "scripts/tests/test-kimi-quest-v8.sh",
       "scripts/tests/test-opencode-quest-v8.sh"
     ],
@@ -312,79 +303,9 @@
         "status": "watch"
       },
       {
-        "id": "contract-vsm9o0",
-        "kind": "package",
-        "path": "package.json",
-        "implementationHints": [
-          "package.json",
-          "packages/cli/package.json"
-        ],
-        "status": "watch"
-      },
-      {
-        "id": "contract-7753v6",
-        "kind": "cli",
-        "path": "packages/cli/src/commands/memory-promote.ts",
-        "implementationHints": [
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "status": "watch"
-      },
-      {
-        "id": "contract-xzn6xo",
-        "kind": "cli",
-        "path": "packages/cli/src/commands/quest-complete.test.ts",
-        "implementationHints": [
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "status": "watch"
-      },
-      {
-        "id": "contract-hjtyzi",
-        "kind": "cli",
-        "path": "packages/cli/src/commands/quest-complete.ts",
-        "implementationHints": [
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "status": "watch"
-      },
-      {
-        "id": "contract-z3zyzv",
-        "kind": "cli",
-        "path": "packages/cli/src/commands/quest-status.test.ts",
-        "implementationHints": [
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "status": "watch"
-      },
-      {
-        "id": "contract-w0c3nf",
-        "kind": "cli",
-        "path": "packages/cli/src/commands/quest-status.ts",
-        "implementationHints": [
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "status": "watch"
-      },
-      {
         "id": "contract-1b85gs",
         "kind": "cli",
         "path": "packages/cli/src/commands/quest-v9.ts",
-        "implementationHints": [
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "status": "watch"
-      },
-      {
-        "id": "contract-iocjg3",
-        "kind": "cli",
-        "path": "packages/cli/src/commands/repo-wiki.ts",
         "implementationHints": [
           "packages/cli/src/index.ts",
           "packages/cli/src/lib/quest-run.ts"
@@ -528,88 +449,11 @@
         "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
       },
       {
-        "id": "drift-contract-vsm9o0",
-        "severity": "info",
-        "summary": "package contract may drift from implementation.",
-        "files": [
-          "package.json",
-          "package.json",
-          "packages/cli/package.json"
-        ],
-        "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-      },
-      {
-        "id": "drift-contract-7753v6",
-        "severity": "info",
-        "summary": "cli contract may drift from implementation.",
-        "files": [
-          "packages/cli/src/commands/memory-promote.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-      },
-      {
-        "id": "drift-contract-xzn6xo",
-        "severity": "info",
-        "summary": "cli contract may drift from implementation.",
-        "files": [
-          "packages/cli/src/commands/quest-complete.test.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-      },
-      {
-        "id": "drift-contract-hjtyzi",
-        "severity": "info",
-        "summary": "cli contract may drift from implementation.",
-        "files": [
-          "packages/cli/src/commands/quest-complete.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-      },
-      {
-        "id": "drift-contract-z3zyzv",
-        "severity": "info",
-        "summary": "cli contract may drift from implementation.",
-        "files": [
-          "packages/cli/src/commands/quest-status.test.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-      },
-      {
-        "id": "drift-contract-w0c3nf",
-        "severity": "info",
-        "summary": "cli contract may drift from implementation.",
-        "files": [
-          "packages/cli/src/commands/quest-status.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-      },
-      {
         "id": "drift-contract-1b85gs",
         "severity": "info",
         "summary": "cli contract may drift from implementation.",
         "files": [
           "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/quest-run.ts"
-        ],
-        "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-      },
-      {
-        "id": "drift-contract-iocjg3",
-        "severity": "info",
-        "summary": "cli contract may drift from implementation.",
-        "files": [
-          "packages/cli/src/commands/repo-wiki.ts",
           "packages/cli/src/index.ts",
           "packages/cli/src/lib/quest-run.ts"
         ],
@@ -725,7 +569,7 @@
       }
     ],
     "commands": [
-      "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-cycle.sh scripts/tests/test-kimi-quest-v5.sh scripts/tests/test-kimi-quest-v6.sh scripts/tests/test-kimi-quest-v7.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+      "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
       "npm run test:quest-v8:codex",
       "npm run test:quest-v8:kimi",
       "npm run test:quest-v8:opencode"
@@ -741,45 +585,18 @@
         "severity": "warning",
         "patchCapsuleId": "patch-001",
         "files": [
-          ".oac/coding-intelligence/",
-          ".oac/repo-wiki/",
           ".opencode/agent/core/openagent.md",
           ".opencode/context/core/quest-mode.md",
           "README.md",
-          "package.json",
-          "packages/cli/.opencode/.expert-memory.json",
-          "packages/cli/src/commands/memory-promote.ts",
-          "packages/cli/src/commands/quest-complete.test.ts",
-          "packages/cli/src/commands/quest-complete.ts",
-          "packages/cli/src/commands/quest-status.test.ts",
-          "packages/cli/src/commands/quest-status.ts",
           "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/commands/repo-wiki.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/memory-indexer.ts",
-          "packages/cli/src/lib/quest-coding-autopilot.ts",
           "packages/cli/src/lib/quest-coding-execution.ts",
           "packages/cli/src/lib/quest-coding-intelligence.test.ts",
           "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "packages/cli/src/lib/quest-interaction-memory.test.ts",
-          "packages/cli/src/lib/quest-interaction-memory.ts",
-          "packages/cli/src/lib/quest-memory-graph.test.ts",
-          "packages/cli/src/lib/quest-memory-graph.ts",
-          "packages/cli/src/lib/quest-memory-promotion.test.ts",
-          "packages/cli/src/lib/quest-memory-promotion.ts",
-          "packages/cli/src/lib/quest-next-steps.test.ts",
-          "packages/cli/src/lib/quest-next-steps.ts",
-          "packages/cli/src/lib/quest-reconciler.test.ts",
-          "packages/cli/src/lib/quest-reconciler.ts",
           "packages/cli/src/lib/quest-run.test.ts",
           "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/reflection-engine.test.ts",
-          "packages/cli/src/lib/reflection-engine.ts",
-          "packages/cli/src/lib/repo-wiki.test.ts",
-          "packages/cli/src/lib/repo-wiki.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
           "packages/cli/src/lib/runtime-bridge.test.ts",
           "packages/cli/src/lib/runtime-bridge.ts",
-          "packages/swarm-runtime/src/types.ts",
           "plugins/README.md",
           "plugins/codex-cli/README.md",
           "plugins/codex-cli/codex-quest-default.toml.example",
@@ -790,19 +607,15 @@
           "plugins/kimi-code/openagent-system.md",
           "plugins/kimi-code/openagent.yaml",
           "scripts/tests/test-codex-quest-v8.sh",
-          "scripts/tests/test-kimi-quest-cycle.sh",
-          "scripts/tests/test-kimi-quest-v5.sh",
-          "scripts/tests/test-kimi-quest-v6.sh",
-          "scripts/tests/test-kimi-quest-v7.sh",
           "scripts/tests/test-kimi-quest-v8.sh",
           "scripts/tests/test-opencode-quest-v8.sh"
         ],
         "validationCommands": [
           "git diff --check",
-          "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "npm run typecheck -w packages/cli",
           "npm run build -w packages/cli",
-          "npm run typecheck -w packages/swarm-runtime"
+          "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
         ],
         "status": "planned"
       },
@@ -814,7 +627,7 @@
           " M packages/cli/.opencode/.expert-memory.json"
         ],
         "validationCommands": [
-          "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "git diff --check",
           "npm run build -w packages/cli"
         ],
@@ -838,37 +651,9 @@
     "version": "11",
     "gaps": [
       {
-        "id": "test-gap-7753v6",
-        "sourceFile": "packages/cli/src/commands/memory-promote.ts",
-        "suggestedTestFile": "packages/cli/src/commands/memory-promote.test.ts",
-        "reason": "Changed source file has no nearby test file in the indexed codebase.",
-        "severity": "warning"
-      },
-      {
         "id": "test-gap-1b85gs",
         "sourceFile": "packages/cli/src/commands/quest-v9.ts",
         "suggestedTestFile": "packages/cli/src/commands/quest-v9.test.ts",
-        "reason": "Changed source file has no nearby test file in the indexed codebase.",
-        "severity": "warning"
-      },
-      {
-        "id": "test-gap-iocjg3",
-        "sourceFile": "packages/cli/src/commands/repo-wiki.ts",
-        "suggestedTestFile": "packages/cli/src/commands/repo-wiki.test.ts",
-        "reason": "Changed source file has no nearby test file in the indexed codebase.",
-        "severity": "warning"
-      },
-      {
-        "id": "test-gap-yxdiuh",
-        "sourceFile": "packages/cli/src/index.ts",
-        "suggestedTestFile": "packages/cli/src/index.test.ts",
-        "reason": "Changed source file has no nearby test file in the indexed codebase.",
-        "severity": "info"
-      },
-      {
-        "id": "test-gap-wd33hy",
-        "sourceFile": "packages/cli/src/lib/quest-coding-autopilot.ts",
-        "suggestedTestFile": "packages/cli/src/lib/quest-coding-autopilot.test.ts",
         "reason": "Changed source file has no nearby test file in the indexed codebase.",
         "severity": "warning"
       },
@@ -880,23 +665,22 @@
         "severity": "warning"
       },
       {
-        "id": "test-gap-q0nn0t",
-        "sourceFile": "packages/swarm-runtime/src/types.ts",
-        "suggestedTestFile": "packages/swarm-runtime/src/types.test.ts",
+        "id": "test-gap-b2ln66",
+        "sourceFile": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+        "suggestedTestFile": "packages/cli/src/lib/quest-verified-knowledgebase.test.ts",
         "reason": "Changed source file has no nearby test file in the indexed codebase.",
         "severity": "warning"
       }
     ],
-    "coverageConfidence": 0.87,
+    "coverageConfidence": 0.88,
     "suggestedCommands": [
-      "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+      "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
       "git diff --check",
       "npm run build -w packages/cli",
       "npm run test:quest-v8:codex",
       "npm run test:quest-v8:kimi",
       "npm run test:quest-v8:opencode",
-      "npm run typecheck -w packages/cli",
-      "npm run typecheck -w packages/swarm-runtime"
+      "npm run typecheck -w packages/cli"
     ]
   },
   "regressionSnapshots": {
@@ -912,6 +696,7 @@
           "coding-intelligence.json",
           "coding-autopilot.json",
           "coding-execution.json",
+          "verified-knowledgebase.json",
           "executable-acceptance.json",
           "runtime-compatibility-matrix.json"
         ]
@@ -924,7 +709,8 @@
         "expectedSignals": [
           "version:9",
           "codingAutopilot.version:10",
-          "codingExecution.version:11"
+          "codingExecution.version:11",
+          "verifiedKnowledgebase.version:12"
         ]
       },
       {
@@ -937,7 +723,8 @@
           "OpenAgent Quest Spec",
           "REFLECT",
           "coding-execution.json",
-          "executable-acceptance.json"
+          "executable-acceptance.json",
+          "verified-knowledgebase.json"
         ]
       },
       {
@@ -976,6 +763,9 @@
           "coding-intelligence.json",
           "coding-autopilot.json",
           "coding-execution.json",
+          "verified-knowledgebase.json",
+          "evidence-ledger.json",
+          "hallucination-gate.json",
           "executable-acceptance.json",
           "runtime-compatibility-matrix.json"
         ],
@@ -998,6 +788,9 @@
           "coding-intelligence.json",
           "coding-autopilot.json",
           "coding-execution.json",
+          "verified-knowledgebase.json",
+          "evidence-ledger.json",
+          "hallucination-gate.json",
           "executable-acceptance.json",
           "runtime-compatibility-matrix.json"
         ],
@@ -1020,6 +813,9 @@
           "coding-intelligence.json",
           "coding-autopilot.json",
           "coding-execution.json",
+          "verified-knowledgebase.json",
+          "evidence-ledger.json",
+          "hallucination-gate.json",
           "executable-acceptance.json",
           "runtime-compatibility-matrix.json"
         ],
@@ -1042,6 +838,9 @@
           "coding-intelligence.json",
           "coding-autopilot.json",
           "coding-execution.json",
+          "verified-knowledgebase.json",
+          "evidence-ledger.json",
+          "hallucination-gate.json",
           "executable-acceptance.json",
           "runtime-compatibility-matrix.json"
         ],
@@ -1059,14 +858,6 @@
     "version": "11",
     "owners": [
       {
-        "owner": "generated-artifacts",
-        "files": [
-          ".oac/coding-intelligence/",
-          ".oac/repo-wiki/"
-        ],
-        "reason": "Owns 2 file(s) in generated-artifacts."
-      },
-      {
         "owner": "opencode-runtime",
         "files": [
           ".opencode/agent/core/openagent.md",
@@ -1082,56 +873,19 @@
         "reason": "Owns 1 file(s) in docs."
       },
       {
-        "owner": "package.json",
-        "files": [
-          "package.json"
-        ],
-        "reason": "Owns 1 file(s) in package.json."
-      },
-      {
         "owner": "cli",
         "files": [
-          "packages/cli/.opencode/.expert-memory.json",
-          "packages/cli/src/commands/memory-promote.ts",
-          "packages/cli/src/commands/quest-complete.test.ts",
-          "packages/cli/src/commands/quest-complete.ts",
-          "packages/cli/src/commands/quest-status.test.ts",
-          "packages/cli/src/commands/quest-status.ts",
           "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/commands/repo-wiki.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/memory-indexer.ts",
-          "packages/cli/src/lib/quest-coding-autopilot.ts",
           "packages/cli/src/lib/quest-coding-execution.ts",
           "packages/cli/src/lib/quest-coding-intelligence.test.ts",
           "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "packages/cli/src/lib/quest-interaction-memory.test.ts",
-          "packages/cli/src/lib/quest-interaction-memory.ts",
-          "packages/cli/src/lib/quest-memory-graph.test.ts",
-          "packages/cli/src/lib/quest-memory-graph.ts",
-          "packages/cli/src/lib/quest-memory-promotion.test.ts",
-          "packages/cli/src/lib/quest-memory-promotion.ts",
-          "packages/cli/src/lib/quest-next-steps.test.ts",
-          "packages/cli/src/lib/quest-next-steps.ts",
-          "packages/cli/src/lib/quest-reconciler.test.ts",
-          "packages/cli/src/lib/quest-reconciler.ts",
           "packages/cli/src/lib/quest-run.test.ts",
           "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/reflection-engine.test.ts",
-          "packages/cli/src/lib/reflection-engine.ts",
-          "packages/cli/src/lib/repo-wiki.test.ts",
-          "packages/cli/src/lib/repo-wiki.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
           "packages/cli/src/lib/runtime-bridge.test.ts",
           "packages/cli/src/lib/runtime-bridge.ts"
         ],
-        "reason": "Owns 32 file(s) in cli."
-      },
-      {
-        "owner": "swarm-runtime",
-        "files": [
-          "packages/swarm-runtime/src/types.ts"
-        ],
-        "reason": "Owns 1 file(s) in swarm-runtime."
+        "reason": "Owns 9 file(s) in cli."
       },
       {
         "owner": "plugins",
@@ -1164,27 +918,13 @@
         "owner": "scripts",
         "files": [
           "scripts/tests/test-codex-quest-v8.sh",
-          "scripts/tests/test-kimi-quest-cycle.sh",
-          "scripts/tests/test-kimi-quest-v5.sh",
-          "scripts/tests/test-kimi-quest-v6.sh",
-          "scripts/tests/test-kimi-quest-v7.sh",
           "scripts/tests/test-kimi-quest-v8.sh",
           "scripts/tests/test-opencode-quest-v8.sh"
         ],
-        "reason": "Owns 7 file(s) in scripts."
+        "reason": "Owns 3 file(s) in scripts."
       }
     ],
     "locks": [
-      {
-        "file": ".oac/coding-intelligence/",
-        "owner": "generated-artifacts",
-        "mode": "read"
-      },
-      {
-        "file": ".oac/repo-wiki/",
-        "owner": "generated-artifacts",
-        "mode": "read"
-      },
       {
         "file": ".opencode/agent/core/openagent.md",
         "owner": "opencode-runtime",
@@ -1201,62 +941,7 @@
         "mode": "write"
       },
       {
-        "file": "package.json",
-        "owner": "package.json",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/.opencode/.expert-memory.json",
-        "owner": "cli",
-        "mode": "read"
-      },
-      {
-        "file": "packages/cli/src/commands/memory-promote.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/commands/quest-complete.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/commands/quest-complete.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/commands/quest-status.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/commands/quest-status.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
         "file": "packages/cli/src/commands/quest-v9.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/commands/repo-wiki.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/index.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/memory-indexer.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-coding-autopilot.ts",
         "owner": "cli",
         "mode": "write"
       },
@@ -1276,56 +961,6 @@
         "mode": "write"
       },
       {
-        "file": "packages/cli/src/lib/quest-interaction-memory.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-interaction-memory.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-memory-graph.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-memory-graph.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-memory-promotion.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-memory-promotion.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-next-steps.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-next-steps.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-reconciler.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/quest-reconciler.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
         "file": "packages/cli/src/lib/quest-run.test.ts",
         "owner": "cli",
         "mode": "write"
@@ -1336,22 +971,7 @@
         "mode": "write"
       },
       {
-        "file": "packages/cli/src/lib/reflection-engine.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/reflection-engine.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/repo-wiki.test.ts",
-        "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/cli/src/lib/repo-wiki.ts",
+        "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
         "owner": "cli",
         "mode": "write"
       },
@@ -1363,11 +983,6 @@
       {
         "file": "packages/cli/src/lib/runtime-bridge.ts",
         "owner": "cli",
-        "mode": "write"
-      },
-      {
-        "file": "packages/swarm-runtime/src/types.ts",
-        "owner": "swarm-runtime",
         "mode": "write"
       },
       {
@@ -1421,26 +1036,6 @@
         "mode": "write"
       },
       {
-        "file": "scripts/tests/test-kimi-quest-cycle.sh",
-        "owner": "scripts",
-        "mode": "write"
-      },
-      {
-        "file": "scripts/tests/test-kimi-quest-v5.sh",
-        "owner": "scripts",
-        "mode": "write"
-      },
-      {
-        "file": "scripts/tests/test-kimi-quest-v6.sh",
-        "owner": "scripts",
-        "mode": "write"
-      },
-      {
-        "file": "scripts/tests/test-kimi-quest-v7.sh",
-        "owner": "scripts",
-        "mode": "write"
-      },
-      {
         "file": "scripts/tests/test-kimi-quest-v8.sh",
         "owner": "scripts",
         "mode": "write"
@@ -1487,23 +1082,16 @@
       "curl-pipe-shell"
     ],
     "commands": [
-      "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-cycle.sh scripts/tests/test-kimi-quest-v5.sh scripts/tests/test-kimi-quest-v6.sh scripts/tests/test-kimi-quest-v7.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+      "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
       "git diff --check"
     ]
   },
   "prAutoPackager": {
     "version": "11",
     "ready": true,
-    "title": "feat: Quest Coding Execution v11 smoke",
-    "bodyMarkdown": "# feat: Quest Coding Execution v11 smoke\n\n## Summary\n\n- Updated 55 file(s).\n- Selected 8 minimum validation command(s).\n- Automatic review verdict: needs-review.\n- Contract drift watchers: 20\n- Test gaps: 7\n- Security gate: review\n\n## Validation\n\n- bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-cycle.sh scripts/tests/test-kimi-quest-v5.sh scripts/tests/test-kimi-quest-v6.sh scripts/tests/test-kimi-quest-v7.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh: security gate\n- bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts: pending\n- git diff --check: pending\n- git diff --check: security gate\n- npm run build -w packages/cli: pending\n- npm run test:quest-v8:codex: pending\n- npm run test:quest-v8:codex: required when runtime surface changes\n- npm run test:quest-v8:kimi: pending\n- npm run test:quest-v8:kimi: required when runtime surface changes\n- npm run test:quest-v8:opencode: pending\n- npm run test:quest-v8:opencode: required when runtime surface changes\n- npm run typecheck -w packages/cli: pending\n- npm run typecheck -w packages/swarm-runtime: pending\n\n## Reviewer Focus\n\n-  M packages/cli/.opencode/.expert-memory.json\n- .oac/coding-intelligence/\n- .oac/repo-wiki/\n- .opencode/agent/core/openagent.md\n- .opencode/context/core/quest-mode.md\n- README.md\n- package.json\n- packages/cli/.opencode/.expert-memory.json\n- packages/cli/src/commands/memory-promote.ts\n- packages/cli/src/commands/quest-complete.test.ts\n- packages/cli/src/commands/quest-complete.ts\n- packages/cli/src/commands/quest-status.test.ts\n\n## Blockers\n\n- No blockers detected.\n",
+    "title": "feat: Quest v12 verified knowledgebase smoke",
+    "bodyMarkdown": "# feat: Quest v12 verified knowledgebase smoke\n\n## Summary\n\n- Updated 24 file(s).\n- Selected 7 minimum validation command(s).\n- Automatic review verdict: needs-review.\n- Contract drift watchers: 13\n- Test gaps: 3\n- Security gate: review\n\n## Validation\n\n- bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh: security gate\n- bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts: pending\n- git diff --check: pending\n- git diff --check: security gate\n- npm run build -w packages/cli: pending\n- npm run test:quest-v8:codex: pending\n- npm run test:quest-v8:codex: required when runtime surface changes\n- npm run test:quest-v8:kimi: pending\n- npm run test:quest-v8:kimi: required when runtime surface changes\n- npm run test:quest-v8:opencode: pending\n- npm run test:quest-v8:opencode: required when runtime surface changes\n- npm run typecheck -w packages/cli: pending\n\n## Reviewer Focus\n\n-  M packages/cli/.opencode/.expert-memory.json\n- .opencode/agent/core/openagent.md\n- .opencode/context/core/quest-mode.md\n- README.md\n- packages/cli/src/commands/quest-v9.ts\n- packages/cli/src/lib/quest-coding-execution.ts\n- packages/cli/src/lib/quest-coding-intelligence.test.ts\n- packages/cli/src/lib/quest-coding-intelligence.ts\n- packages/cli/src/lib/quest-run.test.ts\n- packages/cli/src/lib/quest-run.ts\n- packages/cli/src/lib/quest-verified-knowledgebase.ts\n- packages/cli/src/lib/runtime-bridge.test.ts\n\n## Blockers\n\n- No blockers detected.\n",
     "commitGroups": [
-      {
-        "title": ".oac",
-        "files": [
-          ".oac/coding-intelligence/",
-          ".oac/repo-wiki/"
-        ]
-      },
       {
         "title": ".opencode",
         "files": [
@@ -1518,52 +1106,17 @@
         ]
       },
       {
-        "title": "package.json",
-        "files": [
-          "package.json"
-        ]
-      },
-      {
         "title": "packages/cli",
         "files": [
-          "packages/cli/.opencode/.expert-memory.json",
-          "packages/cli/src/commands/memory-promote.ts",
-          "packages/cli/src/commands/quest-complete.test.ts",
-          "packages/cli/src/commands/quest-complete.ts",
-          "packages/cli/src/commands/quest-status.test.ts",
-          "packages/cli/src/commands/quest-status.ts",
           "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/commands/repo-wiki.ts",
-          "packages/cli/src/index.ts",
-          "packages/cli/src/lib/memory-indexer.ts",
-          "packages/cli/src/lib/quest-coding-autopilot.ts",
           "packages/cli/src/lib/quest-coding-execution.ts",
           "packages/cli/src/lib/quest-coding-intelligence.test.ts",
           "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "packages/cli/src/lib/quest-interaction-memory.test.ts",
-          "packages/cli/src/lib/quest-interaction-memory.ts",
-          "packages/cli/src/lib/quest-memory-graph.test.ts",
-          "packages/cli/src/lib/quest-memory-graph.ts",
-          "packages/cli/src/lib/quest-memory-promotion.test.ts",
-          "packages/cli/src/lib/quest-memory-promotion.ts",
-          "packages/cli/src/lib/quest-next-steps.test.ts",
-          "packages/cli/src/lib/quest-next-steps.ts",
-          "packages/cli/src/lib/quest-reconciler.test.ts",
-          "packages/cli/src/lib/quest-reconciler.ts",
           "packages/cli/src/lib/quest-run.test.ts",
           "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/reflection-engine.test.ts",
-          "packages/cli/src/lib/reflection-engine.ts",
-          "packages/cli/src/lib/repo-wiki.test.ts",
-          "packages/cli/src/lib/repo-wiki.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
           "packages/cli/src/lib/runtime-bridge.test.ts",
           "packages/cli/src/lib/runtime-bridge.ts"
-        ]
-      },
-      {
-        "title": "packages/swarm-runtime",
-        "files": [
-          "packages/swarm-runtime/src/types.ts"
         ]
       },
       {
@@ -1594,18 +1147,14 @@
         "title": "scripts",
         "files": [
           "scripts/tests/test-codex-quest-v8.sh",
-          "scripts/tests/test-kimi-quest-cycle.sh",
-          "scripts/tests/test-kimi-quest-v5.sh",
-          "scripts/tests/test-kimi-quest-v6.sh",
-          "scripts/tests/test-kimi-quest-v7.sh",
           "scripts/tests/test-kimi-quest-v8.sh",
           "scripts/tests/test-opencode-quest-v8.sh"
         ]
       }
     ],
     "validationEvidence": [
-      "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-cycle.sh scripts/tests/test-kimi-quest-v5.sh scripts/tests/test-kimi-quest-v6.sh scripts/tests/test-kimi-quest-v7.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh: security gate",
-      "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts: pending",
+      "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh: security gate",
+      "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts: pending",
       "git diff --check: pending",
       "git diff --check: security gate",
       "npm run build -w packages/cli: pending",
@@ -1615,8 +1164,7 @@
       "npm run test:quest-v8:kimi: required when runtime surface changes",
       "npm run test:quest-v8:opencode: pending",
       "npm run test:quest-v8:opencode: required when runtime surface changes",
-      "npm run typecheck -w packages/cli: pending",
-      "npm run typecheck -w packages/swarm-runtime: pending"
+      "npm run typecheck -w packages/cli: pending"
     ],
     "blockers": []
   }

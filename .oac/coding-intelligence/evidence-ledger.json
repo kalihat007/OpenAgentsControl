@@ -1,0 +1,324 @@
+{
+  "version": "12",
+  "summary": {
+    "verified": 7,
+    "assumed": 1,
+    "unknown": 0,
+    "stale": 0,
+    "confidence": 0.85
+  },
+  "facts": [
+    {
+      "id": "objective",
+      "claim": "User objective is: Quest v12 verified knowledgebase smoke",
+      "status": "verified",
+      "confidence": 1,
+      "evidence": [
+        {
+          "source": "quest-objective",
+          "detail": "Objective passed into Quest coding intelligence."
+        }
+      ]
+    },
+    {
+      "id": "cwd",
+      "claim": "Project root is /Users/vikashchaudhary/Desktop/code/OpenAgentsControl",
+      "status": "verified",
+      "confidence": 1,
+      "evidence": [
+        {
+          "source": "process.cwd",
+          "detail": "Quest command executed from this project root."
+        }
+      ]
+    },
+    {
+      "id": "repo-wiki",
+      "claim": "Repo wiki has 1644 files and 9 packages.",
+      "status": "verified",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "source": "repo-wiki",
+          "path": ".oac/repo-wiki/files.json",
+          "detail": "manual"
+        }
+      ]
+    },
+    {
+      "id": "affected-files",
+      "claim": "24 affected file(s) are in scope.",
+      "status": "verified",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "source": "filesystem",
+          "path": ".opencode/agent/core/openagent.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".opencode/context/core/quest-mode.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "README.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/commands/quest-v9.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/lib/quest-coding-execution.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/lib/quest-run.test.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/lib/quest-run.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/lib/runtime-bridge.test.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "packages/cli/src/lib/runtime-bridge.ts",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/README.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/codex-cli/README.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/codex-cli/codex-quest-default.toml.example",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/codex-cli/openagent-system.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/codex-cli/openagent.toml",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/kimi-code/README.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/kimi-code/openagent-system.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "plugins/kimi-code/openagent.yaml",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "File exists locally."
+        }
+      ]
+    },
+    {
+      "id": "smart-tests",
+      "claim": "8 validation command(s) were selected from local context.",
+      "status": "verified",
+      "confidence": 0.82,
+      "evidence": [
+        {
+          "source": "smart-test-recommendation",
+          "command": "git diff --check",
+          "detail": "Catch whitespace and conflict-marker issues before deeper tests."
+        },
+        {
+          "source": "smart-test-recommendation",
+          "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "detail": "Run the nearest focused tests for changed or impacted source files."
+        },
+        {
+          "source": "smart-test-recommendation",
+          "command": "npm run typecheck -w packages/cli",
+          "detail": "CLI TypeScript surfaces changed."
+        },
+        {
+          "source": "smart-test-recommendation",
+          "command": "npm run build -w packages/cli",
+          "detail": "CLI command or library code changed."
+        },
+        {
+          "source": "smart-test-recommendation",
+          "command": "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Shell installer or harness files changed."
+        },
+        {
+          "source": "smart-test-recommendation",
+          "command": "npm run test:quest-v8:kimi",
+          "detail": "Kimi/OpenAgent adapter or Quest harness surfaces changed."
+        },
+        {
+          "source": "smart-test-recommendation",
+          "command": "npm run test:quest-v8:opencode",
+          "detail": "OpenCode/OpenAgent prompt or Quest harness surfaces changed."
+        },
+        {
+          "source": "smart-test-recommendation",
+          "command": "npm run test:quest-v8:codex",
+          "detail": "Codex adapter or Quest harness surfaces changed."
+        }
+      ]
+    },
+    {
+      "id": "package-scripts",
+      "claim": "9 package manifest(s) supply local script evidence.",
+      "status": "verified",
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "source": "package.json",
+          "path": "package.json",
+          "detail": "64 script(s)."
+        },
+        {
+          "source": "package.json",
+          "path": ".opencode/plugin/package.json",
+          "detail": "0 script(s)."
+        },
+        {
+          "source": "package.json",
+          "path": ".opencode/tool/package.json",
+          "detail": "4 script(s)."
+        },
+        {
+          "source": "package.json",
+          "path": "dev/dashboard-project/package.json",
+          "detail": "0 script(s)."
+        },
+        {
+          "source": "package.json",
+          "path": "evals/framework/package.json",
+          "detail": "15 script(s)."
+        },
+        {
+          "source": "package.json",
+          "path": "packages/cli/package.json",
+          "detail": "6 script(s)."
+        },
+        {
+          "source": "package.json",
+          "path": "packages/compatibility-layer/package.json",
+          "detail": "9 script(s)."
+        },
+        {
+          "source": "package.json",
+          "path": "packages/plugin-abilities/package.json",
+          "detail": "5 script(s)."
+        },
+        {
+          "source": "package.json",
+          "path": "packages/swarm-runtime/package.json",
+          "detail": "4 script(s)."
+        }
+      ]
+    },
+    {
+      "id": "runtime-compatibility",
+      "claim": "Runtime compatibility matrix is covered for required runtimes.",
+      "status": "verified",
+      "confidence": 0.82,
+      "evidence": [
+        {
+          "source": "runtime-compatibility-matrix",
+          "command": "npm run test:quest-v8:opencode",
+          "detail": "opencode: covered"
+        },
+        {
+          "source": "runtime-compatibility-matrix",
+          "command": "npm run test:quest-v8:kimi",
+          "detail": "kimi: covered"
+        },
+        {
+          "source": "runtime-compatibility-matrix",
+          "command": "npm run test:quest-v8:codex",
+          "detail": "codex: covered"
+        },
+        {
+          "source": "runtime-compatibility-matrix",
+          "command": "bash -n install.sh update.sh",
+          "detail": "claude: not-required"
+        }
+      ]
+    },
+    {
+      "id": "security-gate",
+      "claim": "Security/secrets gate verdict is review.",
+      "status": "assumed",
+      "confidence": 0.6,
+      "evidence": [
+        {
+          "source": "security-secrets-gate",
+          "path": "README.md",
+          "detail": "Remote script execution pattern detected."
+        },
+        {
+          "source": "security-secrets-gate",
+          "path": "packages/cli/src/lib/quest-coding-execution.ts",
+          "detail": "Remote script execution pattern detected."
+        }
+      ]
+    }
+  ]
+}

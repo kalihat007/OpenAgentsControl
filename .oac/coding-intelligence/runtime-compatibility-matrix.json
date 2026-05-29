@@ -15,6 +15,9 @@
         "coding-intelligence.json",
         "coding-autopilot.json",
         "coding-execution.json",
+        "verified-knowledgebase.json",
+        "evidence-ledger.json",
+        "hallucination-gate.json",
         "executable-acceptance.json",
         "runtime-compatibility-matrix.json"
       ],
@@ -37,6 +40,9 @@
         "coding-intelligence.json",
         "coding-autopilot.json",
         "coding-execution.json",
+        "verified-knowledgebase.json",
+        "evidence-ledger.json",
+        "hallucination-gate.json",
         "executable-acceptance.json",
         "runtime-compatibility-matrix.json"
       ],
@@ -59,6 +65,9 @@
         "coding-intelligence.json",
         "coding-autopilot.json",
         "coding-execution.json",
+        "verified-knowledgebase.json",
+        "evidence-ledger.json",
+        "hallucination-gate.json",
         "executable-acceptance.json",
         "runtime-compatibility-matrix.json"
       ],
@@ -81,6 +90,9 @@
         "coding-intelligence.json",
         "coding-autopilot.json",
         "coding-execution.json",
+        "verified-knowledgebase.json",
+        "evidence-ledger.json",
+        "hallucination-gate.json",
         "executable-acceptance.json",
         "runtime-compatibility-matrix.json"
       ],

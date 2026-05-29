@@ -1,0 +1,498 @@
+{
+  "version": "12",
+  "facts": [
+    {
+      "id": "contract-f0cqje",
+      "kind": "runtime-prompt",
+      "path": ".opencode/agent/core/openagent.md",
+      "claim": "runtime-prompt contract .opencode/agent/core/openagent.md must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": ".opencode/agent/core/openagent.md",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-v2v835",
+      "kind": "runtime-prompt",
+      "path": ".opencode/context/core/quest-mode.md",
+      "claim": "runtime-prompt contract .opencode/context/core/quest-mode.md must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": ".opencode/context/core/quest-mode.md",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-rvkijb",
+      "kind": "docs",
+      "path": "README.md",
+      "claim": "docs contract README.md must stay aligned with 2 implementation hint(s).",
+      "status": "active",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "README.md",
+          "detail": "watch"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "README.md",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": ".opencode/context/core/quest-mode.md",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-1b85gs",
+      "kind": "cli",
+      "path": "packages/cli/src/commands/quest-v9.ts",
+      "claim": "cli contract packages/cli/src/commands/quest-v9.ts must stay aligned with 2 implementation hint(s).",
+      "status": "active",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "packages/cli/src/commands/quest-v9.ts",
+          "detail": "watch"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "packages/cli/src/index.ts",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "packages/cli/src/lib/quest-run.ts",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-odp2hk",
+      "kind": "runtime-prompt",
+      "path": "plugins/README.md",
+      "claim": "runtime-prompt contract plugins/README.md must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/README.md",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-24k4fd",
+      "kind": "runtime-prompt",
+      "path": "plugins/codex-cli/README.md",
+      "claim": "runtime-prompt contract plugins/codex-cli/README.md must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/codex-cli/README.md",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-fou74g",
+      "kind": "runtime-prompt",
+      "path": "plugins/codex-cli/codex-quest-default.toml.example",
+      "claim": "runtime-prompt contract plugins/codex-cli/codex-quest-default.toml.example must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/codex-cli/codex-quest-default.toml.example",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-gpe0mi",
+      "kind": "runtime-prompt",
+      "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+      "claim": "runtime-prompt contract plugins/codex-cli/configure-codex-quest-default.sh must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-jpn8ik",
+      "kind": "runtime-prompt",
+      "path": "plugins/codex-cli/openagent-system.md",
+      "claim": "runtime-prompt contract plugins/codex-cli/openagent-system.md must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/codex-cli/openagent-system.md",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-flfnmb",
+      "kind": "runtime-prompt",
+      "path": "plugins/codex-cli/openagent.toml",
+      "claim": "runtime-prompt contract plugins/codex-cli/openagent.toml must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/codex-cli/openagent.toml",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-5tv6yh",
+      "kind": "runtime-prompt",
+      "path": "plugins/kimi-code/README.md",
+      "claim": "runtime-prompt contract plugins/kimi-code/README.md must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/kimi-code/README.md",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-5mg2yi",
+      "kind": "runtime-prompt",
+      "path": "plugins/kimi-code/openagent-system.md",
+      "claim": "runtime-prompt contract plugins/kimi-code/openagent-system.md must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/kimi-code/openagent-system.md",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "contract-x539rc",
+      "kind": "runtime-prompt",
+      "path": "plugins/kimi-code/openagent.yaml",
+      "claim": "runtime-prompt contract plugins/kimi-code/openagent.yaml must stay aligned with 3 implementation hint(s).",
+      "status": "needs-review",
+      "confidence": 0.72,
+      "evidence": [
+        {
+          "source": "contract-drift-guard",
+          "path": "plugins/kimi-code/openagent.yaml",
+          "detail": "needs-review"
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-kimi-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-opencode-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        },
+        {
+          "source": "implementation-hint",
+          "path": "scripts/tests/test-codex-quest-v8.sh",
+          "detail": "Potential matching implementation surface."
+        }
+      ]
+    },
+    {
+      "id": "runtime-contract-opencode",
+      "kind": "runtime-prompt",
+      "claim": "opencode runtime prompt must mention required Quest sidecars and write-back clauses.",
+      "status": "active",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": ".opencode/agent/core/openagent.md",
+          "command": "npm run test:quest-v8:opencode",
+          "detail": "covered"
+        },
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": ".opencode/context/core/quest-mode.md",
+          "command": "npm run test:quest-v8:opencode",
+          "detail": "covered"
+        }
+      ]
+    },
+    {
+      "id": "runtime-contract-kimi",
+      "kind": "runtime-prompt",
+      "claim": "kimi runtime prompt must mention required Quest sidecars and write-back clauses.",
+      "status": "active",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": "plugins/kimi-code/openagent.yaml",
+          "command": "npm run test:quest-v8:kimi",
+          "detail": "covered"
+        },
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": "plugins/kimi-code/openagent-system.md",
+          "command": "npm run test:quest-v8:kimi",
+          "detail": "covered"
+        }
+      ]
+    },
+    {
+      "id": "runtime-contract-codex",
+      "kind": "runtime-prompt",
+      "claim": "codex runtime prompt must mention required Quest sidecars and write-back clauses.",
+      "status": "active",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": "plugins/codex-cli/openagent.toml",
+          "command": "npm run test:quest-v8:codex",
+          "detail": "covered"
+        },
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": "plugins/codex-cli/openagent-system.md",
+          "command": "npm run test:quest-v8:codex",
+          "detail": "covered"
+        }
+      ]
+    },
+    {
+      "id": "runtime-contract-claude",
+      "kind": "runtime-prompt",
+      "claim": "claude runtime prompt must mention required Quest sidecars and write-back clauses.",
+      "status": "needs-review",
+      "confidence": 0.65,
+      "evidence": [
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": "plugins/claude-code/openagent-system.md",
+          "command": "bash -n install.sh update.sh",
+          "detail": "not-required"
+        },
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": "install.sh",
+          "command": "bash -n install.sh update.sh",
+          "detail": "not-required"
+        },
+        {
+          "source": "runtime-compatibility-matrix",
+          "path": "update.sh",
+          "command": "bash -n install.sh update.sh",
+          "detail": "not-required"
+        }
+      ]
+    },
+    {
+      "id": "quest-completion-contract",
+      "kind": "behavior",
+      "claim": "After finishing the user request, QuestMode suggests next steps and waits for the user decision.",
+      "status": "active",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "source": "coding-execution.doneDefinition",
+          "detail": "User-choice next steps are part of executable acceptance."
+        }
+      ]
+    }
+  ],
+  "commands": [
+    "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+    "npm run test:quest-v8:codex",
+    "npm run test:quest-v8:kimi",
+    "npm run test:quest-v8:opencode",
+    "git diff --check",
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+    "npm run typecheck -w packages/cli",
+    "npm run build -w packages/cli"
+  ]
+}

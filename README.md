@@ -834,7 +834,7 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
-Quest v8 (evolved from v5-v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable. Quest v9 adds coding intelligence, Quest v10 adds Coding Autopilot, and Quest v11 adds Coding Execution for intent, impact analysis, patch capsules, smart tests, runtime parity, review signals, symbol context, pre-edit boundaries, patch ledger, failure replay, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gates, and PR packaging:
+Quest v8 (evolved from v5-v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable. Quest v9 adds coding intelligence, Quest v10 adds Coding Autopilot, Quest v11 adds Coding Execution, and Quest v12 adds the Verified Knowledgebase for intent, impact analysis, patch capsules, smart tests, runtime parity, review signals, symbol context, pre-edit boundaries, patch ledger, failure replay, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gates, PR packaging, evidence ledgers, hallucination gates, source-to-patch traceability, stale knowledge checks, behavior oracles, and test-authoring plans:
 
 ```text
 NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING
@@ -887,10 +887,21 @@ ownership-lock-plan.json   # v11: file ownership and write-lock plan
 security-secrets-gate.json # v11: credential/destructive-command gate
 pr-auto-packager.json      # v11: PR title, groups, validation, blockers
 pr-auto-packager.md        # v11: human-readable PR summary package
+verified-knowledgebase.json # v12: evidence-first coding rollup
+knowledgebase-index.json   # v12: source index with freshness/confidence
+evidence-ledger.json       # v12: verified/assumed/unknown/stale facts
+hallucination-gate.json    # v12: local-evidence gate for claims
+contract-facts.json        # v12: extracted contracts and evidence
+source-to-patch-trace.json # v12: patch capsules linked to evidence
+stale-knowledge-report.json # v12: stale repo/wiki/runtime adapter checks
+dependency-research-cache.json # v12: local/official research decisions
+behavior-oracle.json       # v12: expected behavior and validation signals
+test-authoring-plan.json   # v12: suggested focused tests for gaps
+verified-knowledgebase.md  # v12: readable evidence brief
 .oac/repo-wiki/            # project-level living repo wiki
 ```
 
-Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state, `oac quest-resume <quest-id>` to print OpenCode, Kimi, Claude, and Codex resume commands, and `oac quest-v9 <quest-id>` to refresh coding intelligence. Resume does not change models; OpenAgent continues with the selected runtime model.
+Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state, `oac quest-resume <quest-id>` to print OpenCode, Kimi, Claude, and Codex resume commands, and `oac quest-v9 <quest-id>` to refresh coding intelligence plus the v12 Verified Knowledgebase. Resume does not change models; OpenAgent continues with the selected runtime model.
 
 You can verify the Kimi Quest cycle locally:
 

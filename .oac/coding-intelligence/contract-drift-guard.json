@@ -34,79 +34,9 @@
       "status": "watch"
     },
     {
-      "id": "contract-vsm9o0",
-      "kind": "package",
-      "path": "package.json",
-      "implementationHints": [
-        "package.json",
-        "packages/cli/package.json"
-      ],
-      "status": "watch"
-    },
-    {
-      "id": "contract-7753v6",
-      "kind": "cli",
-      "path": "packages/cli/src/commands/memory-promote.ts",
-      "implementationHints": [
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "status": "watch"
-    },
-    {
-      "id": "contract-xzn6xo",
-      "kind": "cli",
-      "path": "packages/cli/src/commands/quest-complete.test.ts",
-      "implementationHints": [
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "status": "watch"
-    },
-    {
-      "id": "contract-hjtyzi",
-      "kind": "cli",
-      "path": "packages/cli/src/commands/quest-complete.ts",
-      "implementationHints": [
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "status": "watch"
-    },
-    {
-      "id": "contract-z3zyzv",
-      "kind": "cli",
-      "path": "packages/cli/src/commands/quest-status.test.ts",
-      "implementationHints": [
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "status": "watch"
-    },
-    {
-      "id": "contract-w0c3nf",
-      "kind": "cli",
-      "path": "packages/cli/src/commands/quest-status.ts",
-      "implementationHints": [
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "status": "watch"
-    },
-    {
       "id": "contract-1b85gs",
       "kind": "cli",
       "path": "packages/cli/src/commands/quest-v9.ts",
-      "implementationHints": [
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "status": "watch"
-    },
-    {
-      "id": "contract-iocjg3",
-      "kind": "cli",
-      "path": "packages/cli/src/commands/repo-wiki.ts",
       "implementationHints": [
         "packages/cli/src/index.ts",
         "packages/cli/src/lib/quest-run.ts"
@@ -250,88 +180,11 @@
       "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
     },
     {
-      "id": "drift-contract-vsm9o0",
-      "severity": "info",
-      "summary": "package contract may drift from implementation.",
-      "files": [
-        "package.json",
-        "package.json",
-        "packages/cli/package.json"
-      ],
-      "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-    },
-    {
-      "id": "drift-contract-7753v6",
-      "severity": "info",
-      "summary": "cli contract may drift from implementation.",
-      "files": [
-        "packages/cli/src/commands/memory-promote.ts",
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-    },
-    {
-      "id": "drift-contract-xzn6xo",
-      "severity": "info",
-      "summary": "cli contract may drift from implementation.",
-      "files": [
-        "packages/cli/src/commands/quest-complete.test.ts",
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-    },
-    {
-      "id": "drift-contract-hjtyzi",
-      "severity": "info",
-      "summary": "cli contract may drift from implementation.",
-      "files": [
-        "packages/cli/src/commands/quest-complete.ts",
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-    },
-    {
-      "id": "drift-contract-z3zyzv",
-      "severity": "info",
-      "summary": "cli contract may drift from implementation.",
-      "files": [
-        "packages/cli/src/commands/quest-status.test.ts",
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-    },
-    {
-      "id": "drift-contract-w0c3nf",
-      "severity": "info",
-      "summary": "cli contract may drift from implementation.",
-      "files": [
-        "packages/cli/src/commands/quest-status.ts",
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-    },
-    {
       "id": "drift-contract-1b85gs",
       "severity": "info",
       "summary": "cli contract may drift from implementation.",
       "files": [
         "packages/cli/src/commands/quest-v9.ts",
-        "packages/cli/src/index.ts",
-        "packages/cli/src/lib/quest-run.ts"
-      ],
-      "recommendation": "Check matching implementation, docs, generated artifacts, and runtime harnesses before completion."
-    },
-    {
-      "id": "drift-contract-iocjg3",
-      "severity": "info",
-      "summary": "cli contract may drift from implementation.",
-      "files": [
-        "packages/cli/src/commands/repo-wiki.ts",
         "packages/cli/src/index.ts",
         "packages/cli/src/lib/quest-run.ts"
       ],
@@ -447,7 +300,7 @@
     }
   ],
   "commands": [
-    "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-cycle.sh scripts/tests/test-kimi-quest-v5.sh scripts/tests/test-kimi-quest-v6.sh scripts/tests/test-kimi-quest-v7.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+    "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
     "npm run test:quest-v8:codex",
     "npm run test:quest-v8:kimi",
     "npm run test:quest-v8:opencode"

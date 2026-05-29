@@ -39,7 +39,7 @@ session instructions.
 
 `install.sh --with-codex` / `update.sh --with-codex` append
 `developer_instructions` to `~/.codex/config.toml` so **every** `codex -C .`
-session follows Quest v8 plus Quest v9 coding intelligence, Coding Autopilot, and Coding Execution in the main thread
+session follows Quest v8 plus Quest v9 coding intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase in the main thread
 (visible `OpenAgent Quest Spec` on substantial work). Codex only spawns the
 `openagent` **subagent** when you
 explicitly ask it to.
@@ -60,11 +60,18 @@ Coding Execution sidecars (`coding-execution.json`,
 `contract-drift-guard.json`, `review-patch-loop.json`, `test-gap-finder.json`,
 `regression-snapshots.json`, `runtime-compatibility-matrix.json`,
 `ownership-lock-plan.json`, `security-secrets-gate.json`,
-`pr-auto-packager.json`, `pr-auto-packager.md`) are
+`pr-auto-packager.json`, `pr-auto-packager.md`) plus Verified Knowledgebase
+sidecars (`verified-knowledgebase.json`, `knowledgebase-index.json`,
+`evidence-ledger.json`, `hallucination-gate.json`, `contract-facts.json`,
+`source-to-patch-trace.json`, `stale-knowledge-report.json`,
+`dependency-research-cache.json`, `behavior-oracle.json`,
+`test-authoring-plan.json`, `verified-knowledgebase.md`) are
 used by default to carry intent, impact, patch capsules, smart tests, runtime
 parity, review signals, symbol context, pre-edit boundaries, patch ledger,
 failure replay, bounded autofix, PR readiness, executable acceptance, contract
-drift, test gaps, runtime compatibility, security/secrets gating, and PR packaging. Refresh them with
+drift, test gaps, runtime compatibility, security/secrets gating, PR packaging,
+evidence ledgers, hallucination gates, source-to-patch traceability, stale
+knowledge checks, behavior oracles, and test-authoring plans. Refresh them with
 `oac quest-v9` or `oac quest-v9 <quest-id>`.
 
 Repeated learnings become scored promotion candidates in
@@ -161,7 +168,7 @@ OAC compensates in `packages/cli/src/lib/runtime-bridge.ts`:
 3. Discovery and research decisions use `research.assessed` / `research.performed`, so skipped or performed web/current research is visible in Quest memory.
 4. The Quest event stream refreshes `interaction-memory.json` and `memory-graph.json`, keeping user requests, working directories, actions, file/context changes, self-knowledge, and graph links available for resume.
 5. The repo wiki refreshes under `.oac/repo-wiki/` when Quests are created, file/context changes are recorded, and verification/reflection/completion runs; use `oac repo-wiki --watch` when files change outside Quest write-back.
-6. Quest v9 coding, Coding Autopilot, and Coding Execution sidecars refresh from Quest creation, file/context/validation events, coding events, and review/verify/complete transitions.
+6. Quest v9 coding, Coding Autopilot, Coding Execution, and Verified Knowledgebase sidecars refresh from Quest creation, file/context/validation events, coding events, and review/verify/complete transitions.
 7. Completion can append `next_steps.suggested` so Codex offers evidence-based follow-up recommendations from changed files, task state, verification, memory/context signals, and application understanding, then waits for the user instead of starting another Quest automatically.
 
 That keeps `oac quest-run --background --runtime codex` and quest-daemon aligned with Kimi.

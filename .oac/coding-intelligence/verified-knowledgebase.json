@@ -1,0 +1,2007 @@
+{
+  "version": "12",
+  "generatedAt": "2026-05-29T09:00:07.976Z",
+  "projectRoot": "/Users/vikashchaudhary/Desktop/code/OpenAgentsControl",
+  "objective": "Quest v12 verified knowledgebase smoke",
+  "knowledgebaseIndex": {
+    "version": "12",
+    "generatedAt": "2026-05-29T09:00:07.976Z",
+    "summary": {
+      "sources": 47,
+      "files": 24,
+      "tests": 8,
+      "prompts": 6,
+      "packageManifests": 9,
+      "confidence": 0.9
+    },
+    "sources": [
+      {
+        "id": "repo-wiki",
+        "kind": "repo-wiki",
+        "path": ".oac/repo-wiki/files.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "1644 files, 9 packages."
+        ]
+      },
+      {
+        "id": "codebase-index",
+        "kind": "codebase-index",
+        "path": ".opencode/.codebase-index.json",
+        "freshness": "fresh",
+        "confidence": 0.9,
+        "evidence": [
+          "335 modules and 336 dependency entries."
+        ]
+      },
+      {
+        "id": "event-stream",
+        "kind": "event-stream",
+        "path": "events.ndjson",
+        "freshness": "unknown",
+        "confidence": 0.45,
+        "evidence": [
+          "0 Quest event(s) loaded."
+        ]
+      },
+      {
+        "id": "verified-knowledgebase",
+        "kind": "generated-artifact",
+        "path": "verified-knowledgebase.json",
+        "freshness": "fresh",
+        "confidence": 1,
+        "evidence": [
+          "Generated at 2026-05-29T09:00:07.976Z."
+        ]
+      },
+      {
+        "id": "file-opencode-agent-core-openagent-5822a9f6",
+        "kind": "prompt",
+        "path": ".opencode/agent/core/openagent.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: agent",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-opencode-context-core-quest-mode-6b5215d7",
+        "kind": "prompt",
+        "path": ".opencode/context/core/quest-mode.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: context",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-readme-8ec9a00b",
+        "kind": "file",
+        "path": "README.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: docs",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-commands-quest-v9-508fabf9",
+        "kind": "file",
+        "path": "packages/cli/src/commands/quest-v9.ts",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: source",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-quest-coding-executio-7976fd41",
+        "kind": "file",
+        "path": "packages/cli/src/lib/quest-coding-execution.ts",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: source",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-quest-coding-intellig-a3807b79",
+        "kind": "file",
+        "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: test",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-quest-coding-intellig-ae7c9a18",
+        "kind": "file",
+        "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: source",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-quest-run-test-08979414",
+        "kind": "file",
+        "path": "packages/cli/src/lib/quest-run.test.ts",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: test",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-quest-run-16ce49d6",
+        "kind": "file",
+        "path": "packages/cli/src/lib/quest-run.ts",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: source",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-quest-verified-knowle-ab9c763a",
+        "kind": "file",
+        "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+        "freshness": "fresh",
+        "confidence": 0.75,
+        "evidence": [
+          "Selected by Quest changed/relevant file analysis.",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-runtime-bridge-test-37505cd1",
+        "kind": "file",
+        "path": "packages/cli/src/lib/runtime-bridge.test.ts",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: test",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-runtime-bridge-e1a7285c",
+        "kind": "file",
+        "path": "packages/cli/src/lib/runtime-bridge.ts",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: source",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-readme-5123af3e",
+        "kind": "file",
+        "path": "plugins/README.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-codex-cli-readme-9ee157e6",
+        "kind": "prompt",
+        "path": "plugins/codex-cli/README.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-codex-cli-codex-quest-default-toml-dfc46018",
+        "kind": "prompt",
+        "path": "plugins/codex-cli/codex-quest-default.toml.example",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-codex-cli-configure-codex-quest-de-f8446db1",
+        "kind": "prompt",
+        "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-codex-cli-openagent-system-f7a78007",
+        "kind": "prompt",
+        "path": "plugins/codex-cli/openagent-system.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-codex-cli-openagent-19361823",
+        "kind": "prompt",
+        "path": "plugins/codex-cli/openagent.toml",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-kimi-code-readme-9b6919da",
+        "kind": "prompt",
+        "path": "plugins/kimi-code/README.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-kimi-code-openagent-system-b29c6b4b",
+        "kind": "prompt",
+        "path": "plugins/kimi-code/openagent-system.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-plugins-kimi-code-openagent-3013a9c2",
+        "kind": "prompt",
+        "path": "plugins/kimi-code/openagent.yaml",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: plugin",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-scripts-tests-test-codex-quest-v8-801ccb2a",
+        "kind": "file",
+        "path": "scripts/tests/test-codex-quest-v8.sh",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: test",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-scripts-tests-test-kimi-quest-v8-09e1c7e8",
+        "kind": "file",
+        "path": "scripts/tests/test-kimi-quest-v8.sh",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: test",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-scripts-tests-test-opencode-quest-v8-d06ec1e3",
+        "kind": "file",
+        "path": "scripts/tests/test-opencode-quest-v8.sh",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: test",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "installer-install-c0fffa6d",
+        "kind": "installer",
+        "path": "install.sh",
+        "freshness": "recent",
+        "confidence": 0.85,
+        "evidence": [
+          "Installer/update surface for runtime adapter propagation."
+        ]
+      },
+      {
+        "id": "installer-update-efe50602",
+        "kind": "installer",
+        "path": "update.sh",
+        "freshness": "recent",
+        "confidence": 0.85,
+        "evidence": [
+          "Installer/update surface for runtime adapter propagation."
+        ]
+      },
+      {
+        "id": "package-package-7030d0b2",
+        "kind": "package-manifest",
+        "path": "package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: test, test:all, test:core, test:openagent, test:openagent:core, test:opencoder, test:openagent:grok, test:openagent:claude, test:openagent:gpt4, test:opencoder:grok, test:opencoder:claude, test:opencoder:gpt4, test:all:grok, test:all:claude, test:all:gpt4, test:pattern, test:debug, test:openagent:developer, test:openagent:context, test:openagent:business, test:opencoder:developer, test:opencoder:bash, test:ci, test:ci:openagent, test:ci:opencoder, test:quest-v4:kimi, test:quest-v4:opencode, test:quest-v4, test:quest-v5:kimi, test:quest-v5:opencode, test:quest-v5, test:quest-v6:kimi, test:quest-v6, test:quest-v7:kimi, test:quest-v7, test:quest-v8:kimi, test:quest-v8:opencode, test:quest-v8:codex, test:quest-v8, test:quest-v9:kimi, test:quest-v9:opencode, test:quest-v9:codex, test:quest-v9, dashboard, dashboard:open, results:openagent, results:opencoder, results:latest, version, version:bump, version:bump:patch, version:bump:minor, version:bump:major, version:bump:alpha, version:bump:beta, version:bump:rc, dev:setup, dev:build, dev:test, dev:clean, validate:registry, validate:context-links, validate:registry:verbose, validate:registry:fix"
+        ]
+      },
+      {
+        "id": "package-opencode-plugin-package-9734b5d1",
+        "kind": "package-manifest",
+        "path": ".opencode/plugin/package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: none"
+        ]
+      },
+      {
+        "id": "package-opencode-tool-package-a34fe38b",
+        "kind": "package-manifest",
+        "path": ".opencode/tool/package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: build, type-check, test, test:real"
+        ]
+      },
+      {
+        "id": "package-dev-dashboard-project-package-94dbf82e",
+        "kind": "package-manifest",
+        "path": "dev/dashboard-project/package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: none"
+        ]
+      },
+      {
+        "id": "package-evals-framework-package-e23401ad",
+        "kind": "package-manifest",
+        "path": "evals/framework/package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: build, build:watch, test, test:watch, test:integration, lint, lint:fix, eval, report, eval:sdk, eval:sdk:core, eval:sdk:debug, eval:sdk:interactive, validate:suites, validate:suites:all"
+        ]
+      },
+      {
+        "id": "package-packages-cli-package-33f18f5e",
+        "kind": "package-manifest",
+        "path": "packages/cli/package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: build, build:watch, dev, test, test:watch, typecheck"
+        ]
+      },
+      {
+        "id": "package-packages-compatibility-layer-package-c7e20309",
+        "kind": "package-manifest",
+        "path": "packages/compatibility-layer/package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: build, build:watch, test, test:watch, test:coverage, lint, lint:fix, clean, prepublishOnly"
+        ]
+      },
+      {
+        "id": "package-packages-plugin-abilities-package-cb7a6fb0",
+        "kind": "package-manifest",
+        "path": "packages/plugin-abilities/package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: build, dev, test, lint, clean"
+        ]
+      },
+      {
+        "id": "package-packages-swarm-runtime-package-bf7e9f92",
+        "kind": "package-manifest",
+        "path": "packages/swarm-runtime/package.json",
+        "freshness": "unknown",
+        "confidence": 0.9,
+        "evidence": [
+          "Scripts: build, typecheck, test, test:watch"
+        ]
+      },
+      {
+        "id": "test-git-diff-check-e9643d4c",
+        "kind": "test-command",
+        "command": "git diff --check",
+        "freshness": "fresh",
+        "confidence": 0.9,
+        "evidence": [
+          "Catch whitespace and conflict-marker issues before deeper tests."
+        ]
+      },
+      {
+        "id": "test-bun-test-packages-cli-src-lib-quest-coding-bc7cc3ec",
+        "kind": "test-command",
+        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "freshness": "fresh",
+        "confidence": 0.85,
+        "evidence": [
+          "Run the nearest focused tests for changed or impacted source files."
+        ]
+      },
+      {
+        "id": "test-npm-run-typecheck-w-packages-cli-c33d09f4",
+        "kind": "test-command",
+        "command": "npm run typecheck -w packages/cli",
+        "freshness": "fresh",
+        "confidence": 0.9,
+        "evidence": [
+          "CLI TypeScript surfaces changed."
+        ]
+      },
+      {
+        "id": "test-npm-run-build-w-packages-cli-e9b0a049",
+        "kind": "test-command",
+        "command": "npm run build -w packages/cli",
+        "freshness": "fresh",
+        "confidence": 0.8,
+        "evidence": [
+          "CLI command or library code changed."
+        ]
+      },
+      {
+        "id": "test-bash-n-plugins-codex-cli-configure-codex-q-c5c10bf3",
+        "kind": "test-command",
+        "command": "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+        "freshness": "fresh",
+        "confidence": 0.9,
+        "evidence": [
+          "Shell installer or harness files changed."
+        ]
+      },
+      {
+        "id": "test-npm-run-test-quest-v8-kimi-4525a3b0",
+        "kind": "test-command",
+        "command": "npm run test:quest-v8:kimi",
+        "freshness": "fresh",
+        "confidence": 0.85,
+        "evidence": [
+          "Kimi/OpenAgent adapter or Quest harness surfaces changed."
+        ]
+      },
+      {
+        "id": "test-npm-run-test-quest-v8-opencode-108148bf",
+        "kind": "test-command",
+        "command": "npm run test:quest-v8:opencode",
+        "freshness": "fresh",
+        "confidence": 0.8,
+        "evidence": [
+          "OpenCode/OpenAgent prompt or Quest harness surfaces changed."
+        ]
+      },
+      {
+        "id": "test-npm-run-test-quest-v8-codex-3b348f53",
+        "kind": "test-command",
+        "command": "npm run test:quest-v8:codex",
+        "freshness": "fresh",
+        "confidence": 0.8,
+        "evidence": [
+          "Codex adapter or Quest harness surfaces changed."
+        ]
+      }
+    ]
+  },
+  "evidenceLedger": {
+    "version": "12",
+    "summary": {
+      "verified": 7,
+      "assumed": 1,
+      "unknown": 0,
+      "stale": 0,
+      "confidence": 0.85
+    },
+    "facts": [
+      {
+        "id": "objective",
+        "claim": "User objective is: Quest v12 verified knowledgebase smoke",
+        "status": "verified",
+        "confidence": 1,
+        "evidence": [
+          {
+            "source": "quest-objective",
+            "detail": "Objective passed into Quest coding intelligence."
+          }
+        ]
+      },
+      {
+        "id": "cwd",
+        "claim": "Project root is /Users/vikashchaudhary/Desktop/code/OpenAgentsControl",
+        "status": "verified",
+        "confidence": 1,
+        "evidence": [
+          {
+            "source": "process.cwd",
+            "detail": "Quest command executed from this project root."
+          }
+        ]
+      },
+      {
+        "id": "repo-wiki",
+        "claim": "Repo wiki has 1644 files and 9 packages.",
+        "status": "verified",
+        "confidence": 0.9,
+        "evidence": [
+          {
+            "source": "repo-wiki",
+            "path": ".oac/repo-wiki/files.json",
+            "detail": "manual"
+          }
+        ]
+      },
+      {
+        "id": "affected-files",
+        "claim": "24 affected file(s) are in scope.",
+        "status": "verified",
+        "confidence": 0.85,
+        "evidence": [
+          {
+            "source": "filesystem",
+            "path": ".opencode/agent/core/openagent.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".opencode/context/core/quest-mode.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "README.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/commands/quest-v9.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/lib/quest-coding-execution.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/lib/quest-run.test.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/lib/quest-run.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/lib/runtime-bridge.test.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "packages/cli/src/lib/runtime-bridge.ts",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/README.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/codex-cli/README.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/codex-cli/codex-quest-default.toml.example",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/codex-cli/openagent-system.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/codex-cli/openagent.toml",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/kimi-code/README.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/kimi-code/openagent-system.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "plugins/kimi-code/openagent.yaml",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "File exists locally."
+          }
+        ]
+      },
+      {
+        "id": "smart-tests",
+        "claim": "8 validation command(s) were selected from local context.",
+        "status": "verified",
+        "confidence": 0.82,
+        "evidence": [
+          {
+            "source": "smart-test-recommendation",
+            "command": "git diff --check",
+            "detail": "Catch whitespace and conflict-marker issues before deeper tests."
+          },
+          {
+            "source": "smart-test-recommendation",
+            "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+            "detail": "Run the nearest focused tests for changed or impacted source files."
+          },
+          {
+            "source": "smart-test-recommendation",
+            "command": "npm run typecheck -w packages/cli",
+            "detail": "CLI TypeScript surfaces changed."
+          },
+          {
+            "source": "smart-test-recommendation",
+            "command": "npm run build -w packages/cli",
+            "detail": "CLI command or library code changed."
+          },
+          {
+            "source": "smart-test-recommendation",
+            "command": "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Shell installer or harness files changed."
+          },
+          {
+            "source": "smart-test-recommendation",
+            "command": "npm run test:quest-v8:kimi",
+            "detail": "Kimi/OpenAgent adapter or Quest harness surfaces changed."
+          },
+          {
+            "source": "smart-test-recommendation",
+            "command": "npm run test:quest-v8:opencode",
+            "detail": "OpenCode/OpenAgent prompt or Quest harness surfaces changed."
+          },
+          {
+            "source": "smart-test-recommendation",
+            "command": "npm run test:quest-v8:codex",
+            "detail": "Codex adapter or Quest harness surfaces changed."
+          }
+        ]
+      },
+      {
+        "id": "package-scripts",
+        "claim": "9 package manifest(s) supply local script evidence.",
+        "status": "verified",
+        "confidence": 0.8,
+        "evidence": [
+          {
+            "source": "package.json",
+            "path": "package.json",
+            "detail": "64 script(s)."
+          },
+          {
+            "source": "package.json",
+            "path": ".opencode/plugin/package.json",
+            "detail": "0 script(s)."
+          },
+          {
+            "source": "package.json",
+            "path": ".opencode/tool/package.json",
+            "detail": "4 script(s)."
+          },
+          {
+            "source": "package.json",
+            "path": "dev/dashboard-project/package.json",
+            "detail": "0 script(s)."
+          },
+          {
+            "source": "package.json",
+            "path": "evals/framework/package.json",
+            "detail": "15 script(s)."
+          },
+          {
+            "source": "package.json",
+            "path": "packages/cli/package.json",
+            "detail": "6 script(s)."
+          },
+          {
+            "source": "package.json",
+            "path": "packages/compatibility-layer/package.json",
+            "detail": "9 script(s)."
+          },
+          {
+            "source": "package.json",
+            "path": "packages/plugin-abilities/package.json",
+            "detail": "5 script(s)."
+          },
+          {
+            "source": "package.json",
+            "path": "packages/swarm-runtime/package.json",
+            "detail": "4 script(s)."
+          }
+        ]
+      },
+      {
+        "id": "runtime-compatibility",
+        "claim": "Runtime compatibility matrix is covered for required runtimes.",
+        "status": "verified",
+        "confidence": 0.82,
+        "evidence": [
+          {
+            "source": "runtime-compatibility-matrix",
+            "command": "npm run test:quest-v8:opencode",
+            "detail": "opencode: covered"
+          },
+          {
+            "source": "runtime-compatibility-matrix",
+            "command": "npm run test:quest-v8:kimi",
+            "detail": "kimi: covered"
+          },
+          {
+            "source": "runtime-compatibility-matrix",
+            "command": "npm run test:quest-v8:codex",
+            "detail": "codex: covered"
+          },
+          {
+            "source": "runtime-compatibility-matrix",
+            "command": "bash -n install.sh update.sh",
+            "detail": "claude: not-required"
+          }
+        ]
+      },
+      {
+        "id": "security-gate",
+        "claim": "Security/secrets gate verdict is review.",
+        "status": "assumed",
+        "confidence": 0.6,
+        "evidence": [
+          {
+            "source": "security-secrets-gate",
+            "path": "README.md",
+            "detail": "Remote script execution pattern detected."
+          },
+          {
+            "source": "security-secrets-gate",
+            "path": "packages/cli/src/lib/quest-coding-execution.ts",
+            "detail": "Remote script execution pattern detected."
+          }
+        ]
+      }
+    ]
+  },
+  "hallucinationGate": {
+    "version": "12",
+    "verdict": "pass",
+    "checks": [
+      {
+        "id": "files-grounded",
+        "title": "Referenced patch files are present in scope, index, or repo wiki",
+        "status": "pass",
+        "evidence": [
+          "All patch files are locally grounded."
+        ],
+        "recommendation": "Proceed with scoped edits."
+      },
+      {
+        "id": "commands-grounded",
+        "title": "Validation commands are grounded in known local scripts or shell checks",
+        "status": "pass",
+        "evidence": [
+          "All commands are locally grounded."
+        ],
+        "recommendation": "Run selected validation commands."
+      },
+      {
+        "id": "runtime-sidecars-declared",
+        "title": "Quest v12 sidecars are declared for runtime handoff",
+        "status": "pass",
+        "evidence": [
+          "verified-knowledgebase.json",
+          "knowledgebase-index.json",
+          "evidence-ledger.json",
+          "hallucination-gate.json",
+          "contract-facts.json",
+          "source-to-patch-trace.json",
+          "stale-knowledge-report.json",
+          "dependency-research-cache.json",
+          "behavior-oracle.json",
+          "test-authoring-plan.json",
+          "verified-knowledgebase.md"
+        ],
+        "recommendation": "Keep runtime prompts, installer/update scripts, and smoke harnesses aligned with these sidecars."
+      },
+      {
+        "id": "security-not-blocked",
+        "title": "Security/secrets gate is not blocked",
+        "status": "pass",
+        "evidence": [
+          "securitySecretsGate.verdict=review"
+        ],
+        "recommendation": "Continue with normal validation."
+      },
+      {
+        "id": "stale-or-unknown-facts",
+        "title": "Evidence ledger has no stale or unknown core facts",
+        "status": "pass",
+        "evidence": [],
+        "recommendation": "Evidence is sufficient for this scope."
+      }
+    ],
+    "unknownReferences": [],
+    "rules": [
+      "Do not claim files, symbols, commands, APIs, or test results without local evidence.",
+      "Mark uncertain facts as assumed or unknown and refresh evidence before completion.",
+      "Use official/current research only when local repository evidence cannot answer a correctness-sensitive question.",
+      "Tie every patch capsule to source evidence and validation commands before reporting completion."
+    ]
+  },
+  "contractFacts": {
+    "version": "12",
+    "facts": [
+      {
+        "id": "contract-f0cqje",
+        "kind": "runtime-prompt",
+        "path": ".opencode/agent/core/openagent.md",
+        "claim": "runtime-prompt contract .opencode/agent/core/openagent.md must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": ".opencode/agent/core/openagent.md",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-v2v835",
+        "kind": "runtime-prompt",
+        "path": ".opencode/context/core/quest-mode.md",
+        "claim": "runtime-prompt contract .opencode/context/core/quest-mode.md must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": ".opencode/context/core/quest-mode.md",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-rvkijb",
+        "kind": "docs",
+        "path": "README.md",
+        "claim": "docs contract README.md must stay aligned with 2 implementation hint(s).",
+        "status": "active",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "README.md",
+            "detail": "watch"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "README.md",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": ".opencode/context/core/quest-mode.md",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-1b85gs",
+        "kind": "cli",
+        "path": "packages/cli/src/commands/quest-v9.ts",
+        "claim": "cli contract packages/cli/src/commands/quest-v9.ts must stay aligned with 2 implementation hint(s).",
+        "status": "active",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "packages/cli/src/commands/quest-v9.ts",
+            "detail": "watch"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "packages/cli/src/index.ts",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "packages/cli/src/lib/quest-run.ts",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-odp2hk",
+        "kind": "runtime-prompt",
+        "path": "plugins/README.md",
+        "claim": "runtime-prompt contract plugins/README.md must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/README.md",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-24k4fd",
+        "kind": "runtime-prompt",
+        "path": "plugins/codex-cli/README.md",
+        "claim": "runtime-prompt contract plugins/codex-cli/README.md must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/codex-cli/README.md",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-fou74g",
+        "kind": "runtime-prompt",
+        "path": "plugins/codex-cli/codex-quest-default.toml.example",
+        "claim": "runtime-prompt contract plugins/codex-cli/codex-quest-default.toml.example must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/codex-cli/codex-quest-default.toml.example",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-gpe0mi",
+        "kind": "runtime-prompt",
+        "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+        "claim": "runtime-prompt contract plugins/codex-cli/configure-codex-quest-default.sh must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-jpn8ik",
+        "kind": "runtime-prompt",
+        "path": "plugins/codex-cli/openagent-system.md",
+        "claim": "runtime-prompt contract plugins/codex-cli/openagent-system.md must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/codex-cli/openagent-system.md",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-flfnmb",
+        "kind": "runtime-prompt",
+        "path": "plugins/codex-cli/openagent.toml",
+        "claim": "runtime-prompt contract plugins/codex-cli/openagent.toml must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/codex-cli/openagent.toml",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-5tv6yh",
+        "kind": "runtime-prompt",
+        "path": "plugins/kimi-code/README.md",
+        "claim": "runtime-prompt contract plugins/kimi-code/README.md must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/kimi-code/README.md",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-5mg2yi",
+        "kind": "runtime-prompt",
+        "path": "plugins/kimi-code/openagent-system.md",
+        "claim": "runtime-prompt contract plugins/kimi-code/openagent-system.md must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/kimi-code/openagent-system.md",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "contract-x539rc",
+        "kind": "runtime-prompt",
+        "path": "plugins/kimi-code/openagent.yaml",
+        "claim": "runtime-prompt contract plugins/kimi-code/openagent.yaml must stay aligned with 3 implementation hint(s).",
+        "status": "needs-review",
+        "confidence": 0.72,
+        "evidence": [
+          {
+            "source": "contract-drift-guard",
+            "path": "plugins/kimi-code/openagent.yaml",
+            "detail": "needs-review"
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          },
+          {
+            "source": "implementation-hint",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Potential matching implementation surface."
+          }
+        ]
+      },
+      {
+        "id": "runtime-contract-opencode",
+        "kind": "runtime-prompt",
+        "claim": "opencode runtime prompt must mention required Quest sidecars and write-back clauses.",
+        "status": "active",
+        "confidence": 0.85,
+        "evidence": [
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": ".opencode/agent/core/openagent.md",
+            "command": "npm run test:quest-v8:opencode",
+            "detail": "covered"
+          },
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": ".opencode/context/core/quest-mode.md",
+            "command": "npm run test:quest-v8:opencode",
+            "detail": "covered"
+          }
+        ]
+      },
+      {
+        "id": "runtime-contract-kimi",
+        "kind": "runtime-prompt",
+        "claim": "kimi runtime prompt must mention required Quest sidecars and write-back clauses.",
+        "status": "active",
+        "confidence": 0.85,
+        "evidence": [
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": "plugins/kimi-code/openagent.yaml",
+            "command": "npm run test:quest-v8:kimi",
+            "detail": "covered"
+          },
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": "plugins/kimi-code/openagent-system.md",
+            "command": "npm run test:quest-v8:kimi",
+            "detail": "covered"
+          }
+        ]
+      },
+      {
+        "id": "runtime-contract-codex",
+        "kind": "runtime-prompt",
+        "claim": "codex runtime prompt must mention required Quest sidecars and write-back clauses.",
+        "status": "active",
+        "confidence": 0.85,
+        "evidence": [
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": "plugins/codex-cli/openagent.toml",
+            "command": "npm run test:quest-v8:codex",
+            "detail": "covered"
+          },
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": "plugins/codex-cli/openagent-system.md",
+            "command": "npm run test:quest-v8:codex",
+            "detail": "covered"
+          }
+        ]
+      },
+      {
+        "id": "runtime-contract-claude",
+        "kind": "runtime-prompt",
+        "claim": "claude runtime prompt must mention required Quest sidecars and write-back clauses.",
+        "status": "needs-review",
+        "confidence": 0.65,
+        "evidence": [
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": "plugins/claude-code/openagent-system.md",
+            "command": "bash -n install.sh update.sh",
+            "detail": "not-required"
+          },
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": "install.sh",
+            "command": "bash -n install.sh update.sh",
+            "detail": "not-required"
+          },
+          {
+            "source": "runtime-compatibility-matrix",
+            "path": "update.sh",
+            "command": "bash -n install.sh update.sh",
+            "detail": "not-required"
+          }
+        ]
+      },
+      {
+        "id": "quest-completion-contract",
+        "kind": "behavior",
+        "claim": "After finishing the user request, QuestMode suggests next steps and waits for the user decision.",
+        "status": "active",
+        "confidence": 0.9,
+        "evidence": [
+          {
+            "source": "coding-execution.doneDefinition",
+            "detail": "User-choice next steps are part of executable acceptance."
+          }
+        ]
+      }
+    ],
+    "commands": [
+      "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+      "npm run test:quest-v8:codex",
+      "npm run test:quest-v8:kimi",
+      "npm run test:quest-v8:opencode",
+      "git diff --check",
+      "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "npm run typecheck -w packages/cli",
+      "npm run build -w packages/cli"
+    ]
+  },
+  "sourceToPatchTrace": {
+    "version": "12",
+    "traces": [
+      {
+        "id": "trace-patch-001",
+        "patchCapsuleId": "patch-001",
+        "requirements": [
+          "Implement requested coding change for: Quest v12 verified knowledgebase smoke",
+          "Change 24 file(s) to satisfy: Quest v12 verified knowledgebase smoke"
+        ],
+        "files": [
+          ".opencode/agent/core/openagent.md",
+          ".opencode/context/core/quest-mode.md",
+          "README.md",
+          "packages/cli/src/commands/quest-v9.ts",
+          "packages/cli/src/lib/quest-coding-execution.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "packages/cli/src/lib/quest-run.test.ts",
+          "packages/cli/src/lib/quest-run.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "packages/cli/src/lib/runtime-bridge.test.ts",
+          "packages/cli/src/lib/runtime-bridge.ts",
+          "plugins/README.md",
+          "plugins/codex-cli/README.md",
+          "plugins/codex-cli/codex-quest-default.toml.example",
+          "plugins/codex-cli/configure-codex-quest-default.sh",
+          "plugins/codex-cli/openagent-system.md",
+          "plugins/codex-cli/openagent.toml",
+          "plugins/kimi-code/README.md",
+          "plugins/kimi-code/openagent-system.md",
+          "plugins/kimi-code/openagent.yaml",
+          "scripts/tests/test-codex-quest-v8.sh",
+          "scripts/tests/test-kimi-quest-v8.sh",
+          "scripts/tests/test-opencode-quest-v8.sh"
+        ],
+        "evidenceFactIds": [
+          "objective",
+          "affected-files",
+          "smart-tests",
+          "security-gate"
+        ],
+        "validationCommands": [
+          "git diff --check",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "npm run typecheck -w packages/cli",
+          "npm run build -w packages/cli",
+          "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
+        ],
+        "assumptions": [
+          "security-gate: Security/secrets gate verdict is review."
+        ],
+        "status": "traceable"
+      }
+    ]
+  },
+  "staleKnowledgeReport": {
+    "version": "12",
+    "checkedAt": "2026-05-29T09:00:07.982Z",
+    "items": [
+      {
+        "id": "stale-oac-repo-wiki-files-52d72c38",
+        "path": ".oac/repo-wiki/files.json",
+        "freshness": "fresh",
+        "ageHours": 3.4,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-oac-repo-wiki-index-5ac29e50",
+        "path": ".oac/repo-wiki/index.md",
+        "freshness": "fresh",
+        "ageHours": 3.4,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-opencode-codebase-index-8a3e2605",
+        "path": ".opencode/.codebase-index.json",
+        "freshness": "missing",
+        "recommendation": "Run oac quest-v9 or allow Quest coding intelligence to refresh the index."
+      },
+      {
+        "id": "stale-install-c0fffa6d",
+        "path": "install.sh",
+        "freshness": "recent",
+        "ageHours": 124.3,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-update-efe50602",
+        "path": "update.sh",
+        "freshness": "recent",
+        "ageHours": 124.3,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-opencode-agent-core-openagent-5822a9f6",
+        "path": ".opencode/agent/core/openagent.md",
+        "freshness": "fresh",
+        "ageHours": 0.1,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-opencode-context-core-quest-mode-6b5215d7",
+        "path": ".opencode/context/core/quest-mode.md",
+        "freshness": "fresh",
+        "ageHours": 0.1,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-plugins-kimi-code-openagent-3013a9c2",
+        "path": "plugins/kimi-code/openagent.yaml",
+        "freshness": "fresh",
+        "ageHours": 0.1,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-plugins-kimi-code-openagent-system-b29c6b4b",
+        "path": "plugins/kimi-code/openagent-system.md",
+        "freshness": "fresh",
+        "ageHours": 0.1,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-plugins-codex-cli-openagent-19361823",
+        "path": "plugins/codex-cli/openagent.toml",
+        "freshness": "fresh",
+        "ageHours": 0.1,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-plugins-codex-cli-openagent-system-f7a78007",
+        "path": "plugins/codex-cli/openagent-system.md",
+        "freshness": "fresh",
+        "ageHours": 0.1,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-users-vikashchaudhary-kimi-agents-openagen-9a2499b2",
+        "path": "/Users/vikashchaudhary/.kimi/agents/openagents-control/openagent.yaml",
+        "freshness": "fresh",
+        "ageHours": 3.6,
+        "recommendation": "Use as current local evidence."
+      },
+      {
+        "id": "stale-users-vikashchaudhary-kimi-agents-openagen-f9a59bac",
+        "path": "/Users/vikashchaudhary/.kimi/agents/openagents-control/openagent-system.md",
+        "freshness": "fresh",
+        "ageHours": 3.6,
+        "recommendation": "Use as current local evidence."
+      }
+    ],
+    "staleItems": 1,
+    "refreshCommands": [
+      "oac repo-wiki",
+      "oac quest-v9",
+      "npm run test:quest-v8:kimi",
+      "npm run test:quest-v8:opencode",
+      "npm run test:quest-v8:codex"
+    ]
+  },
+  "dependencyResearchCache": {
+    "version": "12",
+    "needed": true,
+    "reason": "Dependency, toolchain, schema, or external import surface changed; current official docs may affect correctness.",
+    "queries": [
+      "bun:test official documentation current API",
+      "commander official documentation current API",
+      "fs official documentation current API",
+      "node:child_process official documentation current API",
+      "node:crypto official documentation current API"
+    ],
+    "localEvidence": [
+      ".opencode/agent/core/openagent.md",
+      ".opencode/context/core/quest-mode.md",
+      "README.md",
+      "packages/cli/src/commands/quest-v9.ts",
+      "packages/cli/src/lib/quest-coding-execution.ts",
+      "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+      "packages/cli/src/lib/quest-coding-intelligence.ts",
+      "packages/cli/src/lib/quest-run.test.ts",
+      "packages/cli/src/lib/quest-run.ts",
+      "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "packages/cli/src/lib/runtime-bridge.test.ts",
+      "packages/cli/src/lib/runtime-bridge.ts",
+      "plugins/README.md",
+      "plugins/codex-cli/README.md",
+      "plugins/codex-cli/configure-codex-quest-default.sh",
+      "plugins/codex-cli/openagent-system.md",
+      "plugins/codex-cli/openagent.toml",
+      "plugins/kimi-code/README.md",
+      "plugins/kimi-code/openagent-system.md",
+      "plugins/kimi-code/openagent.yaml"
+    ],
+    "entries": [
+      {
+        "id": "research-bun-test-official-documentation-current-ap-8db15c6b",
+        "query": "bun:test official documentation current API",
+        "status": "requires-official-research",
+        "evidence": [
+          ".opencode/agent/core/openagent.md",
+          ".opencode/context/core/quest-mode.md",
+          "README.md",
+          "packages/cli/src/commands/quest-v9.ts",
+          "packages/cli/src/lib/quest-coding-execution.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "packages/cli/src/lib/quest-run.test.ts",
+          "packages/cli/src/lib/quest-run.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "packages/cli/src/lib/runtime-bridge.test.ts",
+          "packages/cli/src/lib/runtime-bridge.ts",
+          "plugins/README.md",
+          "plugins/codex-cli/README.md",
+          "plugins/codex-cli/configure-codex-quest-default.sh",
+          "plugins/codex-cli/openagent-system.md",
+          "plugins/codex-cli/openagent.toml",
+          "plugins/kimi-code/README.md",
+          "plugins/kimi-code/openagent-system.md",
+          "plugins/kimi-code/openagent.yaml"
+        ],
+        "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
+      },
+      {
+        "id": "research-commander-official-documentation-current-a-b98d8a65",
+        "query": "commander official documentation current API",
+        "status": "requires-official-research",
+        "evidence": [
+          ".opencode/agent/core/openagent.md",
+          ".opencode/context/core/quest-mode.md",
+          "README.md",
+          "packages/cli/src/commands/quest-v9.ts",
+          "packages/cli/src/lib/quest-coding-execution.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "packages/cli/src/lib/quest-run.test.ts",
+          "packages/cli/src/lib/quest-run.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "packages/cli/src/lib/runtime-bridge.test.ts",
+          "packages/cli/src/lib/runtime-bridge.ts",
+          "plugins/README.md",
+          "plugins/codex-cli/README.md",
+          "plugins/codex-cli/configure-codex-quest-default.sh",
+          "plugins/codex-cli/openagent-system.md",
+          "plugins/codex-cli/openagent.toml",
+          "plugins/kimi-code/README.md",
+          "plugins/kimi-code/openagent-system.md",
+          "plugins/kimi-code/openagent.yaml"
+        ],
+        "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
+      },
+      {
+        "id": "research-fs-official-documentation-current-api-421cb28f",
+        "query": "fs official documentation current API",
+        "status": "requires-official-research",
+        "evidence": [
+          ".opencode/agent/core/openagent.md",
+          ".opencode/context/core/quest-mode.md",
+          "README.md",
+          "packages/cli/src/commands/quest-v9.ts",
+          "packages/cli/src/lib/quest-coding-execution.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "packages/cli/src/lib/quest-run.test.ts",
+          "packages/cli/src/lib/quest-run.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "packages/cli/src/lib/runtime-bridge.test.ts",
+          "packages/cli/src/lib/runtime-bridge.ts",
+          "plugins/README.md",
+          "plugins/codex-cli/README.md",
+          "plugins/codex-cli/configure-codex-quest-default.sh",
+          "plugins/codex-cli/openagent-system.md",
+          "plugins/codex-cli/openagent.toml",
+          "plugins/kimi-code/README.md",
+          "plugins/kimi-code/openagent-system.md",
+          "plugins/kimi-code/openagent.yaml"
+        ],
+        "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
+      },
+      {
+        "id": "research-node-child-process-official-documentation--b15f9538",
+        "query": "node:child_process official documentation current API",
+        "status": "requires-official-research",
+        "evidence": [
+          ".opencode/agent/core/openagent.md",
+          ".opencode/context/core/quest-mode.md",
+          "README.md",
+          "packages/cli/src/commands/quest-v9.ts",
+          "packages/cli/src/lib/quest-coding-execution.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "packages/cli/src/lib/quest-run.test.ts",
+          "packages/cli/src/lib/quest-run.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "packages/cli/src/lib/runtime-bridge.test.ts",
+          "packages/cli/src/lib/runtime-bridge.ts",
+          "plugins/README.md",
+          "plugins/codex-cli/README.md",
+          "plugins/codex-cli/configure-codex-quest-default.sh",
+          "plugins/codex-cli/openagent-system.md",
+          "plugins/codex-cli/openagent.toml",
+          "plugins/kimi-code/README.md",
+          "plugins/kimi-code/openagent-system.md",
+          "plugins/kimi-code/openagent.yaml"
+        ],
+        "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
+      },
+      {
+        "id": "research-node-crypto-official-documentation-current-4660fb5a",
+        "query": "node:crypto official documentation current API",
+        "status": "requires-official-research",
+        "evidence": [
+          ".opencode/agent/core/openagent.md",
+          ".opencode/context/core/quest-mode.md",
+          "README.md",
+          "packages/cli/src/commands/quest-v9.ts",
+          "packages/cli/src/lib/quest-coding-execution.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+          "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "packages/cli/src/lib/quest-run.test.ts",
+          "packages/cli/src/lib/quest-run.ts",
+          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "packages/cli/src/lib/runtime-bridge.test.ts",
+          "packages/cli/src/lib/runtime-bridge.ts",
+          "plugins/README.md",
+          "plugins/codex-cli/README.md",
+          "plugins/codex-cli/configure-codex-quest-default.sh",
+          "plugins/codex-cli/openagent-system.md",
+          "plugins/codex-cli/openagent.toml",
+          "plugins/kimi-code/README.md",
+          "plugins/kimi-code/openagent-system.md",
+          "plugins/kimi-code/openagent.yaml"
+        ],
+        "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
+      }
+    ]
+  },
+  "behaviorOracle": {
+    "version": "12",
+    "signals": [
+      {
+        "id": "behavior-patch-001",
+        "behavior": "Change 24 file(s) to satisfy: Quest v12 verified knowledgebase smoke",
+        "evidence": [
+          {
+            "source": "patch-capsule",
+            "path": ".opencode/agent/core/openagent.md",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".opencode/context/core/quest-mode.md",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "README.md",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/commands/quest-v9.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/quest-coding-execution.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/quest-run.test.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/quest-run.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/runtime-bridge.test.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/runtime-bridge.ts",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/README.md",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/codex-cli/README.md",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/codex-cli/codex-quest-default.toml.example",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/codex-cli/configure-codex-quest-default.sh",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/codex-cli/openagent-system.md",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/codex-cli/openagent.toml",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/kimi-code/README.md",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/kimi-code/openagent-system.md",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "plugins/kimi-code/openagent.yaml",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "scripts/tests/test-codex-quest-v8.sh",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "scripts/tests/test-kimi-quest-v8.sh",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "scripts/tests/test-opencode-quest-v8.sh",
+            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          }
+        ],
+        "validation": [
+          "git diff --check",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "npm run typecheck -w packages/cli",
+          "npm run build -w packages/cli",
+          "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
+        ],
+        "status": "planned"
+      },
+      {
+        "id": "acceptance-behavior-1",
+        "behavior": "All required command checks are run or explicitly reported as blocked.",
+        "evidence": [
+          {
+            "source": "executable-acceptance",
+            "detail": "All required command checks are run or explicitly reported as blocked."
+          }
+        ],
+        "validation": [
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "git diff --check",
+          "npm run build -w packages/cli",
+          "npm run test:quest-v8:codex",
+          "npm run test:quest-v8:kimi",
+          "npm run test:quest-v8:opencode",
+          "npm run typecheck -w packages/cli"
+        ],
+        "status": "planned"
+      },
+      {
+        "id": "acceptance-behavior-2",
+        "behavior": "All patch ledger entries have validation evidence or a documented reason.",
+        "evidence": [
+          {
+            "source": "executable-acceptance",
+            "detail": "All patch ledger entries have validation evidence or a documented reason."
+          }
+        ],
+        "validation": [
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "git diff --check",
+          "npm run build -w packages/cli",
+          "npm run test:quest-v8:codex",
+          "npm run test:quest-v8:kimi",
+          "npm run test:quest-v8:opencode",
+          "npm run typecheck -w packages/cli"
+        ],
+        "status": "planned"
+      },
+      {
+        "id": "acceptance-behavior-3",
+        "behavior": "Automatic review, security gate, runtime parity, and PR package have no blocking findings.",
+        "evidence": [
+          {
+            "source": "executable-acceptance",
+            "detail": "Automatic review, security gate, runtime parity, and PR package have no blocking findings."
+          }
+        ],
+        "validation": [
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "git diff --check",
+          "npm run build -w packages/cli",
+          "npm run test:quest-v8:codex",
+          "npm run test:quest-v8:kimi",
+          "npm run test:quest-v8:opencode",
+          "npm run typecheck -w packages/cli"
+        ],
+        "status": "planned"
+      },
+      {
+        "id": "acceptance-behavior-4",
+        "behavior": "The user receives suggested next steps and QuestMode waits for a decision.",
+        "evidence": [
+          {
+            "source": "executable-acceptance",
+            "detail": "The user receives suggested next steps and QuestMode waits for a decision."
+          }
+        ],
+        "validation": [
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "git diff --check",
+          "npm run build -w packages/cli",
+          "npm run test:quest-v8:codex",
+          "npm run test:quest-v8:kimi",
+          "npm run test:quest-v8:opencode",
+          "npm run typecheck -w packages/cli"
+        ],
+        "status": "planned"
+      }
+    ],
+    "completionRules": [
+      "The final answer must separate verified results from unrun validation.",
+      "A task cannot be marked complete when the hallucination gate is blocked.",
+      "A runtime-facing change requires the matching runtime harness or an explicit blocked note.",
+      "Next steps are recommendations only; wait for the user before executing follow-ups."
+    ]
+  },
+  "testAuthoringPlan": {
+    "version": "12",
+    "candidates": [
+      {
+        "id": "author-test-gap-1b85gs",
+        "sourceFile": "packages/cli/src/commands/quest-v9.ts",
+        "suggestedTestFile": "packages/cli/src/commands/quest-v9.test.ts",
+        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "reason": "Changed source file has no nearby test file in the indexed codebase.",
+        "priority": "medium"
+      },
+      {
+        "id": "author-test-gap-o2h7jb",
+        "sourceFile": "packages/cli/src/lib/quest-coding-execution.ts",
+        "suggestedTestFile": "packages/cli/src/lib/quest-coding-execution.test.ts",
+        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "reason": "Changed source file has no nearby test file in the indexed codebase.",
+        "priority": "medium"
+      },
+      {
+        "id": "author-test-gap-b2ln66",
+        "sourceFile": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+        "suggestedTestFile": "packages/cli/src/lib/quest-verified-knowledgebase.test.ts",
+        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "reason": "Changed source file has no nearby test file in the indexed codebase.",
+        "priority": "medium"
+      }
+    ],
+    "commands": [
+      "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "git diff --check",
+      "npm run build -w packages/cli",
+      "npm run test:quest-v8:codex",
+      "npm run test:quest-v8:kimi",
+      "npm run test:quest-v8:opencode",
+      "npm run typecheck -w packages/cli",
+      "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
+    ],
+    "policy": [
+      "Suggest tests automatically, but create them only when they are inside the pre-edit contract or clearly required by the user request.",
+      "Prefer focused tests next to changed source files before broad integration suites.",
+      "After creating tests, rerun the minimum credible commands and refresh Quest v12 sidecars."
+    ]
+  }
+}

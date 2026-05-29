@@ -1,0 +1,44 @@
+{
+  "version": "12",
+  "candidates": [
+    {
+      "id": "author-test-gap-1b85gs",
+      "sourceFile": "packages/cli/src/commands/quest-v9.ts",
+      "suggestedTestFile": "packages/cli/src/commands/quest-v9.test.ts",
+      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "priority": "medium"
+    },
+    {
+      "id": "author-test-gap-o2h7jb",
+      "sourceFile": "packages/cli/src/lib/quest-coding-execution.ts",
+      "suggestedTestFile": "packages/cli/src/lib/quest-coding-execution.test.ts",
+      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "priority": "medium"
+    },
+    {
+      "id": "author-test-gap-b2ln66",
+      "sourceFile": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "suggestedTestFile": "packages/cli/src/lib/quest-verified-knowledgebase.test.ts",
+      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "priority": "medium"
+    }
+  ],
+  "commands": [
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+    "git diff --check",
+    "npm run build -w packages/cli",
+    "npm run test:quest-v8:codex",
+    "npm run test:quest-v8:kimi",
+    "npm run test:quest-v8:opencode",
+    "npm run typecheck -w packages/cli",
+    "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
+  ],
+  "policy": [
+    "Suggest tests automatically, but create them only when they are inside the pre-edit contract or clearly required by the user request.",
+    "Prefer focused tests next to changed source files before broad integration suites.",
+    "After creating tests, rerun the minimum credible commands and refresh Quest v12 sidecars."
+  ]
+}

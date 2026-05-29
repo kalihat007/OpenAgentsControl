@@ -100,6 +100,17 @@ export interface QuestRunArtifacts {
   securitySecretsGate?: string
   prAutoPackager?: string
   prAutoPackagerBrief?: string
+  verifiedKnowledgebase?: string
+  knowledgebaseIndex?: string
+  evidenceLedger?: string
+  hallucinationGate?: string
+  contractFacts?: string
+  sourceToPatchTrace?: string
+  staleKnowledgeReport?: string
+  dependencyResearchCache?: string
+  behaviorOracle?: string
+  testAuthoringPlan?: string
+  verifiedKnowledgebaseBrief?: string
   summary?: string
   handoff?: string
 }
@@ -272,6 +283,17 @@ export function buildQuestRun(
     securitySecretsGate: 'security-secrets-gate.json',
     prAutoPackager: 'pr-auto-packager.json',
     prAutoPackagerBrief: 'pr-auto-packager.md',
+    verifiedKnowledgebase: 'verified-knowledgebase.json',
+    knowledgebaseIndex: 'knowledgebase-index.json',
+    evidenceLedger: 'evidence-ledger.json',
+    hallucinationGate: 'hallucination-gate.json',
+    contractFacts: 'contract-facts.json',
+    sourceToPatchTrace: 'source-to-patch-trace.json',
+    staleKnowledgeReport: 'stale-knowledge-report.json',
+    dependencyResearchCache: 'dependency-research-cache.json',
+    behaviorOracle: 'behavior-oracle.json',
+    testAuthoringPlan: 'test-authoring-plan.json',
+    verifiedKnowledgebaseBrief: 'verified-knowledgebase.md',
     ...options.artifacts,
   }
 
@@ -371,6 +393,17 @@ export function normalizeQuestRun(quest: QuestRun): QuestRun {
       securitySecretsGate: quest.artifacts?.securitySecretsGate ?? 'security-secrets-gate.json',
       prAutoPackager: quest.artifacts?.prAutoPackager ?? 'pr-auto-packager.json',
       prAutoPackagerBrief: quest.artifacts?.prAutoPackagerBrief ?? 'pr-auto-packager.md',
+      verifiedKnowledgebase: quest.artifacts?.verifiedKnowledgebase ?? 'verified-knowledgebase.json',
+      knowledgebaseIndex: quest.artifacts?.knowledgebaseIndex ?? 'knowledgebase-index.json',
+      evidenceLedger: quest.artifacts?.evidenceLedger ?? 'evidence-ledger.json',
+      hallucinationGate: quest.artifacts?.hallucinationGate ?? 'hallucination-gate.json',
+      contractFacts: quest.artifacts?.contractFacts ?? 'contract-facts.json',
+      sourceToPatchTrace: quest.artifacts?.sourceToPatchTrace ?? 'source-to-patch-trace.json',
+      staleKnowledgeReport: quest.artifacts?.staleKnowledgeReport ?? 'stale-knowledge-report.json',
+      dependencyResearchCache: quest.artifacts?.dependencyResearchCache ?? 'dependency-research-cache.json',
+      behaviorOracle: quest.artifacts?.behaviorOracle ?? 'behavior-oracle.json',
+      testAuthoringPlan: quest.artifacts?.testAuthoringPlan ?? 'test-authoring-plan.json',
+      verifiedKnowledgebaseBrief: quest.artifacts?.verifiedKnowledgebaseBrief ?? 'verified-knowledgebase.md',
     },
     nextStepSuggestions: quest.nextStepSuggestions ?? [],
     runtimes: {
@@ -722,10 +755,12 @@ export function formatRuntimeHandoff(
   lines.push('  Use Coding Autopilot for symbol-level context, pre-edit boundaries, deterministic test escalation, patch/accountability ledger, automatic review, failure replay, runtime parity, dependency research decisions, bounded autofix, and PR readiness.')
   lines.push('  Read Coding Execution sidecars when present: coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, and pr-auto-packager.md.')
   lines.push('  Use Coding Execution for runnable acceptance, guarded autofix, contract drift detection, review-to-patch loops, test-gap closure, regression snapshot checks, runtime compatibility, file ownership locks, security/secrets gating, and PR packaging.')
+  lines.push('  Read Verified Knowledgebase sidecars when present: verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, and verified-knowledgebase.md.')
+  lines.push('  Use Verified Knowledgebase before editing and before completion: cite evidence for files/symbols/commands, treat unknowns as assumptions, stop if hallucination-gate.json is blocked, refresh stale knowledge, and connect every patch capsule to evidence and validation.')
   lines.push('  Before starting any task, run a Pre-Execution Discovery Gate: inspect required local files/context first, append context.loaded/action.summary evidence, then append research.assessed. Perform web/current research only when it can affect correctness; otherwise record needed:false and proceed.')
   lines.push('  The CLI refreshes interaction-memory.json and memory-graph.json from append-only events automatically.')
   lines.push('  The CLI refreshes .oac/repo-wiki/ from Quest lifecycle and file/context events automatically.')
-  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, and Coding Execution sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
+  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
   lines.push('  The CLI reconciler reads base quest.json + events.ndjson to produce live state.')
   lines.push('  Run "oac quest-status <id>" to see reconciled state.')
 
@@ -905,8 +940,8 @@ function buildRuntimeHints(
 function buildResumePrompt(questId: string, objective: string, runDir: string): string {
   return [
     `Resume OpenAgent Quest ${questId}: ${objective}`,
-    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
-    'Use Quest v9 coding intelligence, Coding Autopilot, and Coding Execution for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, and PR readiness before editing or completing the Quest.',
+    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, verified-knowledgebase.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
+    'Use Quest v9 coding intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, evidence ledger, hallucination gate, source-to-patch traceability, stale knowledge checks, behavior oracle, test-authoring plan, and PR readiness before editing or completing the Quest.',
     'Continue in Quest Mode + Experts Mode using the same user-selected runtime model.',
   ].join(' ')
 }

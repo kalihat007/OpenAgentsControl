@@ -142,6 +142,17 @@ load `quest.json` first when resuming. Quest v8 artifacts are:
 - `security-secrets-gate.json`
 - `pr-auto-packager.json`
 - `pr-auto-packager.md`
+- `verified-knowledgebase.json`
+- `knowledgebase-index.json`
+- `evidence-ledger.json`
+- `hallucination-gate.json`
+- `contract-facts.json`
+- `source-to-patch-trace.json`
+- `stale-knowledge-report.json`
+- `dependency-research-cache.json`
+- `behavior-oracle.json`
+- `test-authoring-plan.json`
+- `verified-knowledgebase.md`
 - `.oac/repo-wiki/index.md` (project-level, outside the run dir)
 - `summary.json`
 - optional `handoff.json`
@@ -193,7 +204,8 @@ verification/reflection/completion. If Codex changes files outside Quest
 write-back, run `oac repo-wiki`; for long local sessions use
 `oac repo-wiki --watch`.
 
-For coding work, use Quest v9 coding intelligence by default. Read
+For coding work, use Quest v9 coding intelligence and the v12 Verified
+Knowledgebase by default. Read
 `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
 `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
 `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`,
@@ -203,15 +215,24 @@ For coding work, use Quest v9 coding intelligence by default. Read
 `guarded-autofix-runner.json`, `contract-drift-guard.json`,
 `review-patch-loop.json`, `test-gap-finder.json`, `regression-snapshots.json`,
 `runtime-compatibility-matrix.json`, `ownership-lock-plan.json`,
-`security-secrets-gate.json`, `pr-auto-packager.json`, and
-`pr-auto-packager.md`
+`security-secrets-gate.json`, `pr-auto-packager.json`, `pr-auto-packager.md`,
+`verified-knowledgebase.json`, `knowledgebase-index.json`,
+`evidence-ledger.json`, `hallucination-gate.json`, `contract-facts.json`,
+`source-to-patch-trace.json`, `stale-knowledge-report.json`,
+`dependency-research-cache.json`, `behavior-oracle.json`,
+`test-authoring-plan.json`, and `verified-knowledgebase.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure
 replay, dependency research gate, bounded autofix plan, PR readiness,
 executable acceptance, guarded autofix, contract drift, review-to-patch loop,
 test gaps, regression snapshots, runtime compatibility, ownership locks,
-security/secrets gate, PR packaging, and review signals. Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
+security/secrets gate, PR packaging, evidence ledger, hallucination gate,
+contract facts, source-to-patch traceability, stale knowledge checks,
+dependency research cache, behavior oracle, test-authoring plan, and review
+signals. Do not claim files, symbols, commands, APIs, docs, or test results
+without local evidence; if `hallucination-gate.json` is blocked, stop and
+report the blocker before completion. Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
 `tests.selected`, and `review.signals` when those facts change. Run
 `oac quest-v9` or `oac quest-v9 <quest-id>` for a fresh snapshot.
 

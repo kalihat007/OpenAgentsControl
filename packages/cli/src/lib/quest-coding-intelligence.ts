@@ -32,6 +32,12 @@ import {
   type QuestCodingExecution,
 } from './quest-coding-execution.js'
 import { loadRepoWikiSnapshot } from './repo-wiki.js'
+import {
+  buildQuestVerifiedKnowledgebase,
+  formatVerifiedKnowledgebaseSummary,
+  writeQuestVerifiedKnowledgebaseArtifacts,
+  type QuestVerifiedKnowledgebase,
+} from './quest-verified-knowledgebase.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -97,6 +103,7 @@ export interface QuestCodingIntelligence {
   runtimeParity: QuestRuntimeParity
   codingAutopilot: QuestCodingAutopilot
   codingExecution: QuestCodingExecution
+  verifiedKnowledgebase: QuestVerifiedKnowledgebase
 }
 
 export interface RefreshQuestCodingIntelligenceOptions {
@@ -168,6 +175,22 @@ export async function refreshQuestCodingIntelligence(
     events,
     gitStatus: repoWiki?.changes.gitStatus ?? [],
   })
+  const verifiedKnowledgebase = await buildQuestVerifiedKnowledgebase({
+    projectRoot,
+    objective,
+    files: relevantFiles,
+    index,
+    impact,
+    patchCapsules,
+    testRecommendations,
+    reviewSignals,
+    runtimeParity,
+    codingAutopilot,
+    codingExecution,
+    events,
+    gitStatus: repoWiki?.changes.gitStatus ?? [],
+    repoWiki,
+  })
 
   const intelligence: QuestCodingIntelligence = {
     version: QUEST_CODING_INTELLIGENCE_VERSION,
@@ -184,6 +207,7 @@ export async function refreshQuestCodingIntelligence(
     runtimeParity,
     codingAutopilot,
     codingExecution,
+    verifiedKnowledgebase,
   }
 
   await writeQuestCodingIntelligence(projectRoot, options.questId, intelligence)
@@ -204,6 +228,7 @@ export async function writeQuestCodingIntelligence(
   await writeFile(join(dir, 'coding-review.md'), formatCodingReview(intelligence))
   await writeQuestCodingAutopilotArtifacts(dir, intelligence.codingAutopilot)
   await writeQuestCodingExecutionArtifacts(dir, intelligence.codingExecution)
+  await writeQuestVerifiedKnowledgebaseArtifacts(dir, intelligence.verifiedKnowledgebase)
 }
 
 export function formatCodingReview(intelligence: QuestCodingIntelligence): string {
@@ -258,6 +283,7 @@ export function formatCodingReview(intelligence: QuestCodingIntelligence): strin
   lines.push('')
   lines.push(formatCodingAutopilotSummary(intelligence.codingAutopilot))
   lines.push(formatCodingExecutionSummary(intelligence.codingExecution))
+  lines.push(formatVerifiedKnowledgebaseSummary(intelligence.verifiedKnowledgebase))
   return lines.join('\n')
 }
 

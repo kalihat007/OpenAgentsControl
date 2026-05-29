@@ -67,9 +67,20 @@ describe('runtime-bridge', () => {
     expect(prompt).toContain('runtime-compatibility-matrix.json')
     expect(prompt).toContain('security-secrets-gate.json')
     expect(prompt).toContain('pr-auto-packager.md')
+    expect(prompt).toContain('verified-knowledgebase.json')
+    expect(prompt).toContain('knowledgebase-index.json')
+    expect(prompt).toContain('evidence-ledger.json')
+    expect(prompt).toContain('hallucination-gate.json')
+    expect(prompt).toContain('contract-facts.json')
+    expect(prompt).toContain('source-to-patch-trace.json')
+    expect(prompt).toContain('stale-knowledge-report.json')
+    expect(prompt).toContain('dependency-research-cache.json')
+    expect(prompt).toContain('behavior-oracle.json')
+    expect(prompt).toContain('test-authoring-plan.json')
     expect(prompt).toContain('Quest v9 coding')
     expect(prompt).toContain('Coding Autopilot')
     expect(prompt).toContain('Coding Execution')
+    expect(prompt).toContain('Verified Knowledgebase')
     expect(prompt).toContain('request.received')
     expect(prompt).toContain('knowledge.captured')
     expect(prompt).toContain('Pre-Execution Discovery Gate')
@@ -239,7 +250,7 @@ describe('runtime-bridge', () => {
       await writeFile(join(runDir, 'quest.json'), '{"version":"8"}\n')
 
       const objective =
-        'Append research.assessed with needed:false. Append priority.changed for the first task. task.injected event for taskId kimi-v8-dynamic-task. note event that says kimi-v8-daemon-ok.'
+        'Append research.assessed with needed:false. Append priority.changed for the first task. task.injected event for taskId kimi-v8-dynamic-task. Append coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals, and next_steps.suggested. note event that says kimi-v8-daemon-ok.'
 
       const synthesized = await ensureRuntimeWriteBack(
         {
@@ -259,6 +270,12 @@ describe('runtime-bridge', () => {
       expect(raw).toContain('"type":"research.assessed"')
       expect(raw).toContain('"type":"priority.changed"')
       expect(raw).toContain('kimi-v8-dynamic-task')
+      expect(raw).toContain('"type":"coding.intent"')
+      expect(raw).toContain('"type":"impact.analyzed"')
+      expect(raw).toContain('"type":"patch.capsule"')
+      expect(raw).toContain('"type":"tests.selected"')
+      expect(raw).toContain('"type":"review.signals"')
+      expect(raw).toContain('"type":"next_steps.suggested"')
       expect(raw).toContain('kimi-v8-daemon-ok')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
@@ -267,11 +284,17 @@ describe('runtime-bridge', () => {
 
   it('parseRuntimeObjectiveHints extracts Kimi daemon smoke markers', () => {
     const hints = parseRuntimeObjectiveHints(
-      'Append research.assessed. Append task.injected for taskId kimi-v8-dynamic-task and a note event that says kimi-v8-daemon-ok.',
+      'Append research.assessed. Append task.injected for taskId kimi-v8-dynamic-task and a note event that says kimi-v8-daemon-ok. Append coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals, and next_steps.suggested.',
     )
     expect(hints.injectedTaskId).toBe('kimi-v8-dynamic-task')
     expect(hints.noteMarker).toBe('kimi-v8-daemon-ok')
     expect(hints.wantsResearchAssessment).toBe(true)
+    expect(hints.wantsCodingIntent).toBe(true)
+    expect(hints.wantsImpactAnalyzed).toBe(true)
+    expect(hints.wantsPatchCapsule).toBe(true)
+    expect(hints.wantsTestsSelected).toBe(true)
+    expect(hints.wantsReviewSignals).toBe(true)
+    expect(hints.wantsNextStepsSuggested).toBe(true)
   })
 
   it('background kimi spawn synthesizes write-back when fake kimi exits without file tools', async () => {
@@ -292,7 +315,7 @@ describe('runtime-bridge', () => {
 
       const result = await spawnRuntime({
         questId,
-        objective: 'note event that says kimi-v8-daemon-ok',
+        objective: 'Append coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals, and next_steps.suggested. note event that says kimi-v8-daemon-ok',
         projectRoot: tmpRoot,
         runDir,
         runtime: 'kimi',
@@ -313,6 +336,9 @@ describe('runtime-bridge', () => {
       expect(raw).toContain('"type":"runtime.spawned"')
       expect(raw).toContain('"type":"runtime.completed"')
       expect(raw).toContain('"type":"task_update"')
+      expect(raw).toContain('"type":"coding.intent"')
+      expect(raw).toContain('"type":"tests.selected"')
+      expect(raw).toContain('"type":"next_steps.suggested"')
       expect(raw).toContain('kimi-v8-daemon-ok')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
@@ -337,7 +363,7 @@ describe('runtime-bridge', () => {
 
       const result = await spawnRuntime({
         questId,
-        objective: 'note event that says codex-v8-daemon-ok',
+        objective: 'Append coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals, and next_steps.suggested. note event that says codex-v8-daemon-ok',
         projectRoot: tmpRoot,
         runDir,
         runtime: 'codex',
@@ -358,6 +384,9 @@ describe('runtime-bridge', () => {
       expect(raw).toContain('"type":"runtime.spawned"')
       expect(raw).toContain('"type":"runtime.completed"')
       expect(raw).toContain('"type":"task_update"')
+      expect(raw).toContain('"type":"coding.intent"')
+      expect(raw).toContain('"type":"tests.selected"')
+      expect(raw).toContain('"type":"next_steps.suggested"')
       expect(raw).toContain('codex-v8-daemon-ok')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })

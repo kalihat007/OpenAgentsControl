@@ -212,6 +212,17 @@ agent:
       - security-secrets-gate.json
       - pr-auto-packager.json
       - pr-auto-packager.md
+      - verified-knowledgebase.json
+      - knowledgebase-index.json
+      - evidence-ledger.json
+      - hallucination-gate.json
+      - contract-facts.json
+      - source-to-patch-trace.json
+      - stale-knowledge-report.json
+      - dependency-research-cache.json
+      - behavior-oracle.json
+      - test-authoring-plan.json
+      - verified-knowledgebase.md
       - .oac/repo-wiki/index.md (project-level, outside the run dir)
       - summary.json
       - optional handoff.json
@@ -236,7 +247,13 @@ agent:
       `test-gap-finder.json`, `regression-snapshots.json`,
       `runtime-compatibility-matrix.json`, `ownership-lock-plan.json`,
       `security-secrets-gate.json`, `pr-auto-packager.json`,
-      `pr-auto-packager.md`, and `.oac/repo-wiki/index.md`
+      `pr-auto-packager.md`, `verified-knowledgebase.json`,
+      `knowledgebase-index.json`, `evidence-ledger.json`,
+      `hallucination-gate.json`, `contract-facts.json`,
+      `source-to-patch-trace.json`, `stale-knowledge-report.json`,
+      `dependency-research-cache.json`, `behavior-oracle.json`,
+      `test-authoring-plan.json`, `verified-knowledgebase.md`, and
+      `.oac/repo-wiki/index.md`
       first, then continue with the user's selected Kimi model.
       Do not invoke an LLM router or model fallback while resuming.
 
@@ -267,7 +284,7 @@ agent:
         when external/current research is actually used
       - use `next_steps.suggested` after completion to offer choices while
         waiting for the user to decide
-      - use Quest v9/v10/v11 coding sidecars before editing or completing coding work:
+      - use Quest v9/v10/v11/v12 coding sidecars before editing or completing coding work:
         `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
         `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
         `patch-ledger.json`, `pre-edit-contract.json`,
@@ -278,14 +295,25 @@ agent:
         `contract-drift-guard.json`, `review-patch-loop.json`,
         `test-gap-finder.json`, `regression-snapshots.json`,
         `runtime-compatibility-matrix.json`, `ownership-lock-plan.json`,
-        `security-secrets-gate.json`, `pr-auto-packager.json`, and
-        `pr-auto-packager.md` capture intent, affected files/modules/symbols,
+        `security-secrets-gate.json`, `pr-auto-packager.json`,
+        `pr-auto-packager.md`, `verified-knowledgebase.json`,
+        `knowledgebase-index.json`, `evidence-ledger.json`,
+        `hallucination-gate.json`, `contract-facts.json`,
+        `source-to-patch-trace.json`, `stale-knowledge-report.json`,
+        `dependency-research-cache.json`, `behavior-oracle.json`,
+        `test-authoring-plan.json`, and `verified-knowledgebase.md` capture intent, affected files/modules/symbols,
         runtime parity, patch capsules, smart-test tiers, patch ledger,
         pre-edit contract, automatic review, failure replay, dependency
         research gate, bounded autofix, PR readiness, executable acceptance,
         guarded autofix, contract drift, review-to-patch loop, test gaps,
         regression snapshots, runtime compatibility, ownership locks,
-        security/secrets gate, PR packaging, and review signals
+        security/secrets gate, PR packaging, evidence ledger, hallucination
+        gate, contract facts, source-to-patch traceability, stale knowledge,
+        dependency research cache, behavior oracle, test-authoring plan, and
+        review signals
+      - do not claim files, symbols, commands, APIs, docs, or test results without
+        local evidence; if `hallucination-gate.json` is blocked, stop and report
+        the blocker before completion
       - append `coding.intent`, `impact.analyzed`, `patch.capsule`,
         `tests.selected`, and `review.signals` when coding facts change
       - run `oac quest-v9` or `oac quest-v9 <quest-id>` when a fresh coding

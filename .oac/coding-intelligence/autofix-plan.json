@@ -10,14 +10,13 @@
     "Stop after two failed fix attempts and record failure memory."
   ],
   "commands": [
-    "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
     "git diff --check",
     "npm run build -w packages/cli",
     "npm run test:quest-v8:codex",
     "npm run test:quest-v8:kimi",
     "npm run test:quest-v8:opencode",
-    "npm run typecheck -w packages/cli",
-    "npm run typecheck -w packages/swarm-runtime"
+    "npm run typecheck -w packages/cli"
   ],
   "stopConditions": [
     "A command fails twice with the same fingerprint.",
