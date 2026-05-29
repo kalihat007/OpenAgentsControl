@@ -22,7 +22,7 @@ Vendor terminology and feature framing: [Quest overview](https://docs.qoder.com/
 OpenAgent Quest v8 tracks each substantial request through a simple lifecycle, a review gate, adaptive replanning events, and durable run identity:
 
 ```text
-NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING
+NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING
 ```
 
 Use this lifecycle to decide whether a user message starts a new Quest or amends the current one:
@@ -34,6 +34,7 @@ Use this lifecycle to decide whether a user message starts a new Quest or amends
 | `EXECUTE` | Safe work is being performed through swarm-lite or expert chunks | Continue execution unless the user changes scope |
 | `REVIEW` | Review bundle, risk assessment, or approval gate is active | Approve, reject, skip, or amend the Quest |
 | `VERIFY` | Validation, review, build, tests, or evidence checks are running | Finish checks or fix routine failures |
+| `REFLECT` | Learnings, evidence gaps, next-step options, and promotion candidates are captured | Summarize or move to completion |
 | `COMPLETE` | Requested work is done or clearly blocked with evidence | Summarize honestly |
 | `WAITING` | The CLI/session has returned to user input after completion | A new substantial input starts a fresh Quest Spec unless the user says it is a continuation |
 
@@ -50,16 +51,55 @@ Required v8 artifacts when available:
 - `plan.json` - scheduler task graph and batch plan
 - `events.ndjson` - append-only progress events
 - `acceptance-report.md` - acceptance checks and evidence
+- `interaction-memory.json` - readable journal of user requests, actions, working directories, file/context changes, and reusable knowledge
+- `memory-graph.json` - background request/action/task/file/context graph generated from Quest events
+- `coding-intelligence.json` - Quest v9 coding intent, impact analysis, runtime parity, smart-test recommendations, and review signals
+- `patch-capsules.json` - Quest v9 small change capsules with files, expected behavior, validation commands, and rollback notes
+- `coding-review.md` - readable Quest v9 coding review brief for humans and runtime handoff
+- `coding-autopilot.json` - Quest Coding Autopilot rollup for symbol graph, tests, patch ledger, review, parity, research gate, autofix, and PR readiness
+- `symbol-graph.json` - symbol-level file map for touched code and imports
+- `smart-test-matrix.json` - tiered validation matrix with minimum credible commands and escalation rules
+- `patch-ledger.json` - patch accountability ledger with status, files, validation, rollback notes, and diff stats
+- `pre-edit-contract.json` - allowed files, expected behavior, non-goals, forbidden side effects, and acceptance checks
+- `automatic-code-review.json` - deterministic review verdict, findings, checklist, and reviewer focus
+- `failure-memory.json` - failed validation fingerprints and replay suggestions
+- `runtime-parity-enforcer.json` - required OpenCode/Kimi/Codex/Claude parity commands and prompt files
+- `dependency-research-gate.json` - local evidence and research queries when current external docs may affect correctness
+- `autofix-plan.json` - bounded autofix loop and stop conditions
+- `pr-readiness.md` - commit grouping, summary bullets, reviewer focus, and blockers
+- `coding-execution.json` - Quest v11 execution rollup for acceptance, autofix, drift, test gaps, runtime compatibility, security, and PR packaging
+- `executable-acceptance.json` - runnable done definition with required commands, artifacts, review, runtime, and ledger checks
+- `guarded-autofix-runner.json` - bounded failure replay/autofix queue with writable files, guardrails, and stop conditions
+- `contract-drift-guard.json` - watched API, CLI, schema, runtime prompt, installer, docs, and package contracts
+- `review-patch-loop.json` - review findings mapped to patch capsules and validation commands
+- `test-gap-finder.json` - changed source files without nearby tests plus suggested test files and commands
+- `regression-snapshots.json` - expected CLI, artifact, runtime prompt, event stream, and docs signals
+- `runtime-compatibility-matrix.json` - OpenCode, Kimi, Codex, and Claude prompt/harness coverage matrix
+- `ownership-lock-plan.json` - file ownership groups and write locks for safe expert/sandbox execution
+- `security-secrets-gate.json` - credential, destructive shell, env-file, and remote shell pattern gate
+- `pr-auto-packager.json` - machine-readable PR title, commit groups, validation evidence, blockers, and readiness
+- `pr-auto-packager.md` - human-readable PR summary, validation, reviewer focus, and blockers
 - `summary.json` - machine-readable execution summary
 - `handoff.json` - optional IDE handoff manifest
+- `.oac/memory/promotions.json` - user-reviewed promotion queue for repeated learnings before they become durable repo knowledge
+- `.oac/repo-wiki/index.md`, `files.json`, `graph.json`, `changes.md`, and `packages.md` - living project-directory wiki refreshed from Quest changes
 
-Runtime progress is append-only in `events.ndjson`; runtimes do not rewrite `quest.json`. Supported event types include `task_update`, `state_change`, `file_change`, `validation`, `amendment`, `error`, `note`, `runtime.assigned`, `runtime.spawned`, `runtime.completed`, `handoff.outgoing`, `handoff.incoming`, `incident.created`, `incident.resolved`, `review.started`, `review.approved`, `review.rejected`, `task.injected`, and `priority.changed`.
+Runtime progress is append-only in `events.ndjson`; runtimes do not rewrite `quest.json`. Supported event types include `task_update`, `state_change`, `file_change`, `validation`, `amendment`, `error`, `note`, `request.received`, `action.summary`, `cwd.observed`, `knowledge.captured`, `research.assessed`, `research.performed`, `next_steps.suggested`, `context.loaded`, `context.changed`, `runtime.assigned`, `runtime.spawned`, `runtime.completed`, `handoff.outgoing`, `handoff.incoming`, `incident.created`, `incident.resolved`, `review.started`, `review.approved`, `review.rejected`, `task.injected`, `priority.changed`, `coding.intent`, `impact.analyzed`, `patch.capsule`, `tests.selected`, and `review.signals`.
 
 For adaptive v8 work:
 
 - enter `REVIEW` before `VERIFY` when the configured review gate is required
 - use `task.injected` for dynamic replanning instead of editing `quest.json`
 - use `priority.changed` when a task becomes urgent or less urgent
+- use `request.received`, `cwd.observed`, `action.summary`, and `knowledge.captured` so `interaction-memory.json` records every request, what was done, where work happened, and what OpenAgent learned
+- use `context.loaded`, `context.changed`, and `file_change` so `memory-graph.json` records file/context relationships
+- use `research.assessed` before execution to record whether web/current research is needed, and `research.performed` only when external/current research actually informs the work
+- use `next_steps.suggested` after completion to offer choices while waiting for the user to decide
+- use `coding.intent`, `impact.analyzed`, `patch.capsule`, `tests.selected`, and `review.signals` for Quest v9 coding work when intent, blast radius, patch units, validation, or risks are refined
+- read `interaction-memory.json`, `memory-graph.json`, and `agent-memory.json` when resuming or starting background runtime work
+- read `.oac/repo-wiki/index.md` and `files.json` when present so planning uses the current project-directory map
+- read `coding-intelligence.json`, `patch-capsules.json`, and `coding-review.md` when present so coding starts from current impact, tests, and review signals
+- read Coding Autopilot and Coding Execution sidecars when present so coding uses symbol-level context, pre-edit boundaries, smart-test tiers, patch ledger accountability, automatic review, failure replay, runtime parity enforcement, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gating, and PR packaging
 - keep review decisions, injected tasks, and priority changes append-only
 
 Use these CLI commands for durable status and continuation:
@@ -70,7 +110,83 @@ oac quest-status <quest-id>
 oac quest-resume <quest-id>
 ```
 
-`quest-resume` prints OpenCode, Kimi, and Claude commands plus a resume prompt. It does not change the selected model. The active runtime model remains the only model used.
+`quest-resume` prints OpenCode, Kimi, Claude, and Codex commands plus a resume prompt. It does not change the selected model. The active runtime model remains the only model used.
+
+## Pre-Execution Discovery And Research Gate
+
+Before starting a non-trivial task, run a short discovery gate:
+
+- inspect the required local files, project instructions, Quest memory artifacts, and relevant context files first
+- append `context.loaded` for context reads and `action.summary` for meaningful local exploration
+- decide whether external/current/web research can affect correctness
+- append `research.assessed` with `needed`, `reason`, `queries`, `taskId`, `runtime`, `cwd`, and any local files or context used
+- perform web/current research only for current APIs, provider capabilities, regulations, standards, pricing, news, or unfamiliar domain facts that cannot be trusted from local context
+- when research is performed, append `research.performed` with a concise findings summary, sources, queries, task id, runtime, and cwd
+- if no research is needed, record `needed:false` and begin execution immediately
+
+This gate should be lightweight. Do not turn routine repo edits into web research when the repository, installed docs, and memory artifacts already contain enough evidence.
+
+## Repo Wiki Autopilot
+
+OpenAgent with QuestMode keeps a living repo wiki in `.oac/repo-wiki/` for the current project directory:
+
+- `index.md` summarizes the project root, current working directory, file-kind counts, top directories, current changes, and how OpenAgent should use the wiki
+- `files.json` is the machine-readable file index with hashes, kinds, tags, sizes, packages, git status, and changes since the previous refresh
+- `graph.json` links root, directories, files, and package manifests so follow-up tasks can reason over repo structure
+- `changes.md` records added, modified, deleted, Quest-changed files, and git status
+- `packages.md` summarizes detected package manifests and scripts
+
+The CLI refreshes this wiki automatically when a durable Quest is created, when `file_change` or `context.changed` events are appended, and near `VERIFY`, `REFLECT`, or `COMPLETE` lifecycle transitions. If a runtime edits files outside Quest write-back, run:
+
+```bash
+oac repo-wiki
+```
+
+For long local sessions where files may change outside OpenAgent, run:
+
+```bash
+oac repo-wiki --watch
+```
+
+Treat the repo wiki as current working context, not long-term truth. Durable knowledge still requires the Memory Promotion System.
+
+## Quest v9 Coding Intelligence
+
+Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Together they are active by default for coding, installer, runtime, adapter, test, and repo-maintenance work.
+
+Before editing code, use Quest v9 artifacts to answer:
+
+- what behavior should change and what should explicitly stay out of scope
+- which files/modules are affected and how wide the downstream blast radius is
+- which small patch capsule is being executed
+- which smart tests are the minimum credible validation set
+- which review signals or runtime parity risks remain before completion
+- which symbols/imports are touched and which pre-edit boundaries apply
+- whether dependency/current-doc research is actually needed
+- whether the bounded autofix loop, failure replay, or runtime parity enforcer must run before completion
+- whether the change is PR-ready and how it should be grouped for review
+- which executable acceptance checks, contract drift watchers, test gaps, regression snapshots, ownership locks, security/secrets findings, and PR package blockers must be closed
+
+The CLI refreshes Quest v9/v10/v11 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
+
+```bash
+oac quest-v9
+oac quest-v9 <quest-id>
+```
+
+For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, security/secrets gate, and any required runtime parity checks are recorded or the gap is explicitly called out.
+
+## Memory Promotion System
+
+Quest events are short-term operational memory. Do not promote every event into durable knowledge.
+
+Repeated learnings become candidates in `.oac/memory/promotions.json`. Candidates are scored by occurrence count, confidence, recency, and evidence. The user approves durable promotion explicitly:
+
+```bash
+oac memory-promote --approve <candidate-id>
+```
+
+Approved candidates can be written into `.oac/team-memory.json` or used as skill-building input. Unapproved candidates remain suggestions only.
 
 ## Intensity And Trust
 
@@ -98,7 +214,7 @@ For substantial, multi-file, repo-wide, destructive, or ambiguous work, the firs
 
 ```text
 OpenAgent Quest Spec
-State: <NEW | SPEC | EXECUTE | REVIEW | VERIFY | COMPLETE | WAITING>
+State: <NEW | SPEC | EXECUTE | REVIEW | VERIFY | REFLECT | COMPLETE | WAITING>
 Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
 Intensity: <lite | standard | deep>
 Objective: <one sentence>

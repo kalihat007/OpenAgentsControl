@@ -87,6 +87,7 @@ oac quest-resume <quest-id> --runtime codex
 - Direct OpenAgent Quest + Experts behavior inside Codex CLI
 - Custom agent at `~/.codex/agents/openagents-control/openagent.toml`
 - Quest v8 lifecycle and durable `.oac/runs/` sidecars
+- Quest v9 coding intelligence, Coding Autopilot, and Coding Execution sidecars (`coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`, `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`, `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`, `failure-memory.json`, `runtime-parity-enforcer.json`, `dependency-research-gate.json`, `autofix-plan.json`, `pr-readiness.md`, `coding-execution.json`, `executable-acceptance.json`, `guarded-autofix-runner.json`, `contract-drift-guard.json`, `review-patch-loop.json`, `test-gap-finder.json`, `regression-snapshots.json`, `runtime-compatibility-matrix.json`, `ownership-lock-plan.json`, `security-secrets-gate.json`, `pr-auto-packager.json`, `pr-auto-packager.md`)
 - Works without OpenCode
 
 **Documentation**: See `codex-cli/README.md`

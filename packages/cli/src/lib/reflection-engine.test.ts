@@ -8,7 +8,8 @@ import { tmpdir } from 'node:os'
 
 function makeQuest(overrides: Partial<ReconciledQuestRun> = {}): ReconciledQuestRun {
   return {
-    id: 'test-quest-1',
+    questId: 'test-quest-1',
+    runId: 'test-quest-1',
     objective: 'test objective',
     state: 'COMPLETE',
     scenario: 'code_with_spec',
@@ -111,7 +112,7 @@ describe('saveReflection / loadReflection', () => {
 
   it('round-trips reflection to disk', async () => {
     await mkdir(join(testDir, '.oac', 'runs', 'q1'), { recursive: true })
-    const reflection = analyzeQuestForReflection(makeQuest({ id: 'q1' }))
+    const reflection = analyzeQuestForReflection(makeQuest({ questId: 'q1', runId: 'q1' }))
     const path = await saveReflection(testDir, 'q1', reflection)
     expect(path).toContain('reflection.json')
 

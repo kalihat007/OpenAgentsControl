@@ -57,7 +57,10 @@ interface QuestStatusJson {
   handoffs: ReconciledQuestRun['handoffs']
   incidents: ReconciledQuestRun['incidents']
   changedFiles: string[]
+  memoryGraph: ReconciledQuestRun['memoryGraph']
+  interactionMemory: ReconciledQuestRun['interactionMemory']
   nextAction: string
+  nextStepSuggestions: ReconciledQuestRun['nextStepSuggestions']
   backgroundRun?: { pid: number; alive: boolean }
   daemon?: QuestDaemonState
 }
@@ -271,6 +274,14 @@ async function watchQuestStatus(
       const daemonLine = `Daemon: ${daemon.status} pid=${daemon.pid} ${Math.round((daemon.progress ?? 0) * 100)}%`
       log(`│ ${daemonLine.slice(0, 60).padEnd(60)} │`)
     }
+    if (quest.memoryGraph) {
+      const memoryLine = `Memory: ${quest.memoryGraph.summary.actions} actions ${quest.memoryGraph.summary.files} files ${quest.memoryGraph.summary.contexts} contexts`
+      log(`│ ${memoryLine.slice(0, 60).padEnd(60)} │`)
+    }
+    if (quest.interactionMemory) {
+      const interactionLine = `Interactions: ${quest.interactionMemory.summary.requests} requests ${quest.interactionMemory.summary.knowledgeItems} knowledge`
+      log(`│ ${interactionLine.slice(0, 60).padEnd(60)} │`)
+    }
     const dagLine = renderDagFlow(quest.tasks.map((task) => ({
       id: task.id,
       title: task.title,
@@ -415,7 +426,10 @@ async function buildQuestStatusJson(
     handoffs: quest.handoffs,
     incidents: quest.incidents,
     changedFiles: quest.changedFiles,
+    memoryGraph: quest.memoryGraph,
+    interactionMemory: quest.interactionMemory,
     nextAction: quest.nextSuggestedAction,
+    nextStepSuggestions: quest.nextStepSuggestions,
     backgroundRun: pid ? { pid, alive: isRunPidAlive(pid) } : undefined,
     daemon: daemon ?? undefined,
   }
@@ -479,6 +493,13 @@ function printQuest(quest: ReconciledQuestRun): void {
   if (quest.changedFiles && quest.changedFiles.length > 0) {
     log(`  Changed:     ${quest.changedFiles.length} file(s)`)
   }
+  if (quest.memoryGraph) {
+    log(`  Memory:      ${quest.memoryGraph.summary.actions} action(s), ${quest.memoryGraph.summary.files} file(s), ${quest.memoryGraph.summary.contexts} context(s)`)
+  }
+  if (quest.interactionMemory) {
+    const cwd = quest.interactionMemory.workingContext.currentWorkDir
+    log(`  Interactions:${quest.interactionMemory.summary.requests} request(s), ${quest.interactionMemory.summary.actions} action(s), ${quest.interactionMemory.summary.knowledgeItems} knowledge item(s)${cwd ? `, cwd ${cwd}` : ''}`)
+  }
   const runtimeNames = Object.keys(quest.runtimeProgress)
   if (runtimeNames.length > 0) {
     log(`  Runtimes:    ${runtimeNames.map((name) => {
@@ -518,6 +539,14 @@ function printQuest(quest: ReconciledQuestRun): void {
 
   info('Checkpoint:')
   log(`  Next action: ${quest.nextSuggestedAction}`)
+  if (quest.nextStepSuggestions.length > 0) {
+    log('  Suggested next steps:')
+    for (const suggestion of quest.nextStepSuggestions.slice(0, 5)) {
+      log(`    - ${suggestion.title}`)
+      dim(`      ${suggestion.reason}`)
+      if (suggestion.command) dim(`      ${suggestion.command}`)
+    }
+  }
   if (quest.handoffs.length > 0) {
     dim(`  Handoffs: ${quest.handoffs.length} recorded`)
   }

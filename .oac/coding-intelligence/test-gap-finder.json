@@ -1,0 +1,65 @@
+{
+  "version": "11",
+  "gaps": [
+    {
+      "id": "test-gap-7753v6",
+      "sourceFile": "packages/cli/src/commands/memory-promote.ts",
+      "suggestedTestFile": "packages/cli/src/commands/memory-promote.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "severity": "warning"
+    },
+    {
+      "id": "test-gap-1b85gs",
+      "sourceFile": "packages/cli/src/commands/quest-v9.ts",
+      "suggestedTestFile": "packages/cli/src/commands/quest-v9.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "severity": "warning"
+    },
+    {
+      "id": "test-gap-iocjg3",
+      "sourceFile": "packages/cli/src/commands/repo-wiki.ts",
+      "suggestedTestFile": "packages/cli/src/commands/repo-wiki.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "severity": "warning"
+    },
+    {
+      "id": "test-gap-yxdiuh",
+      "sourceFile": "packages/cli/src/index.ts",
+      "suggestedTestFile": "packages/cli/src/index.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "severity": "info"
+    },
+    {
+      "id": "test-gap-wd33hy",
+      "sourceFile": "packages/cli/src/lib/quest-coding-autopilot.ts",
+      "suggestedTestFile": "packages/cli/src/lib/quest-coding-autopilot.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "severity": "warning"
+    },
+    {
+      "id": "test-gap-o2h7jb",
+      "sourceFile": "packages/cli/src/lib/quest-coding-execution.ts",
+      "suggestedTestFile": "packages/cli/src/lib/quest-coding-execution.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "severity": "warning"
+    },
+    {
+      "id": "test-gap-q0nn0t",
+      "sourceFile": "packages/swarm-runtime/src/types.ts",
+      "suggestedTestFile": "packages/swarm-runtime/src/types.test.ts",
+      "reason": "Changed source file has no nearby test file in the indexed codebase.",
+      "severity": "warning"
+    }
+  ],
+  "coverageConfidence": 0.87,
+  "suggestedCommands": [
+    "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+    "git diff --check",
+    "npm run build -w packages/cli",
+    "npm run test:quest-v8:codex",
+    "npm run test:quest-v8:kimi",
+    "npm run test:quest-v8:opencode",
+    "npm run typecheck -w packages/cli",
+    "npm run typecheck -w packages/swarm-runtime"
+  ]
+}

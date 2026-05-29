@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #############################################################################
-# Kimi Quest v5/v6 Compatibility Test
+# Kimi Quest v5+ Compatibility Test
 # Tests the durable Quest workflow through the Kimi runtime if available,
 # or validates the CLI path and artifacts when Kimi is not installed.
 #############################################################################
@@ -51,7 +51,7 @@ trap cleanup EXIT
 
 echo -e "${CYAN}${BOLD}"
 echo "╔════════════════════════════════════════════════════════════════╗"
-echo "║           Kimi OpenAgent Quest v5/v6 Test                      ║"
+echo "║           Kimi OpenAgent Quest v5+ Test                        ║"
 echo "╚════════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
@@ -80,12 +80,12 @@ fi
 pass "Quest created: $QUEST_ID"
 
 QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version")"
-if [ "$QUEST_VERSION" != "5" ] && [ "$QUEST_VERSION" != "6" ] && [ "$QUEST_VERSION" != "7" ]; then
-  fail "Expected quest version 5, 6, or 7, got $QUEST_VERSION"
+if [ "$QUEST_VERSION" != "5" ] && [ "$QUEST_VERSION" != "6" ] && [ "$QUEST_VERSION" != "7" ] && [ "$QUEST_VERSION" != "8" ]; then
+  fail "Expected quest version 5, 6, 7, or 8, got $QUEST_VERSION"
 fi
 pass "Quest version is $QUEST_VERSION"
 
-if ! "${OAC_CLI[@]}" quest-status "$QUEST_ID" 2>&1 | grep -Eq "Quest v(5|6|7)"; then
+if ! "${OAC_CLI[@]}" quest-status "$QUEST_ID" 2>&1 | grep -Eq "Quest v(5|6|7|8)"; then
   fail "quest-status does not show a durable Quest version"
 fi
 pass "quest-status shows durable Quest version"
@@ -114,4 +114,4 @@ if ! grep -q 'kimi-v5-runtime-ok' "$RUNTIME_EVENTS"; then
   fail "Kimi runtime note was not preserved in events.ndjson"
 fi
 
-pass "Kimi Quest v5/v6/v7 compatibility workflow validated"
+pass "Kimi Quest v5/v6/v7/v8 compatibility workflow validated"

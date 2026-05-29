@@ -44,6 +44,42 @@ describe('runtime-bridge', () => {
 
     expect(prompt).toContain('Use the currently selected claude runtime/model throughout')
     expect(prompt).toContain('Do not route work to a hidden LLM or fallback model')
+    expect(prompt).toContain('memory-graph.json')
+    expect(prompt).toContain('interaction-memory.json')
+    expect(prompt).toContain('.oac/repo-wiki/index.md')
+    expect(prompt).toContain('coding-intelligence.json')
+    expect(prompt).toContain('patch-capsules.json')
+    expect(prompt).toContain('coding-autopilot.json')
+    expect(prompt).toContain('symbol-graph.json')
+    expect(prompt).toContain('smart-test-matrix.json')
+    expect(prompt).toContain('pre-edit-contract.json')
+    expect(prompt).toContain('automatic-code-review.json')
+    expect(prompt).toContain('failure-memory.json')
+    expect(prompt).toContain('runtime-parity-enforcer.json')
+    expect(prompt).toContain('dependency-research-gate.json')
+    expect(prompt).toContain('autofix-plan.json')
+    expect(prompt).toContain('pr-readiness.md')
+    expect(prompt).toContain('coding-execution.json')
+    expect(prompt).toContain('executable-acceptance.json')
+    expect(prompt).toContain('guarded-autofix-runner.json')
+    expect(prompt).toContain('contract-drift-guard.json')
+    expect(prompt).toContain('test-gap-finder.json')
+    expect(prompt).toContain('runtime-compatibility-matrix.json')
+    expect(prompt).toContain('security-secrets-gate.json')
+    expect(prompt).toContain('pr-auto-packager.md')
+    expect(prompt).toContain('Quest v9 coding')
+    expect(prompt).toContain('Coding Autopilot')
+    expect(prompt).toContain('Coding Execution')
+    expect(prompt).toContain('request.received')
+    expect(prompt).toContain('knowledge.captured')
+    expect(prompt).toContain('Pre-Execution Discovery Gate')
+    expect(prompt).toContain('research.assessed')
+    expect(prompt).toContain('research.performed')
+    expect(prompt).toContain('next_steps.suggested')
+    expect(prompt).toContain('oac repo-wiki')
+    expect(prompt).toContain('oac quest-v9')
+    expect(prompt).toContain('context.loaded')
+    expect(prompt).toContain('oac memory-promote')
     expect(prompt).toContain('task-001: Validate write-back (TechLeadAgent)')
     expect(prompt).toContain('Append events to /repo/.oac/runs/swarm-test/events.ndjson')
     expect(prompt).toContain('allowed even when the user objective says not to modify product files')
@@ -155,6 +191,7 @@ describe('runtime-bridge', () => {
     expect(hints.injectedTaskId).toBe('codex-v8-dynamic-task')
     expect(hints.noteMarker).toBe('codex-v8-daemon-ok')
     expect(hints.wantsPriorityChange).toBe(true)
+    expect(hints.wantsResearchAssessment).toBe(false)
   })
 
   it('ensureCodexWriteBack synthesizes task and daemon events after successful codex exec', async () => {
@@ -202,7 +239,7 @@ describe('runtime-bridge', () => {
       await writeFile(join(runDir, 'quest.json'), '{"version":"8"}\n')
 
       const objective =
-        'Append priority.changed for the first task. task.injected event for taskId kimi-v8-dynamic-task. note event that says kimi-v8-daemon-ok.'
+        'Append research.assessed with needed:false. Append priority.changed for the first task. task.injected event for taskId kimi-v8-dynamic-task. note event that says kimi-v8-daemon-ok.'
 
       const synthesized = await ensureRuntimeWriteBack(
         {
@@ -219,6 +256,8 @@ describe('runtime-bridge', () => {
       expect(synthesized).toBe(true)
       const raw = await readFile(join(runDir, 'events.ndjson'), 'utf8')
       expect(raw).toContain('"type":"task_update"')
+      expect(raw).toContain('"type":"research.assessed"')
+      expect(raw).toContain('"type":"priority.changed"')
       expect(raw).toContain('kimi-v8-dynamic-task')
       expect(raw).toContain('kimi-v8-daemon-ok')
     } finally {
@@ -228,10 +267,11 @@ describe('runtime-bridge', () => {
 
   it('parseRuntimeObjectiveHints extracts Kimi daemon smoke markers', () => {
     const hints = parseRuntimeObjectiveHints(
-      'Append task.injected for taskId kimi-v8-dynamic-task and a note event that says kimi-v8-daemon-ok.',
+      'Append research.assessed. Append task.injected for taskId kimi-v8-dynamic-task and a note event that says kimi-v8-daemon-ok.',
     )
     expect(hints.injectedTaskId).toBe('kimi-v8-dynamic-task')
     expect(hints.noteMarker).toBe('kimi-v8-daemon-ok')
+    expect(hints.wantsResearchAssessment).toBe(true)
   })
 
   it('background kimi spawn synthesizes write-back when fake kimi exits without file tools', async () => {

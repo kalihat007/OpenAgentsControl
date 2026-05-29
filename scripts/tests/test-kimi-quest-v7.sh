@@ -74,8 +74,8 @@ QUEST_ID="$(ls -1 .oac/runs | sort | tail -1)"
 [ -n "$QUEST_ID" ] || fail "No v7 Quest created"
 
 QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version")"
-[ "$QUEST_VERSION" = "7" ] || fail "Expected Quest version 7, got $QUEST_VERSION"
-pass "Quest v7 artifact created"
+[ "$QUEST_VERSION" = "7" ] || [ "$QUEST_VERSION" = "8" ] || fail "Expected Quest version 7 or 8, got $QUEST_VERSION"
+pass "Quest v${QUEST_VERSION} artifact created"
 
 "${OAC_CLI[@]}" quest-status "$QUEST_ID" --json > status.json
 node - "$QUEST_ID" <<'NODE'
@@ -86,7 +86,7 @@ if (status.questId !== questId) throw new Error("questId mismatch");
 if (!status.progress || typeof status.progress.total !== "number") throw new Error("missing progress");
 if (!Array.isArray(status.tasks)) throw new Error("missing tasks");
 NODE
-pass "quest-status --json reports v7 progress"
+pass "quest-status --json reports v${QUEST_VERSION} progress"
 
 if [ "${RUN_LIVE_KIMI:-0}" != "1" ]; then
   warn "Skipping live Kimi daemon run. Set RUN_LIVE_KIMI=1 to enable it."

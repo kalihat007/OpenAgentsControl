@@ -9,9 +9,11 @@
 
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { QuestRun, QuestRunState, QuestRunTask } from './quest-run.js'
+import type { QuestNextStepSuggestion, QuestRun, QuestRunState, QuestRunTask } from './quest-run.js'
 import { loadQuestRun } from './quest-run.js'
 import { detectCycles } from './task-dag.js'
+import { buildQuestMemoryGraph, type QuestMemoryGraph } from './quest-memory-graph.js'
+import { buildQuestInteractionMemory, type QuestInteractionMemory } from './quest-interaction-memory.js'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -36,6 +38,20 @@ export type ReconcilerEventType =
   | 'task.injected'
   | 'task.progress'
   | 'priority.changed'
+  | 'context.loaded'
+  | 'context.changed'
+  | 'request.received'
+  | 'action.summary'
+  | 'cwd.observed'
+  | 'knowledge.captured'
+  | 'research.assessed'
+  | 'research.performed'
+  | 'next_steps.suggested'
+  | 'coding.intent'
+  | 'impact.analyzed'
+  | 'patch.capsule'
+  | 'tests.selected'
+  | 'review.signals'
 
 export interface ReconcilerEvent {
   timestamp: string
@@ -59,6 +75,8 @@ export interface QuestVerificationResult {
 }
 
 export interface ReconciledQuestRun extends QuestRun {
+  /** Raw append-only events used to derive this live state. */
+  events: ReconcilerEvent[]
   /** Files changed during this quest, accumulated from file_change events. */
   changedFiles: string[]
   /** Latest verification result, if any. */
@@ -73,6 +91,12 @@ export interface ReconciledQuestRun extends QuestRun {
   taskProgress: Record<string, TaskProgress>
   /** Incident state recorded from v6-compatible events. */
   incidents: IncidentRecord[]
+  /** Background request/action/file/context graph derived from append-only events. */
+  memoryGraph: QuestMemoryGraph
+  /** Readable per-request interaction and self-knowledge journal derived from append-only events. */
+  interactionMemory: QuestInteractionMemory
+  /** User-choice follow-up suggestions offered after Quest completion. */
+  nextStepSuggestions: QuestNextStepSuggestion[]
 }
 
 export interface TaskProgress {
@@ -161,7 +185,7 @@ function applyTaskUpdate(quest: ReconciledQuestRun, data: Record<string, unknown
 function applyStateChange(quest: ReconciledQuestRun, data: Record<string, unknown>): void {
   const to = data.to as QuestRunState | undefined
   if (!to) return
-  const validStates: QuestRunState[] = ['NEW', 'SPEC', 'EXECUTE', 'REVIEW', 'VERIFY', 'COMPLETE', 'WAITING', 'BLOCKED', 'FAILED']
+  const validStates: QuestRunState[] = ['NEW', 'SPEC', 'EXECUTE', 'REVIEW', 'VERIFY', 'REFLECT', 'COMPLETE', 'WAITING', 'BLOCKED', 'FAILED']
   if (validStates.includes(to)) {
     quest.state = to
   }
@@ -382,6 +406,34 @@ function applyIncidentResolved(
   incident.resolvedAt = event.timestamp
 }
 
+function applyNextStepsSuggested(
+  quest: ReconciledQuestRun,
+  event: ReconcilerEvent,
+): void {
+  const suggestions = Array.isArray(event.data.suggestions)
+    ? event.data.suggestions
+        .map((value) => asRecord(value))
+        .filter((value): value is Record<string, unknown> => Boolean(value))
+        .map((value, index): QuestNextStepSuggestion | null => {
+          const title = asString(value.title)
+          const reason = asString(value.reason)
+          if (!title || !reason) return null
+          return {
+            id: asString(value.id) ?? `next-step-${index + 1}`,
+            kind: normalizeNextStepKind(asString(value.kind)),
+            title,
+            reason,
+            command: asString(value.command),
+          }
+        })
+        .filter((value): value is QuestNextStepSuggestion => Boolean(value))
+    : []
+
+  if (suggestions.length === 0) return
+  quest.nextStepSuggestions = suggestions
+  quest.nextSuggestedAction = 'Review the suggested next steps and choose one; QuestMode will wait for the user.'
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function normalizeStatus(status: string | undefined): QuestRunTask['status'] | undefined {
@@ -399,7 +451,7 @@ function normalizeStatus(status: string | undefined): QuestRunTask['status'] | u
 }
 
 function deepCopyQuestRun(base: QuestRun): ReconciledQuestRun {
-  const withV6Fields = base as QuestRun & Partial<Pick<ReconciledQuestRun, 'handoffs' | 'runtimeProgress' | 'incidents'>>
+  const withV6Fields = base as QuestRun & Partial<Pick<ReconciledQuestRun, 'events' | 'handoffs' | 'runtimeProgress' | 'taskProgress' | 'incidents' | 'memoryGraph' | 'interactionMemory' | 'nextStepSuggestions'>>
   return {
     ...base,
     tasks: base.tasks.map((t) => ({ ...t })),
@@ -412,6 +464,7 @@ function deepCopyQuestRun(base: QuestRun): ReconciledQuestRun {
       claude: { ...base.runtimes.claude },
       codex: { ...base.runtimes.codex },
     },
+    events: [...(withV6Fields.events ?? [])],
     changedFiles: [...(base.changedFiles ?? [])],
     verification: base.verification ? { ...base.verification, checks: base.verification.checks.map((c) => ({ ...c })) } : undefined,
     amendments: [],
@@ -425,6 +478,9 @@ function deepCopyQuestRun(base: QuestRun): ReconciledQuestRun {
     runtimeProgress: copyRuntimeProgress(withV6Fields.runtimeProgress),
     taskProgress: { ...(withV6Fields.taskProgress ?? {}) },
     incidents: (withV6Fields.incidents ?? []).map((incident) => ({ ...incident })),
+    memoryGraph: withV6Fields.memoryGraph ?? buildQuestMemoryGraph(base, []),
+    interactionMemory: withV6Fields.interactionMemory ?? buildQuestInteractionMemory(base, []),
+    nextStepSuggestions: (withV6Fields.nextStepSuggestions ?? []).map((suggestion) => ({ ...suggestion })),
   }
 }
 
@@ -503,11 +559,36 @@ export function reconcileQuestRun(
       case 'priority.changed':
         applyPriorityChanged(quest, event)
         break
+      case 'context.loaded':
+      case 'context.changed':
+      case 'request.received':
+      case 'action.summary':
+      case 'cwd.observed':
+      case 'knowledge.captured':
+      case 'research.assessed':
+      case 'research.performed':
+      case 'coding.intent':
+      case 'impact.analyzed':
+      case 'patch.capsule':
+      case 'tests.selected':
+      case 'review.signals':
+        // These events are represented in derived memory artifacts below.
+        break
+      case 'next_steps.suggested':
+        applyNextStepsSuggested(quest, event)
+        break
     }
   }
 
+  quest.events = events.map((event) => ({ ...event, data: { ...event.data } }))
+  quest.memoryGraph = buildQuestMemoryGraph(quest, quest.events)
+  quest.interactionMemory = buildQuestInteractionMemory(quest, quest.events)
+
   // Update nextSuggestedAction based on current state
   quest.nextSuggestedAction = inferNextAction(quest)
+  if (quest.nextStepSuggestions.length > 0 && (quest.state === 'COMPLETE' || quest.state === 'WAITING')) {
+    quest.nextSuggestedAction = 'Review the suggested next steps and choose one; QuestMode will wait for the user.'
+  }
   quest.updatedAt = new Date().toISOString()
 
   return quest
@@ -581,6 +662,21 @@ function normalizeSeverity(value: string | undefined): IncidentRecord['severity'
     return value
   }
   return undefined
+}
+
+function normalizeNextStepKind(value: string | undefined): QuestNextStepSuggestion['kind'] {
+  if (
+    value === 'review' ||
+    value === 'verify' ||
+    value === 'commit' ||
+    value === 'continue' ||
+    value === 'cleanup' ||
+    value === 'document' ||
+    value === 'explore'
+  ) {
+    return value
+  }
+  return 'explore'
 }
 
 // ── v8 Event Application ──────────────────────────────────────────────────────
@@ -730,6 +826,10 @@ function inferNextAction(quest: ReconciledQuestRun): string {
 
   if (quest.state === 'REVIEW') {
     return `Quest ${quest.questId} is awaiting review. Run 'oac quest-review ${quest.questId} --approve' to continue or '--reject' to return to execution.`
+  }
+
+  if (quest.state === 'REFLECT') {
+    return `Reflect on Quest ${quest.questId}, then mark complete when learnings are captured.`
   }
 
   if (quest.state === 'WAITING') {
@@ -950,5 +1050,158 @@ export function buildTaskProgressEvent(
     timestamp: new Date().toISOString(),
     type: 'task.progress',
     data: { taskId, percent, checkpoint, message },
+  }
+}
+
+export function buildContextLoadedEvent(
+  contextPath: string,
+  options?: { taskId?: string; reason?: string },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'context.loaded',
+    data: {
+      contextPath,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.reason && { reason: options.reason }),
+    },
+  }
+}
+
+export function buildContextChangedEvent(
+  contextPath: string,
+  options?: { taskId?: string; reason?: string },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'context.changed',
+    data: {
+      contextPath,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.reason && { reason: options.reason }),
+    },
+  }
+}
+
+export function buildRequestReceivedEvent(
+  text: string,
+  options?: { taskId?: string; runtime?: string; cwd?: string; summary?: string },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'request.received',
+    data: {
+      text,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.runtime && { runtime: options.runtime }),
+      ...(options?.cwd && { cwd: options.cwd }),
+      ...(options?.summary && { summary: options.summary }),
+    },
+  }
+}
+
+export function buildActionSummaryEvent(
+  summary: string,
+  options?: { taskId?: string; runtime?: string; cwd?: string; changedFiles?: string[]; contextFiles?: string[] },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'action.summary',
+    data: {
+      summary,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.runtime && { runtime: options.runtime }),
+      ...(options?.cwd && { cwd: options.cwd }),
+      ...(options?.changedFiles && { changedFiles: options.changedFiles }),
+      ...(options?.contextFiles && { contextFiles: options.contextFiles }),
+    },
+  }
+}
+
+export function buildCwdObservedEvent(
+  cwd: string,
+  options?: { taskId?: string; runtime?: string },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'cwd.observed',
+    data: {
+      cwd,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.runtime && { runtime: options.runtime }),
+    },
+  }
+}
+
+export function buildKnowledgeCapturedEvent(
+  kind: string,
+  summary: string,
+  options?: { taskId?: string; runtime?: string; cwd?: string; files?: string[]; contexts?: string[] },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'knowledge.captured',
+    data: {
+      kind,
+      summary,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.runtime && { runtime: options.runtime }),
+      ...(options?.cwd && { cwd: options.cwd }),
+      ...(options?.files && { changedFiles: options.files }),
+      ...(options?.contexts && { contextFiles: options.contexts }),
+    },
+  }
+}
+
+export function buildResearchAssessedEvent(
+  needed: boolean,
+  reason: string,
+  options?: { taskId?: string; runtime?: string; cwd?: string; queries?: string[]; files?: string[]; contexts?: string[] },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'research.assessed',
+    data: {
+      needed,
+      reason,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.runtime && { runtime: options.runtime }),
+      ...(options?.cwd && { cwd: options.cwd }),
+      ...(options?.queries && { queries: options.queries }),
+      ...(options?.files && { changedFiles: options.files }),
+      ...(options?.contexts && { contextFiles: options.contexts }),
+    },
+  }
+}
+
+export function buildResearchPerformedEvent(
+  summary: string,
+  options?: { taskId?: string; runtime?: string; cwd?: string; queries?: string[]; sources?: string[]; files?: string[]; contexts?: string[] },
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'research.performed',
+    data: {
+      summary,
+      ...(options?.taskId && { taskId: options.taskId }),
+      ...(options?.runtime && { runtime: options.runtime }),
+      ...(options?.cwd && { cwd: options.cwd }),
+      ...(options?.queries && { queries: options.queries }),
+      ...(options?.sources && { sources: options.sources }),
+      ...(options?.files && { changedFiles: options.files }),
+      ...(options?.contexts && { contextFiles: options.contexts }),
+    },
+  }
+}
+
+export function buildNextStepsSuggestedEvent(
+  suggestions: QuestNextStepSuggestion[],
+): ReconcilerEvent {
+  return {
+    timestamp: new Date().toISOString(),
+    type: 'next_steps.suggested',
+    data: {
+      suggestions: suggestions.map((suggestion) => ({ ...suggestion })),
+    },
   }
 }

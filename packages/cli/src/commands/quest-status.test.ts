@@ -108,6 +108,30 @@ describe('questStatusCommand', () => {
           type: 'handoff.outgoing',
           data: { fromRuntime: 'kimi', toRuntime: 'opencode', taskIds: ['task-1'] },
         }),
+        JSON.stringify({
+          timestamp: '2026-05-17T00:00:02.000Z',
+          type: 'context.loaded',
+          data: { contextPath: '.opencode/context/core/quest-mode.md', taskId: 'task-1' },
+        }),
+        JSON.stringify({
+          timestamp: '2026-05-17T00:00:03.000Z',
+          type: 'knowledge.captured',
+          data: { kind: 'decision', summary: 'Use interaction memory', taskId: 'task-1' },
+        }),
+        JSON.stringify({
+          timestamp: '2026-05-17T00:00:04.000Z',
+          type: 'next_steps.suggested',
+          data: {
+            suggestions: [
+              {
+                id: 'review-summary',
+                kind: 'review',
+                title: 'Review the completion summary',
+                reason: 'Confirm the result before the next Quest.',
+              },
+            ],
+          },
+        }),
       ].join('\n') + '\n',
     )
 
@@ -127,7 +151,12 @@ describe('questStatusCommand', () => {
     expect(parsed.questId).toBe('swarm-test123')
     expect(parsed.runtimes.kimi.assigned).toBe(1)
     expect(parsed.handoffs).toHaveLength(1)
-    expect(parsed.recentEvents).toHaveLength(2)
+    expect(parsed.memoryGraph.summary.contexts).toBe(1)
+    expect(parsed.interactionMemory.summary.requests).toBe(1)
+    expect(parsed.interactionMemory.summary.knowledgeItems).toBe(2)
+    expect(parsed.nextStepSuggestions).toHaveLength(1)
+    expect(parsed.nextStepSuggestions[0].title).toContain('Review')
+    expect(parsed.recentEvents).toHaveLength(5)
   })
 
   it('displays per-task progress percentage for in-progress tasks', async () => {

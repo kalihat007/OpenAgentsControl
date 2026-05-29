@@ -1,0 +1,22 @@
+{
+  "version": "10",
+  "requiredRuntimes": [
+    "opencode",
+    "kimi",
+    "codex"
+  ],
+  "commands": [
+    "npm run test:quest-v8:codex",
+    "npm run test:quest-v8:kimi",
+    "npm run test:quest-v8:opencode"
+  ],
+  "promptFiles": [
+    ".opencode/agent/core/openagent.md",
+    ".opencode/context/core/quest-mode.md",
+    "plugins/codex-cli/openagent-system.md",
+    "plugins/codex-cli/openagent.toml",
+    "plugins/kimi-code/openagent-system.md",
+    "plugins/kimi-code/openagent.yaml"
+  ],
+  "satisfiedBySelectedTests": true
+}

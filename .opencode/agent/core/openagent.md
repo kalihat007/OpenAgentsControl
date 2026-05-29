@@ -17,7 +17,7 @@ NON-NEGOTIABLE RESPONSE ORDER — For substantial, multi-file, repo-wide, destru
 
 ⛔ PERMISSIONS: Execute safe local bash, edit, task, and delegation work immediately and autonomously. Do not ask for routine approval. Gate only destructive, credential, production, payment/legal, public external, irreversible data, or risky hardware actions.
 
-QUEST V8 LIFECYCLE — Track substantial requests as `NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING`. When the previous task has completed and the CLI/session has returned to user input, the next substantial user message is a fresh `NEW` Quest and must start with a fresh `OpenAgent Quest Spec` unless the user explicitly says it continues or amends the previous Quest. If the user steers mid-flight before completion, amend the active Quest instead of starting a new one.
+QUEST V8 LIFECYCLE — Track substantial requests as `NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING`. For standard and deep Quests, use `REFLECT` after `VERIFY` before `COMPLETE`. When the previous task has completed and the CLI/session has returned to user input, the next substantial user message is a fresh `NEW` Quest and must start with a fresh `OpenAgent Quest Spec` unless the user explicitly says it continues or amends the previous Quest. If the user steers mid-flight before completion, amend the active Quest instead of starting a new one.
 
 QUEST MODE DEFAULT — Treat every request as a goal-to-result Quest:
 - Understand the outcome, constraints, quality bar, and acceptance criteria.
@@ -33,7 +33,7 @@ VISIBLE QUEST SPEC CONTRACT — For substantial, multi-file, repo-wide, destruct
 
 ```text
 OpenAgent Quest Spec
-State: <NEW | SPEC | EXECUTE | REVIEW | VERIFY | COMPLETE | WAITING>
+State: <NEW | SPEC | EXECUTE | REVIEW | VERIFY | REFLECT | COMPLETE | WAITING>
 Scenario: <direct | code_with_spec | prototype_demo | create_tool | research_plan>
 Intensity: <lite | standard | deep>
 Objective: <one sentence>
@@ -51,6 +51,14 @@ Risks / Approval:
 ```
 
 Do not replace this with an older plan label or any renamed heading. Directory reorganizations, broad file exploration, "fix all issues", feature implementation, review-and-change, or ambiguous work must show this spec first, then update it after exploration before structural or destructive changes. For same-session workflows, every new substantial input after a completed request must restart this visible Quest Spec cycle.
+
+BACKGROUND QUEST MEMORY — Every durable Quest maintains `.oac/runs/{id}/interaction-memory.json` and `.oac/runs/{id}/memory-graph.json`, generated from `quest.json` plus append-only events. Use them by default with `agent-memory.json` before background execution or resume. Record every user request or continuation as `request.received`, every working directory observation as `cwd.observed`, meaningful actions as `note` or `action.summary`, file edits as `file_change`, context reads as `context.loaded`, context edits as `context.changed`, pre-execution research decisions as `research.assessed`, actual external/current research as `research.performed`, reusable self-knowledge as `knowledge.captured`, and post-completion choices as `next_steps.suggested`; the CLI turns these into a readable request/action/file/context/cwd journal plus a graph for future steps.
+
+REPO WIKI AUTOPILOT — OpenAgent with QuestMode keeps `.oac/repo-wiki/` current for the current project directory by default. The CLI refreshes the repo wiki when a durable Quest is created, when `file_change` or `context.changed` events are appended, and near verification/reflection/completion. Before planning follow-up work, read `.oac/repo-wiki/index.md`, `.oac/repo-wiki/files.json`, and `.oac/repo-wiki/graph.json` when present. If a runtime changes files outside Quest write-back, run `oac repo-wiki` immediately; use `oac repo-wiki --watch` for a continuous local refresh loop during long manual sessions.
+
+QUEST V9 CODING INTELLIGENCE + CODING AUTOPILOT + CODING EXECUTION — For coding, installer, runtime, adapter, test, and repo-maintenance work, use the v9/v10/v11 sidecars by default: `.oac/runs/{id}/coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`, `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`, `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`, `failure-memory.json`, `runtime-parity-enforcer.json`, `dependency-research-gate.json`, `autofix-plan.json`, `pr-readiness.md`, `coding-execution.json`, `executable-acceptance.json`, `guarded-autofix-runner.json`, `contract-drift-guard.json`, `review-patch-loop.json`, `test-gap-finder.json`, `regression-snapshots.json`, `runtime-compatibility-matrix.json`, `ownership-lock-plan.json`, `security-secrets-gate.json`, `pr-auto-packager.json`, and `pr-auto-packager.md` for durable Quests, or `.oac/coding-intelligence/` for a working-tree review. Before editing, understand coding intent, non-goals, affected files/modules/symbols, runtime parity, patch capsule, selected smart tests, pre-edit contract, patch ledger, dependency research gate, bounded autofix plan, PR readiness, executable acceptance, guarded autofix, contract drift, review-to-patch loop, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gate, PR package, and review signals. Append `coding.intent`, `impact.analyzed`, `patch.capsule`, `tests.selected`, and `review.signals` when those facts change. The CLI refreshes these sidecars on Quest creation, file/context/validation/coding events, and review/verify/reflection/completion transitions. Use `oac quest-v9` or `oac quest-v9 <quest-id>` to refresh manually.
+
+MEMORY PROMOTION — Do not treat every Quest event as long-term knowledge. Repeated learnings become scored promotion candidates in `.oac/memory/promotions.json` based on confidence, recency, occurrence count, and evidence. The user must approve candidates with `oac memory-promote --approve <candidate-id>` before they are written to durable repo memory (`.oac/team-memory.json`) or used as a basis for future skills. Suggest promotion review when useful, but do not silently promote single events or create skills from them.
 
 DYNAMIC EXPERT SELECTION — Before assembling any swarm, automatically analyze the user's request and select the optimal experts. Do not ask the user which experts they want. You decide based on the task content:
 

@@ -108,7 +108,31 @@ grep -q 'Quest v8' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Ques
 grep -q 'REVIEW' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing REVIEW lifecycle"
 grep -q 'task.injected' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing task.injected"
 grep -q 'priority.changed' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing priority.changed"
-pass "Codex adapter advertises Quest v8 adaptive protocol"
+grep -q 'memory-graph.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing memory-graph.json"
+grep -q 'interaction-memory.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing interaction-memory.json"
+grep -q 'coding-intelligence.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Quest v9 coding-intelligence.json"
+grep -q 'patch-capsules.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Quest v9 patch-capsules.json"
+grep -q 'coding-review.md' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Quest v9 coding-review.md"
+grep -q 'coding-autopilot.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Coding Autopilot"
+grep -q 'symbol-graph.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing symbol graph"
+grep -q 'smart-test-matrix.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing smart test matrix"
+grep -q 'pre-edit-contract.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing pre-edit contract"
+grep -q 'pr-readiness.md' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing PR readiness"
+grep -q 'coding-execution.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Coding Execution"
+grep -q 'executable-acceptance.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing executable acceptance"
+grep -q 'runtime-compatibility-matrix.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing runtime compatibility matrix"
+grep -q 'security-secrets-gate.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing security secrets gate"
+grep -q 'pr-auto-packager.md' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing PR auto-packager"
+grep -q 'context.loaded' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing context.loaded"
+grep -q 'request.received' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing request.received"
+grep -q 'research.assessed' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing research.assessed"
+grep -q 'memory-promote' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing memory promotion approval"
+grep -q 'repo-wiki' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing repo wiki autopilot"
+grep -q 'quest-v9' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing quest-v9 refresh"
+grep -q 'coding.intent' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing coding.intent"
+grep -q 'tests.selected' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing tests.selected"
+grep -q 'next_steps.suggested' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing next_steps.suggested"
+pass "Codex adapter advertises Quest v8 adaptive protocol and Quest v9 coding intelligence"
 
 [ ! -e "$HOME/.codex/agents/openagent.toml" ] \
   || fail "Remove legacy ~/.codex/agents/openagent.toml symlink (duplicate openagent role)"
@@ -191,7 +215,7 @@ fi
 
 if [ "${RUN_LIVE_CODEX:-0}" = "1" ]; then
   DIRECT_OUT="$TEST_DIR/direct-v8.txt"
-  DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, and priority.changed."
+  DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, and Coding Execution sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
   if codex_exec_prompt "$TEST_DIR/work" "$DIRECT_PROMPT" "$AGENT_SYSTEM_FILE" > "$DIRECT_OUT" 2>&1; then
     node - "$DIRECT_OUT" <<'NODE'
 const fs = require("fs");
@@ -200,9 +224,21 @@ const checks = {
   startsWithQuest: /^(?:```text\s*)?OpenAgent Quest Spec/m.test(text),
   stateNew: /State:\s*NEW/i.test(text),
   reviewLifecycle: /EXECUTE\s*->\s*REVIEW\s*->\s*VERIFY/i.test(text),
+  reflectLifecycle: /VERIFY\s*->\s*REFLECT\s*->\s*COMPLETE/i.test(text),
   reviewEvent: /review\.started/i.test(text),
   taskInjected: /task\.injected/i.test(text),
   priorityChanged: /priority\.changed/i.test(text),
+  researchAssessed: /research\.assessed/i.test(text),
+  codingIntelligence: /coding-intelligence\.json/i.test(text),
+  codingAutopilot: /coding-autopilot\.json/i.test(text),
+  codingExecution: /coding-execution\.json/i.test(text),
+  executableAcceptance: /executable-acceptance\.json/i.test(text),
+  symbolGraph: /symbol-graph\.json/i.test(text),
+  smartTestMatrix: /smart-test-matrix\.json/i.test(text),
+  runtimeMatrix: /runtime-compatibility-matrix\.json/i.test(text),
+  securityGate: /security-secrets-gate\.json/i.test(text),
+  patchCapsule: /patch\.capsule/i.test(text),
+  testsSelected: /tests\.selected/i.test(text),
 };
 for (const [name, ok] of Object.entries(checks)) {
   console.log(`direct_${name}=${ok ? "passed" : "failed"}`);
@@ -220,8 +256,8 @@ NODE
 
   CYCLE_FIRST_OUT="$TEST_DIR/cycle-first-v8.txt"
   CYCLE_SECOND_OUT="$TEST_DIR/cycle-second-v8.txt"
-  CYCLE_FIRST_PROMPT="Do not use tools. Treat this as substantial planning work. Start with OpenAgent Quest Spec and include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, and priority.changed. This is turn one."
-  CYCLE_SECOND_PROMPT="Do not use tools. This is a second substantial request. Start a fresh OpenAgent Quest Spec with State: NEW and include Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, and priority.changed."
+  CYCLE_FIRST_PROMPT="Do not use tools. Treat this as substantial planning work. Start with OpenAgent Quest Spec and include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, and priority.changed. This is turn one."
+  CYCLE_SECOND_PROMPT="Do not use tools. This is a second substantial request. Start a fresh OpenAgent Quest Spec with State: NEW and include Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, and priority.changed."
 
   codex_exec_prompt "$TEST_DIR/work" "$CYCLE_FIRST_PROMPT" "$AGENT_SYSTEM_FILE" > "$CYCLE_FIRST_OUT" 2>&1 \
     || fail "First live Codex v8 turn failed"
@@ -237,6 +273,7 @@ function check(label, file) {
     startsWithQuest: /^(?:```text\s*)?OpenAgent Quest Spec/m.test(text),
     stateNew: /State:\s*NEW/i.test(text),
     reviewLifecycle: /EXECUTE\s*->\s*REVIEW\s*->\s*VERIFY/i.test(text),
+    reflectLifecycle: /VERIFY\s*->\s*REFLECT\s*->\s*COMPLETE/i.test(text),
     reviewEvent: /review\.started/i.test(text),
     taskInjected: /task\.injected/i.test(text),
     priorityChanged: /priority\.changed/i.test(text),
@@ -263,7 +300,57 @@ QUEST_ID="$(ls -1 .oac/runs | sort | tail -1)"
 QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version")"
 [ "$QUEST_VERSION" = "8" ] || fail "Expected Quest version 8, got $QUEST_VERSION"
 grep -q 'codex exec' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json missing codex runtime command"
-pass "Quest v8 artifact created with codex runtime"
+[ -f ".oac/runs/${QUEST_ID}/interaction-memory.json" ] || fail "Missing interaction-memory.json"
+[ -f ".oac/runs/${QUEST_ID}/coding-intelligence.json" ] || fail "Missing Quest v9 coding-intelligence.json"
+[ -f ".oac/runs/${QUEST_ID}/patch-capsules.json" ] || fail "Missing Quest v9 patch-capsules.json"
+[ -f ".oac/runs/${QUEST_ID}/coding-review.md" ] || fail "Missing Quest v9 coding-review.md"
+[ -f ".oac/runs/${QUEST_ID}/coding-autopilot.json" ] || fail "Missing Coding Autopilot"
+[ -f ".oac/runs/${QUEST_ID}/symbol-graph.json" ] || fail "Missing symbol graph"
+[ -f ".oac/runs/${QUEST_ID}/smart-test-matrix.json" ] || fail "Missing smart test matrix"
+[ -f ".oac/runs/${QUEST_ID}/patch-ledger.json" ] || fail "Missing patch ledger"
+[ -f ".oac/runs/${QUEST_ID}/pre-edit-contract.json" ] || fail "Missing pre-edit contract"
+[ -f ".oac/runs/${QUEST_ID}/automatic-code-review.json" ] || fail "Missing automatic code review"
+[ -f ".oac/runs/${QUEST_ID}/failure-memory.json" ] || fail "Missing failure memory"
+[ -f ".oac/runs/${QUEST_ID}/runtime-parity-enforcer.json" ] || fail "Missing runtime parity enforcer"
+[ -f ".oac/runs/${QUEST_ID}/dependency-research-gate.json" ] || fail "Missing dependency research gate"
+[ -f ".oac/runs/${QUEST_ID}/autofix-plan.json" ] || fail "Missing autofix plan"
+[ -f ".oac/runs/${QUEST_ID}/pr-readiness.md" ] || fail "Missing PR readiness"
+[ -f ".oac/runs/${QUEST_ID}/coding-execution.json" ] || fail "Missing Coding Execution"
+[ -f ".oac/runs/${QUEST_ID}/executable-acceptance.json" ] || fail "Missing executable acceptance"
+[ -f ".oac/runs/${QUEST_ID}/guarded-autofix-runner.json" ] || fail "Missing guarded autofix runner"
+[ -f ".oac/runs/${QUEST_ID}/contract-drift-guard.json" ] || fail "Missing contract drift guard"
+[ -f ".oac/runs/${QUEST_ID}/review-patch-loop.json" ] || fail "Missing review patch loop"
+[ -f ".oac/runs/${QUEST_ID}/test-gap-finder.json" ] || fail "Missing test gap finder"
+[ -f ".oac/runs/${QUEST_ID}/regression-snapshots.json" ] || fail "Missing regression snapshots"
+[ -f ".oac/runs/${QUEST_ID}/runtime-compatibility-matrix.json" ] || fail "Missing runtime compatibility matrix"
+[ -f ".oac/runs/${QUEST_ID}/ownership-lock-plan.json" ] || fail "Missing ownership lock plan"
+[ -f ".oac/runs/${QUEST_ID}/security-secrets-gate.json" ] || fail "Missing security secrets gate"
+[ -f ".oac/runs/${QUEST_ID}/pr-auto-packager.json" ] || fail "Missing PR auto-packager JSON"
+[ -f ".oac/runs/${QUEST_ID}/pr-auto-packager.md" ] || fail "Missing PR auto-packager brief"
+[ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
+grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
+node - "$QUEST_ID" <<'NODE'
+const fs = require("fs");
+const questId = process.argv[2];
+const intelligence = JSON.parse(fs.readFileSync(`.oac/runs/${questId}/coding-intelligence.json`, "utf8"));
+if (intelligence.version !== "9") throw new Error(`expected Quest v9 coding intelligence, got ${intelligence.version}`);
+if (!intelligence.codingAutopilot || intelligence.codingAutopilot.version !== "10") throw new Error("missing Coding Autopilot v10");
+if (!intelligence.codingExecution || intelligence.codingExecution.version !== "11") throw new Error("missing Coding Execution v11");
+if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
+  throw new Error("missing v9 smart-test recommendations");
+}
+NODE
+pass "Quest v8 artifact created with codex runtime and Quest v9 sidecars"
+
+"${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
+grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
+grep -q 'coding-intelligence.json' quest-v9.txt || fail "quest-v9 output missing coding-intelligence artifact"
+grep -q 'coding-autopilot.json' quest-v9.txt || fail "quest-v9 output missing coding-autopilot artifact"
+grep -q 'smart-test-matrix.json' quest-v9.txt || fail "quest-v9 output missing smart-test matrix artifact"
+grep -q 'coding-execution.json' quest-v9.txt || fail "quest-v9 output missing coding-execution artifact"
+grep -q 'executable-acceptance.json' quest-v9.txt || fail "quest-v9 output missing executable-acceptance artifact"
+grep -q 'security-secrets-gate.json' quest-v9.txt || fail "quest-v9 output missing security-secrets gate artifact"
+pass "quest-v9 command refreshes coding intelligence"
 
 "${OAC_CLI[@]}" quest-resume "$QUEST_ID" --runtime codex > quest-resume-codex.txt 2>&1
 grep -q 'CODEX Resume' quest-resume-codex.txt || fail "quest-resume --runtime codex missing CODEX header"
@@ -279,6 +366,7 @@ if (status.questId !== questId) throw new Error("questId mismatch");
 if (status.version !== "8") throw new Error(`expected version 8, got ${status.version}`);
 if (!status.progress || typeof status.progress.total !== "number") throw new Error("missing progress");
 if (!Array.isArray(status.tasks)) throw new Error("missing tasks");
+if (!status.interactionMemory || status.interactionMemory.summary.requests < 1) throw new Error("missing interaction memory requests");
 const quest = JSON.parse(fs.readFileSync(`.oac/runs/${questId}/quest.json`, "utf8"));
 if (!quest.runtimes?.codex?.command?.includes("codex")) throw new Error("missing codex runtime in quest.json");
 NODE
@@ -311,6 +399,11 @@ const events = [
     type: "priority.changed",
     data: { taskId: "codex-v8-injected", priority: 1 },
   },
+  { timestamp: new Date().toISOString(), type: "coding.intent", data: { taskId: firstTask, summary: "Codex v9 coding intent smoke" } },
+  { timestamp: new Date().toISOString(), type: "impact.analyzed", data: { taskId: firstTask, files: ["package.json"], risk: "low" } },
+  { timestamp: new Date().toISOString(), type: "patch.capsule", data: { taskId: firstTask, files: ["package.json"], validationCommands: ["git diff --check"] } },
+  { timestamp: new Date().toISOString(), type: "tests.selected", data: { taskId: firstTask, commands: ["git diff --check"] } },
+  { timestamp: new Date().toISOString(), type: "review.signals", data: { taskId: firstTask, signals: ["v9 smoke"] } },
 ];
 fs.appendFileSync(`${runDir}/events.ndjson`, events.map((event) => JSON.stringify(event)).join("\n") + "\n");
 NODE
@@ -325,8 +418,9 @@ if (!task) throw new Error("missing injected task");
 if (task.priority !== 1) throw new Error(`expected injected priority 1, got ${task.priority}`);
 if (!status.recentEvents.some((event) => event.type === "task.injected")) throw new Error("missing task.injected event");
 if (!status.recentEvents.some((event) => event.type === "priority.changed")) throw new Error("missing priority.changed event");
+if (!status.recentEvents.some((event) => event.type === "tests.selected")) throw new Error("missing tests.selected event");
 NODE
-pass "v8 adaptive events reconcile through quest-status"
+pass "v8 adaptive events and v9 coding events reconcile through quest-status"
 
 "${OAC_CLI[@]}" quest-review "$QUEST_ID" --approve > review-approve.txt 2>&1
 grep -q 'Review approved' review-approve.txt || fail "quest-review approve did not succeed"
@@ -342,7 +436,7 @@ if [ "${RUN_LIVE_CODEX:-0}" != "1" ]; then
 fi
 
 "${OAC_CLI[@]}" quest-run --background --runtime codex \
-  "Do not modify product files. Complete the Codex Quest v8 daemon smoke. Append task_update completion events for every assigned task, append a priority.changed event for the first assigned task with priority 1, append a task.injected event for taskId codex-v8-dynamic-task with status completed and priority 1, and append a note event that says codex-v8-daemon-ok." \
+  "Do not modify product files. Complete the Codex Quest v8 daemon smoke. Inspect local run artifacts first and append a research.assessed event with needed:false when possible, append task_update completion events for every assigned task, append a priority.changed event for the first assigned task with priority 1, append a task.injected event for taskId codex-v8-dynamic-task with status completed and priority 1, and append a note event that says codex-v8-daemon-ok." \
   > daemon-run.txt 2>&1
 
 DAEMON_QUEST_ID="$(ls -1 .oac/runs | sort | tail -1)"

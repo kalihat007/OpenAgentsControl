@@ -1,0 +1,404 @@
+{
+  "version": "11",
+  "owners": [
+    {
+      "owner": "generated-artifacts",
+      "files": [
+        ".oac/coding-intelligence/",
+        ".oac/repo-wiki/"
+      ],
+      "reason": "Owns 2 file(s) in generated-artifacts."
+    },
+    {
+      "owner": "opencode-runtime",
+      "files": [
+        ".opencode/agent/core/openagent.md",
+        ".opencode/context/core/quest-mode.md"
+      ],
+      "reason": "Owns 2 file(s) in opencode-runtime."
+    },
+    {
+      "owner": "docs",
+      "files": [
+        "README.md"
+      ],
+      "reason": "Owns 1 file(s) in docs."
+    },
+    {
+      "owner": "package.json",
+      "files": [
+        "package.json"
+      ],
+      "reason": "Owns 1 file(s) in package.json."
+    },
+    {
+      "owner": "cli",
+      "files": [
+        "packages/cli/.opencode/.expert-memory.json",
+        "packages/cli/src/commands/memory-promote.ts",
+        "packages/cli/src/commands/quest-complete.test.ts",
+        "packages/cli/src/commands/quest-complete.ts",
+        "packages/cli/src/commands/quest-status.test.ts",
+        "packages/cli/src/commands/quest-status.ts",
+        "packages/cli/src/commands/quest-v9.ts",
+        "packages/cli/src/commands/repo-wiki.ts",
+        "packages/cli/src/index.ts",
+        "packages/cli/src/lib/memory-indexer.ts",
+        "packages/cli/src/lib/quest-coding-autopilot.ts",
+        "packages/cli/src/lib/quest-coding-execution.ts",
+        "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+        "packages/cli/src/lib/quest-coding-intelligence.ts",
+        "packages/cli/src/lib/quest-interaction-memory.test.ts",
+        "packages/cli/src/lib/quest-interaction-memory.ts",
+        "packages/cli/src/lib/quest-memory-graph.test.ts",
+        "packages/cli/src/lib/quest-memory-graph.ts",
+        "packages/cli/src/lib/quest-memory-promotion.test.ts",
+        "packages/cli/src/lib/quest-memory-promotion.ts",
+        "packages/cli/src/lib/quest-next-steps.test.ts",
+        "packages/cli/src/lib/quest-next-steps.ts",
+        "packages/cli/src/lib/quest-reconciler.test.ts",
+        "packages/cli/src/lib/quest-reconciler.ts",
+        "packages/cli/src/lib/quest-run.test.ts",
+        "packages/cli/src/lib/quest-run.ts",
+        "packages/cli/src/lib/reflection-engine.test.ts",
+        "packages/cli/src/lib/reflection-engine.ts",
+        "packages/cli/src/lib/repo-wiki.test.ts",
+        "packages/cli/src/lib/repo-wiki.ts",
+        "packages/cli/src/lib/runtime-bridge.test.ts",
+        "packages/cli/src/lib/runtime-bridge.ts"
+      ],
+      "reason": "Owns 32 file(s) in cli."
+    },
+    {
+      "owner": "swarm-runtime",
+      "files": [
+        "packages/swarm-runtime/src/types.ts"
+      ],
+      "reason": "Owns 1 file(s) in swarm-runtime."
+    },
+    {
+      "owner": "plugins",
+      "files": [
+        "plugins/README.md"
+      ],
+      "reason": "Owns 1 file(s) in plugins."
+    },
+    {
+      "owner": "codex-runtime",
+      "files": [
+        "plugins/codex-cli/README.md",
+        "plugins/codex-cli/codex-quest-default.toml.example",
+        "plugins/codex-cli/configure-codex-quest-default.sh",
+        "plugins/codex-cli/openagent-system.md",
+        "plugins/codex-cli/openagent.toml"
+      ],
+      "reason": "Owns 5 file(s) in codex-runtime."
+    },
+    {
+      "owner": "kimi-runtime",
+      "files": [
+        "plugins/kimi-code/README.md",
+        "plugins/kimi-code/openagent-system.md",
+        "plugins/kimi-code/openagent.yaml"
+      ],
+      "reason": "Owns 3 file(s) in kimi-runtime."
+    },
+    {
+      "owner": "scripts",
+      "files": [
+        "scripts/tests/test-codex-quest-v8.sh",
+        "scripts/tests/test-kimi-quest-cycle.sh",
+        "scripts/tests/test-kimi-quest-v5.sh",
+        "scripts/tests/test-kimi-quest-v6.sh",
+        "scripts/tests/test-kimi-quest-v7.sh",
+        "scripts/tests/test-kimi-quest-v8.sh",
+        "scripts/tests/test-opencode-quest-v8.sh"
+      ],
+      "reason": "Owns 7 file(s) in scripts."
+    }
+  ],
+  "locks": [
+    {
+      "file": ".oac/coding-intelligence/",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/repo-wiki/",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".opencode/agent/core/openagent.md",
+      "owner": "opencode-runtime",
+      "mode": "write"
+    },
+    {
+      "file": ".opencode/context/core/quest-mode.md",
+      "owner": "opencode-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "README.md",
+      "owner": "docs",
+      "mode": "write"
+    },
+    {
+      "file": "package.json",
+      "owner": "package.json",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/.opencode/.expert-memory.json",
+      "owner": "cli",
+      "mode": "read"
+    },
+    {
+      "file": "packages/cli/src/commands/memory-promote.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/commands/quest-complete.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/commands/quest-complete.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/commands/quest-status.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/commands/quest-status.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/commands/quest-v9.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/commands/repo-wiki.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/index.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/memory-indexer.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-coding-autopilot.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-coding-execution.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-coding-intelligence.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-interaction-memory.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-interaction-memory.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-memory-graph.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-memory-graph.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-memory-promotion.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-memory-promotion.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-next-steps.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-next-steps.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-reconciler.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-reconciler.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-run.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-run.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/reflection-engine.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/reflection-engine.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/repo-wiki.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/repo-wiki.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/runtime-bridge.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/runtime-bridge.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/swarm-runtime/src/types.ts",
+      "owner": "swarm-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/README.md",
+      "owner": "plugins",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/codex-cli/README.md",
+      "owner": "codex-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/codex-cli/codex-quest-default.toml.example",
+      "owner": "codex-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/codex-cli/configure-codex-quest-default.sh",
+      "owner": "codex-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/codex-cli/openagent-system.md",
+      "owner": "codex-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/codex-cli/openagent.toml",
+      "owner": "codex-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/kimi-code/README.md",
+      "owner": "kimi-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/kimi-code/openagent-system.md",
+      "owner": "kimi-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "plugins/kimi-code/openagent.yaml",
+      "owner": "kimi-runtime",
+      "mode": "write"
+    },
+    {
+      "file": "scripts/tests/test-codex-quest-v8.sh",
+      "owner": "scripts",
+      "mode": "write"
+    },
+    {
+      "file": "scripts/tests/test-kimi-quest-cycle.sh",
+      "owner": "scripts",
+      "mode": "write"
+    },
+    {
+      "file": "scripts/tests/test-kimi-quest-v5.sh",
+      "owner": "scripts",
+      "mode": "write"
+    },
+    {
+      "file": "scripts/tests/test-kimi-quest-v6.sh",
+      "owner": "scripts",
+      "mode": "write"
+    },
+    {
+      "file": "scripts/tests/test-kimi-quest-v7.sh",
+      "owner": "scripts",
+      "mode": "write"
+    },
+    {
+      "file": "scripts/tests/test-kimi-quest-v8.sh",
+      "owner": "scripts",
+      "mode": "write"
+    },
+    {
+      "file": "scripts/tests/test-opencode-quest-v8.sh",
+      "owner": "scripts",
+      "mode": "write"
+    }
+  ],
+  "conflicts": [],
+  "rules": [
+    "One writer per file at a time.",
+    "Generated artifacts are read-only context unless explicitly accepted as output.",
+    "Runtime prompt files require parity checks after modification.",
+    "Installer/update files require shell syntax checks and install/update smoke validation."
+  ]
+}

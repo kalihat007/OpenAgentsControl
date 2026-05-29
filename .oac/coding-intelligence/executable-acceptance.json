@@ -1,0 +1,159 @@
+{
+  "version": "11",
+  "doneDefinition": [
+    "All required command checks are run or explicitly reported as blocked.",
+    "All patch ledger entries have validation evidence or a documented reason.",
+    "Automatic review, security gate, runtime parity, and PR package have no blocking findings.",
+    "The user receives suggested next steps and QuestMode waits for a decision."
+  ],
+  "checks": [
+    {
+      "id": "accept-command-1",
+      "title": "Run bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+      "kind": "command",
+      "command": "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+      "required": true,
+      "status": "pending",
+      "source": "smart-test-matrix"
+    },
+    {
+      "id": "accept-command-2",
+      "title": "Run git diff --check",
+      "kind": "command",
+      "command": "git diff --check",
+      "required": true,
+      "status": "pending",
+      "source": "smart-test-matrix"
+    },
+    {
+      "id": "accept-command-3",
+      "title": "Run npm run build -w packages/cli",
+      "kind": "command",
+      "command": "npm run build -w packages/cli",
+      "required": true,
+      "status": "pending",
+      "source": "smart-test-matrix"
+    },
+    {
+      "id": "accept-command-4",
+      "title": "Run npm run test:quest-v8:codex",
+      "kind": "command",
+      "command": "npm run test:quest-v8:codex",
+      "required": true,
+      "status": "pending",
+      "source": "smart-test-matrix"
+    },
+    {
+      "id": "accept-command-5",
+      "title": "Run npm run test:quest-v8:kimi",
+      "kind": "command",
+      "command": "npm run test:quest-v8:kimi",
+      "required": true,
+      "status": "pending",
+      "source": "smart-test-matrix"
+    },
+    {
+      "id": "accept-command-6",
+      "title": "Run npm run test:quest-v8:opencode",
+      "kind": "command",
+      "command": "npm run test:quest-v8:opencode",
+      "required": true,
+      "status": "pending",
+      "source": "smart-test-matrix"
+    },
+    {
+      "id": "accept-command-7",
+      "title": "Run npm run typecheck -w packages/cli",
+      "kind": "command",
+      "command": "npm run typecheck -w packages/cli",
+      "required": true,
+      "status": "pending",
+      "source": "smart-test-matrix"
+    },
+    {
+      "id": "accept-command-8",
+      "title": "Run npm run typecheck -w packages/swarm-runtime",
+      "kind": "command",
+      "command": "npm run typecheck -w packages/swarm-runtime",
+      "required": true,
+      "status": "pending",
+      "source": "smart-test-matrix"
+    },
+    {
+      "id": "accept-artifact-1",
+      "title": "Refresh coding-intelligence.json",
+      "kind": "artifact",
+      "artifact": "coding-intelligence.json",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-artifact-2",
+      "title": "Refresh coding-autopilot.json",
+      "kind": "artifact",
+      "artifact": "coding-autopilot.json",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-artifact-3",
+      "title": "Refresh coding-execution.json",
+      "kind": "artifact",
+      "artifact": "coding-execution.json",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-artifact-4",
+      "title": "Refresh coding-review.md",
+      "kind": "artifact",
+      "artifact": "coding-review.md",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-artifact-5",
+      "title": "Refresh pr-auto-packager.md",
+      "kind": "artifact",
+      "artifact": "pr-auto-packager.md",
+      "required": true,
+      "status": "pending",
+      "source": "quest-coding-execution"
+    },
+    {
+      "id": "accept-review-verdict",
+      "title": "Automatic review verdict is not blocked",
+      "kind": "review",
+      "required": true,
+      "status": "pending",
+      "source": "automatic-code-review"
+    },
+    {
+      "id": "accept-runtime-parity",
+      "title": "Required runtime parity checks are covered",
+      "kind": "runtime",
+      "required": true,
+      "status": "pending",
+      "source": "runtime-parity-enforcer"
+    },
+    {
+      "id": "accept-ledger-1",
+      "title": "Patch ledger entry patch-001 has validation plan",
+      "kind": "manual",
+      "required": true,
+      "status": "pending",
+      "source": "patch-001"
+    }
+  ],
+  "evidenceRequired": [
+    "commands run with pass/fail result",
+    "files changed or no-op explanation",
+    "runtime parity result when runtime-facing files changed",
+    "security/secret gate verdict",
+    "PR package summary and blockers"
+  ]
+}

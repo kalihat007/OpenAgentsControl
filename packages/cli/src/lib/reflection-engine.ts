@@ -11,6 +11,7 @@ import { writeFile, mkdir } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
 import { createLogger } from './logger.js'
 import type { ReconciledQuestRun, ReconcilerEvent } from './quest-reconciler.js'
+import type { QuestVerificationResult } from './quest-run.js'
 import type { AgentMemoryBundle } from './agent-memory.js'
 
 const log = createLogger('reflection-engine')
@@ -64,9 +65,7 @@ export function analyzeQuestForReflection(
 
   // Metric: verification pass rate
   const validations = quest.events.filter((e) => e.type === 'validation')
-  const passedValidations = validations.filter(
-    (e) => (e.data as Record<string, unknown>).passed === true,
-  ).length
+  const passedValidations = validations.filter((event) => validationPassed(event)).length
   const passRate = validations.length > 0 ? passedValidations / validations.length : 1
   metrics.push({ name: 'validation_pass_rate', value: passRate, unit: 'ratio', benchmark: 1 })
 
@@ -109,12 +108,12 @@ export function analyzeQuestForReflection(
   // Learning: validation failures indicate context gap
   if (passedValidations < validations.length) {
     const failedChecks = validations
-      .flatMap((e) => {
-        const data = e.data as Record<string, unknown>
-        const checks = Array.isArray(data.checks) ? data.checks : []
-        return checks.filter((c: Record<string, unknown>) => c.passed === false)
+      .flatMap((event) => {
+        const result = validationResult(event)
+        const checks = result?.checks ?? []
+        return checks.filter((check) => check.passed === false)
       })
-      .map((c: Record<string, unknown>) => String(c.name ?? 'unnamed'))
+      .map((check) => check.name)
     learnings.push({
       category: 'context_gap',
       description: `${validations.length - passedValidations} validation check(s) failed.`,
@@ -163,7 +162,7 @@ export function analyzeQuestForReflection(
   const overallInsight = buildOverallInsight(quest, learnings, metrics)
 
   return {
-    questId: quest.id,
+    questId: quest.questId,
     timestamp: new Date().toISOString(),
     overallInsight,
     learnings,
@@ -182,15 +181,36 @@ function buildOverallInsight(
   const passRateMetric = metrics.find((m) => m.name === 'validation_pass_rate')
 
   if (incidentMetric && incidentMetric.value === 0 && passRateMetric && passRateMetric.value === 1) {
-    return `Quest ${quest.id} completed cleanly. ${learnings.length} learnings extracted for pattern reinforcement.`
+    return `Quest ${quest.questId} completed cleanly. ${learnings.length} learnings extracted for pattern reinforcement.`
   }
   if (incidentMetric && incidentMetric.value > 0) {
-    return `Quest ${quest.id} completed with ${incidentMetric.value} incident(s). ${learnings.length} learnings identify root causes and prevention strategies.`
+    return `Quest ${quest.questId} completed with ${incidentMetric.value} incident(s). ${learnings.length} learnings identify root causes and prevention strategies.`
   }
   if (passRateMetric && passRateMetric.value < 1) {
-    return `Quest ${quest.id} had validation gaps. ${learnings.length} learnings suggest acceptance-criteria improvements.`
+    return `Quest ${quest.questId} had validation gaps. ${learnings.length} learnings suggest acceptance-criteria improvements.`
   }
-  return `Quest ${quest.id} reflected. ${learnings.length} learnings captured for future quests.`
+  return `Quest ${quest.questId} reflected. ${learnings.length} learnings captured for future quests.`
+}
+
+function validationResult(event: ReconcilerEvent): QuestVerificationResult | undefined {
+  const result = event.data.result
+  if (typeof result === 'object' && result !== null) {
+    return result as QuestVerificationResult
+  }
+  if ('overallPassed' in event.data || 'checks' in event.data || 'passed' in event.data) {
+    const checks = Array.isArray(event.data.checks) ? event.data.checks : []
+    return {
+      timestamp: event.timestamp,
+      checks: checks as QuestVerificationResult['checks'],
+      overallPassed: event.data.overallPassed === true || event.data.passed === true,
+      summary: String(event.data.summary ?? ''),
+    }
+  }
+  return undefined
+}
+
+function validationPassed(event: ReconcilerEvent): boolean {
+  return validationResult(event)?.overallPassed === true
 }
 
 // ── Persistence ─────────────────────────────────────────────────────────────────

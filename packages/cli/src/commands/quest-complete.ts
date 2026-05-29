@@ -5,10 +5,13 @@
 import { type Command } from 'commander'
 import { log, info, success, warn, dim, bold } from '../ui/logger.js'
 import { CommandUsageError } from '../lib/errors.js'
-import { loadReconciledQuest, buildStateChangeEvent, buildValidationEvent } from '../lib/quest-reconciler.js'
+import { loadReconciledQuest, buildNextStepsSuggestedEvent, buildStateChangeEvent, buildValidationEvent } from '../lib/quest-reconciler.js'
 import { appendQuestEvent, questExists, writeTaskGraph } from '../lib/quest-run.js'
 import { runQuestVerification } from '../lib/quest-verification.js'
 import { extractQuestMemory } from '../lib/memory-extraction.js'
+import { analyzeQuestForReflection, saveReflection } from '../lib/reflection-engine.js'
+import { buildQuestNextStepSuggestions } from '../lib/quest-next-steps.js'
+import { refreshMemoryPromotionStore } from '../lib/quest-memory-promotion.js'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -130,8 +133,27 @@ export async function questCompleteCommand(
     await appendQuestEvent(projectRoot, questId, validationEvent)
   }
 
+  if (quest.version === '8' && quest.intensity !== 'lite') {
+    if (quest.state !== 'REFLECT') {
+      await appendQuestEvent(projectRoot, questId, buildStateChangeEvent(quest.state, 'REFLECT'))
+    }
+    const reflectedQuest = await loadReconciledQuest(projectRoot, questId)
+    if (reflectedQuest) {
+      const reflection = analyzeQuestForReflection(reflectedQuest)
+      await saveReflection(projectRoot, questId, reflection)
+      quest = reflectedQuest
+      dim(`Reflection: ${join(runDir, 'reflection.json')}`)
+    }
+  }
+
   const event = buildStateChangeEvent(quest.state, 'COMPLETE')
   await appendQuestEvent(projectRoot, questId, event)
+
+  const completedQuestForSuggestions = await loadReconciledQuest(projectRoot, questId)
+  if (completedQuestForSuggestions) {
+    const suggestions = buildQuestNextStepSuggestions(completedQuestForSuggestions)
+    await appendQuestEvent(projectRoot, questId, buildNextStepsSuggestedEvent(suggestions))
+  }
 
   const completedQuest = await loadReconciledQuest(projectRoot, questId)
   const summarySource = completedQuest ?? { ...quest, state: 'COMPLETE' as const }
@@ -151,12 +173,24 @@ export async function questCompleteCommand(
   success('Quest marked COMPLETE')
   dim(`Summary: ${join(runDir, 'summary.md')}`)
   dim(`Summary JSON: ${join(runDir, 'summary.json')}`)
+  if (summarySource.nextStepSuggestions && summarySource.nextStepSuggestions.length > 0) {
+    log('')
+    info('Suggested next steps (choose one):')
+    for (const suggestion of summarySource.nextStepSuggestions) {
+      log(`  - ${suggestion.title}`)
+      dim(`    ${suggestion.reason}`)
+      if (suggestion.command) dim(`    ${suggestion.command}`)
+    }
+  }
 
   if (options.extractMemory !== false) {
     const finalQuest = await loadReconciledQuest(projectRoot, questId)
     if (finalQuest?.state === 'COMPLETE') {
       const extraction = await extractQuestMemory(projectRoot, finalQuest)
       dim(`Memory extraction: ${extraction.promotedLessons} lesson(s), ${extraction.promotedCommands} command(s), ${extraction.candidates} candidate(s)`)
+      const promotionStore = await refreshMemoryPromotionStore(projectRoot)
+      const pendingPromotions = promotionStore.candidates.filter((candidate) => candidate.status === 'pending').length
+      dim(`Memory promotion: ${pendingPromotions} pending candidate(s). Review with: oac memory-promote`)
     }
   }
 
@@ -236,6 +270,20 @@ function formatFinalSummary(
   }
 
   lines.push('')
+  lines.push('## Suggested Next Steps')
+  lines.push('')
+  if (quest.nextStepSuggestions && quest.nextStepSuggestions.length > 0) {
+    for (const suggestion of quest.nextStepSuggestions) {
+      lines.push(`- **${suggestion.title}** — ${suggestion.reason}`)
+      if (suggestion.command) {
+        lines.push(`  - Command: \`${suggestion.command}\``)
+      }
+    }
+  } else {
+    lines.push('_No follow-up suggestions recorded._')
+  }
+
+  lines.push('')
   return lines.join('\n')
 }
 
@@ -257,6 +305,7 @@ function formatFinalSummaryJson(
     acceptanceCriteria: quest.acceptanceCriteria,
     verification: quest.verification,
     changedFiles: quest.changedFiles,
+    nextStepSuggestions: quest.nextStepSuggestions ?? [],
     remainingRisks:
       failed === 0 && blocked === 0
         ? []

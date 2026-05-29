@@ -10,7 +10,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
 import { createLogger } from './logger.js'
-import type { TeamMemory, TeamLesson, RecurringFailure } from './team-memory.js'
+import type { TeamMemory } from './team-memory.js'
 import type { QuestPattern } from './quest-feedback.js'
 
 const log = createLogger('memory-indexer')

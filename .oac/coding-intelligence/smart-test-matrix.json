@@ -1,0 +1,54 @@
+{
+  "version": "10",
+  "tiers": [
+    {
+      "id": "tier-1-focused",
+      "title": "Focused checks",
+      "commands": [
+        "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+        "git diff --check"
+      ],
+      "reason": "Fast checks closest to the changed files.",
+      "required": true
+    },
+    {
+      "id": "tier-2-package",
+      "title": "Package confidence",
+      "commands": [
+        "npm run typecheck -w packages/cli",
+        "npm run build -w packages/cli",
+        "npm run typecheck -w packages/swarm-runtime",
+        "cd packages/swarm-runtime && bun test"
+      ],
+      "reason": "Typecheck/build/test the affected package surfaces.",
+      "required": true
+    },
+    {
+      "id": "tier-3-runtime-parity",
+      "title": "Runtime parity",
+      "commands": [
+        "npm run test:quest-v8:kimi",
+        "npm run test:quest-v8:opencode",
+        "npm run test:quest-v8:codex"
+      ],
+      "reason": "Validate OpenAgent runtime adapters and Quest harnesses touched by the change.",
+      "required": true
+    }
+  ],
+  "escalationRules": [
+    "If tier 1 fails, run the autofix loop once before broader tests.",
+    "If package checks fail twice, stop and record failure memory.",
+    "If runtime-facing files changed, runtime parity tier is required before COMPLETE.",
+    "If high-impact or security-sensitive code changed, run all selected package and runtime checks."
+  ],
+  "minimumCredibleCommands": [
+    "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+    "git diff --check",
+    "npm run build -w packages/cli",
+    "npm run test:quest-v8:codex",
+    "npm run test:quest-v8:kimi",
+    "npm run test:quest-v8:opencode",
+    "npm run typecheck -w packages/cli",
+    "npm run typecheck -w packages/swarm-runtime"
+  ]
+}

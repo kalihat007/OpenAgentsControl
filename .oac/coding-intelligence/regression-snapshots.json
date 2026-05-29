@@ -1,0 +1,60 @@
+{
+  "version": "11",
+  "snapshots": [
+    {
+      "id": "snapshot-quest-v9-output",
+      "name": "quest-v9 sidecar output",
+      "kind": "cli-output",
+      "source": "oac quest-v9",
+      "command": "oac quest-v9 <quest-id>",
+      "expectedSignals": [
+        "coding-intelligence.json",
+        "coding-autopilot.json",
+        "coding-execution.json",
+        "executable-acceptance.json",
+        "runtime-compatibility-matrix.json"
+      ]
+    },
+    {
+      "id": "snapshot-artifact-shapes",
+      "name": "coding artifact JSON versions",
+      "kind": "artifact-shape",
+      "source": ".oac/runs/{quest-id}/",
+      "expectedSignals": [
+        "version:9",
+        "codingAutopilot.version:10",
+        "codingExecution.version:11"
+      ]
+    },
+    {
+      "id": "snapshot-kimi-direct-prompt",
+      "name": "Kimi Quest direct prompt",
+      "kind": "runtime-prompt",
+      "source": "scripts/tests/test-kimi-quest-v8.sh",
+      "command": "npm run test:quest-v8:kimi",
+      "expectedSignals": [
+        "OpenAgent Quest Spec",
+        "REFLECT",
+        "coding-execution.json",
+        "executable-acceptance.json"
+      ]
+    },
+    {
+      "id": "snapshot-runtime-events",
+      "name": "runtime write-back event stream",
+      "kind": "event-stream",
+      "source": "events.ndjson",
+      "expectedSignals": [
+        "research.assessed",
+        "coding.intent",
+        "tests.selected",
+        "review.signals"
+      ]
+    }
+  ],
+  "updatePolicy": [
+    "Update snapshots only after acceptance checks pass.",
+    "Keep lifecycle and sidecar names synchronized across OpenCode, Kimi, Codex, and Claude.",
+    "Do not treat generated snapshots as product source code."
+  ]
+}

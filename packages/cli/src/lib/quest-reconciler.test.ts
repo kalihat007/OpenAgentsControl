@@ -17,6 +17,15 @@ import {
   buildTaskInjectedEvent,
   buildPriorityChangedEvent,
   buildTaskProgressEvent,
+  buildContextLoadedEvent,
+  buildContextChangedEvent,
+  buildRequestReceivedEvent,
+  buildActionSummaryEvent,
+  buildCwdObservedEvent,
+  buildKnowledgeCapturedEvent,
+  buildResearchAssessedEvent,
+  buildResearchPerformedEvent,
+  buildNextStepsSuggestedEvent,
 } from './quest-reconciler.js'
 import { persistQuestRun, type QuestRun } from './quest-run.js'
 
@@ -45,6 +54,7 @@ function makeBaseQuest(): QuestRun {
       opencode: { command: 'opencode --agent OpenAgent', resumePrompt: 'Resume' },
       kimi: { command: 'kimi', resumePrompt: 'Resume' },
       claude: { command: 'claude', resumePrompt: 'Resume' },
+      codex: { command: 'codex', resumePrompt: 'Resume' },
     },
   }
 }
@@ -118,6 +128,15 @@ describe('quest-reconciler', () => {
     expect(live.state).toBe('REVIEW')
   })
 
+  it('reconcileQuestRun accepts REFLECT as a v8 state_change target', () => {
+    const base = makeBaseQuest()
+    base.version = '8'
+    const events = [buildStateChangeEvent('VERIFY', 'REFLECT')]
+
+    const live = reconcileQuestRun(base, events)
+    expect(live.state).toBe('REFLECT')
+  })
+
   it('reconcileQuestRun ignores invalid state changes', () => {
     const base = makeBaseQuest()
     const events = [{ timestamp: 'now', type: 'state_change' as const, data: { to: 'INVALID' } }]
@@ -148,6 +167,98 @@ describe('quest-reconciler', () => {
 
     const live = reconcileQuestRun(base, events)
     expect(live.changedFiles).toEqual(['src/lib.ts'])
+  })
+
+  it('reconcileQuestRun derives a background memory graph from action, file, and context events', () => {
+    const base = makeBaseQuest()
+    base.version = '8'
+    const events = [
+      buildContextLoadedEvent('.opencode/context/core/quest-mode.md', { taskId: '1' }),
+      buildFileChangeEvent('src/index.ts'),
+      buildContextChangedEvent('.opencode/context/core/quest-mode.md', { taskId: '1' }),
+    ]
+
+    const live = reconcileQuestRun(base, events)
+    expect(live.memoryGraph.summary.actions).toBe(3)
+    expect(live.memoryGraph.summary.files).toBe(1)
+    expect(live.memoryGraph.summary.contexts).toBe(1)
+    expect(live.memoryGraph.nodes.some((node) => node.id === 'context:.opencode/context/core/quest-mode.md')).toBe(true)
+  })
+
+  it('reconcileQuestRun derives interaction memory from requests, cwd, actions, and knowledge', () => {
+    const base = makeBaseQuest()
+    base.version = '8'
+    const events = [
+      buildRequestReceivedEvent('Continue with memory', { runtime: 'kimi', cwd: '/repo' }),
+      buildCwdObservedEvent('/repo/packages/cli', { runtime: 'kimi', taskId: '1' }),
+      buildActionSummaryEvent('Updated memory files', {
+        taskId: '1',
+        runtime: 'kimi',
+        cwd: '/repo/packages/cli',
+        changedFiles: ['packages/cli/src/lib/quest-interaction-memory.ts'],
+      }),
+      buildKnowledgeCapturedEvent('decision', 'Use append-only events as source of truth', { taskId: '1' }),
+    ]
+
+    const live = reconcileQuestRun(base, events)
+    expect(live.interactionMemory.summary.requests).toBe(2)
+    expect(live.interactionMemory.summary.actions).toBe(4)
+    expect(live.interactionMemory.summary.fileChanges).toBe(1)
+    expect(live.interactionMemory.workingContext.currentWorkDir).toBe('/repo/packages/cli')
+    expect(live.interactionMemory.knowledge.some((entry) => entry.kind === 'decision')).toBe(true)
+  })
+
+  it('reconcileQuestRun records pre-execution research decisions in memory artifacts', () => {
+    const base = makeBaseQuest()
+    base.version = '8'
+    const events = [
+      buildContextLoadedEvent('.opencode/context/core/quest-mode.md', {
+        taskId: '1',
+        reason: 'Pre-execution discovery gate',
+      }),
+      buildResearchAssessedEvent(false, 'Local Quest context and repo files are sufficient; no current web facts needed.', {
+        taskId: '1',
+        runtime: 'kimi',
+        cwd: '/repo',
+        files: ['packages/cli/src/lib/runtime-bridge.ts'],
+        contexts: ['.opencode/context/core/quest-mode.md'],
+      }),
+      buildResearchPerformedEvent('Checked current API docs for a provider-specific integration detail.', {
+        taskId: '1',
+        runtime: 'kimi',
+        queries: ['provider cli latest flags'],
+        sources: ['https://example.com/docs'],
+      }),
+    ]
+
+    const live = reconcileQuestRun(base, events)
+    expect(live.memoryGraph.summary.actions).toBe(3)
+    expect(live.memoryGraph.nodes.some((node) => node.id === 'file:packages/cli/src/lib/runtime-bridge.ts')).toBe(true)
+    expect(live.interactionMemory.summary.actions).toBe(3)
+    expect(live.interactionMemory.knowledge.some((entry) => entry.kind === 'research_assessment')).toBe(true)
+    expect(live.interactionMemory.knowledge.some((entry) => entry.kind === 'research_performed')).toBe(true)
+  })
+
+  it('reconcileQuestRun records suggested next steps without executing them', () => {
+    const base = makeBaseQuest()
+    base.version = '8'
+    base.state = 'COMPLETE'
+    const events = [
+      buildNextStepsSuggestedEvent([
+        {
+          id: 'review-summary',
+          kind: 'review',
+          title: 'Review the completion summary',
+          reason: 'Confirm evidence before starting another Quest.',
+          command: 'oac quest-status test-q-001',
+        },
+      ]),
+    ]
+
+    const live = reconcileQuestRun(base, events)
+    expect(live.nextStepSuggestions).toHaveLength(1)
+    expect(live.nextStepSuggestions[0]?.kind).toBe('review')
+    expect(live.nextSuggestedAction).toContain('choose one')
   })
 
   it('reconcileQuestRun applies validation events and updates trust label', () => {

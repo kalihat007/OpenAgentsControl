@@ -1,0 +1,35 @@
+{
+  "version": "10",
+  "needed": true,
+  "reason": "Dependency, toolchain, schema, or external import surface changed; current official docs may affect correctness.",
+  "queries": [
+    "bun:test official documentation current API",
+    "commander official documentation current API",
+    "fs official documentation current API",
+    "node:child_process official documentation current API",
+    "node:crypto official documentation current API",
+    "package.json current behavior official docs"
+  ],
+  "localEvidence": [
+    ".opencode/agent/core/openagent.md",
+    ".opencode/context/core/quest-mode.md",
+    "README.md",
+    "package.json",
+    "packages/cli/.opencode/.expert-memory.json",
+    "packages/cli/src/commands/memory-promote.ts",
+    "packages/cli/src/commands/quest-complete.test.ts",
+    "packages/cli/src/commands/quest-complete.ts",
+    "packages/cli/src/commands/quest-status.test.ts",
+    "packages/cli/src/commands/quest-status.ts",
+    "packages/cli/src/commands/quest-v9.ts",
+    "packages/cli/src/commands/repo-wiki.ts",
+    "packages/cli/src/index.ts",
+    "packages/cli/src/lib/memory-indexer.ts",
+    "packages/cli/src/lib/quest-coding-autopilot.ts",
+    "packages/cli/src/lib/quest-coding-execution.ts",
+    "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+    "packages/cli/src/lib/quest-coding-intelligence.ts",
+    "packages/cli/src/lib/quest-interaction-memory.test.ts",
+    "packages/cli/src/lib/quest-interaction-memory.ts"
+  ]
+}

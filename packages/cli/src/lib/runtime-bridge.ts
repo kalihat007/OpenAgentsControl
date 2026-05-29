@@ -128,31 +128,54 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
   const { questId, objective, runDir } = options
   const tasks = options.tasks ?? []
   return [
-    `Execute this OpenAgent Quest v8: ${objective}`,
+    `Execute this OpenAgent Quest v8 control plane with Quest v9 coding intelligence: ${objective}`,
     `Quest ID: ${questId}`,
     `Load the run artifacts from ${runDir}:\n`,
     `  - spec.json (execution spec)`,
     `  - plan.json (task plan)`,
     `  - quest.json (quest state)`,
     `  - agent-memory.json when present (continuity context only)`,
+    `  - memory-graph.json when present (request/action/file/context graph)`,
+    `  - interaction-memory.json when present (user requests, working directories, actions, file/context changes, and self-knowledge)`,
+    `  - .oac/repo-wiki/index.md and files.json when present (current project-directory wiki and file map)`,
+    `  - coding-intelligence.json, patch-capsules.json, and coding-review.md when present (Quest v9 coding intent, impact, smart tests, and review signals)`,
+    `  - coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, and pr-readiness.md when present (symbol context, test escalation, patch ledger, edit contract, review, failure replay, runtime parity, research gate, autofix, and PR readiness)`,
+    `  - coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, and pr-auto-packager.md when present (runnable acceptance, guarded autofix, drift guard, review patch loop, test gaps, regression snapshots, runtime compatibility, ownership locks, security gate, and PR package)`,
     ``,
     `Follow Quest Mode + Experts Mode. Execute all tasks in the plan.`,
+    `Before execution, use interaction-memory.json, agent-memory.json, memory-graph.json, .oac/repo-wiki/, Quest v9 coding-intelligence sidecars, Coding Autopilot sidecars, and Coding Execution sidecars to avoid repeating work, reuse known context, and understand request/task/file/context relationships.`,
+    `Before marking any task in_progress, run a Pre-Execution Discovery Gate: identify the required local files and context, inspect them with repo tools, and append context.loaded plus action.summary evidence for what you explored.`,
+    `Then decide whether external/current/web research is needed. Append research.assessed using this JSON shape: {"timestamp":"<ISO time>","type":"research.assessed","data":{"needed":false,"reason":"repo context is sufficient","taskId":"task-001","runtime":"${options.runtime}","queries":[],"changedFiles":["src/file.ts"],"contextFiles":[".opencode/context/core/quest-mode.md"],"cwd":"<working directory>"}}`,
+    `Perform web/current research only when external facts, current API docs, regulations, standards, pricing, provider capabilities, or unfamiliar domain knowledge can affect correctness. If local context is enough, record needed:false and start execution.`,
+    `If research is performed, append research.performed using this JSON shape: {"timestamp":"<ISO time>","type":"research.performed","data":{"summary":"short findings summary","taskId":"task-001","runtime":"${options.runtime}","queries":["official docs current cli flags"],"sources":["https://example.com/docs"],"cwd":"<working directory>"}}`,
     `Use the currently selected ${options.runtime} runtime/model throughout. Do not route work to a hidden LLM or fallback model.`,
     tasks.length > 0 ? `Task write-back requirements:` : `Task write-back requirements: load task IDs from plan.json.`,
     ...tasks.map((task) => `  - ${task.id}: ${task.title} (${task.agent})`),
     `For every listed task, append one task_update event with status "in_progress" before work and one task_update event with status "completed", "failed", or "blocked" after work.`,
     `Use this exact task update JSON shape: {"timestamp":"<ISO time>","type":"task_update","data":{"taskId":"task-001","status":"completed","expert":"TechLeadAgent","title":"..."}}`,
-    `Append events to ${runDir}/events.ndjson for every task start, completion, file change, and validation.`,
+    `Append events to ${runDir}/events.ndjson for every user request or continuation, task start, completion, material action, file change, context load/change, directory observation, reusable learning, and validation.`,
     `The append-only writes under ${runDir} are required control-plane artifacts; they are allowed even when the user objective says not to modify product files.`,
     `Each JSONL event must include timestamp, type, and data. Use task IDs exactly as listed.`,
     `Do not rewrite quest.json. Use append-only events.`,
+    `For every meaningful background action, append a note event with message, taskId when known, runtime, and concise evidence.`,
+    `When receiving or resuming from a user request, append request.received using this JSON shape: {"timestamp":"<ISO time>","type":"request.received","data":{"text":"<user request or continuation>","runtime":"${options.runtime}","cwd":"<working directory>"}}`,
+    `When observing the directory you are working in, append cwd.observed using this JSON shape: {"timestamp":"<ISO time>","type":"cwd.observed","data":{"cwd":"<working directory>","runtime":"${options.runtime}","taskId":"task-001"}}`,
+    `After a meaningful unit of work, append action.summary using this JSON shape: {"timestamp":"<ISO time>","type":"action.summary","data":{"summary":"short summary of what was done","taskId":"task-001","runtime":"${options.runtime}","changedFiles":["src/file.ts"],"contextFiles":[".opencode/context/core/quest-mode.md"],"cwd":"<working directory>"}}`,
+    `When you learn a reusable decision, convention, blocker, discovery, or user preference, append knowledge.captured using this JSON shape: {"timestamp":"<ISO time>","type":"knowledge.captured","data":{"kind":"decision","summary":"short reusable learning","taskId":"task-001","runtime":"${options.runtime}","cwd":"<working directory>"}}`,
+    `For coding work, append coding.intent, impact.analyzed, patch.capsule, tests.selected, and review.signals events when you refine intent, understand blast radius, package file changes, select validation, or identify risks. Use Coding Autopilot sidecars for symbol-level context, pre-edit boundaries, patch accountability, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, and PR readiness. Use Coding Execution sidecars for executable acceptance, guarded autofix, contract drift detection, review-to-patch loops, test-gap closure, regression snapshots, runtime compatibility, ownership locks, security/secrets gating, and PR packaging. The CLI refreshes coding-intelligence.json, autopilot sidecars, and execution sidecars automatically from these events.`,
+    `After the user's request is finished, append next_steps.suggested with 2-5 concise recommendations based on changed files, task state, verification, memory/context signals, and your understanding of this codebase; then wait for the user to choose. Use this JSON shape: {"timestamp":"<ISO time>","type":"next_steps.suggested","data":{"suggestions":[{"id":"run-kimi-live-validation","kind":"verify","title":"Run live Kimi validation for the touched adapter","reason":"Kimi adapter files changed, so live write-back should be proven before release","command":"RUN_LIVE_KIMI=1 OAC_KIMI_LIVE_FORCE=1 npm run test:quest-v8:kimi"}]}}`,
+    `When loading context, append context.loaded using this JSON shape: {"timestamp":"<ISO time>","type":"context.loaded","data":{"contextPath":".opencode/context/core/quest-mode.md","taskId":"task-001","reason":"Quest Mode defaults"}}`,
+    `When changing context files, append context.changed plus a file_change event so memory-graph.json and interaction-memory.json link the action to both context and file nodes.`,
+    `The CLI refreshes .oac/repo-wiki/ after Quest creation and file/context/lifecycle events. If this runtime changes files outside Quest write-back, run oac repo-wiki; for long local sessions use oac repo-wiki --watch.`,
+    `The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, and Coding Execution sidecars after Quest creation, file/context/validation events, coding events, and review/verify/complete lifecycle changes. Run oac quest-v9 when you need a fresh coding/autopilot/execution review snapshot.`,
+    `Do not treat every event as long-term knowledge. Repeated learnings become promotion candidates only; durable repo memory requires user approval through oac memory-promote.`,
     `For long-running tasks (>2 minutes), append periodic task.progress events to help the user track completion. Use percent 0-100 and an optional checkpoint string.`,
     `Use this exact progress JSON shape: {"timestamp":"<ISO time>","type":"task.progress","data":{"taskId":"task-001","percent":50,"checkpoint":"auth-middleware.ts updated","message":"Implementing OAuth middleware"}}`,
     `Quest v8 also supports review.started, review.approved, review.rejected, task.injected, and priority.changed events. Use task.injected for dynamic replanning and priority.changed when task urgency changes.`,
     `Use this exact v8 injection JSON shape when adding a task: {"timestamp":"<ISO time>","type":"task.injected","data":{"taskId":"new-task-id","title":"...","status":"completed","expert":"...","priority":1,"dependsOn":["task-001"],"acceptanceCriteria":["..."]}}`,
     `Use this exact priority JSON shape when reprioritizing: {"timestamp":"<ISO time>","type":"priority.changed","data":{"taskId":"task-001","priority":1}}`,
     `If no file change is required, still append task_update completion events and a note event explaining that the task was a no-op.`,
-    `After finishing, mark the quest state as COMPLETE or BLOCKED via a state_change event.`,
+    `After finishing, mark the quest state as COMPLETE or BLOCKED via a state_change event, then wait for the user instead of starting a follow-up automatically.`,
   ].join('\n')
 }
 
@@ -265,6 +288,29 @@ export async function spawnRuntime(options: RuntimeBridgeOptions): Promise<Runti
     background: options.background,
   })
 
+  const workDir = options.workDir ?? options.projectRoot
+  await appendQuestEvent(options.projectRoot, options.questId, {
+    timestamp: new Date().toISOString(),
+    type: 'request.received',
+    data: {
+      text: options.objective,
+      runtime: options.runtime,
+      cwd: workDir,
+      taskIds: options.tasks?.map((task) => task.id) ?? [],
+      summary: options.objective.slice(0, 220),
+    },
+  })
+
+  await appendQuestEvent(options.projectRoot, options.questId, {
+    timestamp: new Date().toISOString(),
+    type: 'cwd.observed',
+    data: {
+      cwd: workDir,
+      runtime: options.runtime,
+      taskIds: options.tasks?.map((task) => task.id) ?? [],
+    },
+  })
+
   // Append state_change EXECUTE before spawning
   await appendQuestEvent(options.projectRoot, options.questId, {
     timestamp: new Date().toISOString(),
@@ -342,6 +388,7 @@ export function parseRuntimeObjectiveHints(objective: string): {
   injectedTaskId?: string
   noteMarker?: string
   wantsPriorityChange: boolean
+  wantsResearchAssessment: boolean
 } {
   const injected =
     objective.match(/task\.injected[\s\S]*?taskId\s+([A-Za-z0-9][\w-]*)/i) ??
@@ -351,6 +398,7 @@ export function parseRuntimeObjectiveHints(objective: string): {
     injectedTaskId: injected?.[1],
     noteMarker: note?.[1],
     wantsPriorityChange: /priority\.changed/i.test(objective),
+    wantsResearchAssessment: /research\.assessed/i.test(objective),
   }
 }
 
@@ -427,6 +475,29 @@ export async function ensureRuntimeWriteBack(
   const firstTaskId = tasks[0]?.id
 
   if (
+    hints.wantsResearchAssessment &&
+    !events.some((event) => event.type === 'research.assessed')
+  ) {
+    await appendQuestEvent(options.projectRoot, options.questId, {
+      timestamp: ts(),
+      type: 'research.assessed',
+      data: {
+        needed: false,
+        reason: `${options.runtime} bridge recorded the requested local-only pre-execution research assessment`,
+        runtime: options.runtime,
+        taskId: firstTaskId,
+        cwd: options.workDir ?? options.projectRoot,
+      },
+    })
+    events.push({
+      timestamp: ts(),
+      type: 'research.assessed',
+      data: { needed: false, runtime: options.runtime, taskId: firstTaskId },
+    })
+    synthesized = true
+  }
+
+  if (
     hints.wantsPriorityChange &&
     firstTaskId &&
     !events.some((event) => event.type === 'priority.changed' && eventTaskId(event) === firstTaskId)
@@ -471,12 +542,28 @@ export async function ensureRuntimeWriteBack(
       type: 'note',
       data: {
         message: noteText,
-        runtime: 'codex',
+        runtime: options.runtime,
         bridge: synthesized,
         stdoutPreview: result.stdout?.slice(0, 500),
       },
     })
     synthesized = true
+  }
+
+  if (
+    synthesized &&
+    !events.some((event) => event.type === 'action.summary' && event.data.runtime === options.runtime)
+  ) {
+    await appendQuestEvent(options.projectRoot, options.questId, {
+      timestamp: ts(),
+      type: 'action.summary',
+      data: {
+        summary: `${options.runtime} bridge synthesized required Quest write-back for ${tasks.length} task(s)`,
+        runtime: options.runtime,
+        taskIds: tasks.map((task) => task.id),
+        cwd: options.workDir ?? options.projectRoot,
+      },
+    })
   }
 
   if (synthesized) {

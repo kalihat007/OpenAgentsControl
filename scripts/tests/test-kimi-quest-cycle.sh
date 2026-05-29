@@ -78,7 +78,7 @@ if [ ! -f "$AGENT_FILE" ]; then
 fi
 
 grep -q 'Quest v8 lifecycle' "$AGENT_FILE" \
-  || grep -q 'NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING' "$AGENT_FILE" \
+  || grep -q 'NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING' "$AGENT_FILE" \
   || fail "Kimi adapter missing Quest v8 lifecycle contract"
 pass "Kimi adapter documents Quest v8 per-input and post-completion rules"
 
@@ -88,7 +88,7 @@ printf '# Kimi Quest v8 Cycle Smoke\n' > "$TEST_DIR/work/README.md"
 FIRST_OUT="$TEST_DIR/first.txt"
 SECOND_OUT="$TEST_DIR/second.txt"
 
-FIRST_PROMPT="Do not use tools. Quest v8 turn one. Start with OpenAgent Quest Spec and State: NEW. Include Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> COMPLETE -> WAITING. Close this turn with State: COMPLETE or WAITING and a one-line completion summary."
+FIRST_PROMPT="Do not use tools. Quest v8 turn one. Start with OpenAgent Quest Spec and State: NEW. Include Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Close this turn with State: COMPLETE or WAITING and a one-line completion summary."
 SECOND_PROMPT="Do not use tools. Quest v8 turn two after the previous request completed in this same session. Start a fresh OpenAgent Quest Spec with State: NEW (not plain chat). Include Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the full v8 lifecycle line again. Propose a safe validation approach."
 
 if ! run_with_timeout 120 kimi \
@@ -124,7 +124,7 @@ function check(label, file) {
     startsWithQuest: /^(?:```(?:text)?\s*)?OpenAgent Quest Spec/m.test(text),
     stateNew: /State:\s*NEW/i.test(text),
     v8Lifecycle:
-      /NEW\s*->\s*SPEC\s*->\s*EXECUTE\s*->\s*REVIEW\s*->\s*VERIFY\s*->\s*COMPLETE\s*->\s*WAITING/i.test(
+      /NEW\s*->\s*SPEC\s*->\s*EXECUTE\s*->\s*REVIEW\s*->\s*VERIFY\s*->\s*REFLECT\s*->\s*COMPLETE\s*->\s*WAITING/i.test(
         text,
       ),
     scenario:

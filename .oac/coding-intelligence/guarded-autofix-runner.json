@@ -1,0 +1,116 @@
+{
+  "version": "11",
+  "enabled": false,
+  "maxIterations": 2,
+  "queue": [
+    {
+      "id": "autofix-1",
+      "command": "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+      "reason": "Run the minimum credible check and patch only owned files if it fails."
+    },
+    {
+      "id": "autofix-2",
+      "command": "git diff --check",
+      "reason": "Run the minimum credible check and patch only owned files if it fails."
+    },
+    {
+      "id": "autofix-3",
+      "command": "npm run build -w packages/cli",
+      "reason": "Run the minimum credible check and patch only owned files if it fails."
+    },
+    {
+      "id": "autofix-4",
+      "command": "npm run test:quest-v8:codex",
+      "reason": "Run the minimum credible check and patch only owned files if it fails."
+    },
+    {
+      "id": "autofix-5",
+      "command": "npm run test:quest-v8:kimi",
+      "reason": "Run the minimum credible check and patch only owned files if it fails."
+    },
+    {
+      "id": "autofix-6",
+      "command": "npm run test:quest-v8:opencode",
+      "reason": "Run the minimum credible check and patch only owned files if it fails."
+    },
+    {
+      "id": "autofix-7",
+      "command": "npm run typecheck -w packages/cli",
+      "reason": "Run the minimum credible check and patch only owned files if it fails."
+    },
+    {
+      "id": "autofix-8",
+      "command": "npm run typecheck -w packages/swarm-runtime",
+      "reason": "Run the minimum credible check and patch only owned files if it fails."
+    }
+  ],
+  "writableFiles": [
+    ".oac/coding-intelligence/",
+    ".oac/repo-wiki/",
+    ".opencode/agent/core/openagent.md",
+    ".opencode/context/core/quest-mode.md",
+    "README.md",
+    "package.json",
+    "packages/cli/.opencode/.expert-memory.json",
+    "packages/cli/src/commands/memory-promote.ts",
+    "packages/cli/src/commands/quest-complete.test.ts",
+    "packages/cli/src/commands/quest-complete.ts",
+    "packages/cli/src/commands/quest-status.test.ts",
+    "packages/cli/src/commands/quest-status.ts",
+    "packages/cli/src/commands/quest-v9.ts",
+    "packages/cli/src/commands/repo-wiki.ts",
+    "packages/cli/src/index.ts",
+    "packages/cli/src/lib/memory-indexer.ts",
+    "packages/cli/src/lib/quest-coding-autopilot.ts",
+    "packages/cli/src/lib/quest-coding-execution.ts",
+    "packages/cli/src/lib/quest-coding-intelligence.test.ts",
+    "packages/cli/src/lib/quest-coding-intelligence.ts",
+    "packages/cli/src/lib/quest-interaction-memory.test.ts",
+    "packages/cli/src/lib/quest-interaction-memory.ts",
+    "packages/cli/src/lib/quest-memory-graph.test.ts",
+    "packages/cli/src/lib/quest-memory-graph.ts",
+    "packages/cli/src/lib/quest-memory-promotion.test.ts",
+    "packages/cli/src/lib/quest-memory-promotion.ts",
+    "packages/cli/src/lib/quest-next-steps.test.ts",
+    "packages/cli/src/lib/quest-next-steps.ts",
+    "packages/cli/src/lib/quest-reconciler.test.ts",
+    "packages/cli/src/lib/quest-reconciler.ts",
+    "packages/cli/src/lib/quest-run.test.ts",
+    "packages/cli/src/lib/quest-run.ts",
+    "packages/cli/src/lib/reflection-engine.test.ts",
+    "packages/cli/src/lib/reflection-engine.ts",
+    "packages/cli/src/lib/repo-wiki.test.ts",
+    "packages/cli/src/lib/repo-wiki.ts",
+    "packages/cli/src/lib/runtime-bridge.test.ts",
+    "packages/cli/src/lib/runtime-bridge.ts",
+    "packages/swarm-runtime/src/types.ts",
+    "plugins/README.md",
+    "plugins/codex-cli/README.md",
+    "plugins/codex-cli/codex-quest-default.toml.example",
+    "plugins/codex-cli/configure-codex-quest-default.sh",
+    "plugins/codex-cli/openagent-system.md",
+    "plugins/codex-cli/openagent.toml",
+    "plugins/kimi-code/README.md",
+    "plugins/kimi-code/openagent-system.md",
+    "plugins/kimi-code/openagent.yaml",
+    "scripts/tests/test-codex-quest-v8.sh",
+    "scripts/tests/test-kimi-quest-cycle.sh",
+    "scripts/tests/test-kimi-quest-v5.sh",
+    "scripts/tests/test-kimi-quest-v6.sh",
+    "scripts/tests/test-kimi-quest-v7.sh",
+    "scripts/tests/test-kimi-quest-v8.sh",
+    "scripts/tests/test-opencode-quest-v8.sh"
+  ],
+  "guardrails": [
+    "Patch only files in the pre-edit contract.",
+    "Apply one small fix per iteration.",
+    "Rerun the same failing command before broader validation.",
+    "Do not touch secrets, production configuration, paid services, or destructive operations."
+  ],
+  "stopConditions": [
+    "The same command fails twice with the same fingerprint.",
+    "The fix requires files outside the ownership lock plan.",
+    "The security gate becomes blocked.",
+    "Runtime parity fails after two attempts."
+  ]
+}

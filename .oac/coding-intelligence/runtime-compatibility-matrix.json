@@ -1,0 +1,96 @@
+{
+  "version": "11",
+  "runtimes": [
+    {
+      "runtime": "opencode",
+      "promptFiles": [
+        ".opencode/agent/core/openagent.md",
+        ".opencode/context/core/quest-mode.md"
+      ],
+      "installedPaths": [],
+      "harnessCommand": "npm run test:quest-v8:opencode",
+      "requiredClauses": [
+        "OpenAgent Quest Spec",
+        "REFLECT",
+        "coding-intelligence.json",
+        "coding-autopilot.json",
+        "coding-execution.json",
+        "executable-acceptance.json",
+        "runtime-compatibility-matrix.json"
+      ],
+      "status": "covered"
+    },
+    {
+      "runtime": "kimi",
+      "promptFiles": [
+        "plugins/kimi-code/openagent.yaml",
+        "plugins/kimi-code/openagent-system.md"
+      ],
+      "installedPaths": [
+        "~/.kimi/agents/openagents-control/openagent.yaml",
+        "~/.kimi/agents/openagents-control/openagent-system.md"
+      ],
+      "harnessCommand": "npm run test:quest-v8:kimi",
+      "requiredClauses": [
+        "OpenAgent Quest Spec",
+        "REFLECT",
+        "coding-intelligence.json",
+        "coding-autopilot.json",
+        "coding-execution.json",
+        "executable-acceptance.json",
+        "runtime-compatibility-matrix.json"
+      ],
+      "status": "covered"
+    },
+    {
+      "runtime": "codex",
+      "promptFiles": [
+        "plugins/codex-cli/openagent.toml",
+        "plugins/codex-cli/openagent-system.md"
+      ],
+      "installedPaths": [
+        "~/.codex/agents/openagents-control/openagent.toml",
+        "~/.codex/agents/openagents-control/openagent-system.md"
+      ],
+      "harnessCommand": "npm run test:quest-v8:codex",
+      "requiredClauses": [
+        "OpenAgent Quest Spec",
+        "REFLECT",
+        "coding-intelligence.json",
+        "coding-autopilot.json",
+        "coding-execution.json",
+        "executable-acceptance.json",
+        "runtime-compatibility-matrix.json"
+      ],
+      "status": "covered"
+    },
+    {
+      "runtime": "claude",
+      "promptFiles": [
+        "plugins/claude-code/openagent-system.md",
+        "install.sh",
+        "update.sh"
+      ],
+      "installedPaths": [
+        "~/.claude/plugins/openagents-control-bridge/openagent-system.md"
+      ],
+      "harnessCommand": "bash -n install.sh update.sh",
+      "requiredClauses": [
+        "OpenAgent Quest Spec",
+        "REFLECT",
+        "coding-intelligence.json",
+        "coding-autopilot.json",
+        "coding-execution.json",
+        "executable-acceptance.json",
+        "runtime-compatibility-matrix.json"
+      ],
+      "status": "not-required"
+    }
+  ],
+  "allRequiredCovered": true,
+  "commands": [
+    "npm run test:quest-v8:codex",
+    "npm run test:quest-v8:kimi",
+    "npm run test:quest-v8:opencode"
+  ]
+}

@@ -17,6 +17,10 @@ import {
   KIMI_CODE_COMMAND,
   OPENCODE_TUI_COMMAND,
 } from './run-handoff.js'
+import { buildQuestMemoryGraph, refreshQuestMemoryGraph, writeQuestMemoryGraph } from './quest-memory-graph.js'
+import { buildQuestInteractionMemory, refreshQuestInteractionMemory, writeQuestInteractionMemory } from './quest-interaction-memory.js'
+import { refreshRepoWiki } from './repo-wiki.js'
+import { refreshQuestCodingIntelligence } from './quest-coding-intelligence.js'
 
 export const QUEST_RUN_VERSION = '8' as const
 
@@ -67,6 +71,35 @@ export interface QuestRunArtifacts {
   taskGraph?: string
   acceptanceReport?: string
   reflection?: string
+  memoryGraph?: string
+  interactionMemory?: string
+  repoWiki?: string
+  codingIntelligence?: string
+  patchCapsules?: string
+  codingReview?: string
+  codingAutopilot?: string
+  symbolGraph?: string
+  smartTestMatrix?: string
+  patchLedger?: string
+  preEditContract?: string
+  automaticCodeReview?: string
+  failureMemory?: string
+  runtimeParityEnforcer?: string
+  dependencyResearchGate?: string
+  autofixPlan?: string
+  prReadiness?: string
+  codingExecution?: string
+  executableAcceptance?: string
+  guardedAutofixRunner?: string
+  contractDriftGuard?: string
+  reviewPatchLoop?: string
+  testGapFinder?: string
+  regressionSnapshots?: string
+  runtimeCompatibilityMatrix?: string
+  ownershipLockPlan?: string
+  securitySecretsGate?: string
+  prAutoPackager?: string
+  prAutoPackagerBrief?: string
   summary?: string
   handoff?: string
 }
@@ -74,6 +107,23 @@ export interface QuestRunArtifacts {
 export interface QuestRunRuntime {
   command: string
   resumePrompt: string
+}
+
+export type QuestNextStepKind =
+  | 'review'
+  | 'verify'
+  | 'commit'
+  | 'continue'
+  | 'cleanup'
+  | 'document'
+  | 'explore'
+
+export interface QuestNextStepSuggestion {
+  id: string
+  kind: QuestNextStepKind
+  title: string
+  reason: string
+  command?: string
 }
 
 export interface QuestEvent {
@@ -99,6 +149,20 @@ export interface QuestEvent {
     | 'task.injected'
     | 'task.progress'
     | 'priority.changed'
+    | 'context.loaded'
+    | 'context.changed'
+    | 'request.received'
+    | 'action.summary'
+    | 'cwd.observed'
+    | 'knowledge.captured'
+    | 'research.assessed'
+    | 'research.performed'
+    | 'next_steps.suggested'
+    | 'coding.intent'
+    | 'impact.analyzed'
+    | 'patch.capsule'
+    | 'tests.selected'
+    | 'review.signals'
   data: Record<string, unknown>
 }
 
@@ -142,6 +206,7 @@ export interface QuestRun {
   acceptanceCriteria: string[]
   artifacts: QuestRunArtifacts
   nextSuggestedAction: string
+  nextStepSuggestions?: QuestNextStepSuggestion[]
   runtimes: {
     opencode: QuestRunRuntime
     kimi: QuestRunRuntime
@@ -177,6 +242,36 @@ export function buildQuestRun(
     quest: 'quest.json',
     spec: 'spec.json',
     agentMemory: 'agent-memory.json',
+    reflection: 'reflection.json',
+    memoryGraph: 'memory-graph.json',
+    interactionMemory: 'interaction-memory.json',
+    repoWiki: '../../repo-wiki/index.md',
+    codingIntelligence: 'coding-intelligence.json',
+    patchCapsules: 'patch-capsules.json',
+    codingReview: 'coding-review.md',
+    codingAutopilot: 'coding-autopilot.json',
+    symbolGraph: 'symbol-graph.json',
+    smartTestMatrix: 'smart-test-matrix.json',
+    patchLedger: 'patch-ledger.json',
+    preEditContract: 'pre-edit-contract.json',
+    automaticCodeReview: 'automatic-code-review.json',
+    failureMemory: 'failure-memory.json',
+    runtimeParityEnforcer: 'runtime-parity-enforcer.json',
+    dependencyResearchGate: 'dependency-research-gate.json',
+    autofixPlan: 'autofix-plan.json',
+    prReadiness: 'pr-readiness.md',
+    codingExecution: 'coding-execution.json',
+    executableAcceptance: 'executable-acceptance.json',
+    guardedAutofixRunner: 'guarded-autofix-runner.json',
+    contractDriftGuard: 'contract-drift-guard.json',
+    reviewPatchLoop: 'review-patch-loop.json',
+    testGapFinder: 'test-gap-finder.json',
+    regressionSnapshots: 'regression-snapshots.json',
+    runtimeCompatibilityMatrix: 'runtime-compatibility-matrix.json',
+    ownershipLockPlan: 'ownership-lock-plan.json',
+    securitySecretsGate: 'security-secrets-gate.json',
+    prAutoPackager: 'pr-auto-packager.json',
+    prAutoPackagerBrief: 'pr-auto-packager.md',
     ...options.artifacts,
   }
 
@@ -205,6 +300,7 @@ export function buildQuestRun(
     acceptanceCriteria: plan.acceptanceCriteria,
     artifacts,
     nextSuggestedAction: nextActionFor(state, plan.session.id),
+    nextStepSuggestions: [],
     runtimes: buildRuntimeHints(plan.session.id, routerResult.objective, runDir),
     skipReview: options.skipReview,
   }
@@ -218,6 +314,23 @@ export async function persistQuestRun(
   await mkdir(runDir, { recursive: true })
   const questPath = join(runDir, quest.artifacts.quest)
   await writeFile(questPath, JSON.stringify(quest, null, 2) + '\n')
+  await writeQuestMemoryGraph(projectRoot, buildQuestMemoryGraph(quest, []))
+  await writeQuestInteractionMemory(projectRoot, buildQuestInteractionMemory(quest, [], projectRoot))
+  try {
+    await refreshRepoWiki(projectRoot, { reason: 'quest.created', questId: quest.questId })
+  } catch {
+    // Repo wiki is derived context; quest.json remains authoritative.
+  }
+  try {
+    await refreshQuestCodingIntelligence(projectRoot, {
+      questId: quest.questId,
+      objective: quest.objective,
+      reason: 'quest.created',
+      changedFiles: quest.changedFiles,
+    })
+  } catch {
+    // Coding intelligence is derived context; quest.json remains authoritative.
+  }
   return questPath
 }
 
@@ -227,6 +340,39 @@ export function normalizeQuestRun(quest: QuestRun): QuestRun {
   const hints = buildRuntimeHints(quest.questId, quest.objective, runDir)
   return {
     ...quest,
+    artifacts: {
+      ...quest.artifacts,
+      memoryGraph: quest.artifacts?.memoryGraph ?? 'memory-graph.json',
+      interactionMemory: quest.artifacts?.interactionMemory ?? 'interaction-memory.json',
+      repoWiki: quest.artifacts?.repoWiki ?? '../../repo-wiki/index.md',
+      codingIntelligence: quest.artifacts?.codingIntelligence ?? 'coding-intelligence.json',
+      patchCapsules: quest.artifacts?.patchCapsules ?? 'patch-capsules.json',
+      codingReview: quest.artifacts?.codingReview ?? 'coding-review.md',
+      codingAutopilot: quest.artifacts?.codingAutopilot ?? 'coding-autopilot.json',
+      symbolGraph: quest.artifacts?.symbolGraph ?? 'symbol-graph.json',
+      smartTestMatrix: quest.artifacts?.smartTestMatrix ?? 'smart-test-matrix.json',
+      patchLedger: quest.artifacts?.patchLedger ?? 'patch-ledger.json',
+      preEditContract: quest.artifacts?.preEditContract ?? 'pre-edit-contract.json',
+      automaticCodeReview: quest.artifacts?.automaticCodeReview ?? 'automatic-code-review.json',
+      failureMemory: quest.artifacts?.failureMemory ?? 'failure-memory.json',
+      runtimeParityEnforcer: quest.artifacts?.runtimeParityEnforcer ?? 'runtime-parity-enforcer.json',
+      dependencyResearchGate: quest.artifacts?.dependencyResearchGate ?? 'dependency-research-gate.json',
+      autofixPlan: quest.artifacts?.autofixPlan ?? 'autofix-plan.json',
+      prReadiness: quest.artifacts?.prReadiness ?? 'pr-readiness.md',
+      codingExecution: quest.artifacts?.codingExecution ?? 'coding-execution.json',
+      executableAcceptance: quest.artifacts?.executableAcceptance ?? 'executable-acceptance.json',
+      guardedAutofixRunner: quest.artifacts?.guardedAutofixRunner ?? 'guarded-autofix-runner.json',
+      contractDriftGuard: quest.artifacts?.contractDriftGuard ?? 'contract-drift-guard.json',
+      reviewPatchLoop: quest.artifacts?.reviewPatchLoop ?? 'review-patch-loop.json',
+      testGapFinder: quest.artifacts?.testGapFinder ?? 'test-gap-finder.json',
+      regressionSnapshots: quest.artifacts?.regressionSnapshots ?? 'regression-snapshots.json',
+      runtimeCompatibilityMatrix: quest.artifacts?.runtimeCompatibilityMatrix ?? 'runtime-compatibility-matrix.json',
+      ownershipLockPlan: quest.artifacts?.ownershipLockPlan ?? 'ownership-lock-plan.json',
+      securitySecretsGate: quest.artifacts?.securitySecretsGate ?? 'security-secrets-gate.json',
+      prAutoPackager: quest.artifacts?.prAutoPackager ?? 'pr-auto-packager.json',
+      prAutoPackagerBrief: quest.artifacts?.prAutoPackagerBrief ?? 'pr-auto-packager.md',
+    },
+    nextStepSuggestions: quest.nextStepSuggestions ?? [],
     runtimes: {
       opencode: quest.runtimes?.opencode ?? hints.opencode,
       kimi: quest.runtimes?.kimi ?? hints.kimi,
@@ -313,6 +459,83 @@ export async function appendQuestEvent(
   await withEventAppendLock(join(runDir, 'events.ndjson.lock'), async () => {
     await appendFile(path, line)
   })
+  try {
+    await refreshQuestMemoryGraph(projectRoot, questId)
+  } catch {
+    // The event stream remains authoritative; graph refresh is recoverable.
+  }
+  try {
+    await refreshQuestInteractionMemory(projectRoot, questId)
+  } catch {
+    // The event stream remains authoritative; interaction memory refresh is recoverable.
+  }
+  if (shouldRefreshRepoWikiForEvent(event)) {
+    try {
+      await refreshRepoWiki(projectRoot, {
+        reason: `quest.${event.type}`,
+        questId,
+        changedFiles: changedFilesFromQuestEvent(event),
+      })
+    } catch {
+      // Repo wiki refresh is recoverable; the append-only event was already recorded.
+    }
+  }
+  if (shouldRefreshCodingIntelligenceForEvent(event)) {
+    try {
+      await refreshQuestCodingIntelligence(projectRoot, {
+        questId,
+        reason: `quest.${event.type}`,
+        changedFiles: changedFilesFromQuestEvent(event),
+      })
+    } catch {
+      // Coding intelligence refresh is recoverable; the append-only event was already recorded.
+    }
+  }
+}
+
+function shouldRefreshRepoWikiForEvent(event: QuestEvent): boolean {
+  if (event.type === 'file_change' || event.type === 'context.changed') return true
+  if (event.type !== 'state_change') return false
+  const to = event.data.to
+  return to === 'VERIFY' || to === 'REFLECT' || to === 'COMPLETE'
+}
+
+function shouldRefreshCodingIntelligenceForEvent(event: QuestEvent): boolean {
+  if (
+    event.type === 'file_change' ||
+    event.type === 'context.changed' ||
+    event.type === 'validation' ||
+    event.type === 'coding.intent' ||
+    event.type === 'impact.analyzed' ||
+    event.type === 'patch.capsule' ||
+    event.type === 'tests.selected' ||
+    event.type === 'review.signals'
+  ) {
+    return true
+  }
+  if (event.type !== 'state_change') return false
+  const to = event.data.to
+  return to === 'VERIFY' || to === 'REVIEW' || to === 'REFLECT' || to === 'COMPLETE'
+}
+
+function changedFilesFromQuestEvent(event: QuestEvent): string[] {
+  const values = [
+    ...stringsFromUnknown(event.data.path),
+    ...stringsFromUnknown(event.data.added),
+    ...stringsFromUnknown(event.data.removed),
+    ...stringsFromUnknown(event.data.file),
+    ...stringsFromUnknown(event.data.files),
+    ...stringsFromUnknown(event.data.changedFiles),
+    ...stringsFromUnknown(event.data.contextPath),
+    ...stringsFromUnknown(event.data.contextPaths),
+  ]
+  return [...new Set(values.filter(Boolean))]
+}
+
+function stringsFromUnknown(value: unknown): string[] {
+  if (typeof value === 'string') return [value]
+  if (Array.isArray(value)) return value.filter((item): item is string => typeof item === 'string')
+  return []
 }
 
 async function withEventAppendLock<T>(
@@ -470,6 +693,20 @@ export function formatRuntimeHandoff(
   lines.push('  validation   → {"type":"validation","data":{"result":{"overallPassed":true,...}}}')
   lines.push('  error        → {"type":"error","data":{"taskId":"1","critical":false}}')
   lines.push('  note         → {"type":"note","data":{"message":"Reasoning..."}}')
+  lines.push('  request.received → record user request/continuation text, cwd, and runtime')
+  lines.push('  action.summary → short summary of what was done for the request/task')
+  lines.push('  cwd.observed → record the project or working directory being used')
+  lines.push('  knowledge.captured → durable self-knowledge such as decisions, conventions, discoveries, blockers, and user preferences')
+  lines.push('  research.assessed → record whether external/current/web research is needed before execution, with reason and planned queries')
+  lines.push('  research.performed → record sources and findings when external/current/web research was actually used')
+  lines.push('  next_steps.suggested → offer 2-5 user-choice follow-up options after COMPLETE; do not execute them automatically')
+  lines.push('  context.*    → record loaded or changed context files for memory-graph.json')
+  lines.push('  repo-wiki    → the CLI refreshes .oac/repo-wiki/ after Quest creation and file/context changes; consult it before planning follow-up work')
+  lines.push('  coding.intent → record inferred behavior change, non-goals, risk, and rollback plan for coding work')
+  lines.push('  impact.analyzed → record affected files/modules and risk before editing shared surfaces')
+  lines.push('  patch.capsule → record a small change capsule with files, expected behavior, validation, and rollback note')
+  lines.push('  tests.selected → record smart-test commands selected from the affected files')
+  lines.push('  review.signals → record review risks before COMPLETE')
   lines.push('  runtime.*    → record assignment/spawn/completion metadata when runtime ownership changes')
   lines.push('  handoff.*    → record outgoing/incoming continuity between allowed runtimes')
   if (quest.version === '8') {
@@ -478,6 +715,17 @@ export function formatRuntimeHandoff(
     lines.push('  priority.changed → update task priority for the daemon queue')
   }
   lines.push('')
+  lines.push('  Read interaction-memory.json, memory-graph.json, and agent-memory.json before work when present; use them to avoid repeating context discovery and to understand user requests, working directories, file changes, and reusable knowledge.')
+  lines.push('  Read .oac/repo-wiki/index.md and files.json when present; keep the wiki current with oac repo-wiki if a runtime changes files outside Quest write-back.')
+  lines.push('  Read coding-intelligence.json, patch-capsules.json, and coding-review.md when present; use Quest v9 coding intent, impact, smart tests, and review signals before editing and before completion.')
+  lines.push('  Read Coding Autopilot sidecars when present: coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, and pr-readiness.md.')
+  lines.push('  Use Coding Autopilot for symbol-level context, pre-edit boundaries, deterministic test escalation, patch/accountability ledger, automatic review, failure replay, runtime parity, dependency research decisions, bounded autofix, and PR readiness.')
+  lines.push('  Read Coding Execution sidecars when present: coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, and pr-auto-packager.md.')
+  lines.push('  Use Coding Execution for runnable acceptance, guarded autofix, contract drift detection, review-to-patch loops, test-gap closure, regression snapshot checks, runtime compatibility, file ownership locks, security/secrets gating, and PR packaging.')
+  lines.push('  Before starting any task, run a Pre-Execution Discovery Gate: inspect required local files/context first, append context.loaded/action.summary evidence, then append research.assessed. Perform web/current research only when it can affect correctness; otherwise record needed:false and proceed.')
+  lines.push('  The CLI refreshes interaction-memory.json and memory-graph.json from append-only events automatically.')
+  lines.push('  The CLI refreshes .oac/repo-wiki/ from Quest lifecycle and file/context events automatically.')
+  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, and Coding Execution sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
   lines.push('  The CLI reconciler reads base quest.json + events.ndjson to produce live state.')
   lines.push('  Run "oac quest-status <id>" to see reconciled state.')
 
@@ -657,7 +905,8 @@ function buildRuntimeHints(
 function buildResumePrompt(questId: string, objective: string, runDir: string): string {
   return [
     `Resume OpenAgent Quest ${questId}: ${objective}`,
-    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, and acceptance-report.md when present.`,
+    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
+    'Use Quest v9 coding intelligence, Coding Autopilot, and Coding Execution for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, and PR readiness before editing or completing the Quest.',
     'Continue in Quest Mode + Experts Mode using the same user-selected runtime model.',
   ].join(' ')
 }
@@ -665,6 +914,7 @@ function buildResumePrompt(questId: string, objective: string, runDir: string): 
 function nextActionFor(state: QuestRunState, questId: string): string {
   if (state === 'WAITING') return `Start an IDE runtime and paste the resume prompt for Quest ${questId}.`
   if (state === 'COMPLETE') return `Inspect final artifacts with oac quest-status ${questId}.`
+  if (state === 'REFLECT') return `Capture reflection for Quest ${questId}, then mark complete.`
   if (state === 'BLOCKED' || state === 'FAILED') return `Resume or debug with oac quest-resume ${questId}.`
   return `Continue planning or run with oac experts --run --live, then resume Quest ${questId}.`
 }

@@ -1,0 +1,28 @@
+{
+  "version": "10",
+  "enabled": true,
+  "maxIterations": 2,
+  "loop": [
+    "Run the narrowest failing or minimum credible command.",
+    "Parse the first actionable failure and identify the smallest owned file set.",
+    "Apply one scoped fix without expanding ownership.",
+    "Rerun the same command, then the minimum credible matrix.",
+    "Stop after two failed fix attempts and record failure memory."
+  ],
+  "commands": [
+    "bun test dev/dashboard-project/period/tests/period.test.js dev/dashboard-project/star-sign/tests/star-sign.test.js dev/dashboard-project/time/tests/time.test.js dev/dashboard-project/ui/tests/ui.test.js evals/framework/scripts/test/test-agent-direct.ts evals/framework/scripts/test/test-event-inspector.js evals/framework/scripts/test/test-timeline.ts evals/framework/scripts/test/verify-timeline.ts",
+    "git diff --check",
+    "npm run build -w packages/cli",
+    "npm run test:quest-v8:codex",
+    "npm run test:quest-v8:kimi",
+    "npm run test:quest-v8:opencode",
+    "npm run typecheck -w packages/cli",
+    "npm run typecheck -w packages/swarm-runtime"
+  ],
+  "stopConditions": [
+    "A command fails twice with the same fingerprint.",
+    "The fix would touch files outside the pre-edit contract.",
+    "The failure points to credentials, production state, paid cloud, or external service limits."
+  ],
+  "escalation": "Return to the user with the failure fingerprint, attempted fix, remaining command, and recommended next Quest."
+}

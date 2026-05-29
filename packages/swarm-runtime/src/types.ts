@@ -7,7 +7,7 @@ export type SwarmTaskStatus =
   | "failed"
   | "cancelled";
 
-export type RuntimeType = "opencode" | "kimi" | "claude" | "local";
+export type RuntimeType = "opencode" | "kimi" | "claude" | "codex" | "local";
 
 export type SwarmEventType =
   | "session.created"
