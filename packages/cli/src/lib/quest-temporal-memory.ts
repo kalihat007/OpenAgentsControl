@@ -32,6 +32,11 @@ const MAX_QUEST_IDS = 50
 const MAX_EVIDENCE = 10
 const CHRONIC_THRESHOLD = 3
 const COMMIT_SCAN_LIMIT = 200
+const HISTORY_SCAN_LIMIT = 500
+const MAX_HISTORY_FILES = 500
+const MAX_COCHANGE_NEIGHBORS = 10
+const MAX_OWNERS = 5
+const MAX_FILES_PER_COCHANGE_COMMIT = 25
 
 export type DurableFailureStatus = 'active' | 'resolved' | 'chronic'
 
@@ -67,6 +72,17 @@ export interface PatchOutcomeRecord {
   evidence: string[]
 }
 
+export interface RepoHistorySignals {
+  /** `git rev-parse HEAD` at compute time — reuse cached signals while unchanged. */
+  headSha: string
+  computedAt: string
+  commitsScanned: number
+  coChange: Record<string, Array<{ file: string; count: number }>>
+  churn: Record<string, { commits: number; insertions: number; deletions: number; score: number }>
+  bugDensity: Record<string, { fixCommits: number; totalCommits: number; ratio: number }>
+  ownership: Record<string, { topAuthor: string; authors: string[] }>
+}
+
 export interface TemporalMemoryStore {
   version: typeof QUEST_TEMPORAL_MEMORY_VERSION
   projectRoot: string
@@ -74,6 +90,7 @@ export interface TemporalMemoryStore {
   ttlDays: number
   failures: DurableFailureRecord[]
   outcomes: PatchOutcomeRecord[]
+  history?: RepoHistorySignals
 }
 
 export interface QuestTemporalMemory {
@@ -87,6 +104,7 @@ export interface QuestTemporalMemory {
   failures: DurableFailureRecord[]
   outcomeSummary: { total: number; pending: number; validated: number; reverted: number; hotfixed: number; merged: number }
   patchOutcomes: PatchOutcomeRecord[]
+  history: RepoHistorySignals
   policy: string[]
 }
 
@@ -144,6 +162,7 @@ export async function loadTemporalMemoryStore(projectRoot: string): Promise<Temp
       ttlDays: parsed.ttlDays ?? DEFAULT_TTL_DAYS,
       failures: Array.isArray(parsed.failures) ? parsed.failures.map(normalizeRecord) : [],
       outcomes: Array.isArray(parsed.outcomes) ? parsed.outcomes.map(normalizeOutcome) : [],
+      ...(parsed.history && { history: parsed.history }),
     }
   } catch {
     return emptyStore(projectRoot)
@@ -217,6 +236,7 @@ export async function buildQuestTemporalMemory(
   for (const record of store.failures) record.status = statusFor(record)
 
   store.outcomes = await buildPatchOutcomes(store.outcomes, options, now, questId)
+  store.history = await refreshHistorySignals(options.projectRoot, store.history, now)
 
   store.failures = pruneFailures(store.failures, now, store.ttlDays).slice(0, MAX_FAILURES)
   store.outcomes = pruneOutcomes(store.outcomes, now, store.ttlDays).slice(0, MAX_OUTCOMES)
@@ -236,6 +256,10 @@ export async function writeQuestTemporalMemoryArtifacts(
       join(dir, 'patch-outcome-ledger.json'),
       JSON.stringify({ version: memory.version, summary: memory.outcomeSummary, outcomes: memory.patchOutcomes }, null, 2) + '\n',
     ),
+    writeFile(
+      join(dir, 'repo-history-signals.json'),
+      JSON.stringify({ version: memory.version, ...memory.history }, null, 2) + '\n',
+    ),
     writeFile(join(dir, 'temporal-memory.md'), formatTemporalMemoryBrief(memory)),
   ])
 }
@@ -252,6 +276,8 @@ export function formatTemporalMemorySummary(memory: QuestTemporalMemory): string
       ? [`- Chronic commands: ${memory.chronicCommands.slice(0, 5).join(', ')}`]
       : []),
     `- Patch outcomes: ${memory.outcomeSummary.total} (reverted ${memory.outcomeSummary.reverted}, hotfixed ${memory.outcomeSummary.hotfixed}, merged ${memory.outcomeSummary.merged}, validated ${memory.outcomeSummary.validated}, pending ${memory.outcomeSummary.pending})`,
+    `- History signals: ${memory.history.commitsScanned} commit(s) scanned${memory.history.headSha ? ` @ ${memory.history.headSha.slice(0, 8)}` : ' (no git history)'}`,
+    ...topBugProneFiles(memory.history),
     '',
   ].join('\n')
 }
@@ -437,6 +463,166 @@ function pruneOutcomes(outcomes: PatchOutcomeRecord[], now: string, ttlDays: num
     .sort((a, b) => OUTCOME_RANK[b.outcome] - OUTCOME_RANK[a.outcome] || a.fileKey.localeCompare(b.fileKey))
 }
 
+interface HistoryCommit {
+  sha: string
+  author: string
+  subject: string
+  files: Array<{ path: string; added: number; deleted: number }>
+}
+
+/**
+ * Recompute git-history signals only when HEAD has moved since they were last
+ * cached; otherwise reuse the stored signals (the cache is keyed by HEAD sha).
+ */
+async function refreshHistorySignals(
+  projectRoot: string,
+  cached: RepoHistorySignals | undefined,
+  now: string,
+): Promise<RepoHistorySignals> {
+  const headSha = await getHeadSha(projectRoot)
+  if (!headSha) return emptyHistory(now)
+  if (cached && cached.headSha === headSha && cached.commitsScanned > 0) return cached
+  const commits = await historyCommits(projectRoot, HISTORY_SCAN_LIMIT)
+  if (commits.length === 0) return { ...emptyHistory(now), headSha }
+  return buildHistorySignals(commits, headSha, now)
+}
+
+async function getHeadSha(projectRoot: string): Promise<string> {
+  try {
+    const { stdout } = await execFileAsync('git', ['rev-parse', 'HEAD'], { cwd: projectRoot })
+    return stdout.trim()
+  } catch {
+    return ''
+  }
+}
+
+async function historyCommits(projectRoot: string, limit: number): Promise<HistoryCommit[]> {
+  try {
+    const { stdout } = await execFileAsync(
+      'git',
+      ['log', '--no-merges', `--max-count=${limit}`, '--numstat', '--format=__C__%H\x1f%an\x1f%s'],
+      { cwd: projectRoot, maxBuffer: 32 * 1024 * 1024 },
+    )
+    const commits: HistoryCommit[] = []
+    let current: HistoryCommit | null = null
+    for (const line of stdout.split('\n')) {
+      if (line.startsWith('__C__')) {
+        const [sha = '', author = '', subject = ''] = line.slice(5).split('\x1f')
+        current = { sha, author, subject, files: [] }
+        commits.push(current)
+      } else if (line.trim() && current) {
+        const [added = '', deleted = '', ...rest] = line.split('\t')
+        const path = rest.join('\t').trim().replace(/\\/g, '/')
+        if (!path) continue
+        current.files.push({
+          path,
+          added: added === '-' ? 0 : Number.parseInt(added, 10) || 0,
+          deleted: deleted === '-' ? 0 : Number.parseInt(deleted, 10) || 0,
+        })
+      }
+    }
+    return commits
+  } catch {
+    return []
+  }
+}
+
+function buildHistorySignals(commits: HistoryCommit[], headSha: string, now: string): RepoHistorySignals {
+  const churn = new Map<string, { commits: number; insertions: number; deletions: number }>()
+  const bug = new Map<string, { fix: number; total: number }>()
+  const owners = new Map<string, Map<string, number>>()
+  const coChange = new Map<string, Map<string, number>>()
+
+  for (const commit of commits) {
+    const isFix = isFixSubject(commit.subject)
+    const paths = commit.files.map((file) => file.path)
+    for (const file of commit.files) {
+      const ch = churn.get(file.path) ?? { commits: 0, insertions: 0, deletions: 0 }
+      ch.commits += 1
+      ch.insertions += file.added
+      ch.deletions += file.deleted
+      churn.set(file.path, ch)
+
+      const bd = bug.get(file.path) ?? { fix: 0, total: 0 }
+      bd.total += 1
+      if (isFix) bd.fix += 1
+      bug.set(file.path, bd)
+
+      const authorCounts = owners.get(file.path) ?? new Map<string, number>()
+      authorCounts.set(commit.author, (authorCounts.get(commit.author) ?? 0) + 1)
+      owners.set(file.path, authorCounts)
+    }
+    if (paths.length >= 2 && paths.length <= MAX_FILES_PER_COCHANGE_COMMIT) {
+      for (const a of paths) {
+        for (const b of paths) {
+          if (a === b) continue
+          const neighbors = coChange.get(a) ?? new Map<string, number>()
+          neighbors.set(b, (neighbors.get(b) ?? 0) + 1)
+          coChange.set(a, neighbors)
+        }
+      }
+    }
+  }
+
+  // Bound the artifact to the busiest files.
+  const topFiles = [...churn.entries()]
+    .sort((a, b) => b[1].commits - a[1].commits || a[0].localeCompare(b[0]))
+    .slice(0, MAX_HISTORY_FILES)
+    .map(([file]) => file)
+
+  const churnOut: RepoHistorySignals['churn'] = {}
+  const bugOut: RepoHistorySignals['bugDensity'] = {}
+  const ownershipOut: RepoHistorySignals['ownership'] = {}
+  const coChangeOut: RepoHistorySignals['coChange'] = {}
+  for (const file of [...topFiles].sort((a, b) => a.localeCompare(b))) {
+    const ch = churn.get(file)!
+    churnOut[file] = {
+      commits: ch.commits,
+      insertions: ch.insertions,
+      deletions: ch.deletions,
+      score: round(ch.commits + (ch.insertions + ch.deletions) / 200),
+    }
+    const bd = bug.get(file)!
+    bugOut[file] = { fixCommits: bd.fix, totalCommits: bd.total, ratio: round(bd.fix / bd.total) }
+    const authorCounts = owners.get(file)!
+    const ranked = [...authorCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    ownershipOut[file] = {
+      topAuthor: ranked[0]?.[0] ?? '',
+      authors: ranked.slice(0, MAX_OWNERS).map(([author]) => author),
+    }
+    const neighbors = coChange.get(file)
+    if (neighbors) {
+      coChangeOut[file] = [...neighbors.entries()]
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, MAX_COCHANGE_NEIGHBORS)
+        .map(([neighbor, count]) => ({ file: neighbor, count }))
+    }
+  }
+
+  return {
+    headSha,
+    computedAt: now,
+    commitsScanned: commits.length,
+    coChange: coChangeOut,
+    churn: churnOut,
+    bugDensity: bugOut,
+    ownership: ownershipOut,
+  }
+}
+
+function emptyHistory(now: string): RepoHistorySignals {
+  return { headSha: '', computedAt: now, commitsScanned: 0, coChange: {}, churn: {}, bugDensity: {}, ownership: {} }
+}
+
+function topBugProneFiles(history: RepoHistorySignals): string[] {
+  const ranked = Object.entries(history.bugDensity)
+    .filter(([, value]) => value.fixCommits > 0)
+    .sort((a, b) => b[1].ratio - a[1].ratio || b[1].fixCommits - a[1].fixCommits)
+    .slice(0, 3)
+  if (ranked.length === 0) return []
+  return [`- Bug-prone files: ${ranked.map(([file, value]) => `${file} (${value.fixCommits}/${value.totalCommits})`).join(', ')}`]
+}
+
 function pruneFailures(
   failures: DurableFailureRecord[],
   now: string,
@@ -484,6 +670,7 @@ function snapshot(
       merged: countOutcome('merged'),
     },
     patchOutcomes: store.outcomes,
+    history: store.history ?? emptyHistory(now),
     policy: [
       'Replay active failure fingerprints before broader validation.',
       'Escalate chronic fingerprints (failed in 3+ quests, never resolved) instead of retrying.',
@@ -570,4 +757,8 @@ function emptyStore(projectRoot: string): TemporalMemoryStore {
 function summarizeOutput(output: string | undefined): string | undefined {
   if (!output?.trim()) return undefined
   return output.trim().split(/\r?\n/).slice(-3).join(' ').slice(0, 240)
+}
+
+function round(value: number): number {
+  return Math.round(value * 100) / 100
 }

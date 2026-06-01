@@ -120,6 +120,7 @@ export interface QuestRunArtifacts {
   temporalMemory?: string
   temporalMemoryBrief?: string
   patchOutcomeLedger?: string
+  repoHistorySignals?: string
   summary?: string
   handoff?: string
 }
@@ -312,6 +313,7 @@ export function buildQuestRun(
     temporalMemory: 'temporal-memory.json',
     temporalMemoryBrief: 'temporal-memory.md',
     patchOutcomeLedger: 'patch-outcome-ledger.json',
+    repoHistorySignals: 'repo-history-signals.json',
     ...options.artifacts,
   }
 
@@ -431,6 +433,7 @@ export function normalizeQuestRun(quest: QuestRun): QuestRun {
       temporalMemory: quest.artifacts?.temporalMemory ?? 'temporal-memory.json',
       temporalMemoryBrief: quest.artifacts?.temporalMemoryBrief ?? 'temporal-memory.md',
       patchOutcomeLedger: quest.artifacts?.patchOutcomeLedger ?? 'patch-outcome-ledger.json',
+      repoHistorySignals: quest.artifacts?.repoHistorySignals ?? 'repo-history-signals.json',
     },
     nextStepSuggestions: quest.nextStepSuggestions ?? [],
     runtimes: {

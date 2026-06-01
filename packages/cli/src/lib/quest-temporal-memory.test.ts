@@ -317,4 +317,85 @@ describe('quest-temporal-memory', () => {
       await rm(tmpRoot, { recursive: true, force: true })
     }
   })
+
+  it('extracts co-change, churn, bug-density, and ownership from git history', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-temporal-history-'))
+    try {
+      const git = (...args: string[]) => execFileSync('git', args, { cwd: tmpRoot, stdio: 'ignore' })
+      git('init', '-q')
+      git('config', 'user.email', 'dev@example.com')
+      git('config', 'user.name', 'Dev')
+
+      await writeFile(join(tmpRoot, 'a.ts'), 'export const a = 1\n')
+      await writeFile(join(tmpRoot, 'b.ts'), 'export const b = 1\n')
+      git('add', '-A')
+      git('commit', '-q', '-m', 'add a and b')
+      await writeFile(join(tmpRoot, 'a.ts'), 'export const a = 2\n')
+      git('add', '-A')
+      git('commit', '-q', '-m', 'fix bug in a')
+      await writeFile(join(tmpRoot, 'a.ts'), 'export const a = 3\n')
+      git('add', '-A')
+      git('commit', '-q', '-m', 'refactor a')
+
+      const mem = await buildQuestTemporalMemory({
+        projectRoot: tmpRoot,
+        files: [],
+        codingAutopilot: autopilotWith([]),
+        events: [],
+      })
+
+      const h = mem.history
+      expect(h.headSha.length).toBeGreaterThan(0)
+      expect(h.commitsScanned).toBe(3)
+      expect(h.churn['a.ts']?.commits).toBe(3)
+      expect(h.churn['b.ts']?.commits).toBe(1)
+      expect(h.bugDensity['a.ts']?.fixCommits).toBe(1)
+      expect(h.bugDensity['a.ts']?.ratio).toBeGreaterThan(0)
+      expect(h.coChange['a.ts']?.some((n) => n.file === 'b.ts')).toBe(true)
+      expect(h.ownership['a.ts']?.topAuthor).toBe('Dev')
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('caches history signals by HEAD sha and recomputes only when HEAD moves', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-temporal-hcache-'))
+    try {
+      const git = (...args: string[]) => execFileSync('git', args, { cwd: tmpRoot, stdio: 'ignore' })
+      git('init', '-q')
+      git('config', 'user.email', 'dev@example.com')
+      git('config', 'user.name', 'Dev')
+      await writeFile(join(tmpRoot, 'a.ts'), 'export const a = 1\n')
+      git('add', '-A')
+      git('commit', '-q', '-m', 'initial')
+
+      const first = await buildQuestTemporalMemory({ projectRoot: tmpRoot, files: [], codingAutopilot: autopilotWith([]), events: [], now: '2026-05-01T00:00:00.000Z' })
+      // HEAD unchanged → reuse cached signals (computedAt stays at the first value).
+      const second = await buildQuestTemporalMemory({ projectRoot: tmpRoot, files: [], codingAutopilot: autopilotWith([]), events: [], now: '2026-06-01T00:00:00.000Z' })
+      expect(second.history.computedAt).toBe(first.history.computedAt)
+      expect(second.history.computedAt).toBe('2026-05-01T00:00:00.000Z')
+
+      // New commit moves HEAD → recompute.
+      await writeFile(join(tmpRoot, 'a.ts'), 'export const a = 2\n')
+      git('add', '-A')
+      git('commit', '-q', '-m', 'change a')
+      const third = await buildQuestTemporalMemory({ projectRoot: tmpRoot, files: [], codingAutopilot: autopilotWith([]), events: [], now: '2026-06-02T00:00:00.000Z' })
+      expect(third.history.computedAt).toBe('2026-06-02T00:00:00.000Z')
+      expect(third.history.headSha).not.toBe(first.history.headSha)
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('returns empty history outside a git repository', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-temporal-nogit-'))
+    try {
+      const mem = await buildQuestTemporalMemory({ projectRoot: tmpRoot, files: [], codingAutopilot: autopilotWith([]), events: [], now: NOW })
+      expect(mem.history.headSha).toBe('')
+      expect(mem.history.commitsScanned).toBe(0)
+      expect(Object.keys(mem.history.churn)).toHaveLength(0)
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
 })
