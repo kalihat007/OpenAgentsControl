@@ -180,6 +180,7 @@ export async function refreshQuestCodingIntelligence(
     questId: options.questId,
     files: relevantFiles,
     codingAutopilot,
+    patchCapsules,
     events,
   })
   const codingExecution = await buildQuestCodingExecution({

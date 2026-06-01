@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'bun:test'
+import { execFileSync } from 'node:child_process'
 import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
+import type { QuestPatchCapsule } from './quest-coding-intelligence.js'
 import {
   buildQuestTemporalMemory,
   failureFingerprint,
@@ -38,6 +40,10 @@ function autopilotWith(
 
 function validationEvent(checks: Array<{ command: string; passed: boolean; output?: string }>) {
   return { type: 'validation', data: { result: { checks } } }
+}
+
+function capsule(id: string, files: string[], summary = 'change'): QuestPatchCapsule {
+  return { id, summary, files, expectedBehavior: '', validationCommands: [], rollbackNote: '' }
 }
 
 function chronicRecord(command: string, lastSeenAt: string): DurableFailureRecord {
@@ -221,6 +227,92 @@ describe('quest-temporal-memory', () => {
       const artDir = join(tmpRoot, '.oac', 'coding-intelligence')
       expect(await readFile(join(artDir, 'temporal-memory.json'), 'utf-8')).toContain('"version": "14"')
       expect(await readFile(join(artDir, 'temporal-memory.md'), 'utf-8')).toContain('Temporal Memory')
+      expect(await readFile(join(artDir, 'patch-outcome-ledger.json'), 'utf-8')).toContain('"version": "14"')
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('records a validated patch outcome from a passing validation and upserts per file-set', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-temporal-validated-'))
+    try {
+      const built = await buildQuestTemporalMemory({
+        projectRoot: tmpRoot,
+        questId: 'q1',
+        files: [],
+        codingAutopilot: autopilotWith([]),
+        patchCapsules: [capsule('c1', ['src/x.ts'], 'add helper')],
+        events: [{ type: 'validation', data: { result: { overallPassed: true, checks: [] } } }],
+        now: NOW,
+      })
+      expect(built.patchOutcomes).toHaveLength(1)
+      expect(built.patchOutcomes[0]?.outcome).toBe('validated')
+      expect(built.outcomeSummary.validated).toBe(1)
+
+      // Same file-set in a later quest upserts the same record (no duplicate).
+      const again = await buildQuestTemporalMemory({
+        projectRoot: tmpRoot,
+        questId: 'q2',
+        files: [],
+        codingAutopilot: autopilotWith([]),
+        patchCapsules: [capsule('c2', ['src/x.ts'], 'tweak helper')],
+        events: [],
+        now: NOW,
+      })
+      expect(again.patchOutcomes).toHaveLength(1)
+      expect(again.outcomeSummary.total).toBe(1)
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('marks patch surfaces merged on quest completion', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-temporal-merged-'))
+    try {
+      const mem = await buildQuestTemporalMemory({
+        projectRoot: tmpRoot,
+        questId: 'q1',
+        files: [],
+        codingAutopilot: autopilotWith([]),
+        patchCapsules: [capsule('c1', ['src/y.ts'])],
+        events: [{ type: 'state_change', data: { to: 'COMPLETE' } }],
+        now: NOW,
+      })
+      expect(mem.patchOutcomes[0]?.outcome).toBe('merged')
+      expect(mem.outcomeSummary.merged).toBe(1)
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('grades a patch surface as reverted from git history', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-temporal-revert-'))
+    try {
+      const git = (...args: string[]) => execFileSync('git', args, { cwd: tmpRoot, stdio: 'ignore' })
+      git('init', '-q')
+      git('config', 'user.email', 'test@example.com')
+      git('config', 'user.name', 'Test')
+      await writeFile(join(tmpRoot, 'feature.ts'), 'export const a = 1\n')
+      git('add', '-A')
+      git('commit', '-q', '-m', 'add feature')
+      await writeFile(join(tmpRoot, 'feature.ts'), 'export const a = 2\n')
+      git('add', '-A')
+      git('commit', '-q', '-m', 'Revert "add feature" change')
+
+      const mem = await buildQuestTemporalMemory({
+        projectRoot: tmpRoot,
+        questId: 'q1',
+        files: [],
+        codingAutopilot: autopilotWith([]),
+        patchCapsules: [capsule('c1', ['feature.ts'], 'introduce feature')],
+        events: [{ type: 'validation', data: { result: { overallPassed: true, checks: [] } } }],
+      })
+
+      const record = mem.patchOutcomes.find((r) => r.files.includes('feature.ts'))
+      // Revert outranks the passing validation.
+      expect(record?.outcome).toBe('reverted')
+      expect(record?.evidence.length).toBeGreaterThan(0)
+      expect(mem.outcomeSummary.reverted).toBe(1)
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }

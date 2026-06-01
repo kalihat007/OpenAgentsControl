@@ -119,6 +119,7 @@ export interface QuestRunArtifacts {
   semanticRepoBrainBrief?: string
   temporalMemory?: string
   temporalMemoryBrief?: string
+  patchOutcomeLedger?: string
   summary?: string
   handoff?: string
 }
@@ -310,6 +311,7 @@ export function buildQuestRun(
     semanticRepoBrainBrief: 'semantic-repo-brain.md',
     temporalMemory: 'temporal-memory.json',
     temporalMemoryBrief: 'temporal-memory.md',
+    patchOutcomeLedger: 'patch-outcome-ledger.json',
     ...options.artifacts,
   }
 
@@ -428,6 +430,7 @@ export function normalizeQuestRun(quest: QuestRun): QuestRun {
       semanticRepoBrainBrief: quest.artifacts?.semanticRepoBrainBrief ?? 'semantic-repo-brain.md',
       temporalMemory: quest.artifacts?.temporalMemory ?? 'temporal-memory.json',
       temporalMemoryBrief: quest.artifacts?.temporalMemoryBrief ?? 'temporal-memory.md',
+      patchOutcomeLedger: quest.artifacts?.patchOutcomeLedger ?? 'patch-outcome-ledger.json',
     },
     nextStepSuggestions: quest.nextStepSuggestions ?? [],
     runtimes: {
