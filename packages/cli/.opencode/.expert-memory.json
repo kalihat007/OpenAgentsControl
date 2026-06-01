@@ -420,6 +420,174 @@
       "learnings": [],
       "id": "afa26117-a924-4c35-bf42-5ec7ba972537",
       "timestamp": "2026-06-01T07:20:08.161Z"
+    },
+    {
+      "expertId": "TechLeadAgent",
+      "objective": "[TechLeadAgent] implement a login API",
+      "approach": "Executed as part of swarm session swarm-mpuvzgnp",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-001",
+        "role": "tech-lead",
+        "stage": "planning"
+      },
+      "learnings": [],
+      "id": "c001dcdd-be73-4712-a54f-c0f700bca293",
+      "timestamp": "2026-06-01T07:27:56.772Z"
+    },
+    {
+      "expertId": "CoderAgent",
+      "objective": "[CoderAgent] implement a login API",
+      "approach": "Executed as part of swarm session swarm-mpuvzgnp",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-002",
+        "role": "general",
+        "stage": "implementation"
+      },
+      "learnings": [],
+      "id": "46fa86f5-574f-4c04-8f2e-687833908695",
+      "timestamp": "2026-06-01T07:27:56.772Z"
+    },
+    {
+      "expertId": "BackendDeveloperAgent",
+      "objective": "[BackendDeveloperAgent] implement a login API",
+      "approach": "Executed as part of swarm session swarm-mpuvzgnp",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-003",
+        "role": "backend-developer",
+        "stage": "implementation"
+      },
+      "learnings": [],
+      "id": "25de3c3f-4b4b-4131-852b-fcf3ceb5abe5",
+      "timestamp": "2026-06-01T07:27:56.772Z"
+    },
+    {
+      "expertId": "TechLeadAgent",
+      "objective": "[TechLeadAgent] build a feature",
+      "approach": "Executed as part of swarm session swarm-mpuvzixm",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-001",
+        "role": "tech-lead",
+        "stage": "planning"
+      },
+      "learnings": [],
+      "id": "18def665-995c-4a4b-8a39-8fb8105f2622",
+      "timestamp": "2026-06-01T07:27:59.722Z"
+    },
+    {
+      "expertId": "CoderAgent",
+      "objective": "[CoderAgent] build a feature",
+      "approach": "Executed as part of swarm session swarm-mpuvzixm",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-002",
+        "role": "general",
+        "stage": "implementation"
+      },
+      "learnings": [],
+      "id": "05d88cb7-d47c-466c-ac9b-3398972ac48a",
+      "timestamp": "2026-06-01T07:27:59.722Z"
+    },
+    {
+      "expertId": "OpenFrontendSpecialist",
+      "objective": "[OpenFrontendSpecialist] build a feature",
+      "approach": "Executed as part of swarm session swarm-mpuvzixm",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-003",
+        "role": "frontend-developer",
+        "stage": "implementation"
+      },
+      "learnings": [],
+      "id": "a6c2c724-599d-427a-9da0-5a10f5770970",
+      "timestamp": "2026-06-01T07:27:59.722Z"
+    },
+    {
+      "expertId": "TechLeadAgent",
+      "objective": "[TechLeadAgent] implement a login API",
+      "approach": "Executed as part of swarm session swarm-mpuw5qyg",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-001",
+        "role": "tech-lead",
+        "stage": "planning"
+      },
+      "learnings": [],
+      "id": "19892a23-270b-4c67-a421-28e45b661595",
+      "timestamp": "2026-06-01T07:32:50.057Z"
+    },
+    {
+      "expertId": "CoderAgent",
+      "objective": "[CoderAgent] implement a login API",
+      "approach": "Executed as part of swarm session swarm-mpuw5qyg",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-002",
+        "role": "general",
+        "stage": "implementation"
+      },
+      "learnings": [],
+      "id": "76752bac-4c4d-4c90-b5de-ba30e568aa28",
+      "timestamp": "2026-06-01T07:32:50.057Z"
+    },
+    {
+      "expertId": "BackendDeveloperAgent",
+      "objective": "[BackendDeveloperAgent] implement a login API",
+      "approach": "Executed as part of swarm session swarm-mpuw5qyg",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-003",
+        "role": "backend-developer",
+        "stage": "implementation"
+      },
+      "learnings": [],
+      "id": "798ee475-cede-478f-b38c-9b26134eab08",
+      "timestamp": "2026-06-01T07:32:50.057Z"
+    },
+    {
+      "expertId": "TechLeadAgent",
+      "objective": "[TechLeadAgent] build a feature",
+      "approach": "Executed as part of swarm session swarm-mpuw5t8t",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-001",
+        "role": "tech-lead",
+        "stage": "planning"
+      },
+      "learnings": [],
+      "id": "6a0987fe-812f-487c-a419-5c994226a109",
+      "timestamp": "2026-06-01T07:32:53.024Z"
+    },
+    {
+      "expertId": "CoderAgent",
+      "objective": "[CoderAgent] build a feature",
+      "approach": "Executed as part of swarm session swarm-mpuw5t8t",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-002",
+        "role": "general",
+        "stage": "implementation"
+      },
+      "learnings": [],
+      "id": "a635bbab-833c-45c4-abf4-9fe97956fe90",
+      "timestamp": "2026-06-01T07:32:53.024Z"
+    },
+    {
+      "expertId": "OpenFrontendSpecialist",
+      "objective": "[OpenFrontendSpecialist] build a feature",
+      "approach": "Executed as part of swarm session swarm-mpuw5t8t",
+      "outcome": "success",
+      "context": {
+        "taskId": "task-003",
+        "role": "frontend-developer",
+        "stage": "implementation"
+      },
+      "learnings": [],
+      "id": "8169a114-e640-4023-b1a9-39ea9d47f9cc",
+      "timestamp": "2026-06-01T07:32:53.024Z"
     }
   ],
   "routingHistory": [
@@ -452,6 +620,18 @@
       "routedTo": "CoderAgent",
       "confidence": 0.4,
       "timestamp": "2026-06-01T07:20:07.821Z"
+    },
+    {
+      "objective": "build a feature",
+      "routedTo": "CoderAgent",
+      "confidence": 0.4,
+      "timestamp": "2026-06-01T07:27:59.385Z"
+    },
+    {
+      "objective": "build a feature",
+      "routedTo": "CoderAgent",
+      "confidence": 0.4,
+      "timestamp": "2026-06-01T07:32:52.685Z"
     }
   ],
   "userPreferences": {
@@ -462,5 +642,5 @@
     "customKeywords": {}
   },
   "projectConventions": [],
-  "lastUpdated": "2026-06-01T07:20:08.161Z"
+  "lastUpdated": "2026-06-01T07:32:53.024Z"
 }

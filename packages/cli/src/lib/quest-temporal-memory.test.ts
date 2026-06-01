@@ -6,12 +6,15 @@ import { tmpdir } from 'node:os'
 import type { QuestPatchCapsule } from './quest-coding-intelligence.js'
 import {
   buildQuestTemporalMemory,
+  empiricalConfidenceAdjustment,
   failureFingerprint,
   loadTemporalMemoryStore,
   normalizeSummary,
   saveTemporalMemoryStore,
   QUEST_TEMPORAL_MEMORY_VERSION,
   type DurableFailureRecord,
+  type PatchOutcomeRecord,
+  type RepoHistorySignals,
   type TemporalMemoryStore,
 } from './quest-temporal-memory.js'
 import { refreshQuestCodingIntelligence } from './quest-coding-intelligence.js'
@@ -285,7 +288,7 @@ describe('quest-temporal-memory', () => {
     }
   })
 
-  it('grades a patch surface as reverted from git history', async () => {
+  it('grades a patch surface as reverted only when the revert post-dates the record', async () => {
     const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-temporal-revert-'))
     try {
       const git = (...args: string[]) => execFileSync('git', args, { cwd: tmpRoot, stdio: 'ignore' })
@@ -295,27 +298,85 @@ describe('quest-temporal-memory', () => {
       await writeFile(join(tmpRoot, 'feature.ts'), 'export const a = 1\n')
       git('add', '-A')
       git('commit', '-q', '-m', 'add feature')
-      await writeFile(join(tmpRoot, 'feature.ts'), 'export const a = 2\n')
-      git('add', '-A')
-      git('commit', '-q', '-m', 'Revert "add feature" change')
 
-      const mem = await buildQuestTemporalMemory({
+      // Record the patch first (recordedAt within TTL), passing validation.
+      const recorded = await buildQuestTemporalMemory({
         projectRoot: tmpRoot,
         questId: 'q1',
         files: [],
         codingAutopilot: autopilotWith([]),
         patchCapsules: [capsule('c1', ['feature.ts'], 'introduce feature')],
         events: [{ type: 'validation', data: { result: { overallPassed: true, checks: [] } } }],
+        now: '2026-06-01T00:00:00.000Z',
+      })
+      expect(recorded.patchOutcomes.find((r) => r.files.includes('feature.ts'))?.outcome).toBe('validated')
+
+      // A revert commit dated AFTER the record flips it to reverted (deterministic date).
+      await writeFile(join(tmpRoot, 'feature.ts'), 'export const a = 2\n')
+      git('add', '-A')
+      execFileSync('git', ['commit', '-q', '-m', 'Revert "add feature" change'], {
+        cwd: tmpRoot,
+        stdio: 'ignore',
+        env: { ...process.env, GIT_AUTHOR_DATE: '2026-06-02T00:00:00', GIT_COMMITTER_DATE: '2026-06-02T00:00:00' },
       })
 
-      const record = mem.patchOutcomes.find((r) => r.files.includes('feature.ts'))
-      // Revert outranks the passing validation.
+      const regraded = await buildQuestTemporalMemory({
+        projectRoot: tmpRoot,
+        questId: 'q2',
+        files: [],
+        codingAutopilot: autopilotWith([]),
+        events: [],
+        now: '2026-06-03T00:00:00.000Z',
+      })
+
+      const record = regraded.patchOutcomes.find((r) => r.files.includes('feature.ts'))
       expect(record?.outcome).toBe('reverted')
       expect(record?.evidence.length).toBeGreaterThan(0)
-      expect(mem.outcomeSummary.reverted).toBe(1)
+      expect(regraded.outcomeSummary.reverted).toBe(1)
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }
+  })
+
+  it('adjusts confidence empirically from outcomes and bug-density', () => {
+    const history: RepoHistorySignals = {
+      headSha: 'abc',
+      computedAt: NOW,
+      commitsScanned: 4,
+      coChange: {},
+      churn: {},
+      bugDensity: { 'a.ts': { fixCommits: 3, totalCommits: 4, ratio: 0.75 } },
+      ownership: {},
+    }
+    const outcome = (files: string[], o: PatchOutcomeRecord['outcome']): PatchOutcomeRecord => ({
+      capsuleId: 'c', fileKey: 'k', summary: 's', questId: 'q', recordedAt: NOW, files, outcome: o, evidence: [],
+    })
+
+    // Reverted surface → lower than base, high risk.
+    const reverted = empiricalConfidenceAdjustment('b.ts', 0.86, { patchOutcomes: [outcome(['b.ts'], 'reverted')], history })
+    expect(reverted.score).toBeLessThan(0.86)
+    expect(reverted.risk).toBe('high')
+
+    // Bug-prone file with no outcomes → still high risk, lowered score.
+    const buggy = empiricalConfidenceAdjustment('a.ts', 0.86, { patchOutcomes: [], history })
+    expect(buggy.risk).toBe('high')
+    expect(buggy.score).toBeLessThan(0.86)
+
+    // Clean file with prior validated outcomes → low risk, not below base.
+    const clean = empiricalConfidenceAdjustment('c.ts', 0.86, { patchOutcomes: [outcome(['c.ts'], 'validated')], history })
+    expect(clean.risk).toBe('low')
+    expect(clean.score).toBeGreaterThanOrEqual(0.86)
+
+    // Monotonic: more reverts → strictly lower score.
+    const one = empiricalConfidenceAdjustment('d.ts', 0.86, { patchOutcomes: [outcome(['d.ts'], 'reverted')], history })
+    const two = empiricalConfidenceAdjustment('d.ts', 0.86, {
+      patchOutcomes: [
+        { ...outcome(['d.ts'], 'reverted'), fileKey: 'k1' },
+        { ...outcome(['d.ts'], 'reverted'), fileKey: 'k2' },
+      ],
+      history,
+    })
+    expect(two.score).toBeLessThan(one.score)
   })
 
   it('extracts co-change, churn, bug-density, and ownership from git history', async () => {

@@ -282,6 +282,52 @@ export function formatTemporalMemorySummary(memory: QuestTemporalMemory): string
   ].join('\n')
 }
 
+export type EmpiricalRisk = 'low' | 'elevated' | 'high'
+
+/**
+ * Adjusts a heuristic confidence score for a file using accumulated outcome and
+ * history signals: reverts/hotfixes and bug-density lower it; a clean record
+ * with prior validated/merged outcomes nudges it up. Pure, bounded, monotonic —
+ * consumed by the v13 Semantic Repo Brain so confidence reflects reality instead
+ * of constants. Returns a risk band the caller maps onto its own status enum.
+ */
+export function empiricalConfidenceAdjustment(
+  file: string,
+  baseScore: number,
+  signals: { patchOutcomes: PatchOutcomeRecord[]; history: RepoHistorySignals },
+): { score: number; risk: EmpiricalRisk; reason: string } {
+  const normalized = file.replace(/\\/g, '/')
+  const fileOutcomes = signals.patchOutcomes.filter((record) =>
+    record.files.some((candidate) => candidate.replace(/\\/g, '/') === normalized),
+  )
+  const reverted = fileOutcomes.filter((record) => record.outcome === 'reverted').length
+  const hotfixed = fileOutcomes.filter((record) => record.outcome === 'hotfixed').length
+  const validatedOrMerged = fileOutcomes.filter(
+    (record) => record.outcome === 'validated' || record.outcome === 'merged',
+  ).length
+  const bugRatio = signals.history.bugDensity[normalized]?.ratio ?? 0
+
+  const penalty = reverted * 0.25 + hotfixed * 0.12 + bugRatio * 0.2
+  const bonus = reverted === 0 && hotfixed === 0 ? Math.min(0.1, validatedOrMerged * 0.03) : 0
+  const score = clamp01(round(baseScore - penalty + bonus))
+
+  const risk: EmpiricalRisk =
+    reverted > 0 || bugRatio >= 0.5 ? 'high' : hotfixed > 0 || bugRatio >= 0.25 ? 'elevated' : 'low'
+
+  const parts: string[] = []
+  if (reverted > 0) parts.push(`${reverted} revert(s)`)
+  if (hotfixed > 0) parts.push(`${hotfixed} hotfix(es)`)
+  if (bugRatio > 0) parts.push(`bug-density ${bugRatio}`)
+  if (parts.length === 0 && validatedOrMerged > 0) parts.push(`${validatedOrMerged} clean outcome(s)`)
+  const reason = parts.length > 0 ? `Empirical: ${parts.join(', ')}.` : 'Empirical: no prior outcome history.'
+
+  return { score, risk, reason }
+}
+
+function clamp01(value: number): number {
+  return Math.max(0, Math.min(1, value))
+}
+
 // ---------------------------------------------------------------------------
 
 function collectIncomingFailures(options: BuildQuestTemporalMemoryOptions): IncomingFailure[] {
@@ -394,12 +440,17 @@ async function buildPatchOutcomes(
   }
 
   // Re-grade all records (current + historical) against recent git history.
+  // A revert/fix commit only counts if it post-dates the recorded patch, so a
+  // patch is never marked reverted by history that predates it.
   const commits = await recentCommits(options.projectRoot, COMMIT_SCAN_LIMIT)
   if (commits.length > 0) {
     for (const record of outcomes) {
+      const recordedMs = Date.parse(record.recordedAt)
       const fileSet = new Set(record.files.map((file) => file.replace(/\\/g, '/')))
       for (const commit of commits) {
         if (!commit.files.some((file) => fileSet.has(file))) continue
+        const commitMs = Date.parse(commit.date)
+        if (!Number.isNaN(recordedMs) && !Number.isNaN(commitMs) && commitMs < recordedMs) continue
         const candidate: PatchOutcome | null = isRevertSubject(commit.subject)
           ? 'reverted'
           : isFixSubject(commit.subject)
@@ -420,20 +471,19 @@ async function buildPatchOutcomes(
 async function recentCommits(
   projectRoot: string,
   limit: number,
-): Promise<Array<{ sha: string; subject: string; files: string[] }>> {
+): Promise<Array<{ sha: string; date: string; subject: string; files: string[] }>> {
   try {
     const { stdout } = await execFileAsync(
       'git',
-      ['log', '--no-merges', `--max-count=${limit}`, '--name-only', '--format=__C__%H|%s'],
+      ['log', '--no-merges', `--max-count=${limit}`, '--name-only', '--format=__C__%H\x1f%aI\x1f%s'],
       { cwd: projectRoot, maxBuffer: 16 * 1024 * 1024 },
     )
-    const commits: Array<{ sha: string; subject: string; files: string[] }> = []
-    let current: { sha: string; subject: string; files: string[] } | null = null
+    const commits: Array<{ sha: string; date: string; subject: string; files: string[] }> = []
+    let current: { sha: string; date: string; subject: string; files: string[] } | null = null
     for (const line of stdout.split('\n')) {
       if (line.startsWith('__C__')) {
-        const rest = line.slice(5)
-        const sep = rest.indexOf('|')
-        current = { sha: rest.slice(0, sep), subject: rest.slice(sep + 1), files: [] }
+        const [sha = '', date = '', subject = ''] = line.slice(5).split('\x1f')
+        current = { sha, date, subject, files: [] }
         commits.push(current)
       } else if (line.trim() && current) {
         current.files.push(line.trim().replace(/\\/g, '/'))

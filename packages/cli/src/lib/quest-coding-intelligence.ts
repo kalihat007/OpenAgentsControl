@@ -230,6 +230,7 @@ export async function refreshQuestCodingIntelligence(
     events,
     gitStatus: repoWiki?.changes.gitStatus ?? [],
     repoWiki,
+    temporalMemory,
   })
 
   const intelligence: QuestCodingIntelligence = {

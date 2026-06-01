@@ -68,6 +68,9 @@ export async function questV9Command(
   info(`Failure-fix fingerprints: ${intelligence.semanticRepoBrain.failureFixMemory.fingerprints.length}`)
   info(`Skill candidates: ${intelligence.semanticRepoBrain.autoSkillBuilder.candidates.length}`)
   info(`Semantic gate: ${intelligence.semanticRepoBrain.completionGate.verdict}`)
+  info(`Chronic failure commands: ${intelligence.temporalMemory.chronicCommands.length}`)
+  info(`Patch outcomes: ${intelligence.temporalMemory.outcomeSummary.total} (reverted ${intelligence.temporalMemory.outcomeSummary.reverted}, hotfixed ${intelligence.temporalMemory.outcomeSummary.hotfixed})`)
+  info(`History commits scanned: ${intelligence.temporalMemory.history.commitsScanned}`)
 
   if (intelligence.reviewSignals.length > 0) {
     warn(`Review signals: ${intelligence.reviewSignals.length}`)
@@ -134,13 +137,17 @@ export async function questV9Command(
   log(`  - ${join(artifactDir, 'failure-fix-memory.json')}`)
   log(`  - ${join(artifactDir, 'auto-skill-builder.json')}`)
   log(`  - ${join(artifactDir, 'semantic-repo-brain.md')}`)
+  log(`  - ${join(artifactDir, 'temporal-memory.json')}`)
+  log(`  - ${join(artifactDir, 'patch-outcome-ledger.json')}`)
+  log(`  - ${join(artifactDir, 'repo-history-signals.json')}`)
+  log(`  - ${join(artifactDir, 'temporal-memory.md')}`)
   log('')
 }
 
 export function registerQuestV9Command(program: Command): void {
   program
     .command('quest-v9 [quest-id]')
-    .description('Refresh and inspect Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, and Semantic Repo Brain artifacts')
+    .description('Refresh and inspect Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, and Temporal Memory artifacts')
     .option('--json', 'Print machine-readable coding intelligence', false)
     .option('--objective <text>', 'Objective to use when no quest id is supplied')
     .option('--changed-file <path...>', 'Changed file path(s) to include in the analysis')

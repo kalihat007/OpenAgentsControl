@@ -22,6 +22,7 @@ import type {
   QuestTestRecommendation,
 } from './quest-coding-intelligence.js'
 import { loadMemoryPromotionStore, type MemoryPromotionCandidate } from './quest-memory-promotion.js'
+import { empiricalConfidenceAdjustment, type QuestTemporalMemory } from './quest-temporal-memory.js'
 import type { QuestVerifiedKnowledgebase } from './quest-verified-knowledgebase.js'
 import type { RepoWikiSnapshot } from './repo-wiki.js'
 
@@ -193,6 +194,7 @@ export interface BuildQuestSemanticRepoBrainOptions {
   events: Array<{ type?: string; data?: Record<string, unknown> }>
   gitStatus: string[]
   repoWiki: RepoWikiSnapshot | null
+  temporalMemory?: QuestTemporalMemory
 }
 
 interface PackageScriptInfo {
@@ -331,6 +333,11 @@ async function buildSemanticGraph(
     }
   }
 
+  // Prefer blame-based ownership from Temporal Memory; fall back to path convention.
+  const ownership = options.temporalMemory?.history.ownership ?? {}
+  const resolveOwner = (path: string): string =>
+    ownership[path.replace(/\\/g, '/')]?.topAuthor || ownerForPath(path)
+
   const symbolFiles = options.codingAutopilot.symbolGraph.files
   for (const file of symbolFiles) {
     const fileId = fileNodeId(file.path)
@@ -340,13 +347,13 @@ async function buildSemanticGraph(
       name: basename(file.path),
       path: file.path,
       detail: `${file.language} file with ${file.symbols.length} symbol(s)`,
-      owner: ownerForPath(file.path),
+      owner: resolveOwner(file.path),
       confidence: 'verified',
       score: 0.9,
       evidence: [`symbol-graph:${file.path}`],
     })
     for (const symbol of file.symbols) {
-      const node = symbolToNode(symbol)
+      const node = symbolToNode(symbol, resolveOwner)
       addNode(node)
       addEdge({ from: fileId, to: node.id, kind: 'declares' })
     }
@@ -367,7 +374,7 @@ async function buildSemanticGraph(
         name: command,
         path: mod.path,
         detail: `Commander CLI command registered in ${mod.path}`,
-        owner: ownerForPath(mod.path),
+        owner: resolveOwner(mod.path),
         confidence: 'verified',
         score: 0.86,
         evidence: [`${mod.path}: .command("${command}")`],
@@ -398,7 +405,7 @@ async function buildSemanticGraph(
       name: basename(mod.path),
       path: mod.path,
       detail: `Schema/model surface with ${mod.exports.length} export(s)`,
-      owner: ownerForPath(mod.path),
+      owner: resolveOwner(mod.path),
       confidence: 'inferred',
       score: 0.72,
       evidence: [`codebase-index:${mod.path}`],
@@ -415,7 +422,7 @@ async function buildSemanticGraph(
         name: script.name,
         path: pkg.path,
         detail: script.command,
-        owner: ownerForPath(pkg.path),
+        owner: resolveOwner(pkg.path),
         confidence: 'verified',
         score: 0.9,
         evidence: [`${pkg.path}:scripts.${script.name}`],
@@ -431,7 +438,7 @@ async function buildSemanticGraph(
       name: basename(promptPath),
       path: promptPath,
       detail: 'OpenAgent runtime prompt or Quest context surface',
-      owner: ownerForPath(promptPath),
+      owner: resolveOwner(promptPath),
       confidence: 'verified',
       score: 0.88,
       evidence: [promptPath],
@@ -558,6 +565,24 @@ function buildKnowledgeConfidenceScore(
     [`${semanticGraph.summary.nodes} semantic node(s)`],
     semanticGraph.summary.nodes > 0 ? 'Use graph for file/symbol/test ownership context.' : 'Refresh semantic repo brain before coding.',
   )
+
+  // Empirical confidence: ground changed-file confidence in accumulated outcome
+  // and history signals instead of constants. Only surface elevated/high risk.
+  if (options.temporalMemory) {
+    for (const file of options.files.slice(0, 50)) {
+      const adjustment = empiricalConfidenceAdjustment(file, 0.86, options.temporalMemory)
+      if (adjustment.risk === 'low') continue
+      addFact(
+        `empirical:${file}`,
+        adjustment.risk === 'high' ? 'needs-research' : 'inferred',
+        adjustment.score,
+        [adjustment.reason],
+        adjustment.risk === 'high'
+          ? 'High-risk surface (reverted/hotfixed or bug-prone) — add extra review and tests before changing.'
+          : 'Elevated-risk surface — validate carefully and prefer minimal changes.',
+      )
+    }
+  }
 
   const summary = {
     verified: facts.filter((fact) => fact.status === 'verified').length,
@@ -816,14 +841,17 @@ async function extractQuestEventTypes(
   return unique([...fromSource, ...fromStream]).slice(0, 120)
 }
 
-function symbolToNode(symbol: QuestSymbolNode): QuestSemanticRepoNode {
+function symbolToNode(
+  symbol: QuestSymbolNode,
+  resolveOwner: (path: string) => string,
+): QuestSemanticRepoNode {
   return {
     id: semanticId(symbol.kind, `${symbol.file}:${symbol.name}:${symbol.exported}`),
     kind: symbol.kind,
     name: symbol.name,
     path: symbol.file,
     detail: symbol.exported ? 'Exported symbol from syntax scan' : 'Local symbol from syntax scan',
-    owner: ownerForPath(symbol.file),
+    owner: resolveOwner(symbol.file),
     confidence: symbol.exported ? 'verified' : 'inferred',
     score: symbol.exported ? 0.86 : 0.68,
     evidence: [`symbol-graph:${symbol.file}#${symbol.name}`],
