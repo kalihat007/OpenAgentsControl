@@ -135,6 +135,10 @@ load `quest.json` first when resuming. Quest v8 artifacts are:
 - `failure-fix-memory.json`
 - `auto-skill-builder.json`
 - `semantic-repo-brain.md`
+- `temporal-memory.json`
+- `patch-outcome-ledger.json`
+- `repo-history-signals.json`
+- `temporal-memory.md`
 - `.oac/repo-wiki/index.md` (project-level, outside the run dir)
 - `summary.json`
 - optional `handoff.json`
@@ -205,7 +209,9 @@ Knowledgebase, and the v13 Semantic Repo Brain by default. Read
 `test-authoring-plan.json`, `verified-knowledgebase.md`,
 `semantic-repo-brain.json`, `ast-knowledgebase.json`,
 `knowledge-confidence-score.json`, `failure-fix-memory.json`,
-`auto-skill-builder.json`, and `semantic-repo-brain.md`
+`auto-skill-builder.json`, `semantic-repo-brain.md`,
+`temporal-memory.json`, `patch-outcome-ledger.json`,
+`repo-history-signals.json`, and `temporal-memory.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure

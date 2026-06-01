@@ -96,6 +96,10 @@ Required v8 artifacts when available:
 - `failure-fix-memory.json` - failed-command fingerprints and known fixes to avoid repeating broken paths
 - `auto-skill-builder.json` - approval-gated repeated-workflow skill candidates
 - `semantic-repo-brain.md` - human-readable semantic repo brain brief
+- `temporal-memory.json` - Quest v14 durable cross-quest failure memory with chronic-failure escalation
+- `patch-outcome-ledger.json` - per file-set patch outcomes: validated, reverted, hotfixed, merged
+- `repo-history-signals.json` - git-history co-change, churn, bug-density, and blame-based ownership (HEAD-cached)
+- `temporal-memory.md` - human-readable temporal memory brief
 - `summary.json` - machine-readable execution summary
 - `handoff.json` - optional IDE handoff manifest
 - `.oac/memory/promotions.json` - user-reviewed promotion queue for repeated learnings before they become durable repo knowledge
@@ -119,6 +123,7 @@ For adaptive v8 work:
 - read Coding Autopilot and Coding Execution sidecars when present so coding uses symbol-level context, pre-edit boundaries, smart-test tiers, patch ledger accountability, automatic review, failure replay, runtime parity enforcement, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gating, and PR packaging
 - read Verified Knowledgebase sidecars when present so coding is evidence-first and uses `evidence-ledger.json`, `hallucination-gate.json`, `contract-facts.json`, `source-to-patch-trace.json`, stale knowledge refresh, dependency research cache, behavior oracle, and test-authoring plan before editing or completing work
 - read Semantic Repo Brain sidecars when present so coding uses AST-level repo facts, ownership, confidence labels, failure-fix memory, and user-approved skill candidate policy before editing or completing work
+- read Temporal Memory sidecars when present so coding escalates chronic cross-quest failures instead of retrying, treats reverted/hotfixed and bug-prone surfaces as higher risk, and weighs git-history co-change when scoping blast radius
 - keep review decisions, injected tasks, and priority changes append-only
 
 Use these CLI commands for durable status and continuation:
@@ -171,7 +176,7 @@ Treat the repo wiki as current working context, not long-term truth. Durable kno
 
 ## Quest v9 Coding Intelligence
 
-Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Together they are active by default for coding, installer, runtime, adapter, test, and repo-maintenance work.
+Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Quest v14 adds Temporal Memory. Together they are active by default for coding, installer, runtime, adapter, test, and repo-maintenance work.
 
 Before editing code, use Quest v9 artifacts to answer:
 

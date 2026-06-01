@@ -118,6 +118,9 @@ grep -q 'semantic-repo-brain.json' "$AGENT_FILE" || fail "Kimi adapter does not 
 grep -q 'knowledge-confidence-score.json' "$AGENT_FILE" || fail "Kimi adapter does not mention knowledge confidence score"
 grep -q 'failure-fix-memory.json' "$AGENT_FILE" || fail "Kimi adapter does not mention failure fix memory"
 grep -q 'auto-skill-builder.json' "$AGENT_FILE" || fail "Kimi adapter does not mention auto skill builder"
+grep -q 'temporal-memory.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Temporal Memory"
+grep -q 'patch-outcome-ledger.json' "$AGENT_FILE" || fail "Kimi adapter does not mention patch-outcome ledger"
+grep -q 'repo-history-signals.json' "$AGENT_FILE" || fail "Kimi adapter does not mention repo-history signals"
 grep -q 'context.loaded' "$AGENT_FILE" || fail "Kimi adapter does not mention context.loaded"
 grep -q 'request.received' "$AGENT_FILE" || fail "Kimi adapter does not mention request.received"
 grep -q 'research.assessed' "$AGENT_FILE" || fail "Kimi adapter does not mention research.assessed"
@@ -127,7 +130,7 @@ grep -q 'quest-v9' "$AGENT_FILE" || fail "Kimi adapter does not mention quest-v9
 grep -q 'coding.intent' "$AGENT_FILE" || fail "Kimi adapter does not mention coding.intent"
 grep -q 'tests.selected' "$AGENT_FILE" || fail "Kimi adapter does not mention tests.selected"
 grep -q 'next_steps.suggested' "$AGENT_FILE" || fail "Kimi adapter does not mention next_steps.suggested"
-pass "Kimi adapter advertises Quest v8 adaptive protocol and Quest v9-v13 coding intelligence"
+pass "Kimi adapter advertises Quest v8 adaptive protocol and Quest v9-v14 coding intelligence"
 
 mkdir -p "$TEST_DIR/work/.oac"
 cd "$TEST_DIR/work"
@@ -354,6 +357,10 @@ grep -q 'kimi --work-dir' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json m
 [ -f ".oac/runs/${QUEST_ID}/failure-fix-memory.json" ] || fail "Missing failure fix memory"
 [ -f ".oac/runs/${QUEST_ID}/auto-skill-builder.json" ] || fail "Missing auto skill builder"
 [ -f ".oac/runs/${QUEST_ID}/semantic-repo-brain.md" ] || fail "Missing Semantic Repo Brain brief"
+[ -f ".oac/runs/${QUEST_ID}/temporal-memory.json" ] || fail "Missing Quest v14 temporal-memory.json"
+[ -f ".oac/runs/${QUEST_ID}/patch-outcome-ledger.json" ] || fail "Missing Quest v14 patch-outcome-ledger.json"
+[ -f ".oac/runs/${QUEST_ID}/repo-history-signals.json" ] || fail "Missing Quest v14 repo-history-signals.json"
+[ -f ".oac/runs/${QUEST_ID}/temporal-memory.md" ] || fail "Missing Quest v14 temporal-memory brief"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
@@ -373,7 +380,7 @@ if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecomme
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with kimi runtime and Quest v9-v13 sidecars"
+pass "Quest v8 artifact created with kimi runtime and Quest v9-v14 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -390,7 +397,10 @@ grep -q 'semantic-repo-brain.json' quest-v9.txt || fail "quest-v9 output missing
 grep -q 'knowledge-confidence-score.json' quest-v9.txt || fail "quest-v9 output missing knowledge confidence artifact"
 grep -q 'failure-fix-memory.json' quest-v9.txt || fail "quest-v9 output missing failure-fix memory artifact"
 grep -q 'auto-skill-builder.json' quest-v9.txt || fail "quest-v9 output missing auto skill builder artifact"
-pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, and Semantic Repo Brain"
+grep -q 'temporal-memory.json' quest-v9.txt || fail "quest-v9 output missing temporal-memory artifact"
+grep -q 'patch-outcome-ledger.json' quest-v9.txt || fail "quest-v9 output missing patch-outcome ledger artifact"
+grep -q 'repo-history-signals.json' quest-v9.txt || fail "quest-v9 output missing repo-history signals artifact"
+pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, and Temporal Memory"
 
 "${OAC_CLI[@]}" quest-resume "$QUEST_ID" --runtime kimi > quest-resume-kimi.txt 2>&1
 grep -q 'KIMI Resume' quest-resume-kimi.txt || fail "quest-resume --runtime kimi missing KIMI header"

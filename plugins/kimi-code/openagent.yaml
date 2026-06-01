@@ -229,6 +229,10 @@ agent:
       - failure-fix-memory.json
       - auto-skill-builder.json
       - semantic-repo-brain.md
+      - temporal-memory.json
+      - patch-outcome-ledger.json
+      - repo-history-signals.json
+      - temporal-memory.md
       - .oac/repo-wiki/index.md (project-level, outside the run dir)
       - summary.json
       - optional handoff.json
@@ -261,7 +265,9 @@ agent:
       `test-authoring-plan.json`, `verified-knowledgebase.md`,
       `semantic-repo-brain.json`, `ast-knowledgebase.json`,
       `knowledge-confidence-score.json`, `failure-fix-memory.json`,
-      `auto-skill-builder.json`, `semantic-repo-brain.md`, and
+      `auto-skill-builder.json`, `semantic-repo-brain.md`,
+      `temporal-memory.json`, `patch-outcome-ledger.json`,
+      `repo-history-signals.json`, `temporal-memory.md`, and
       `.oac/repo-wiki/index.md`
       first, then continue with the user's selected Kimi model.
       Do not invoke an LLM router or model fallback while resuming.
@@ -313,7 +319,9 @@ agent:
         `test-authoring-plan.json`, `verified-knowledgebase.md`,
         `semantic-repo-brain.json`, `ast-knowledgebase.json`,
         `knowledge-confidence-score.json`, `failure-fix-memory.json`,
-        `auto-skill-builder.json`, and `semantic-repo-brain.md` capture intent, affected files/modules/symbols,
+        `auto-skill-builder.json`, `semantic-repo-brain.md`,
+        `temporal-memory.json`, `patch-outcome-ledger.json`,
+        `repo-history-signals.json`, and `temporal-memory.md` capture intent, affected files/modules/symbols,
         runtime parity, patch capsules, smart-test tiers, patch ledger,
         pre-edit contract, automatic review, failure replay, dependency
         research gate, bounded autofix, PR readiness, executable acceptance,
