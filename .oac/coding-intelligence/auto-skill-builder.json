@@ -1,0 +1,10 @@
+{
+  "version": "13",
+  "candidates": [],
+  "policy": [
+    "Never create or install a skill from one Quest event.",
+    "Repeated successful workflows become candidates only.",
+    "User approval through oac memory-promote is required before durable skill creation.",
+    "Rejected candidates must not be used as future skill-building input."
+  ]
+}

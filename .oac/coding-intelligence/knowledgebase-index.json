@@ -1,23 +1,23 @@
 {
   "version": "12",
-  "generatedAt": "2026-05-29T09:00:07.976Z",
+  "generatedAt": "2026-06-01T06:20:10.161Z",
   "summary": {
-    "sources": 47,
-    "files": 24,
+    "sources": 85,
+    "files": 62,
     "tests": 8,
     "prompts": 6,
     "packageManifests": 9,
-    "confidence": 0.9
+    "confidence": 0.91
   },
   "sources": [
     {
       "id": "repo-wiki",
       "kind": "repo-wiki",
       "path": ".oac/repo-wiki/files.json",
-      "freshness": "fresh",
+      "freshness": "recent",
       "confidence": 0.95,
       "evidence": [
-        "1644 files, 9 packages."
+        "1656 files, 9 packages."
       ]
     },
     {
@@ -27,7 +27,7 @@
       "freshness": "fresh",
       "confidence": 0.9,
       "evidence": [
-        "335 modules and 336 dependency entries."
+        "337 modules and 338 dependency entries."
       ]
     },
     {
@@ -47,7 +47,414 @@
       "freshness": "fresh",
       "confidence": 1,
       "evidence": [
-        "Generated at 2026-05-29T09:00:07.976Z."
+        "Generated at 2026-06-01T06:20:10.161Z."
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-ast-knowledgebase-85194b93",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/ast-knowledgebase.json",
+      "freshness": "fresh",
+      "confidence": 0.75,
+      "evidence": [
+        "Selected by Quest changed/relevant file analysis.",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-auto-skill-builder-9119ec43",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/auto-skill-builder.json",
+      "freshness": "fresh",
+      "confidence": 0.75,
+      "evidence": [
+        "Selected by Quest changed/relevant file analysis.",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-autofix-plan-9ee019b6",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/autofix-plan.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-automatic-code-rev-5c453e1f",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/automatic-code-review.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-behavior-oracle-96dc8906",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/behavior-oracle.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-coding-autopilot-36ce1e4c",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/coding-autopilot.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-coding-execution-0bcf5e73",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/coding-execution.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-coding-intelligenc-74917fb3",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/coding-intelligence.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-coding-review-78bc086f",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/coding-review.md",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: docs",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-contract-facts-e28553a3",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/contract-facts.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-dependency-researc-225429b9",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/dependency-research-cache.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-dependency-researc-95740141",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/dependency-research-gate.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-evidence-ledger-d442c4dd",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/evidence-ledger.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-executable-accepta-8f8d1077",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/executable-acceptance.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-failure-fix-memory-8dfdff2a",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/failure-fix-memory.json",
+      "freshness": "fresh",
+      "confidence": 0.75,
+      "evidence": [
+        "Selected by Quest changed/relevant file analysis.",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-guarded-autofix-ru-c59061f0",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/guarded-autofix-runner.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-knowledge-confiden-4d7c78e1",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/knowledge-confidence-score.json",
+      "freshness": "fresh",
+      "confidence": 0.75,
+      "evidence": [
+        "Selected by Quest changed/relevant file analysis.",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-knowledgebase-inde-89d8cd72",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/knowledgebase-index.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-ownership-lock-pla-85a22d8c",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/ownership-lock-plan.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-patch-capsules-daa7a6e3",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/patch-capsules.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-patch-ledger-2d75924a",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/patch-ledger.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-pr-auto-packager-062e190e",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/pr-auto-packager.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-pr-auto-packager-a0d6827d",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/pr-auto-packager.md",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: docs",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-pr-readiness-bd986f06",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/pr-readiness.md",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: docs",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-pre-edit-contract-ae6971df",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/pre-edit-contract.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-review-patch-loop-4d9ff005",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/review-patch-loop.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-security-secrets-g-412ef16b",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/security-secrets-gate.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-semantic-repo-brai-4d7fe78e",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/semantic-repo-brain.json",
+      "freshness": "fresh",
+      "confidence": 0.75,
+      "evidence": [
+        "Selected by Quest changed/relevant file analysis.",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-semantic-repo-brai-ebd1da90",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/semantic-repo-brain.md",
+      "freshness": "fresh",
+      "confidence": 0.75,
+      "evidence": [
+        "Selected by Quest changed/relevant file analysis.",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-smart-test-matrix-d5d3ca27",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/smart-test-matrix.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-source-to-patch-tr-a44772cb",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/source-to-patch-trace.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-stale-knowledge-re-91353b70",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/stale-knowledge-report.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-symbol-graph-5db41a09",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/symbol-graph.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-test-authoring-pla-12a4d319",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/test-authoring-plan.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: test",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-test-gap-finder-b488ef4a",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/test-gap-finder.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: test",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-verified-knowledge-5a390a7c",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/verified-knowledgebase.json",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: config",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-oac-coding-intelligence-verified-knowledge-960b18bd",
+      "kind": "file",
+      "path": ".oac/coding-intelligence/verified-knowledgebase.md",
+      "freshness": "fresh",
+      "confidence": 0.95,
+      "evidence": [
+        "Repo wiki kind: docs",
+        "Impact risk: high"
       ]
     },
     {
@@ -84,20 +491,20 @@
       ]
     },
     {
-      "id": "file-packages-cli-src-commands-quest-v9-508fabf9",
+      "id": "file-packages-cli-opencode-expert-memory-d43d6356",
       "kind": "file",
-      "path": "packages/cli/src/commands/quest-v9.ts",
+      "path": "packages/cli/.opencode/.expert-memory.json",
       "freshness": "fresh",
       "confidence": 0.95,
       "evidence": [
-        "Repo wiki kind: source",
+        "Repo wiki kind: config",
         "Impact risk: high"
       ]
     },
     {
-      "id": "file-packages-cli-src-lib-quest-coding-executio-7976fd41",
+      "id": "file-packages-cli-src-commands-quest-v9-508fabf9",
       "kind": "file",
-      "path": "packages/cli/src/lib/quest-coding-execution.ts",
+      "path": "packages/cli/src/commands/quest-v9.ts",
       "freshness": "fresh",
       "confidence": 0.95,
       "evidence": [
@@ -150,9 +557,20 @@
       ]
     },
     {
-      "id": "file-packages-cli-src-lib-quest-verified-knowle-ab9c763a",
+      "id": "file-packages-cli-src-lib-quest-semantic-repo-b-35eb8602",
       "kind": "file",
-      "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "path": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "freshness": "fresh",
+      "confidence": 0.75,
+      "evidence": [
+        "Selected by Quest changed/relevant file analysis.",
+        "Impact risk: high"
+      ]
+    },
+    {
+      "id": "file-packages-cli-src-lib-quest-semantic-repo-b-974e6c98",
+      "kind": "file",
+      "path": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
       "freshness": "fresh",
       "confidence": 0.75,
       "evidence": [
@@ -318,7 +736,7 @@
       "id": "installer-install-c0fffa6d",
       "kind": "installer",
       "path": "install.sh",
-      "freshness": "recent",
+      "freshness": "stale",
       "confidence": 0.85,
       "evidence": [
         "Installer/update surface for runtime adapter propagation."
@@ -328,7 +746,7 @@
       "id": "installer-update-efe50602",
       "kind": "installer",
       "path": "update.sh",
-      "freshness": "recent",
+      "freshness": "stale",
       "confidence": 0.85,
       "evidence": [
         "Installer/update surface for runtime adapter propagation."
@@ -435,9 +853,9 @@
       ]
     },
     {
-      "id": "test-bun-test-packages-cli-src-lib-quest-coding-bc7cc3ec",
+      "id": "test-bun-test-packages-cli-src-lib-quest-coding-a6c14a2f",
       "kind": "test-command",
-      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
       "freshness": "fresh",
       "confidence": 0.85,
       "evidence": [

@@ -7,25 +7,11 @@
       "suggestedTestFile": "packages/cli/src/commands/quest-v9.test.ts",
       "reason": "Changed source file has no nearby test file in the indexed codebase.",
       "severity": "warning"
-    },
-    {
-      "id": "test-gap-o2h7jb",
-      "sourceFile": "packages/cli/src/lib/quest-coding-execution.ts",
-      "suggestedTestFile": "packages/cli/src/lib/quest-coding-execution.test.ts",
-      "reason": "Changed source file has no nearby test file in the indexed codebase.",
-      "severity": "warning"
-    },
-    {
-      "id": "test-gap-b2ln66",
-      "sourceFile": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "suggestedTestFile": "packages/cli/src/lib/quest-verified-knowledgebase.test.ts",
-      "reason": "Changed source file has no nearby test file in the indexed codebase.",
-      "severity": "warning"
     }
   ],
-  "coverageConfidence": 0.88,
+  "coverageConfidence": 0.98,
   "suggestedCommands": [
-    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
     "git diff --check",
     "npm run build -w packages/cli",
     "npm run test:quest-v8:codex",

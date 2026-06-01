@@ -1,7 +1,270 @@
 {
   "version": "10",
-  "generatedAt": "2026-05-29T09:00:07.944Z",
+  "generatedAt": "2026-06-01T06:20:10.103Z",
   "files": [
+    {
+      "path": ".oac/coding-intelligence/ast-knowledgebase.json",
+      "language": "json",
+      "imports": [
+        "./package.json"
+      ],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/auto-skill-builder.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/autofix-plan.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/automatic-code-review.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/behavior-oracle.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/coding-autopilot.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/coding-execution.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/coding-intelligence.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/coding-review.md",
+      "language": "markdown",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/contract-facts.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/dependency-research-cache.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/dependency-research-gate.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/evidence-ledger.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/executable-acceptance.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/failure-fix-memory.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/guarded-autofix-runner.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/knowledge-confidence-score.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/knowledgebase-index.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/ownership-lock-plan.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/patch-capsules.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/patch-ledger.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/pr-auto-packager.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/pr-auto-packager.md",
+      "language": "markdown",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/pr-readiness.md",
+      "language": "markdown",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/pre-edit-contract.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/review-patch-loop.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/security-secrets-gate.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/semantic-repo-brain.json",
+      "language": "json",
+      "imports": [
+        "./package.json"
+      ],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/semantic-repo-brain.md",
+      "language": "markdown",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/smart-test-matrix.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/source-to-patch-trace.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/stale-knowledge-report.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/symbol-graph.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/test-authoring-plan.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/test-gap-finder.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/verified-knowledgebase.json",
+      "language": "json",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
+      "path": ".oac/coding-intelligence/verified-knowledgebase.md",
+      "language": "markdown",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
     {
       "path": ".opencode/agent/core/openagent.md",
       "language": "markdown",
@@ -64,6 +327,14 @@
       ]
     },
     {
+      "path": "packages/cli/.opencode/.expert-memory.json",
+      "language": "json",
+      "packageName": "packages/cli",
+      "imports": [],
+      "exports": [],
+      "symbols": []
+    },
+    {
       "path": "packages/cli/src/commands/quest-v9.ts",
       "language": "typescript",
       "packageName": "packages/cli",
@@ -124,699 +395,6 @@
           "id": "packages/cli/src/commands/quest-v9.ts#artifactDir",
           "file": "packages/cli/src/commands/quest-v9.ts",
           "name": "artifactDir",
-          "kind": "const",
-          "exported": false
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/lib/quest-coding-execution.ts",
-      "language": "typescript",
-      "packageName": "packages/cli",
-      "imports": [
-        "./codebase-indexer.js",
-        "./quest-coding-autopilot.js",
-        "./quest-coding-intelligence.js",
-        "node:fs/promises",
-        "node:path",
-        "packages/cli/src/lib/codebase-indexer.js",
-        "packages/cli/src/lib/quest-coding-autopilot.js",
-        "packages/cli/src/lib/quest-coding-intelligence.js"
-      ],
-      "exports": [
-        "BuildQuestCodingExecutionOptions",
-        "QUEST_CODING_EXECUTION_VERSION",
-        "QuestCodingExecution",
-        "QuestContractDriftGuard",
-        "QuestExecutableAcceptance",
-        "QuestGuardedAutofixRunner",
-        "QuestOwnershipLockPlan",
-        "QuestPrAutoPackager",
-        "QuestRegressionSnapshots",
-        "QuestReviewPatchLoop",
-        "QuestRuntimeCompatibilityMatrix",
-        "QuestSecuritySecretsGate",
-        "QuestTestGapFinder",
-        "buildQuestCodingExecution",
-        "formatCodingExecutionSummary",
-        "writeQuestCodingExecutionArtifacts"
-      ],
-      "symbols": [
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildQuestCodingExecution",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildQuestCodingExecution",
-          "kind": "function",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#writeQuestCodingExecutionArtifacts",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "writeQuestCodingExecutionArtifacts",
-          "kind": "function",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#formatCodingExecutionSummary",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "formatCodingExecutionSummary",
-          "kind": "function",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestExecutableAcceptance",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestExecutableAcceptance",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestGuardedAutofixRunner",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestGuardedAutofixRunner",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestContractDriftGuard",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestContractDriftGuard",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestReviewPatchLoop",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestReviewPatchLoop",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestTestGapFinder",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestTestGapFinder",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestRegressionSnapshots",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestRegressionSnapshots",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestRuntimeCompatibilityMatrix",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestRuntimeCompatibilityMatrix",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestOwnershipLockPlan",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestOwnershipLockPlan",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestSecuritySecretsGate",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestSecuritySecretsGate",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestPrAutoPackager",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestPrAutoPackager",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QuestCodingExecution",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QuestCodingExecution",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#BuildQuestCodingExecutionOptions",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "BuildQuestCodingExecutionOptions",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#QUEST_CODING_EXECUTION_VERSION",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "QUEST_CODING_EXECUTION_VERSION",
-          "kind": "const",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildExecutableAcceptance",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildExecutableAcceptance",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildGuardedAutofixRunner",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildGuardedAutofixRunner",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildContractDriftGuard",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildContractDriftGuard",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildReviewPatchLoop",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildReviewPatchLoop",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildTestGapFinder",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildTestGapFinder",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildRegressionSnapshots",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildRegressionSnapshots",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildRuntimeCompatibilityMatrix",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildRuntimeCompatibilityMatrix",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildOwnershipLockPlan",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildOwnershipLockPlan",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildSecuritySecretsGate",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildSecuritySecretsGate",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#buildPrAutoPackager",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "buildPrAutoPackager",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#validationStatusByCommand",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "validationStatusByCommand",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#contractKind",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "contractKind",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#implementationHintsForContract",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "implementationHintsForContract",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#runtimeStatus",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "runtimeStatus",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#hasNearbyTest",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "hasNearbyTest",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#suggestedTestPath",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "suggestedTestPath",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#parseSourceFile",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "parseSourceFile",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#isSourceFile",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "isSourceFile",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#isTestFile",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "isTestFile",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#criticalSource",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "criticalSource",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#isLikelyTextFile",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "isLikelyTextFile",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#isGeneratedArtifact",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "isGeneratedArtifact",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#ownerForFile",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "ownerForFile",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#securitySummary",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "securitySummary",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#conventionalTitle",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "conventionalTitle",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#safeRead",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "safeRead",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#writeJson",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "writeJson",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#stableId",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "stableId",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#unique",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "unique",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#executableAcceptance",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "executableAcceptance",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#guardedAutofixRunner",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "guardedAutofixRunner",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#contractDriftGuard",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "contractDriftGuard",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#reviewPatchLoop",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "reviewPatchLoop",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#testGapFinder",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "testGapFinder",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#regressionSnapshots",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "regressionSnapshots",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#runtimeCompatibilityMatrix",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "runtimeCompatibilityMatrix",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#ownershipLockPlan",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "ownershipLockPlan",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#securitySecretsGate",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "securitySecretsGate",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#prAutoPackager",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "prAutoPackager",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#lines",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "lines",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#validationStatus",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "validationStatus",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#artifactChecks",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "artifactChecks",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#reviewCheck",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "reviewCheck",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#runtimeCheck",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "runtimeCheck",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#failingCommands",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "failingCommands",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#commands",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "commands",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#contracts",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "contracts",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#kind",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "kind",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#capsules",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "capsules",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#matchingLedger",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "matchingLedger",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#allFiles",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "allFiles",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#gaps",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "gaps",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#suggestedTestFile",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "suggestedTestFile",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#confidence",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "confidence",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#requiredClauses",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "requiredClauses",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#grouped",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "grouped",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#owner",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "owner",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#owners",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "owners",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#locks",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "locks",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#conflicts",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "conflicts",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#patterns",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "patterns",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#text",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "text",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#haystack",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "haystack",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#hasError",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "hasError",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#hasWarning",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "hasWarning",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#blockers",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "blockers",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#validationEvidence",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "validationEvidence",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#title",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "title",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#body",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "body",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#statuses",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "statuses",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#result",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "result",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#required",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "required",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#parsed",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "parsed",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#ext",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "ext",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#base",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "base",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#dir",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "dir",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#trimmed",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "trimmed",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-coding-execution.ts#raw",
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "name": "raw",
           "kind": "const",
           "exported": false
         }
@@ -933,6 +511,7 @@
         "./codebase-indexer.js",
         "./quest-coding-autopilot.js",
         "./quest-coding-execution.js",
+        "./quest-semantic-repo-brain.js",
         "./quest-verified-knowledgebase.js",
         "./repo-wiki.js",
         "node:child_process",
@@ -943,6 +522,7 @@
         "packages/cli/src/lib/codebase-indexer.js",
         "packages/cli/src/lib/quest-coding-autopilot.js",
         "packages/cli/src/lib/quest-coding-execution.js",
+        "packages/cli/src/lib/quest-semantic-repo-brain.js",
         "packages/cli/src/lib/quest-verified-knowledgebase.js",
         "packages/cli/src/lib/repo-wiki.js"
       ],
@@ -1293,6 +873,13 @@
           "id": "packages/cli/src/lib/quest-coding-intelligence.ts#verifiedKnowledgebase",
           "file": "packages/cli/src/lib/quest-coding-intelligence.ts",
           "name": "verifiedKnowledgebase",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-coding-intelligence.ts#semanticRepoBrain",
+          "file": "packages/cli/src/lib/quest-coding-intelligence.ts",
+          "name": "semanticRepoBrain",
           "kind": "const",
           "exported": false
         },
@@ -2310,7 +1897,271 @@
       ]
     },
     {
-      "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "path": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "language": "typescript",
+      "packageName": "packages/cli",
+      "imports": [
+        "./quest-coding-intelligence.js",
+        "./quest-memory-promotion.js",
+        "./quest-run.js",
+        "./quest-semantic-repo-brain.js",
+        "./sample.js",
+        "./swarm-executor.js",
+        "./task-router.js",
+        "bun:test",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "packages/cli/src/lib/quest-coding-intelligence.js",
+        "packages/cli/src/lib/quest-memory-promotion.js",
+        "packages/cli/src/lib/quest-run.js",
+        "packages/cli/src/lib/quest-semantic-repo-brain.js",
+        "packages/cli/src/lib/sample.js",
+        "packages/cli/src/lib/swarm-executor.js",
+        "packages/cli/src/lib/task-router.js"
+      ],
+      "exports": [
+        "UserSchema",
+        "register",
+        "sample",
+        "userSchema"
+      ],
+      "symbols": [
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#sample",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "sample",
+          "kind": "function",
+          "exported": true
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#register",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "register",
+          "kind": "function",
+          "exported": true
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#UserSchema",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "UserSchema",
+          "kind": "interface",
+          "exported": true
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#userSchema",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "userSchema",
+          "kind": "const",
+          "exported": true
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#routerResult",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "routerResult",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#seedProject",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "seedProject",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#candidate",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "candidate",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#seedPromotionStore",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "seedPromotionStore",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#NOW",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "NOW",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#tmpRoot",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "tmpRoot",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#intelligence",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "intelligence",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#brain",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "brain",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#graph",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "graph",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#commandNames",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "commandNames",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#ids",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "ids",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#confidence",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "confidence",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#gate",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "gate",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#blocked",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "blocked",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#review",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "review",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#summary",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "summary",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#builder",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "builder",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#bySource",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "bySource",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#pending",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "pending",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#approved",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "approved",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#routed",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "routed",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#plan",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "plan",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#quest",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "quest",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#failedCheck",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "failedCheck",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#runDir",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "runDir",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#memory",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "memory",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#typecheckFailures",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "typecheckFailures",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#fingerprints",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "fingerprints",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts#content",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "name": "content",
+          "kind": "const",
+          "exported": false
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
       "language": "typescript",
       "packageName": "packages/cli",
       "imports": [
@@ -2318,6 +2169,8 @@
         "./quest-coding-autopilot.js",
         "./quest-coding-execution.js",
         "./quest-coding-intelligence.js",
+        "./quest-memory-promotion.js",
+        "./quest-verified-knowledgebase.js",
         "./repo-wiki.js",
         "node:crypto",
         "node:fs/promises",
@@ -2326,880 +2179,599 @@
         "packages/cli/src/lib/quest-coding-autopilot.js",
         "packages/cli/src/lib/quest-coding-execution.js",
         "packages/cli/src/lib/quest-coding-intelligence.js",
+        "packages/cli/src/lib/quest-memory-promotion.js",
+        "packages/cli/src/lib/quest-verified-knowledgebase.js",
         "packages/cli/src/lib/repo-wiki.js"
       ],
       "exports": [
-        "BuildQuestVerifiedKnowledgebaseOptions",
-        "QUEST_VERIFIED_KNOWLEDGEBASE_VERSION",
-        "QuestAutonomousTestAuthoringPlan",
-        "QuestBehaviorOracle",
-        "QuestContractFacts",
-        "QuestDependencyResearchCache",
-        "QuestEvidenceLedger",
-        "QuestEvidenceStatus",
-        "QuestHallucinationGate",
-        "QuestKnowledgeEvidenceRef",
-        "QuestKnowledgeFreshness",
-        "QuestKnowledgebaseIndex",
-        "QuestSourceToPatchTrace",
-        "QuestStaleKnowledgeReport",
-        "QuestVerifiedKnowledgebase",
-        "buildQuestVerifiedKnowledgebase",
-        "formatVerifiedKnowledgebaseSummary",
-        "writeQuestVerifiedKnowledgebaseArtifacts"
+        "BuildQuestSemanticRepoBrainOptions",
+        "QUEST_SEMANTIC_REPO_BRAIN_VERSION",
+        "QuestAutoSkillBuilder",
+        "QuestFailureFixMemory",
+        "QuestKnowledgeConfidenceScore",
+        "QuestKnowledgeConfidenceStatus",
+        "QuestSemanticCompletionGate",
+        "QuestSemanticGraph",
+        "QuestSemanticNodeKind",
+        "QuestSemanticRepoBrain",
+        "QuestSemanticRepoEdge",
+        "QuestSemanticRepoNode",
+        "buildQuestSemanticRepoBrain",
+        "formatSemanticRepoBrainSummary",
+        "writeQuestSemanticRepoBrainArtifacts"
       ],
       "symbols": [
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildQuestVerifiedKnowledgebase",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildQuestVerifiedKnowledgebase",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#buildQuestSemanticRepoBrain",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "buildQuestSemanticRepoBrain",
           "kind": "function",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#writeQuestVerifiedKnowledgebaseArtifacts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "writeQuestVerifiedKnowledgebaseArtifacts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#writeQuestSemanticRepoBrainArtifacts",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "writeQuestSemanticRepoBrainArtifacts",
           "kind": "function",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#formatVerifiedKnowledgebaseSummary",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "formatVerifiedKnowledgebaseSummary",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#formatSemanticRepoBrainSummary",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "formatSemanticRepoBrainSummary",
           "kind": "function",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestKnowledgeEvidenceRef",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestKnowledgeEvidenceRef",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestSemanticRepoNode",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestSemanticRepoNode",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestKnowledgebaseIndex",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestKnowledgebaseIndex",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestSemanticRepoEdge",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestSemanticRepoEdge",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestEvidenceLedger",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestEvidenceLedger",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestSemanticGraph",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestSemanticGraph",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestHallucinationGate",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestHallucinationGate",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestKnowledgeConfidenceScore",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestKnowledgeConfidenceScore",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestContractFacts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestContractFacts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestFailureFixMemory",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestFailureFixMemory",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestSourceToPatchTrace",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestSourceToPatchTrace",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestAutoSkillBuilder",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestAutoSkillBuilder",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestStaleKnowledgeReport",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestStaleKnowledgeReport",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestSemanticCompletionGate",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestSemanticCompletionGate",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestDependencyResearchCache",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestDependencyResearchCache",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestSemanticRepoBrain",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestSemanticRepoBrain",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestBehaviorOracle",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestBehaviorOracle",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#BuildQuestSemanticRepoBrainOptions",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "BuildQuestSemanticRepoBrainOptions",
           "kind": "interface",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestAutonomousTestAuthoringPlan",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestAutonomousTestAuthoringPlan",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestVerifiedKnowledgebase",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestVerifiedKnowledgebase",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#BuildQuestVerifiedKnowledgebaseOptions",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "BuildQuestVerifiedKnowledgebaseOptions",
-          "kind": "interface",
-          "exported": true
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestKnowledgeFreshness",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestKnowledgeFreshness",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestSemanticNodeKind",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestSemanticNodeKind",
           "kind": "type",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QuestEvidenceStatus",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QuestEvidenceStatus",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QuestKnowledgeConfidenceStatus",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QuestKnowledgeConfidenceStatus",
           "kind": "type",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#QUEST_VERIFIED_KNOWLEDGEBASE_VERSION",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "QUEST_VERIFIED_KNOWLEDGEBASE_VERSION",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#QUEST_SEMANTIC_REPO_BRAIN_VERSION",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "QUEST_SEMANTIC_REPO_BRAIN_VERSION",
           "kind": "const",
           "exported": true
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#formatVerifiedKnowledgebaseBrief",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "formatVerifiedKnowledgebaseBrief",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#formatSemanticRepoBrainBrief",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "formatSemanticRepoBrainBrief",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildKnowledgebaseIndex",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildKnowledgebaseIndex",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#buildSemanticGraph",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "buildSemanticGraph",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildEvidenceLedger",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildEvidenceLedger",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#buildKnowledgeConfidenceScore",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "buildKnowledgeConfidenceScore",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildHallucinationGate",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildHallucinationGate",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#buildFailureFixMemory",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "buildFailureFixMemory",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildContractFacts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildContractFacts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#buildAutoSkillBuilder",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "buildAutoSkillBuilder",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildSourceToPatchTrace",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildSourceToPatchTrace",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#buildCompletionGate",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "buildCompletionGate",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildStaleKnowledgeReport",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildStaleKnowledgeReport",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildDependencyResearchCache",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildDependencyResearchCache",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildBehaviorOracle",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildBehaviorOracle",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#buildAutonomousTestAuthoringPlan",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "buildAutonomousTestAuthoringPlan",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#loadPackageScripts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#loadPackageScripts",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "loadPackageScripts",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#existingFileSet",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "existingFileSet",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#loadRuntimePromptFiles",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "loadRuntimePromptFiles",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#summarizeEvidenceFacts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "summarizeEvidenceFacts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#extractCliCommands",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "extractCliCommands",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#evidenceStatusForFreshness",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "evidenceStatusForFreshness",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#extractQuestEventTypes",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "extractQuestEventTypes",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#sourceKindForFile",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "sourceKindForFile",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#symbolToNode",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "symbolToNode",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#runtimePromptFiles",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "runtimePromptFiles",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#isSchemaModule",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "isSchemaModule",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#requiredV12Sidecars",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "requiredV12Sidecars",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#commandIsLocallyGrounded",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "commandIsLocallyGrounded",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#isKnownGeneratedScript",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "isKnownGeneratedScript",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#staleItem",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "staleItem",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#refreshRecommendation",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "refreshRecommendation",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#freshnessForDate",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "freshnessForDate",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#freshnessForTimestamp",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "freshnessForTimestamp",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#pathFreshness",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "pathFreshness",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#pathExists",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "pathExists",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#safeJson",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "safeJson",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#writeJson",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "writeJson",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#homeDir",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "homeDir",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#isRecord",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "isRecord",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#isPromptFile",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "isPromptFile",
-          "kind": "function",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#isTestFile",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#isTestFile",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "isTestFile",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#unique",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "unique",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#ownerForPath",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "ownerForPath",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#uniqueSources",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "uniqueSources",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#fileNodeId",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "fileNodeId",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#average",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "average",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#isSkillWorthy",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "isSkillWorthy",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#stableId",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#suggestedSkillNameFor",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "suggestedSkillNameFor",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#titleCase",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "titleCase",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#summarizeOutput",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "summarizeOutput",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#dedupeFailures",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "dedupeFailures",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#dedupeById",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "dedupeById",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#semanticId",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "semanticId",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#stableId",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "stableId",
           "kind": "function",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#generatedAt",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#round",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "round",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#unique",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "unique",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#writeJson",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "writeJson",
+          "kind": "function",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#generatedAt",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "generatedAt",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#packageScripts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "packageScripts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#semanticGraph",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "semanticGraph",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#knowledgebaseIndex",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "knowledgebaseIndex",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#knowledgeConfidenceScore",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "knowledgeConfidenceScore",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#evidenceLedger",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "evidenceLedger",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#failureFixMemory",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "failureFixMemory",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#hallucinationGate",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "hallucinationGate",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#autoSkillBuilder",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "autoSkillBuilder",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#contractFacts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "contractFacts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#completionGate",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "completionGate",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#sourceToPatchTrace",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "sourceToPatchTrace",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#staleKnowledgeReport",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "staleKnowledgeReport",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#dependencyResearchCache",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "dependencyResearchCache",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#behaviorOracle",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "behaviorOracle",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#testAuthoringPlan",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "testAuthoringPlan",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#lines",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#lines",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "lines",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#repoFiles",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "repoFiles",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#addNode",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "addNode",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#fileSources",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "fileSources",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#addEdge",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "addEdge",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#repoEntry",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "repoEntry",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#symbolFiles",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "symbolFiles",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#promptFiles",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "promptFiles",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#fileId",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "fileId",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#promptSources",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "promptSources",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#node",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "node",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#installerSources",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "installerSources",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#commandFiles",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "commandFiles",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#packageSources",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "packageSources",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#commands",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "commands",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#testSources",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "testSources",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#id",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "id",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#sources",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "sources",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#eventTypes",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "eventTypes",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#confidence",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "confidence",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#ownerId",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "ownerId",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#existingFiles",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "existingFiles",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#summary",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#summary",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "summary",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#knownFiles",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "knownFiles",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#addFact",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "addFact",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#patchFiles",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "patchFiles",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#overall",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "overall",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#unknownFiles",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "unknownFiles",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#autopilotFailures",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "autopilotFailures",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#scripts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "scripts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#eventFailures",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "eventFailures",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#unknownCommands",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "unknownCommands",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#result",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "result",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#sidecars",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "sidecars",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#command",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "command",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#missingCoreFacts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "missingCoreFacts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#fingerprints",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "fingerprints",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#verdict",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#reusableFixes",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "reusableFixes",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#skillCandidates",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "skillCandidates",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#suggestedSkillName",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "suggestedSkillName",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#verdict",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "verdict",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#driftFacts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "driftFacts",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#packageFacts",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "packageFacts",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#behaviorFact",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "behaviorFact",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#factsByFile",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "factsByFile",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#assumptions",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "assumptions",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#evidenceFactIds",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "evidenceFactIds",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#status",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "status",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#projectItems",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "projectItems",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#installedKimi",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "installedKimi",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#projectStats",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "projectStats",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#installedStats",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "installedStats",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#items",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "items",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#staleItems",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "staleItems",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#refreshCommands",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "refreshCommands",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#gate",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "gate",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#entries",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "entries",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#capsuleSignals",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "capsuleSignals",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#acceptanceSignals",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "acceptanceSignals",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#fallbackCommand",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "fallbackCommand",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#packagePaths",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#packagePaths",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "packagePaths",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#parsed",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#parsed",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "parsed",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#scriptsRecord",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "scriptsRecord",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#candidates",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "candidates",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#verified",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "verified",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#fileStat",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "fileStat",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#assumed",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "assumed",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#text",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "text",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#unknown",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "unknown",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#fromStream",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "fromStream",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#stale",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "stale",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#value",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "value",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#npmScript",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "npmScript",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#parts",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "parts",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#bunScript",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "bunScript",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#words",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "words",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#fullPath",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "fullPath",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#byFingerprint",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "byFingerprint",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#info",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "info",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#ageHours",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "ageHours",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#time",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "time",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#seen",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#seen",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "name": "seen",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#key",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "key",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#sum",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "sum",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#stem",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "stem",
-          "kind": "const",
-          "exported": false
-        },
-        {
-          "id": "packages/cli/src/lib/quest-verified-knowledgebase.ts#hash",
-          "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "name": "hash",
+          "id": "packages/cli/src/lib/quest-semantic-repo-brain.ts#STOP_WORDS",
+          "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "name": "STOP_WORDS",
           "kind": "const",
           "exported": false
         }
@@ -3740,6 +3312,20 @@
           "exported": false
         },
         {
+          "id": "packages/cli/src/lib/runtime-bridge.ts#appendSyntheticEvent",
+          "file": "packages/cli/src/lib/runtime-bridge.ts",
+          "name": "appendSyntheticEvent",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/runtime-bridge.ts#hasEventType",
+          "file": "packages/cli/src/lib/runtime-bridge.ts",
+          "name": "hasEventType",
+          "kind": "const",
+          "exported": false
+        },
+        {
           "id": "packages/cli/src/lib/runtime-bridge.ts#terminal",
           "file": "packages/cli/src/lib/runtime-bridge.ts",
           "name": "terminal",
@@ -3834,6 +3420,13 @@
           "id": "packages/cli/src/lib/runtime-bridge.ts#spawnStarted",
           "file": "packages/cli/src/lib/runtime-bridge.ts",
           "name": "spawnStarted",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "packages/cli/src/lib/runtime-bridge.ts#finalizeBackground",
+          "file": "packages/cli/src/lib/runtime-bridge.ts",
+          "name": "finalizeBackground",
           "kind": "const",
           "exported": false
         },
@@ -4278,16 +3871,30 @@
           "exported": false
         },
         {
-          "id": "scripts/tests/test-kimi-quest-v8.sh#eventsPath",
+          "id": "scripts/tests/test-kimi-quest-v8.sh#hasType",
           "file": "scripts/tests/test-kimi-quest-v8.sh",
-          "name": "eventsPath",
+          "name": "hasType",
           "kind": "const",
           "exported": false
         },
         {
-          "id": "scripts/tests/test-kimi-quest-v8.sh#hasType",
+          "id": "scripts/tests/test-kimi-quest-v8.sh#hasRuntime",
           "file": "scripts/tests/test-kimi-quest-v8.sh",
-          "name": "hasType",
+          "name": "hasRuntime",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "scripts/tests/test-kimi-quest-v8.sh#hasMarker",
+          "file": "scripts/tests/test-kimi-quest-v8.sh",
+          "name": "hasMarker",
+          "kind": "const",
+          "exported": false
+        },
+        {
+          "id": "scripts/tests/test-kimi-quest-v8.sh#eventsPath",
+          "file": "scripts/tests/test-kimi-quest-v8.sh",
+          "name": "eventsPath",
           "kind": "const",
           "exported": false
         },
@@ -4554,6 +4161,16 @@
   ],
   "edges": [
     {
+      "from": ".oac/coding-intelligence/ast-knowledgebase.json",
+      "to": "./package.json",
+      "kind": "imports"
+    },
+    {
+      "from": ".oac/coding-intelligence/semantic-repo-brain.json",
+      "to": "./package.json",
+      "kind": "imports"
+    },
+    {
       "from": "packages/cli/src/commands/quest-v9.ts",
       "to": "../lib/errors.js",
       "kind": "imports"
@@ -4602,56 +4219,6 @@
       "from": "packages/cli/src/commands/quest-v9.ts",
       "to": "packages/cli/src/ui/logger.js",
       "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-execution.ts",
-      "to": "./codebase-indexer.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-execution.ts",
-      "to": "./quest-coding-autopilot.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-execution.ts",
-      "to": "./quest-coding-intelligence.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-execution.ts",
-      "to": "node:fs/promises",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-execution.ts",
-      "to": "node:path",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-execution.ts",
-      "to": "packages/cli/src/lib/codebase-indexer.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-execution.ts",
-      "to": "packages/cli/src/lib/quest-coding-autopilot.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-execution.ts",
-      "to": "packages/cli/src/lib/quest-coding-intelligence.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-coding-intelligence.ts",
-      "to": "packages/cli/src/lib/quest-coding-execution.ts",
-      "kind": "imported-by"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "packages/cli/src/lib/quest-coding-execution.ts",
-      "kind": "imported-by"
     },
     {
       "from": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
@@ -4740,6 +4307,11 @@
     },
     {
       "from": "packages/cli/src/lib/quest-coding-intelligence.ts",
+      "to": "./quest-semantic-repo-brain.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-coding-intelligence.ts",
       "to": "./quest-verified-knowledgebase.js",
       "kind": "imports"
     },
@@ -4790,6 +4362,11 @@
     },
     {
       "from": "packages/cli/src/lib/quest-coding-intelligence.ts",
+      "to": "packages/cli/src/lib/quest-semantic-repo-brain.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-coding-intelligence.ts",
       "to": "packages/cli/src/lib/quest-verified-knowledgebase.js",
       "kind": "imports"
     },
@@ -4820,6 +4397,16 @@
     },
     {
       "from": "packages/cli/src/lib/quest-run.ts",
+      "to": "packages/cli/src/lib/quest-coding-intelligence.ts",
+      "kind": "imported-by"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/quest-coding-intelligence.ts",
+      "kind": "imported-by"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
       "to": "packages/cli/src/lib/quest-coding-intelligence.ts",
       "kind": "imported-by"
     },
@@ -5139,6 +4726,11 @@
       "kind": "imported-by"
     },
     {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/quest-run.ts",
+      "kind": "imported-by"
+    },
+    {
       "from": "packages/cli/src/lib/quest-verification.ts",
       "to": "packages/cli/src/lib/quest-run.ts",
       "kind": "imported-by"
@@ -5164,73 +4756,188 @@
       "kind": "imported-by"
     },
     {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "./codebase-indexer.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "./quest-coding-autopilot.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "./quest-coding-execution.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
       "to": "./quest-coding-intelligence.js",
       "kind": "imports"
     },
     {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "./repo-wiki.js",
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "./quest-memory-promotion.js",
       "kind": "imports"
     },
     {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "node:crypto",
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "./quest-run.js",
       "kind": "imports"
     },
     {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "./quest-semantic-repo-brain.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "./sample.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "./swarm-executor.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "./task-router.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "bun:test",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
       "to": "node:fs/promises",
       "kind": "imports"
     },
     {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "node:os",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
       "to": "node:path",
       "kind": "imports"
     },
     {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "packages/cli/src/lib/codebase-indexer.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "packages/cli/src/lib/quest-coding-autopilot.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "to": "packages/cli/src/lib/quest-coding-execution.js",
-      "kind": "imports"
-    },
-    {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
       "to": "packages/cli/src/lib/quest-coding-intelligence.js",
       "kind": "imports"
     },
     {
-      "from": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/quest-memory-promotion.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/quest-run.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/quest-semantic-repo-brain.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/sample.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/swarm-executor.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/task-router.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "./codebase-indexer.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "./quest-coding-autopilot.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "./quest-coding-execution.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "./quest-coding-intelligence.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "./quest-memory-promotion.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "./quest-verified-knowledgebase.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "./repo-wiki.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "node:crypto",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "node:fs/promises",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "node:path",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "packages/cli/src/lib/codebase-indexer.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "packages/cli/src/lib/quest-coding-autopilot.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "packages/cli/src/lib/quest-coding-execution.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "packages/cli/src/lib/quest-coding-intelligence.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "packages/cli/src/lib/quest-memory-promotion.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "to": "packages/cli/src/lib/quest-verified-knowledgebase.js",
+      "kind": "imports"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
       "to": "packages/cli/src/lib/repo-wiki.js",
       "kind": "imports"
     },
     {
       "from": "packages/cli/src/lib/quest-coding-intelligence.ts",
-      "to": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "to": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+      "kind": "imported-by"
+    },
+    {
+      "from": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "to": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
       "kind": "imported-by"
     },
     {
@@ -5410,10 +5117,10 @@
     }
   ],
   "summary": {
-    "files": 23,
-    "symbols": 584,
-    "exports": 121,
-    "edges": 171,
+    "files": 61,
+    "symbols": 489,
+    "exports": 106,
+    "edges": 191,
     "packages": [
       ".opencode",
       "packages/cli",

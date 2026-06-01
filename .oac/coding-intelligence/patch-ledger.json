@@ -3,18 +3,56 @@
   "entries": [
     {
       "id": "patch-001",
-      "summary": "Implement requested coding change for: Quest v12 verified knowledgebase smoke",
+      "summary": "Implement requested coding change for: Quest v13 semantic repo brain smoke",
       "files": [
+        ".oac/coding-intelligence/ast-knowledgebase.json",
+        ".oac/coding-intelligence/auto-skill-builder.json",
+        ".oac/coding-intelligence/autofix-plan.json",
+        ".oac/coding-intelligence/automatic-code-review.json",
+        ".oac/coding-intelligence/behavior-oracle.json",
+        ".oac/coding-intelligence/coding-autopilot.json",
+        ".oac/coding-intelligence/coding-execution.json",
+        ".oac/coding-intelligence/coding-intelligence.json",
+        ".oac/coding-intelligence/coding-review.md",
+        ".oac/coding-intelligence/contract-facts.json",
+        ".oac/coding-intelligence/dependency-research-cache.json",
+        ".oac/coding-intelligence/dependency-research-gate.json",
+        ".oac/coding-intelligence/evidence-ledger.json",
+        ".oac/coding-intelligence/executable-acceptance.json",
+        ".oac/coding-intelligence/failure-fix-memory.json",
+        ".oac/coding-intelligence/guarded-autofix-runner.json",
+        ".oac/coding-intelligence/knowledge-confidence-score.json",
+        ".oac/coding-intelligence/knowledgebase-index.json",
+        ".oac/coding-intelligence/ownership-lock-plan.json",
+        ".oac/coding-intelligence/patch-capsules.json",
+        ".oac/coding-intelligence/patch-ledger.json",
+        ".oac/coding-intelligence/pr-auto-packager.json",
+        ".oac/coding-intelligence/pr-auto-packager.md",
+        ".oac/coding-intelligence/pr-readiness.md",
+        ".oac/coding-intelligence/pre-edit-contract.json",
+        ".oac/coding-intelligence/review-patch-loop.json",
+        ".oac/coding-intelligence/security-secrets-gate.json",
+        ".oac/coding-intelligence/semantic-repo-brain.json",
+        ".oac/coding-intelligence/semantic-repo-brain.md",
+        ".oac/coding-intelligence/smart-test-matrix.json",
+        ".oac/coding-intelligence/source-to-patch-trace.json",
+        ".oac/coding-intelligence/stale-knowledge-report.json",
+        ".oac/coding-intelligence/symbol-graph.json",
+        ".oac/coding-intelligence/test-authoring-plan.json",
+        ".oac/coding-intelligence/test-gap-finder.json",
+        ".oac/coding-intelligence/verified-knowledgebase.json",
+        ".oac/coding-intelligence/verified-knowledgebase.md",
         ".opencode/agent/core/openagent.md",
         ".opencode/context/core/quest-mode.md",
         "README.md",
+        "packages/cli/.opencode/.expert-memory.json",
         "packages/cli/src/commands/quest-v9.ts",
-        "packages/cli/src/lib/quest-coding-execution.ts",
         "packages/cli/src/lib/quest-coding-intelligence.test.ts",
         "packages/cli/src/lib/quest-coding-intelligence.ts",
         "packages/cli/src/lib/quest-run.test.ts",
         "packages/cli/src/lib/quest-run.ts",
-        "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+        "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+        "packages/cli/src/lib/quest-semantic-repo-brain.ts",
         "packages/cli/src/lib/runtime-bridge.test.ts",
         "packages/cli/src/lib/runtime-bridge.ts",
         "plugins/README.md",
@@ -32,7 +70,7 @@
       ],
       "validationCommands": [
         "git diff --check",
-        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "npm run typecheck -w packages/cli",
         "npm run build -w packages/cli",
         "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
@@ -41,53 +79,208 @@
       "rollbackNote": "Revert the listed files if this capsule fails validation.",
       "diffStats": [
         {
+          "file": ".oac/coding-intelligence/autofix-plan.json",
+          "added": 1,
+          "deleted": 1
+        },
+        {
+          "file": ".oac/coding-intelligence/automatic-code-review.json",
+          "added": 6,
+          "deleted": 15
+        },
+        {
+          "file": ".oac/coding-intelligence/behavior-oracle.json",
+          "added": 35,
+          "deleted": 35
+        },
+        {
+          "file": ".oac/coding-intelligence/coding-autopilot.json",
+          "added": 850,
+          "deleted": 1445
+        },
+        {
+          "file": ".oac/coding-intelligence/coding-execution.json",
+          "added": 24,
+          "deleted": 59
+        },
+        {
+          "file": ".oac/coding-intelligence/coding-intelligence.json",
+          "added": 26227,
+          "deleted": 6583
+        },
+        {
+          "file": ".oac/coding-intelligence/coding-review.md",
+          "added": 26,
+          "deleted": 15
+        },
+        {
+          "file": ".oac/coding-intelligence/contract-facts.json",
+          "added": 1,
+          "deleted": 1
+        },
+        {
+          "file": ".oac/coding-intelligence/dependency-research-cache.json",
+          "added": 12,
+          "deleted": 12
+        },
+        {
+          "file": ".oac/coding-intelligence/dependency-research-gate.json",
+          "added": 2,
+          "deleted": 2
+        },
+        {
+          "file": ".oac/coding-intelligence/evidence-ledger.json",
+          "added": 9,
+          "deleted": 14
+        },
+        {
+          "file": ".oac/coding-intelligence/executable-acceptance.json",
+          "added": 2,
+          "deleted": 2
+        },
+        {
+          "file": ".oac/coding-intelligence/guarded-autofix-runner.json",
+          "added": 3,
+          "deleted": 3
+        },
+        {
+          "file": ".oac/coding-intelligence/knowledgebase-index.json",
+          "added": 22,
+          "deleted": 22
+        },
+        {
+          "file": ".oac/coding-intelligence/ownership-lock-plan.json",
+          "added": 8,
+          "deleted": 8
+        },
+        {
+          "file": ".oac/coding-intelligence/patch-capsules.json",
+          "added": 5,
+          "deleted": 5
+        },
+        {
+          "file": ".oac/coding-intelligence/patch-ledger.json",
+          "added": 23,
+          "deleted": 28
+        },
+        {
+          "file": ".oac/coding-intelligence/pr-auto-packager.json",
+          "added": 5,
+          "deleted": 5
+        },
+        {
+          "file": ".oac/coding-intelligence/pr-auto-packager.md",
+          "added": 6,
+          "deleted": 6
+        },
+        {
+          "file": ".oac/coding-intelligence/pr-readiness.md",
+          "added": 4,
+          "deleted": 4
+        },
+        {
+          "file": ".oac/coding-intelligence/pre-edit-contract.json",
+          "added": 5,
+          "deleted": 5
+        },
+        {
+          "file": ".oac/coding-intelligence/review-patch-loop.json",
+          "added": 3,
+          "deleted": 17
+        },
+        {
+          "file": ".oac/coding-intelligence/security-secrets-gate.json",
+          "added": 0,
+          "deleted": 7
+        },
+        {
+          "file": ".oac/coding-intelligence/smart-test-matrix.json",
+          "added": 2,
+          "deleted": 2
+        },
+        {
+          "file": ".oac/coding-intelligence/source-to-patch-trace.json",
+          "added": 5,
+          "deleted": 5
+        },
+        {
+          "file": ".oac/coding-intelligence/stale-knowledge-report.json",
+          "added": 18,
+          "deleted": 18
+        },
+        {
+          "file": ".oac/coding-intelligence/symbol-graph.json",
+          "added": 697,
+          "deleted": 1278
+        },
+        {
+          "file": ".oac/coding-intelligence/test-authoring-plan.json",
+          "added": 2,
+          "deleted": 18
+        },
+        {
+          "file": ".oac/coding-intelligence/test-gap-finder.json",
+          "added": 2,
+          "deleted": 16
+        },
+        {
+          "file": ".oac/coding-intelligence/verified-knowledgebase.json",
+          "added": 106,
+          "deleted": 127
+        },
+        {
+          "file": ".oac/coding-intelligence/verified-knowledgebase.md",
+          "added": 5,
+          "deleted": 5
+        },
+        {
           "file": ".opencode/agent/core/openagent.md",
           "added": 1,
           "deleted": 1
         },
         {
           "file": ".opencode/context/core/quest-mode.md",
-          "added": 18,
-          "deleted": 4
+          "added": 13,
+          "deleted": 3
         },
         {
           "file": "README.md",
-          "added": 13,
+          "added": 8,
           "deleted": 2
         },
         {
-          "file": "packages/cli/src/commands/quest-v9.ts",
-          "added": 19,
+          "file": "packages/cli/.opencode/.expert-memory.json",
+          "added": 91,
           "deleted": 1
         },
         {
-          "file": "packages/cli/src/lib/quest-coding-execution.ts",
-          "added": 10,
-          "deleted": 2
+          "file": "packages/cli/src/commands/quest-v9.ts",
+          "added": 12,
+          "deleted": 1
         },
         {
           "file": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-          "added": 25,
+          "added": 20,
           "deleted": 1
         },
         {
           "file": "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "added": 26,
+          "added": 27,
           "deleted": 0
         },
         {
           "file": "packages/cli/src/lib/quest-run.test.ts",
-          "added": 22,
+          "added": 17,
           "deleted": 0
         },
         {
           "file": "packages/cli/src/lib/quest-run.ts",
-          "added": 38,
+          "added": 23,
           "deleted": 3
         },
         {
           "file": "packages/cli/src/lib/runtime-bridge.test.ts",
-          "added": 11,
+          "added": 6,
           "deleted": 0
         },
         {
@@ -102,7 +295,7 @@
         },
         {
           "file": "plugins/codex-cli/README.md",
-          "added": 11,
+          "added": 9,
           "deleted": 4
         },
         {
@@ -117,12 +310,12 @@
         },
         {
           "file": "plugins/codex-cli/openagent-system.md",
-          "added": 25,
-          "deleted": 4
+          "added": 19,
+          "deleted": 5
         },
         {
           "file": "plugins/codex-cli/openagent.toml",
-          "added": 7,
+          "added": 3,
           "deleted": 3
         },
         {
@@ -132,27 +325,27 @@
         },
         {
           "file": "plugins/kimi-code/openagent-system.md",
-          "added": 25,
-          "deleted": 4
+          "added": 19,
+          "deleted": 5
         },
         {
           "file": "plugins/kimi-code/openagent.yaml",
-          "added": 33,
+          "added": 18,
           "deleted": 5
         },
         {
           "file": "scripts/tests/test-codex-quest-v8.sh",
-          "added": 31,
+          "added": 25,
           "deleted": 4
         },
         {
           "file": "scripts/tests/test-kimi-quest-v8.sh",
-          "added": 36,
+          "added": 30,
           "deleted": 5
         },
         {
           "file": "scripts/tests/test-opencode-quest-v8.sh",
-          "added": 38,
+          "added": 31,
           "deleted": 4
         }
       ]

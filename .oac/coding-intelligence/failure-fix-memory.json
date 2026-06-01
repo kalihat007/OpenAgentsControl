@@ -1,0 +1,12 @@
+{
+  "version": "13",
+  "fingerprints": [],
+  "reusableFixes": [],
+  "replayCommands": [],
+  "policy": [
+    "Replay exact failed commands before broader validation.",
+    "If the same fingerprint fails twice, stop and report the attempted fix.",
+    "Do not widen the patch beyond the pre-edit contract to fix a replay failure.",
+    "Store durable workflow lessons only through user-approved memory promotion."
+  ]
+}

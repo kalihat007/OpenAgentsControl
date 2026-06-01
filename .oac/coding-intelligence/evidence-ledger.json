@@ -10,7 +10,7 @@
   "facts": [
     {
       "id": "objective",
-      "claim": "User objective is: Quest v12 verified knowledgebase smoke",
+      "claim": "User objective is: Quest v13 semantic repo brain smoke",
       "status": "verified",
       "confidence": 1,
       "evidence": [
@@ -34,7 +34,7 @@
     },
     {
       "id": "repo-wiki",
-      "claim": "Repo wiki has 1644 files and 9 packages.",
+      "claim": "Repo wiki has 1656 files and 9 packages.",
       "status": "verified",
       "confidence": 0.9,
       "evidence": [
@@ -47,10 +47,195 @@
     },
     {
       "id": "affected-files",
-      "claim": "24 affected file(s) are in scope.",
+      "claim": "62 affected file(s) are in scope.",
       "status": "verified",
       "confidence": 0.85,
       "evidence": [
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/ast-knowledgebase.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/auto-skill-builder.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/autofix-plan.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/automatic-code-review.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/behavior-oracle.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/coding-autopilot.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/coding-execution.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/coding-intelligence.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/coding-review.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/contract-facts.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/dependency-research-cache.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/dependency-research-gate.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/evidence-ledger.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/executable-acceptance.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/failure-fix-memory.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/guarded-autofix-runner.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/knowledge-confidence-score.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/knowledgebase-index.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/ownership-lock-plan.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/patch-capsules.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/patch-ledger.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/pr-auto-packager.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/pr-auto-packager.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/pr-readiness.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/pre-edit-contract.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/review-patch-loop.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/security-secrets-gate.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/semantic-repo-brain.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/semantic-repo-brain.md",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/smart-test-matrix.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/source-to-patch-trace.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/stale-knowledge-report.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/symbol-graph.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/test-authoring-plan.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/test-gap-finder.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/verified-knowledgebase.json",
+          "detail": "File exists locally."
+        },
+        {
+          "source": "filesystem",
+          "path": ".oac/coding-intelligence/verified-knowledgebase.md",
+          "detail": "File exists locally."
+        },
         {
           "source": "filesystem",
           "path": ".opencode/agent/core/openagent.md",
@@ -64,111 +249,6 @@
         {
           "source": "filesystem",
           "path": "README.md",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/commands/quest-v9.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/lib/quest-coding-execution.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/lib/quest-run.test.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/lib/quest-run.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/lib/runtime-bridge.test.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "packages/cli/src/lib/runtime-bridge.ts",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/README.md",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/codex-cli/README.md",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/codex-cli/codex-quest-default.toml.example",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/codex-cli/configure-codex-quest-default.sh",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/codex-cli/openagent-system.md",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/codex-cli/openagent.toml",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/kimi-code/README.md",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/kimi-code/openagent-system.md",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "plugins/kimi-code/openagent.yaml",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "scripts/tests/test-codex-quest-v8.sh",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "scripts/tests/test-kimi-quest-v8.sh",
-          "detail": "File exists locally."
-        },
-        {
-          "source": "filesystem",
-          "path": "scripts/tests/test-opencode-quest-v8.sh",
           "detail": "File exists locally."
         }
       ]
@@ -186,7 +266,7 @@
         },
         {
           "source": "smart-test-recommendation",
-          "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "detail": "Run the nearest focused tests for changed or impacted source files."
         },
         {
@@ -311,11 +391,6 @@
         {
           "source": "security-secrets-gate",
           "path": "README.md",
-          "detail": "Remote script execution pattern detected."
-        },
-        {
-          "source": "security-secrets-gate",
-          "path": "packages/cli/src/lib/quest-coding-execution.ts",
           "detail": "Remote script execution pattern detected."
         }
       ]

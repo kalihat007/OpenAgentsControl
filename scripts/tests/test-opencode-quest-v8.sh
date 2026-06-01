@@ -124,6 +124,14 @@ grep -q 'source-to-patch-trace.json' "$REPO_ROOT/.opencode/agent/core/openagent.
   || fail "OpenCode OpenAgent prompt does not mention source-to-patch trace"
 grep -q 'behavior-oracle.json' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
   || fail "OpenCode OpenAgent prompt does not mention behavior oracle"
+grep -q 'semantic-repo-brain.json' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
+  || fail "OpenCode OpenAgent prompt does not mention Semantic Repo Brain"
+grep -q 'knowledge-confidence-score.json' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
+  || fail "OpenCode OpenAgent prompt does not mention knowledge confidence score"
+grep -q 'failure-fix-memory.json' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
+  || fail "OpenCode OpenAgent prompt does not mention failure fix memory"
+grep -q 'auto-skill-builder.json' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
+  || fail "OpenCode OpenAgent prompt does not mention auto skill builder"
 grep -q 'context.loaded' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
   || fail "OpenCode OpenAgent prompt does not mention context.loaded"
 grep -q 'request.received' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
@@ -148,7 +156,9 @@ grep -q 'Quest v9 Coding Intelligence' "$REPO_ROOT/.opencode/context/core/quest-
   || fail "OpenCode Quest context is missing Quest v9 coding intelligence"
 grep -q 'Verified Knowledgebase' "$REPO_ROOT/.opencode/context/core/quest-mode.md" \
   || fail "OpenCode Quest context is missing Verified Knowledgebase"
-pass "OpenCode OpenAgent surfaces advertise Quest v8 adaptive protocol and Quest v9-v12 coding intelligence"
+grep -q 'Semantic Repo Brain' "$REPO_ROOT/.opencode/context/core/quest-mode.md" \
+  || fail "OpenCode Quest context is missing Semantic Repo Brain"
+pass "OpenCode OpenAgent surfaces advertise Quest v8 adaptive protocol and Quest v9-v13 coding intelligence"
 
 mkdir -p "$TEST_DIR/work/.oac"
 cp -R "$REPO_ROOT/.opencode" "$TEST_DIR/work/.opencode"
@@ -209,7 +219,7 @@ cat > .oac/config.json <<'JSON'
 JSON
 
 DIRECT_OUT="$TEST_DIR/direct-v8.jsonl"
-DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
+DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, and Semantic Repo Brain sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
 run_with_timeout 180 opencode run \
   --agent OpenAgent \
   --format json \
@@ -271,6 +281,10 @@ const checks = {
   hallucinationGate: /hallucination-gate\.json/i.test(text),
   sourceToPatchTrace: /source-to-patch-trace\.json/i.test(text),
   behaviorOracle: /behavior-oracle\.json/i.test(text),
+  semanticRepoBrain: /semantic-repo-brain\.json/i.test(text),
+  knowledgeConfidenceScore: /knowledge-confidence-score\.json/i.test(text),
+  failureFixMemory: /failure-fix-memory\.json/i.test(text),
+  autoSkillBuilder: /auto-skill-builder\.json/i.test(text),
   patchCapsule: /patch\.capsule/i.test(text),
   testsSelected: /tests\.selected/i.test(text),
   teamLead: /Team Lead:\s*active/i.test(text),
@@ -329,6 +343,12 @@ QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version"
 [ -f ".oac/runs/${QUEST_ID}/behavior-oracle.json" ] || fail "Missing behavior oracle"
 [ -f ".oac/runs/${QUEST_ID}/test-authoring-plan.json" ] || fail "Missing test authoring plan"
 [ -f ".oac/runs/${QUEST_ID}/verified-knowledgebase.md" ] || fail "Missing Verified Knowledgebase brief"
+[ -f ".oac/runs/${QUEST_ID}/semantic-repo-brain.json" ] || fail "Missing Semantic Repo Brain"
+[ -f ".oac/runs/${QUEST_ID}/ast-knowledgebase.json" ] || fail "Missing AST knowledgebase"
+[ -f ".oac/runs/${QUEST_ID}/knowledge-confidence-score.json" ] || fail "Missing knowledge confidence score"
+[ -f ".oac/runs/${QUEST_ID}/failure-fix-memory.json" ] || fail "Missing failure fix memory"
+[ -f ".oac/runs/${QUEST_ID}/auto-skill-builder.json" ] || fail "Missing auto skill builder"
+[ -f ".oac/runs/${QUEST_ID}/semantic-repo-brain.md" ] || fail "Missing Semantic Repo Brain brief"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
@@ -341,11 +361,14 @@ if (!intelligence.codingExecution || intelligence.codingExecution.version !== "1
 if (!intelligence.verifiedKnowledgebase || intelligence.verifiedKnowledgebase.version !== "12") throw new Error("missing Verified Knowledgebase v12");
 if (!intelligence.verifiedKnowledgebase.evidenceLedger?.facts?.length) throw new Error("missing v12 evidence ledger facts");
 if (!intelligence.verifiedKnowledgebase.hallucinationGate?.checks?.length) throw new Error("missing v12 hallucination gate checks");
+if (!intelligence.semanticRepoBrain || intelligence.semanticRepoBrain.version !== "13") throw new Error("missing Semantic Repo Brain v13");
+if (!intelligence.semanticRepoBrain.semanticGraph?.summary) throw new Error("missing v13 semantic graph summary");
+if (!intelligence.semanticRepoBrain.completionGate?.checks?.length) throw new Error("missing v13 semantic completion gate checks");
 if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with Quest v9-v12 sidecars"
+pass "Quest v8 artifact created with Quest v9-v13 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -358,7 +381,11 @@ grep -q 'security-secrets-gate.json' quest-v9.txt || fail "quest-v9 output missi
 grep -q 'verified-knowledgebase.json' quest-v9.txt || fail "quest-v9 output missing verified-knowledgebase artifact"
 grep -q 'evidence-ledger.json' quest-v9.txt || fail "quest-v9 output missing evidence ledger artifact"
 grep -q 'hallucination-gate.json' quest-v9.txt || fail "quest-v9 output missing hallucination gate artifact"
-pass "quest-v9 command refreshes coding intelligence and Verified Knowledgebase"
+grep -q 'semantic-repo-brain.json' quest-v9.txt || fail "quest-v9 output missing semantic repo brain artifact"
+grep -q 'knowledge-confidence-score.json' quest-v9.txt || fail "quest-v9 output missing knowledge confidence artifact"
+grep -q 'failure-fix-memory.json' quest-v9.txt || fail "quest-v9 output missing failure-fix memory artifact"
+grep -q 'auto-skill-builder.json' quest-v9.txt || fail "quest-v9 output missing auto skill builder artifact"
+pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, and Semantic Repo Brain"
 
 "${OAC_CLI[@]}" quest-status "$QUEST_ID" --json > status.json
 node - "$QUEST_ID" <<'NODE'

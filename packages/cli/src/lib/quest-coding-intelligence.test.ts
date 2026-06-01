@@ -87,10 +87,15 @@ describe('quest-coding-intelligence', () => {
       expect(intelligence.verifiedKnowledgebase.hallucinationGate.checks.length).toBeGreaterThan(0)
       expect(intelligence.verifiedKnowledgebase.contractFacts.facts.length).toBeGreaterThan(0)
       expect(intelligence.verifiedKnowledgebase.behaviorOracle.signals.length).toBeGreaterThan(0)
+      expect(intelligence.semanticRepoBrain.version).toBe('13')
+      expect(intelligence.semanticRepoBrain.semanticGraph.summary.nodes).toBeGreaterThan(0)
+      expect(intelligence.semanticRepoBrain.knowledgeConfidenceScore.facts.length).toBeGreaterThan(0)
+      expect(intelligence.semanticRepoBrain.completionGate.verdict).toMatch(/pass|review|blocked/)
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Quest v9 Coding Intelligence')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Autopilot')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Execution')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Verified Knowledgebase')
+      expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Semantic Repo Brain')
       for (const artifact of [
         'coding-autopilot.json',
         'symbol-graph.json',
@@ -126,9 +131,15 @@ describe('quest-coding-intelligence', () => {
         'behavior-oracle.json',
         'test-authoring-plan.json',
         'verified-knowledgebase.md',
+        'semantic-repo-brain.json',
+        'ast-knowledgebase.json',
+        'knowledge-confidence-score.json',
+        'failure-fix-memory.json',
+        'auto-skill-builder.json',
+        'semantic-repo-brain.md',
       ]) {
         const content = await readFile(join(tmpRoot, '.oac', 'coding-intelligence', artifact), 'utf-8')
-        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact.endsWith('.md') ? 'Summary' : 'version')
+        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact === 'semantic-repo-brain.md' ? 'Semantic Repo Brain' : artifact.endsWith('.md') ? 'Summary' : 'version')
       }
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
@@ -158,6 +169,7 @@ describe('quest-coding-intelligence', () => {
         codingAutopilot: { runtimeParityEnforcer: { requiredRuntimes: string[] } }
         codingExecution: { runtimeCompatibilityMatrix: { runtimes: Array<{ runtime: string }> } }
         verifiedKnowledgebase: { hallucinationGate: { verdict: string } }
+        semanticRepoBrain: { completionGate: { verdict: string } }
       }
       expect(parsed.version).toBe('9')
       expect(parsed.reason).toBe('quest.file_change')
@@ -165,6 +177,7 @@ describe('quest-coding-intelligence', () => {
       expect(parsed.codingAutopilot.runtimeParityEnforcer.requiredRuntimes).toContain('kimi')
       expect(parsed.codingExecution.runtimeCompatibilityMatrix.runtimes.some((runtime) => runtime.runtime === 'kimi')).toBe(true)
       expect(parsed.verifiedKnowledgebase.hallucinationGate.verdict).toMatch(/pass|review|blocked/)
+      expect(parsed.semanticRepoBrain.completionGate.verdict).toMatch(/pass|review|blocked/)
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'patch-capsules.json'), 'utf-8')).toContain('patch-')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-autopilot.json'), 'utf-8')).toContain('"version": "10"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-execution.json'), 'utf-8')).toContain('"version": "11"')
@@ -174,6 +187,12 @@ describe('quest-coding-intelligence', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'hallucination-gate.json'), 'utf-8')).toContain('"version": "12"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'verified-knowledgebase.md'), 'utf-8')).toContain('Verified Knowledgebase')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'pr-auto-packager.md'), 'utf-8')).toContain('Summary')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'semantic-repo-brain.json'), 'utf-8')).toContain('"version": "13"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'ast-knowledgebase.json'), 'utf-8')).toContain('"version": "13"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'knowledge-confidence-score.json'), 'utf-8')).toContain('"version": "13"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'failure-fix-memory.json'), 'utf-8')).toContain('"version": "13"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'auto-skill-builder.json'), 'utf-8')).toContain('"version": "13"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'semantic-repo-brain.md'), 'utf-8')).toContain('Semantic Repo Brain')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'symbol-graph.json'), 'utf-8')).toContain('openagent.yaml')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })

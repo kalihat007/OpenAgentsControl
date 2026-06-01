@@ -1,0 +1,190 @@
+{
+  "version": "13",
+  "overall": 0.72,
+  "summary": {
+    "verified": 8,
+    "inferred": 1,
+    "stale": 2,
+    "missing": 1,
+    "needs-research": 0
+  },
+  "facts": [
+    {
+      "id": "confidence-88b9fc95bb54",
+      "subject": "Security/secrets gate verdict is review.",
+      "status": "inferred",
+      "score": 0.6,
+      "evidence": [
+        "README.md"
+      ],
+      "action": "Refresh or verify before relying on this fact."
+    },
+    {
+      "id": "confidence-a2f2ed4cf470",
+      "subject": ".opencode/.codebase-index.json",
+      "status": "missing",
+      "score": 0.1,
+      "evidence": [
+        ".opencode/.codebase-index.json"
+      ],
+      "action": "Run oac quest-v9 or allow Quest coding intelligence to refresh the index."
+    },
+    {
+      "id": "confidence-e38643ea0181",
+      "subject": "install.sh",
+      "status": "stale",
+      "score": 0.45,
+      "evidence": [
+        "install.sh"
+      ],
+      "action": "Run bash -n and install/update smoke validation."
+    },
+    {
+      "id": "confidence-af7f4a8ce35c",
+      "subject": "update.sh",
+      "status": "stale",
+      "score": 0.45,
+      "evidence": [
+        "update.sh"
+      ],
+      "action": "Run bash -n and install/update smoke validation."
+    },
+    {
+      "id": "confidence-d97d7bef07b7",
+      "subject": "62 affected file(s) are in scope.",
+      "status": "verified",
+      "score": 0.85,
+      "evidence": [
+        ".oac/coding-intelligence/ast-knowledgebase.json",
+        ".oac/coding-intelligence/auto-skill-builder.json",
+        ".oac/coding-intelligence/autofix-plan.json",
+        ".oac/coding-intelligence/automatic-code-review.json",
+        ".oac/coding-intelligence/behavior-oracle.json",
+        ".oac/coding-intelligence/coding-autopilot.json",
+        ".oac/coding-intelligence/coding-execution.json",
+        ".oac/coding-intelligence/coding-intelligence.json",
+        ".oac/coding-intelligence/coding-review.md",
+        ".oac/coding-intelligence/contract-facts.json",
+        ".oac/coding-intelligence/dependency-research-cache.json",
+        ".oac/coding-intelligence/dependency-research-gate.json",
+        ".oac/coding-intelligence/evidence-ledger.json",
+        ".oac/coding-intelligence/executable-acceptance.json",
+        ".oac/coding-intelligence/failure-fix-memory.json",
+        ".oac/coding-intelligence/guarded-autofix-runner.json",
+        ".oac/coding-intelligence/knowledge-confidence-score.json",
+        ".oac/coding-intelligence/knowledgebase-index.json",
+        ".oac/coding-intelligence/ownership-lock-plan.json",
+        ".oac/coding-intelligence/patch-capsules.json",
+        ".oac/coding-intelligence/patch-ledger.json",
+        ".oac/coding-intelligence/pr-auto-packager.json",
+        ".oac/coding-intelligence/pr-auto-packager.md",
+        ".oac/coding-intelligence/pr-readiness.md",
+        ".oac/coding-intelligence/pre-edit-contract.json",
+        ".oac/coding-intelligence/review-patch-loop.json",
+        ".oac/coding-intelligence/security-secrets-gate.json",
+        ".oac/coding-intelligence/semantic-repo-brain.json",
+        ".oac/coding-intelligence/semantic-repo-brain.md",
+        ".oac/coding-intelligence/smart-test-matrix.json",
+        ".oac/coding-intelligence/source-to-patch-trace.json",
+        ".oac/coding-intelligence/stale-knowledge-report.json",
+        ".oac/coding-intelligence/symbol-graph.json",
+        ".oac/coding-intelligence/test-authoring-plan.json",
+        ".oac/coding-intelligence/test-gap-finder.json",
+        ".oac/coding-intelligence/verified-knowledgebase.json",
+        ".oac/coding-intelligence/verified-knowledgebase.md",
+        ".opencode/agent/core/openagent.md",
+        ".opencode/context/core/quest-mode.md",
+        "README.md"
+      ],
+      "action": "Use as coding evidence."
+    },
+    {
+      "id": "confidence-633609ad784f",
+      "subject": "8 validation command(s) were selected from local context.",
+      "status": "verified",
+      "score": 0.82,
+      "evidence": [
+        "git diff --check",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "npm run typecheck -w packages/cli",
+        "npm run build -w packages/cli",
+        "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh",
+        "npm run test:quest-v8:kimi",
+        "npm run test:quest-v8:opencode",
+        "npm run test:quest-v8:codex"
+      ],
+      "action": "Use as coding evidence."
+    },
+    {
+      "id": "confidence-6f4e2c28f9e9",
+      "subject": "9 package manifest(s) supply local script evidence.",
+      "status": "verified",
+      "score": 0.8,
+      "evidence": [
+        "package.json",
+        ".opencode/plugin/package.json",
+        ".opencode/tool/package.json",
+        "dev/dashboard-project/package.json",
+        "evals/framework/package.json",
+        "packages/cli/package.json",
+        "packages/compatibility-layer/package.json",
+        "packages/plugin-abilities/package.json",
+        "packages/swarm-runtime/package.json"
+      ],
+      "action": "Use as coding evidence."
+    },
+    {
+      "id": "confidence-b9d5732af6fc",
+      "subject": "Project root is /Users/vikashchaudhary/Desktop/code/OpenAgentsControl",
+      "status": "verified",
+      "score": 1,
+      "evidence": [
+        "Quest command executed from this project root."
+      ],
+      "action": "Use as coding evidence."
+    },
+    {
+      "id": "confidence-09d0156696fc",
+      "subject": "Repo wiki has 1656 files and 9 packages.",
+      "status": "verified",
+      "score": 0.9,
+      "evidence": [
+        ".oac/repo-wiki/files.json"
+      ],
+      "action": "Use as coding evidence."
+    },
+    {
+      "id": "confidence-a21b29d85bfd",
+      "subject": "Runtime compatibility matrix is covered for required runtimes.",
+      "status": "verified",
+      "score": 0.82,
+      "evidence": [
+        "npm run test:quest-v8:opencode",
+        "npm run test:quest-v8:kimi",
+        "npm run test:quest-v8:codex",
+        "bash -n install.sh update.sh"
+      ],
+      "action": "Use as coding evidence."
+    },
+    {
+      "id": "confidence-d8f60d9083c4",
+      "subject": "semantic-repo-graph",
+      "status": "verified",
+      "score": 0.86,
+      "evidence": [
+        "916 semantic node(s)"
+      ],
+      "action": "Use graph for file/symbol/test ownership context."
+    },
+    {
+      "id": "confidence-69943993ac64",
+      "subject": "User objective is: Quest v13 semantic repo brain smoke",
+      "status": "verified",
+      "score": 1,
+      "evidence": [
+        "Objective passed into Quest coding intelligence."
+      ],
+      "action": "Use as coding evidence."
+    }
+  ]
+}

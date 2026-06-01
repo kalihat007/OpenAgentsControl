@@ -491,7 +491,7 @@
     "npm run test:quest-v8:kimi",
     "npm run test:quest-v8:opencode",
     "git diff --check",
-    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
     "npm run typecheck -w packages/cli",
     "npm run build -w packages/cli"
   ]

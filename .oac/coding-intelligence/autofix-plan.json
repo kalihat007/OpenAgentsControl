@@ -10,7 +10,7 @@
     "Stop after two failed fix attempts and record failure memory."
   ],
   "commands": [
-    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
     "git diff --check",
     "npm run build -w packages/cli",
     "npm run test:quest-v8:codex",

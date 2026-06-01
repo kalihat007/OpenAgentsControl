@@ -1,28 +1,28 @@
 {
   "version": "12",
-  "generatedAt": "2026-05-29T09:00:07.976Z",
+  "generatedAt": "2026-06-01T06:20:10.161Z",
   "projectRoot": "/Users/vikashchaudhary/Desktop/code/OpenAgentsControl",
-  "objective": "Quest v12 verified knowledgebase smoke",
+  "objective": "Quest v13 semantic repo brain smoke",
   "knowledgebaseIndex": {
     "version": "12",
-    "generatedAt": "2026-05-29T09:00:07.976Z",
+    "generatedAt": "2026-06-01T06:20:10.161Z",
     "summary": {
-      "sources": 47,
-      "files": 24,
+      "sources": 85,
+      "files": 62,
       "tests": 8,
       "prompts": 6,
       "packageManifests": 9,
-      "confidence": 0.9
+      "confidence": 0.91
     },
     "sources": [
       {
         "id": "repo-wiki",
         "kind": "repo-wiki",
         "path": ".oac/repo-wiki/files.json",
-        "freshness": "fresh",
+        "freshness": "recent",
         "confidence": 0.95,
         "evidence": [
-          "1644 files, 9 packages."
+          "1656 files, 9 packages."
         ]
       },
       {
@@ -32,7 +32,7 @@
         "freshness": "fresh",
         "confidence": 0.9,
         "evidence": [
-          "335 modules and 336 dependency entries."
+          "337 modules and 338 dependency entries."
         ]
       },
       {
@@ -52,7 +52,414 @@
         "freshness": "fresh",
         "confidence": 1,
         "evidence": [
-          "Generated at 2026-05-29T09:00:07.976Z."
+          "Generated at 2026-06-01T06:20:10.161Z."
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-ast-knowledgebase-85194b93",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/ast-knowledgebase.json",
+        "freshness": "fresh",
+        "confidence": 0.75,
+        "evidence": [
+          "Selected by Quest changed/relevant file analysis.",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-auto-skill-builder-9119ec43",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/auto-skill-builder.json",
+        "freshness": "fresh",
+        "confidence": 0.75,
+        "evidence": [
+          "Selected by Quest changed/relevant file analysis.",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-autofix-plan-9ee019b6",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/autofix-plan.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-automatic-code-rev-5c453e1f",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/automatic-code-review.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-behavior-oracle-96dc8906",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/behavior-oracle.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-coding-autopilot-36ce1e4c",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/coding-autopilot.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-coding-execution-0bcf5e73",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/coding-execution.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-coding-intelligenc-74917fb3",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/coding-intelligence.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-coding-review-78bc086f",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/coding-review.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: docs",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-contract-facts-e28553a3",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/contract-facts.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-dependency-researc-225429b9",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/dependency-research-cache.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-dependency-researc-95740141",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/dependency-research-gate.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-evidence-ledger-d442c4dd",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/evidence-ledger.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-executable-accepta-8f8d1077",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/executable-acceptance.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-failure-fix-memory-8dfdff2a",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/failure-fix-memory.json",
+        "freshness": "fresh",
+        "confidence": 0.75,
+        "evidence": [
+          "Selected by Quest changed/relevant file analysis.",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-guarded-autofix-ru-c59061f0",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/guarded-autofix-runner.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-knowledge-confiden-4d7c78e1",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/knowledge-confidence-score.json",
+        "freshness": "fresh",
+        "confidence": 0.75,
+        "evidence": [
+          "Selected by Quest changed/relevant file analysis.",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-knowledgebase-inde-89d8cd72",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/knowledgebase-index.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-ownership-lock-pla-85a22d8c",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/ownership-lock-plan.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-patch-capsules-daa7a6e3",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/patch-capsules.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-patch-ledger-2d75924a",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/patch-ledger.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-pr-auto-packager-062e190e",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/pr-auto-packager.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-pr-auto-packager-a0d6827d",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/pr-auto-packager.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: docs",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-pr-readiness-bd986f06",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/pr-readiness.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: docs",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-pre-edit-contract-ae6971df",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/pre-edit-contract.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-review-patch-loop-4d9ff005",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/review-patch-loop.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-security-secrets-g-412ef16b",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/security-secrets-gate.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-semantic-repo-brai-4d7fe78e",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/semantic-repo-brain.json",
+        "freshness": "fresh",
+        "confidence": 0.75,
+        "evidence": [
+          "Selected by Quest changed/relevant file analysis.",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-semantic-repo-brai-ebd1da90",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/semantic-repo-brain.md",
+        "freshness": "fresh",
+        "confidence": 0.75,
+        "evidence": [
+          "Selected by Quest changed/relevant file analysis.",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-smart-test-matrix-d5d3ca27",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/smart-test-matrix.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-source-to-patch-tr-a44772cb",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/source-to-patch-trace.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-stale-knowledge-re-91353b70",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/stale-knowledge-report.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-symbol-graph-5db41a09",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/symbol-graph.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-test-authoring-pla-12a4d319",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/test-authoring-plan.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: test",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-test-gap-finder-b488ef4a",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/test-gap-finder.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: test",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-verified-knowledge-5a390a7c",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/verified-knowledgebase.json",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: config",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-oac-coding-intelligence-verified-knowledge-960b18bd",
+        "kind": "file",
+        "path": ".oac/coding-intelligence/verified-knowledgebase.md",
+        "freshness": "fresh",
+        "confidence": 0.95,
+        "evidence": [
+          "Repo wiki kind: docs",
+          "Impact risk: high"
         ]
       },
       {
@@ -89,20 +496,20 @@
         ]
       },
       {
-        "id": "file-packages-cli-src-commands-quest-v9-508fabf9",
+        "id": "file-packages-cli-opencode-expert-memory-d43d6356",
         "kind": "file",
-        "path": "packages/cli/src/commands/quest-v9.ts",
+        "path": "packages/cli/.opencode/.expert-memory.json",
         "freshness": "fresh",
         "confidence": 0.95,
         "evidence": [
-          "Repo wiki kind: source",
+          "Repo wiki kind: config",
           "Impact risk: high"
         ]
       },
       {
-        "id": "file-packages-cli-src-lib-quest-coding-executio-7976fd41",
+        "id": "file-packages-cli-src-commands-quest-v9-508fabf9",
         "kind": "file",
-        "path": "packages/cli/src/lib/quest-coding-execution.ts",
+        "path": "packages/cli/src/commands/quest-v9.ts",
         "freshness": "fresh",
         "confidence": 0.95,
         "evidence": [
@@ -155,9 +562,20 @@
         ]
       },
       {
-        "id": "file-packages-cli-src-lib-quest-verified-knowle-ab9c763a",
+        "id": "file-packages-cli-src-lib-quest-semantic-repo-b-35eb8602",
         "kind": "file",
-        "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+        "path": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+        "freshness": "fresh",
+        "confidence": 0.75,
+        "evidence": [
+          "Selected by Quest changed/relevant file analysis.",
+          "Impact risk: high"
+        ]
+      },
+      {
+        "id": "file-packages-cli-src-lib-quest-semantic-repo-b-974e6c98",
+        "kind": "file",
+        "path": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
         "freshness": "fresh",
         "confidence": 0.75,
         "evidence": [
@@ -323,7 +741,7 @@
         "id": "installer-install-c0fffa6d",
         "kind": "installer",
         "path": "install.sh",
-        "freshness": "recent",
+        "freshness": "stale",
         "confidence": 0.85,
         "evidence": [
           "Installer/update surface for runtime adapter propagation."
@@ -333,7 +751,7 @@
         "id": "installer-update-efe50602",
         "kind": "installer",
         "path": "update.sh",
-        "freshness": "recent",
+        "freshness": "stale",
         "confidence": 0.85,
         "evidence": [
           "Installer/update surface for runtime adapter propagation."
@@ -440,9 +858,9 @@
         ]
       },
       {
-        "id": "test-bun-test-packages-cli-src-lib-quest-coding-bc7cc3ec",
+        "id": "test-bun-test-packages-cli-src-lib-quest-coding-a6c14a2f",
         "kind": "test-command",
-        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "freshness": "fresh",
         "confidence": 0.85,
         "evidence": [
@@ -523,7 +941,7 @@
     "facts": [
       {
         "id": "objective",
-        "claim": "User objective is: Quest v12 verified knowledgebase smoke",
+        "claim": "User objective is: Quest v13 semantic repo brain smoke",
         "status": "verified",
         "confidence": 1,
         "evidence": [
@@ -547,7 +965,7 @@
       },
       {
         "id": "repo-wiki",
-        "claim": "Repo wiki has 1644 files and 9 packages.",
+        "claim": "Repo wiki has 1656 files and 9 packages.",
         "status": "verified",
         "confidence": 0.9,
         "evidence": [
@@ -560,10 +978,195 @@
       },
       {
         "id": "affected-files",
-        "claim": "24 affected file(s) are in scope.",
+        "claim": "62 affected file(s) are in scope.",
         "status": "verified",
         "confidence": 0.85,
         "evidence": [
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/ast-knowledgebase.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/auto-skill-builder.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/autofix-plan.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/automatic-code-review.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/behavior-oracle.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/coding-autopilot.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/coding-execution.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/coding-intelligence.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/coding-review.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/contract-facts.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/dependency-research-cache.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/dependency-research-gate.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/evidence-ledger.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/executable-acceptance.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/failure-fix-memory.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/guarded-autofix-runner.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/knowledge-confidence-score.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/knowledgebase-index.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/ownership-lock-plan.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/patch-capsules.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/patch-ledger.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/pr-auto-packager.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/pr-auto-packager.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/pr-readiness.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/pre-edit-contract.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/review-patch-loop.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/security-secrets-gate.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/semantic-repo-brain.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/semantic-repo-brain.md",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/smart-test-matrix.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/source-to-patch-trace.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/stale-knowledge-report.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/symbol-graph.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/test-authoring-plan.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/test-gap-finder.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/verified-knowledgebase.json",
+            "detail": "File exists locally."
+          },
+          {
+            "source": "filesystem",
+            "path": ".oac/coding-intelligence/verified-knowledgebase.md",
+            "detail": "File exists locally."
+          },
           {
             "source": "filesystem",
             "path": ".opencode/agent/core/openagent.md",
@@ -577,111 +1180,6 @@
           {
             "source": "filesystem",
             "path": "README.md",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/commands/quest-v9.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/lib/quest-coding-execution.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/lib/quest-run.test.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/lib/quest-run.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/lib/runtime-bridge.test.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "packages/cli/src/lib/runtime-bridge.ts",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/README.md",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/codex-cli/README.md",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/codex-cli/codex-quest-default.toml.example",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/codex-cli/configure-codex-quest-default.sh",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/codex-cli/openagent-system.md",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/codex-cli/openagent.toml",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/kimi-code/README.md",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/kimi-code/openagent-system.md",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "plugins/kimi-code/openagent.yaml",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "scripts/tests/test-codex-quest-v8.sh",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "scripts/tests/test-kimi-quest-v8.sh",
-            "detail": "File exists locally."
-          },
-          {
-            "source": "filesystem",
-            "path": "scripts/tests/test-opencode-quest-v8.sh",
             "detail": "File exists locally."
           }
         ]
@@ -699,7 +1197,7 @@
           },
           {
             "source": "smart-test-recommendation",
-            "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+            "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
             "detail": "Run the nearest focused tests for changed or impacted source files."
           },
           {
@@ -824,11 +1322,6 @@
           {
             "source": "security-secrets-gate",
             "path": "README.md",
-            "detail": "Remote script execution pattern detected."
-          },
-          {
-            "source": "security-secrets-gate",
-            "path": "packages/cli/src/lib/quest-coding-execution.ts",
             "detail": "Remote script execution pattern detected."
           }
         ]
@@ -1394,7 +1887,7 @@
       "npm run test:quest-v8:kimi",
       "npm run test:quest-v8:opencode",
       "git diff --check",
-      "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
       "npm run typecheck -w packages/cli",
       "npm run build -w packages/cli"
     ]
@@ -1406,20 +1899,58 @@
         "id": "trace-patch-001",
         "patchCapsuleId": "patch-001",
         "requirements": [
-          "Implement requested coding change for: Quest v12 verified knowledgebase smoke",
-          "Change 24 file(s) to satisfy: Quest v12 verified knowledgebase smoke"
+          "Implement requested coding change for: Quest v13 semantic repo brain smoke",
+          "Change 62 file(s) to satisfy: Quest v13 semantic repo brain smoke"
         ],
         "files": [
+          ".oac/coding-intelligence/ast-knowledgebase.json",
+          ".oac/coding-intelligence/auto-skill-builder.json",
+          ".oac/coding-intelligence/autofix-plan.json",
+          ".oac/coding-intelligence/automatic-code-review.json",
+          ".oac/coding-intelligence/behavior-oracle.json",
+          ".oac/coding-intelligence/coding-autopilot.json",
+          ".oac/coding-intelligence/coding-execution.json",
+          ".oac/coding-intelligence/coding-intelligence.json",
+          ".oac/coding-intelligence/coding-review.md",
+          ".oac/coding-intelligence/contract-facts.json",
+          ".oac/coding-intelligence/dependency-research-cache.json",
+          ".oac/coding-intelligence/dependency-research-gate.json",
+          ".oac/coding-intelligence/evidence-ledger.json",
+          ".oac/coding-intelligence/executable-acceptance.json",
+          ".oac/coding-intelligence/failure-fix-memory.json",
+          ".oac/coding-intelligence/guarded-autofix-runner.json",
+          ".oac/coding-intelligence/knowledge-confidence-score.json",
+          ".oac/coding-intelligence/knowledgebase-index.json",
+          ".oac/coding-intelligence/ownership-lock-plan.json",
+          ".oac/coding-intelligence/patch-capsules.json",
+          ".oac/coding-intelligence/patch-ledger.json",
+          ".oac/coding-intelligence/pr-auto-packager.json",
+          ".oac/coding-intelligence/pr-auto-packager.md",
+          ".oac/coding-intelligence/pr-readiness.md",
+          ".oac/coding-intelligence/pre-edit-contract.json",
+          ".oac/coding-intelligence/review-patch-loop.json",
+          ".oac/coding-intelligence/security-secrets-gate.json",
+          ".oac/coding-intelligence/semantic-repo-brain.json",
+          ".oac/coding-intelligence/semantic-repo-brain.md",
+          ".oac/coding-intelligence/smart-test-matrix.json",
+          ".oac/coding-intelligence/source-to-patch-trace.json",
+          ".oac/coding-intelligence/stale-knowledge-report.json",
+          ".oac/coding-intelligence/symbol-graph.json",
+          ".oac/coding-intelligence/test-authoring-plan.json",
+          ".oac/coding-intelligence/test-gap-finder.json",
+          ".oac/coding-intelligence/verified-knowledgebase.json",
+          ".oac/coding-intelligence/verified-knowledgebase.md",
           ".opencode/agent/core/openagent.md",
           ".opencode/context/core/quest-mode.md",
           "README.md",
+          "packages/cli/.opencode/.expert-memory.json",
           "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/lib/quest-coding-execution.ts",
           "packages/cli/src/lib/quest-coding-intelligence.test.ts",
           "packages/cli/src/lib/quest-coding-intelligence.ts",
           "packages/cli/src/lib/quest-run.test.ts",
           "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+          "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "packages/cli/src/lib/quest-semantic-repo-brain.ts",
           "packages/cli/src/lib/runtime-bridge.test.ts",
           "packages/cli/src/lib/runtime-bridge.ts",
           "plugins/README.md",
@@ -1443,7 +1974,7 @@
         ],
         "validationCommands": [
           "git diff --check",
-          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "npm run typecheck -w packages/cli",
           "npm run build -w packages/cli",
           "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
@@ -1457,20 +1988,20 @@
   },
   "staleKnowledgeReport": {
     "version": "12",
-    "checkedAt": "2026-05-29T09:00:07.982Z",
+    "checkedAt": "2026-06-01T06:20:10.166Z",
     "items": [
       {
         "id": "stale-oac-repo-wiki-files-52d72c38",
         "path": ".oac/repo-wiki/files.json",
-        "freshness": "fresh",
-        "ageHours": 3.4,
+        "freshness": "recent",
+        "ageHours": 59,
         "recommendation": "Use as current local evidence."
       },
       {
         "id": "stale-oac-repo-wiki-index-5ac29e50",
         "path": ".oac/repo-wiki/index.md",
-        "freshness": "fresh",
-        "ageHours": 3.4,
+        "freshness": "recent",
+        "ageHours": 59,
         "recommendation": "Use as current local evidence."
       },
       {
@@ -1482,16 +2013,16 @@
       {
         "id": "stale-install-c0fffa6d",
         "path": "install.sh",
-        "freshness": "recent",
-        "ageHours": 124.3,
-        "recommendation": "Use as current local evidence."
+        "freshness": "stale",
+        "ageHours": 193.6,
+        "recommendation": "Run bash -n and install/update smoke validation."
       },
       {
         "id": "stale-update-efe50602",
         "path": "update.sh",
-        "freshness": "recent",
-        "ageHours": 124.3,
-        "recommendation": "Use as current local evidence."
+        "freshness": "stale",
+        "ageHours": 193.6,
+        "recommendation": "Run bash -n and install/update smoke validation."
       },
       {
         "id": "stale-opencode-agent-core-openagent-5822a9f6",
@@ -1511,46 +2042,46 @@
         "id": "stale-plugins-kimi-code-openagent-3013a9c2",
         "path": "plugins/kimi-code/openagent.yaml",
         "freshness": "fresh",
-        "ageHours": 0.1,
+        "ageHours": 0.3,
         "recommendation": "Use as current local evidence."
       },
       {
         "id": "stale-plugins-kimi-code-openagent-system-b29c6b4b",
         "path": "plugins/kimi-code/openagent-system.md",
         "freshness": "fresh",
-        "ageHours": 0.1,
+        "ageHours": 0.3,
         "recommendation": "Use as current local evidence."
       },
       {
         "id": "stale-plugins-codex-cli-openagent-19361823",
         "path": "plugins/codex-cli/openagent.toml",
         "freshness": "fresh",
-        "ageHours": 0.1,
+        "ageHours": 0.3,
         "recommendation": "Use as current local evidence."
       },
       {
         "id": "stale-plugins-codex-cli-openagent-system-f7a78007",
         "path": "plugins/codex-cli/openagent-system.md",
         "freshness": "fresh",
-        "ageHours": 0.1,
+        "ageHours": 0.3,
         "recommendation": "Use as current local evidence."
       },
       {
         "id": "stale-users-vikashchaudhary-kimi-agents-openagen-9a2499b2",
         "path": "/Users/vikashchaudhary/.kimi/agents/openagents-control/openagent.yaml",
         "freshness": "fresh",
-        "ageHours": 3.6,
+        "ageHours": 0.1,
         "recommendation": "Use as current local evidence."
       },
       {
         "id": "stale-users-vikashchaudhary-kimi-agents-openagen-f9a59bac",
         "path": "/Users/vikashchaudhary/.kimi/agents/openagents-control/openagent-system.md",
         "freshness": "fresh",
-        "ageHours": 3.6,
+        "ageHours": 0.1,
         "recommendation": "Use as current local evidence."
       }
     ],
-    "staleItems": 1,
+    "staleItems": 3,
     "refreshCommands": [
       "oac repo-wiki",
       "oac quest-v9",
@@ -1571,26 +2102,26 @@
       "node:crypto official documentation current API"
     ],
     "localEvidence": [
-      ".opencode/agent/core/openagent.md",
-      ".opencode/context/core/quest-mode.md",
-      "README.md",
-      "packages/cli/src/commands/quest-v9.ts",
-      "packages/cli/src/lib/quest-coding-execution.ts",
-      "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-      "packages/cli/src/lib/quest-coding-intelligence.ts",
-      "packages/cli/src/lib/quest-run.test.ts",
-      "packages/cli/src/lib/quest-run.ts",
-      "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "packages/cli/src/lib/runtime-bridge.test.ts",
-      "packages/cli/src/lib/runtime-bridge.ts",
-      "plugins/README.md",
-      "plugins/codex-cli/README.md",
-      "plugins/codex-cli/configure-codex-quest-default.sh",
-      "plugins/codex-cli/openagent-system.md",
-      "plugins/codex-cli/openagent.toml",
-      "plugins/kimi-code/README.md",
-      "plugins/kimi-code/openagent-system.md",
-      "plugins/kimi-code/openagent.yaml"
+      ".oac/coding-intelligence/ast-knowledgebase.json",
+      ".oac/coding-intelligence/auto-skill-builder.json",
+      ".oac/coding-intelligence/autofix-plan.json",
+      ".oac/coding-intelligence/automatic-code-review.json",
+      ".oac/coding-intelligence/behavior-oracle.json",
+      ".oac/coding-intelligence/coding-autopilot.json",
+      ".oac/coding-intelligence/coding-execution.json",
+      ".oac/coding-intelligence/coding-intelligence.json",
+      ".oac/coding-intelligence/coding-review.md",
+      ".oac/coding-intelligence/contract-facts.json",
+      ".oac/coding-intelligence/dependency-research-cache.json",
+      ".oac/coding-intelligence/dependency-research-gate.json",
+      ".oac/coding-intelligence/evidence-ledger.json",
+      ".oac/coding-intelligence/executable-acceptance.json",
+      ".oac/coding-intelligence/failure-fix-memory.json",
+      ".oac/coding-intelligence/guarded-autofix-runner.json",
+      ".oac/coding-intelligence/knowledge-confidence-score.json",
+      ".oac/coding-intelligence/knowledgebase-index.json",
+      ".oac/coding-intelligence/ownership-lock-plan.json",
+      ".oac/coding-intelligence/patch-capsules.json"
     ],
     "entries": [
       {
@@ -1598,26 +2129,26 @@
         "query": "bun:test official documentation current API",
         "status": "requires-official-research",
         "evidence": [
-          ".opencode/agent/core/openagent.md",
-          ".opencode/context/core/quest-mode.md",
-          "README.md",
-          "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/lib/quest-coding-execution.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "packages/cli/src/lib/quest-run.test.ts",
-          "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "packages/cli/src/lib/runtime-bridge.test.ts",
-          "packages/cli/src/lib/runtime-bridge.ts",
-          "plugins/README.md",
-          "plugins/codex-cli/README.md",
-          "plugins/codex-cli/configure-codex-quest-default.sh",
-          "plugins/codex-cli/openagent-system.md",
-          "plugins/codex-cli/openagent.toml",
-          "plugins/kimi-code/README.md",
-          "plugins/kimi-code/openagent-system.md",
-          "plugins/kimi-code/openagent.yaml"
+          ".oac/coding-intelligence/ast-knowledgebase.json",
+          ".oac/coding-intelligence/auto-skill-builder.json",
+          ".oac/coding-intelligence/autofix-plan.json",
+          ".oac/coding-intelligence/automatic-code-review.json",
+          ".oac/coding-intelligence/behavior-oracle.json",
+          ".oac/coding-intelligence/coding-autopilot.json",
+          ".oac/coding-intelligence/coding-execution.json",
+          ".oac/coding-intelligence/coding-intelligence.json",
+          ".oac/coding-intelligence/coding-review.md",
+          ".oac/coding-intelligence/contract-facts.json",
+          ".oac/coding-intelligence/dependency-research-cache.json",
+          ".oac/coding-intelligence/dependency-research-gate.json",
+          ".oac/coding-intelligence/evidence-ledger.json",
+          ".oac/coding-intelligence/executable-acceptance.json",
+          ".oac/coding-intelligence/failure-fix-memory.json",
+          ".oac/coding-intelligence/guarded-autofix-runner.json",
+          ".oac/coding-intelligence/knowledge-confidence-score.json",
+          ".oac/coding-intelligence/knowledgebase-index.json",
+          ".oac/coding-intelligence/ownership-lock-plan.json",
+          ".oac/coding-intelligence/patch-capsules.json"
         ],
         "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
       },
@@ -1626,26 +2157,26 @@
         "query": "commander official documentation current API",
         "status": "requires-official-research",
         "evidence": [
-          ".opencode/agent/core/openagent.md",
-          ".opencode/context/core/quest-mode.md",
-          "README.md",
-          "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/lib/quest-coding-execution.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "packages/cli/src/lib/quest-run.test.ts",
-          "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "packages/cli/src/lib/runtime-bridge.test.ts",
-          "packages/cli/src/lib/runtime-bridge.ts",
-          "plugins/README.md",
-          "plugins/codex-cli/README.md",
-          "plugins/codex-cli/configure-codex-quest-default.sh",
-          "plugins/codex-cli/openagent-system.md",
-          "plugins/codex-cli/openagent.toml",
-          "plugins/kimi-code/README.md",
-          "plugins/kimi-code/openagent-system.md",
-          "plugins/kimi-code/openagent.yaml"
+          ".oac/coding-intelligence/ast-knowledgebase.json",
+          ".oac/coding-intelligence/auto-skill-builder.json",
+          ".oac/coding-intelligence/autofix-plan.json",
+          ".oac/coding-intelligence/automatic-code-review.json",
+          ".oac/coding-intelligence/behavior-oracle.json",
+          ".oac/coding-intelligence/coding-autopilot.json",
+          ".oac/coding-intelligence/coding-execution.json",
+          ".oac/coding-intelligence/coding-intelligence.json",
+          ".oac/coding-intelligence/coding-review.md",
+          ".oac/coding-intelligence/contract-facts.json",
+          ".oac/coding-intelligence/dependency-research-cache.json",
+          ".oac/coding-intelligence/dependency-research-gate.json",
+          ".oac/coding-intelligence/evidence-ledger.json",
+          ".oac/coding-intelligence/executable-acceptance.json",
+          ".oac/coding-intelligence/failure-fix-memory.json",
+          ".oac/coding-intelligence/guarded-autofix-runner.json",
+          ".oac/coding-intelligence/knowledge-confidence-score.json",
+          ".oac/coding-intelligence/knowledgebase-index.json",
+          ".oac/coding-intelligence/ownership-lock-plan.json",
+          ".oac/coding-intelligence/patch-capsules.json"
         ],
         "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
       },
@@ -1654,26 +2185,26 @@
         "query": "fs official documentation current API",
         "status": "requires-official-research",
         "evidence": [
-          ".opencode/agent/core/openagent.md",
-          ".opencode/context/core/quest-mode.md",
-          "README.md",
-          "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/lib/quest-coding-execution.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "packages/cli/src/lib/quest-run.test.ts",
-          "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "packages/cli/src/lib/runtime-bridge.test.ts",
-          "packages/cli/src/lib/runtime-bridge.ts",
-          "plugins/README.md",
-          "plugins/codex-cli/README.md",
-          "plugins/codex-cli/configure-codex-quest-default.sh",
-          "plugins/codex-cli/openagent-system.md",
-          "plugins/codex-cli/openagent.toml",
-          "plugins/kimi-code/README.md",
-          "plugins/kimi-code/openagent-system.md",
-          "plugins/kimi-code/openagent.yaml"
+          ".oac/coding-intelligence/ast-knowledgebase.json",
+          ".oac/coding-intelligence/auto-skill-builder.json",
+          ".oac/coding-intelligence/autofix-plan.json",
+          ".oac/coding-intelligence/automatic-code-review.json",
+          ".oac/coding-intelligence/behavior-oracle.json",
+          ".oac/coding-intelligence/coding-autopilot.json",
+          ".oac/coding-intelligence/coding-execution.json",
+          ".oac/coding-intelligence/coding-intelligence.json",
+          ".oac/coding-intelligence/coding-review.md",
+          ".oac/coding-intelligence/contract-facts.json",
+          ".oac/coding-intelligence/dependency-research-cache.json",
+          ".oac/coding-intelligence/dependency-research-gate.json",
+          ".oac/coding-intelligence/evidence-ledger.json",
+          ".oac/coding-intelligence/executable-acceptance.json",
+          ".oac/coding-intelligence/failure-fix-memory.json",
+          ".oac/coding-intelligence/guarded-autofix-runner.json",
+          ".oac/coding-intelligence/knowledge-confidence-score.json",
+          ".oac/coding-intelligence/knowledgebase-index.json",
+          ".oac/coding-intelligence/ownership-lock-plan.json",
+          ".oac/coding-intelligence/patch-capsules.json"
         ],
         "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
       },
@@ -1682,26 +2213,26 @@
         "query": "node:child_process official documentation current API",
         "status": "requires-official-research",
         "evidence": [
-          ".opencode/agent/core/openagent.md",
-          ".opencode/context/core/quest-mode.md",
-          "README.md",
-          "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/lib/quest-coding-execution.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "packages/cli/src/lib/quest-run.test.ts",
-          "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "packages/cli/src/lib/runtime-bridge.test.ts",
-          "packages/cli/src/lib/runtime-bridge.ts",
-          "plugins/README.md",
-          "plugins/codex-cli/README.md",
-          "plugins/codex-cli/configure-codex-quest-default.sh",
-          "plugins/codex-cli/openagent-system.md",
-          "plugins/codex-cli/openagent.toml",
-          "plugins/kimi-code/README.md",
-          "plugins/kimi-code/openagent-system.md",
-          "plugins/kimi-code/openagent.yaml"
+          ".oac/coding-intelligence/ast-knowledgebase.json",
+          ".oac/coding-intelligence/auto-skill-builder.json",
+          ".oac/coding-intelligence/autofix-plan.json",
+          ".oac/coding-intelligence/automatic-code-review.json",
+          ".oac/coding-intelligence/behavior-oracle.json",
+          ".oac/coding-intelligence/coding-autopilot.json",
+          ".oac/coding-intelligence/coding-execution.json",
+          ".oac/coding-intelligence/coding-intelligence.json",
+          ".oac/coding-intelligence/coding-review.md",
+          ".oac/coding-intelligence/contract-facts.json",
+          ".oac/coding-intelligence/dependency-research-cache.json",
+          ".oac/coding-intelligence/dependency-research-gate.json",
+          ".oac/coding-intelligence/evidence-ledger.json",
+          ".oac/coding-intelligence/executable-acceptance.json",
+          ".oac/coding-intelligence/failure-fix-memory.json",
+          ".oac/coding-intelligence/guarded-autofix-runner.json",
+          ".oac/coding-intelligence/knowledge-confidence-score.json",
+          ".oac/coding-intelligence/knowledgebase-index.json",
+          ".oac/coding-intelligence/ownership-lock-plan.json",
+          ".oac/coding-intelligence/patch-capsules.json"
         ],
         "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
       },
@@ -1710,26 +2241,26 @@
         "query": "node:crypto official documentation current API",
         "status": "requires-official-research",
         "evidence": [
-          ".opencode/agent/core/openagent.md",
-          ".opencode/context/core/quest-mode.md",
-          "README.md",
-          "packages/cli/src/commands/quest-v9.ts",
-          "packages/cli/src/lib/quest-coding-execution.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-          "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "packages/cli/src/lib/quest-run.test.ts",
-          "packages/cli/src/lib/quest-run.ts",
-          "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "packages/cli/src/lib/runtime-bridge.test.ts",
-          "packages/cli/src/lib/runtime-bridge.ts",
-          "plugins/README.md",
-          "plugins/codex-cli/README.md",
-          "plugins/codex-cli/configure-codex-quest-default.sh",
-          "plugins/codex-cli/openagent-system.md",
-          "plugins/codex-cli/openagent.toml",
-          "plugins/kimi-code/README.md",
-          "plugins/kimi-code/openagent-system.md",
-          "plugins/kimi-code/openagent.yaml"
+          ".oac/coding-intelligence/ast-knowledgebase.json",
+          ".oac/coding-intelligence/auto-skill-builder.json",
+          ".oac/coding-intelligence/autofix-plan.json",
+          ".oac/coding-intelligence/automatic-code-review.json",
+          ".oac/coding-intelligence/behavior-oracle.json",
+          ".oac/coding-intelligence/coding-autopilot.json",
+          ".oac/coding-intelligence/coding-execution.json",
+          ".oac/coding-intelligence/coding-intelligence.json",
+          ".oac/coding-intelligence/coding-review.md",
+          ".oac/coding-intelligence/contract-facts.json",
+          ".oac/coding-intelligence/dependency-research-cache.json",
+          ".oac/coding-intelligence/dependency-research-gate.json",
+          ".oac/coding-intelligence/evidence-ledger.json",
+          ".oac/coding-intelligence/executable-acceptance.json",
+          ".oac/coding-intelligence/failure-fix-memory.json",
+          ".oac/coding-intelligence/guarded-autofix-runner.json",
+          ".oac/coding-intelligence/knowledge-confidence-score.json",
+          ".oac/coding-intelligence/knowledgebase-index.json",
+          ".oac/coding-intelligence/ownership-lock-plan.json",
+          ".oac/coding-intelligence/patch-capsules.json"
         ],
         "cachePolicy": "Use current official documentation before implementation and record sources in research.performed."
       }
@@ -1740,132 +2271,322 @@
     "signals": [
       {
         "id": "behavior-patch-001",
-        "behavior": "Change 24 file(s) to satisfy: Quest v12 verified knowledgebase smoke",
+        "behavior": "Change 62 file(s) to satisfy: Quest v13 semantic repo brain smoke",
         "evidence": [
           {
             "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/ast-knowledgebase.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/auto-skill-builder.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/autofix-plan.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/automatic-code-review.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/behavior-oracle.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/coding-autopilot.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/coding-execution.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/coding-intelligence.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/coding-review.md",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/contract-facts.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/dependency-research-cache.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/dependency-research-gate.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/evidence-ledger.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/executable-acceptance.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/failure-fix-memory.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/guarded-autofix-runner.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/knowledge-confidence-score.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/knowledgebase-index.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/ownership-lock-plan.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/patch-capsules.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/patch-ledger.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/pr-auto-packager.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/pr-auto-packager.md",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/pr-readiness.md",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/pre-edit-contract.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/review-patch-loop.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/security-secrets-gate.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/semantic-repo-brain.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/semantic-repo-brain.md",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/smart-test-matrix.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/source-to-patch-trace.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/stale-knowledge-report.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/symbol-graph.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/test-authoring-plan.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/test-gap-finder.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/verified-knowledgebase.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": ".oac/coding-intelligence/verified-knowledgebase.md",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
             "path": ".opencode/agent/core/openagent.md",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": ".opencode/context/core/quest-mode.md",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "README.md",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/.opencode/.expert-memory.json",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "packages/cli/src/commands/quest-v9.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
-          },
-          {
-            "source": "patch-capsule",
-            "path": "packages/cli/src/lib/quest-coding-execution.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "packages/cli/src/lib/quest-run.test.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "packages/cli/src/lib/quest-run.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
-            "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "path": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+          },
+          {
+            "source": "patch-capsule",
+            "path": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "packages/cli/src/lib/runtime-bridge.test.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "packages/cli/src/lib/runtime-bridge.ts",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/README.md",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/codex-cli/README.md",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/codex-cli/codex-quest-default.toml.example",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/codex-cli/configure-codex-quest-default.sh",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/codex-cli/openagent-system.md",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/codex-cli/openagent.toml",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/kimi-code/README.md",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/kimi-code/openagent-system.md",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "plugins/kimi-code/openagent.yaml",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "scripts/tests/test-codex-quest-v8.sh",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "scripts/tests/test-kimi-quest-v8.sh",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           },
           {
             "source": "patch-capsule",
             "path": "scripts/tests/test-opencode-quest-v8.sh",
-            "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+            "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
           }
         ],
         "validation": [
           "git diff --check",
-          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "npm run typecheck -w packages/cli",
           "npm run build -w packages/cli",
           "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
@@ -1882,7 +2603,7 @@
           }
         ],
         "validation": [
-          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "git diff --check",
           "npm run build -w packages/cli",
           "npm run test:quest-v8:codex",
@@ -1902,7 +2623,7 @@
           }
         ],
         "validation": [
-          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "git diff --check",
           "npm run build -w packages/cli",
           "npm run test:quest-v8:codex",
@@ -1922,7 +2643,7 @@
           }
         ],
         "validation": [
-          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "git diff --check",
           "npm run build -w packages/cli",
           "npm run test:quest-v8:codex",
@@ -1942,7 +2663,7 @@
           }
         ],
         "validation": [
-          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+          "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
           "git diff --check",
           "npm run build -w packages/cli",
           "npm run test:quest-v8:codex",
@@ -1967,29 +2688,13 @@
         "id": "author-test-gap-1b85gs",
         "sourceFile": "packages/cli/src/commands/quest-v9.ts",
         "suggestedTestFile": "packages/cli/src/commands/quest-v9.test.ts",
-        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
-        "reason": "Changed source file has no nearby test file in the indexed codebase.",
-        "priority": "medium"
-      },
-      {
-        "id": "author-test-gap-o2h7jb",
-        "sourceFile": "packages/cli/src/lib/quest-coding-execution.ts",
-        "suggestedTestFile": "packages/cli/src/lib/quest-coding-execution.test.ts",
-        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
-        "reason": "Changed source file has no nearby test file in the indexed codebase.",
-        "priority": "medium"
-      },
-      {
-        "id": "author-test-gap-b2ln66",
-        "sourceFile": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-        "suggestedTestFile": "packages/cli/src/lib/quest-verified-knowledgebase.test.ts",
-        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "reason": "Changed source file has no nearby test file in the indexed codebase.",
         "priority": "medium"
       }
     ],
     "commands": [
-      "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
       "git diff --check",
       "npm run build -w packages/cli",
       "npm run test:quest-v8:codex",

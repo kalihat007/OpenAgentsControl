@@ -5,7 +5,7 @@
       "id": "tier-1-focused",
       "title": "Focused checks",
       "commands": [
-        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "git diff --check"
       ],
       "reason": "Fast checks closest to the changed files.",
@@ -40,7 +40,7 @@
     "If high-impact or security-sensitive code changed, run all selected package and runtime checks."
   ],
   "minimumCredibleCommands": [
-    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
     "git diff --check",
     "npm run build -w packages/cli",
     "npm run test:quest-v8:codex",

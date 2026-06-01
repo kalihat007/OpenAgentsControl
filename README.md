@@ -834,7 +834,7 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
-Quest v8 (evolved from v5-v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable. Quest v9 adds coding intelligence, Quest v10 adds Coding Autopilot, Quest v11 adds Coding Execution, and Quest v12 adds the Verified Knowledgebase for intent, impact analysis, patch capsules, smart tests, runtime parity, review signals, symbol context, pre-edit boundaries, patch ledger, failure replay, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gates, PR packaging, evidence ledgers, hallucination gates, source-to-patch traceability, stale knowledge checks, behavior oracles, and test-authoring plans:
+Quest v8 (evolved from v5-v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable. Quest v9 adds coding intelligence, Quest v10 adds Coding Autopilot, Quest v11 adds Coding Execution, Quest v12 adds the Verified Knowledgebase, and Quest v13 adds the Semantic Repo Brain for intent, impact analysis, patch capsules, smart tests, runtime parity, review signals, symbol context, pre-edit boundaries, patch ledger, failure replay, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gates, PR packaging, evidence ledgers, hallucination gates, source-to-patch traceability, stale knowledge checks, behavior oracles, test-authoring plans, AST-level repo facts, confidence labels, failure-fix memory, and approval-gated skill candidates:
 
 ```text
 NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING
@@ -898,10 +898,16 @@ dependency-research-cache.json # v12: local/official research decisions
 behavior-oracle.json       # v12: expected behavior and validation signals
 test-authoring-plan.json   # v12: suggested focused tests for gaps
 verified-knowledgebase.md  # v12: readable evidence brief
+semantic-repo-brain.json   # v13: semantic repo brain rollup
+ast-knowledgebase.json     # v13: AST-style repo graph and ownership
+knowledge-confidence-score.json # v13: verified/inferred/stale/missing/needs-research facts
+failure-fix-memory.json    # v13: failed-command fingerprints and known fixes
+auto-skill-builder.json    # v13: user-approved skill candidate queue
+semantic-repo-brain.md     # v13: readable semantic repo brief
 .oac/repo-wiki/            # project-level living repo wiki
 ```
 
-Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state, `oac quest-resume <quest-id>` to print OpenCode, Kimi, Claude, and Codex resume commands, and `oac quest-v9 <quest-id>` to refresh coding intelligence plus the v12 Verified Knowledgebase. Resume does not change models; OpenAgent continues with the selected runtime model.
+Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state, `oac quest-resume <quest-id>` to print OpenCode, Kimi, Claude, and Codex resume commands, and `oac quest-v9 <quest-id>` to refresh coding intelligence plus the v12 Verified Knowledgebase and v13 Semantic Repo Brain. Resume does not change models; OpenAgent continues with the selected runtime model.
 
 You can verify the Kimi Quest cycle locally:
 

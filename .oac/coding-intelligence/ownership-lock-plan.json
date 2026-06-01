@@ -2,6 +2,49 @@
   "version": "11",
   "owners": [
     {
+      "owner": "generated-artifacts",
+      "files": [
+        ".oac/coding-intelligence/ast-knowledgebase.json",
+        ".oac/coding-intelligence/auto-skill-builder.json",
+        ".oac/coding-intelligence/autofix-plan.json",
+        ".oac/coding-intelligence/automatic-code-review.json",
+        ".oac/coding-intelligence/behavior-oracle.json",
+        ".oac/coding-intelligence/coding-autopilot.json",
+        ".oac/coding-intelligence/coding-execution.json",
+        ".oac/coding-intelligence/coding-intelligence.json",
+        ".oac/coding-intelligence/coding-review.md",
+        ".oac/coding-intelligence/contract-facts.json",
+        ".oac/coding-intelligence/dependency-research-cache.json",
+        ".oac/coding-intelligence/dependency-research-gate.json",
+        ".oac/coding-intelligence/evidence-ledger.json",
+        ".oac/coding-intelligence/executable-acceptance.json",
+        ".oac/coding-intelligence/failure-fix-memory.json",
+        ".oac/coding-intelligence/guarded-autofix-runner.json",
+        ".oac/coding-intelligence/knowledge-confidence-score.json",
+        ".oac/coding-intelligence/knowledgebase-index.json",
+        ".oac/coding-intelligence/ownership-lock-plan.json",
+        ".oac/coding-intelligence/patch-capsules.json",
+        ".oac/coding-intelligence/patch-ledger.json",
+        ".oac/coding-intelligence/pr-auto-packager.json",
+        ".oac/coding-intelligence/pr-auto-packager.md",
+        ".oac/coding-intelligence/pr-readiness.md",
+        ".oac/coding-intelligence/pre-edit-contract.json",
+        ".oac/coding-intelligence/review-patch-loop.json",
+        ".oac/coding-intelligence/security-secrets-gate.json",
+        ".oac/coding-intelligence/semantic-repo-brain.json",
+        ".oac/coding-intelligence/semantic-repo-brain.md",
+        ".oac/coding-intelligence/smart-test-matrix.json",
+        ".oac/coding-intelligence/source-to-patch-trace.json",
+        ".oac/coding-intelligence/stale-knowledge-report.json",
+        ".oac/coding-intelligence/symbol-graph.json",
+        ".oac/coding-intelligence/test-authoring-plan.json",
+        ".oac/coding-intelligence/test-gap-finder.json",
+        ".oac/coding-intelligence/verified-knowledgebase.json",
+        ".oac/coding-intelligence/verified-knowledgebase.md"
+      ],
+      "reason": "Owns 37 file(s) in generated-artifacts."
+    },
+    {
       "owner": "opencode-runtime",
       "files": [
         ".opencode/agent/core/openagent.md",
@@ -19,17 +62,18 @@
     {
       "owner": "cli",
       "files": [
+        "packages/cli/.opencode/.expert-memory.json",
         "packages/cli/src/commands/quest-v9.ts",
-        "packages/cli/src/lib/quest-coding-execution.ts",
         "packages/cli/src/lib/quest-coding-intelligence.test.ts",
         "packages/cli/src/lib/quest-coding-intelligence.ts",
         "packages/cli/src/lib/quest-run.test.ts",
         "packages/cli/src/lib/quest-run.ts",
-        "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+        "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+        "packages/cli/src/lib/quest-semantic-repo-brain.ts",
         "packages/cli/src/lib/runtime-bridge.test.ts",
         "packages/cli/src/lib/runtime-bridge.ts"
       ],
-      "reason": "Owns 9 file(s) in cli."
+      "reason": "Owns 10 file(s) in cli."
     },
     {
       "owner": "plugins",
@@ -70,6 +114,191 @@
   ],
   "locks": [
     {
+      "file": ".oac/coding-intelligence/ast-knowledgebase.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/auto-skill-builder.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/autofix-plan.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/automatic-code-review.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/behavior-oracle.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/coding-autopilot.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/coding-execution.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/coding-intelligence.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/coding-review.md",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/contract-facts.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/dependency-research-cache.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/dependency-research-gate.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/evidence-ledger.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/executable-acceptance.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/failure-fix-memory.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/guarded-autofix-runner.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/knowledge-confidence-score.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/knowledgebase-index.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/ownership-lock-plan.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/patch-capsules.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/patch-ledger.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/pr-auto-packager.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/pr-auto-packager.md",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/pr-readiness.md",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/pre-edit-contract.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/review-patch-loop.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/security-secrets-gate.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/semantic-repo-brain.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/semantic-repo-brain.md",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/smart-test-matrix.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/source-to-patch-trace.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/stale-knowledge-report.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/symbol-graph.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/test-authoring-plan.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/test-gap-finder.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/verified-knowledgebase.json",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
+      "file": ".oac/coding-intelligence/verified-knowledgebase.md",
+      "owner": "generated-artifacts",
+      "mode": "read"
+    },
+    {
       "file": ".opencode/agent/core/openagent.md",
       "owner": "opencode-runtime",
       "mode": "write"
@@ -85,12 +314,12 @@
       "mode": "write"
     },
     {
-      "file": "packages/cli/src/commands/quest-v9.ts",
+      "file": "packages/cli/.opencode/.expert-memory.json",
       "owner": "cli",
-      "mode": "write"
+      "mode": "read"
     },
     {
-      "file": "packages/cli/src/lib/quest-coding-execution.ts",
+      "file": "packages/cli/src/commands/quest-v9.ts",
       "owner": "cli",
       "mode": "write"
     },
@@ -115,7 +344,12 @@
       "mode": "write"
     },
     {
-      "file": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+      "file": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+      "owner": "cli",
+      "mode": "write"
+    },
+    {
+      "file": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
       "owner": "cli",
       "mode": "write"
     },

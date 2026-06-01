@@ -3,132 +3,322 @@
   "signals": [
     {
       "id": "behavior-patch-001",
-      "behavior": "Change 24 file(s) to satisfy: Quest v12 verified knowledgebase smoke",
+      "behavior": "Change 62 file(s) to satisfy: Quest v13 semantic repo brain smoke",
       "evidence": [
         {
           "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/ast-knowledgebase.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/auto-skill-builder.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/autofix-plan.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/automatic-code-review.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/behavior-oracle.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/coding-autopilot.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/coding-execution.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/coding-intelligence.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/coding-review.md",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/contract-facts.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/dependency-research-cache.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/dependency-research-gate.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/evidence-ledger.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/executable-acceptance.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/failure-fix-memory.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/guarded-autofix-runner.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/knowledge-confidence-score.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/knowledgebase-index.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/ownership-lock-plan.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/patch-capsules.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/patch-ledger.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/pr-auto-packager.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/pr-auto-packager.md",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/pr-readiness.md",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/pre-edit-contract.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/review-patch-loop.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/security-secrets-gate.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/semantic-repo-brain.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/semantic-repo-brain.md",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/smart-test-matrix.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/source-to-patch-trace.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/stale-knowledge-report.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/symbol-graph.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/test-authoring-plan.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/test-gap-finder.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/verified-knowledgebase.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": ".oac/coding-intelligence/verified-knowledgebase.md",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
           "path": ".opencode/agent/core/openagent.md",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": ".opencode/context/core/quest-mode.md",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "README.md",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/.opencode/.expert-memory.json",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "packages/cli/src/commands/quest-v9.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
-        },
-        {
-          "source": "patch-capsule",
-          "path": "packages/cli/src/lib/quest-coding-execution.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "packages/cli/src/lib/quest-coding-intelligence.test.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "packages/cli/src/lib/quest-coding-intelligence.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "packages/cli/src/lib/quest-run.test.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "packages/cli/src/lib/quest-run.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
-          "path": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "path": "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
+        },
+        {
+          "source": "patch-capsule",
+          "path": "packages/cli/src/lib/quest-semantic-repo-brain.ts",
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "packages/cli/src/lib/runtime-bridge.test.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "packages/cli/src/lib/runtime-bridge.ts",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/README.md",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/codex-cli/README.md",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/codex-cli/codex-quest-default.toml.example",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/codex-cli/configure-codex-quest-default.sh",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/codex-cli/openagent-system.md",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/codex-cli/openagent.toml",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/kimi-code/README.md",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/kimi-code/openagent-system.md",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "plugins/kimi-code/openagent.yaml",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "scripts/tests/test-codex-quest-v8.sh",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "scripts/tests/test-kimi-quest-v8.sh",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         },
         {
           "source": "patch-capsule",
           "path": "scripts/tests/test-opencode-quest-v8.sh",
-          "detail": "Implement requested coding change for: Quest v12 verified knowledgebase smoke"
+          "detail": "Implement requested coding change for: Quest v13 semantic repo brain smoke"
         }
       ],
       "validation": [
         "git diff --check",
-        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "npm run typecheck -w packages/cli",
         "npm run build -w packages/cli",
         "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh"
@@ -145,7 +335,7 @@
         }
       ],
       "validation": [
-        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "git diff --check",
         "npm run build -w packages/cli",
         "npm run test:quest-v8:codex",
@@ -165,7 +355,7 @@
         }
       ],
       "validation": [
-        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "git diff --check",
         "npm run build -w packages/cli",
         "npm run test:quest-v8:codex",
@@ -185,7 +375,7 @@
         }
       ],
       "validation": [
-        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "git diff --check",
         "npm run build -w packages/cli",
         "npm run test:quest-v8:codex",
@@ -205,7 +395,7 @@
         }
       ],
       "validation": [
-        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+        "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
         "git diff --check",
         "npm run build -w packages/cli",
         "npm run test:quest-v8:codex",

@@ -52,6 +52,8 @@ export interface QuestGuardedAutofixRunner {
     command: string
     reason: string
     retryOf?: string
+    /** Set when the command is a chronic cross-quest failure: escalate, do not auto-retry. */
+    escalate?: boolean
   }>
   writableFiles: string[]
   guardrails: string[]
@@ -200,6 +202,8 @@ export interface BuildQuestCodingExecutionOptions {
   codingAutopilot: QuestCodingAutopilot
   events: Array<{ type?: string; data?: Record<string, unknown> }>
   gitStatus: string[]
+  /** Commands that are chronic cross-quest failures (from Temporal Memory). */
+  chronicCommands?: string[]
 }
 
 export async function buildQuestCodingExecution(
@@ -217,6 +221,7 @@ export async function buildQuestCodingExecution(
     options.codingAutopilot.smartTestMatrix,
     options.codingAutopilot.preEditContract.allowedFiles,
     executableAcceptance,
+    options.chronicCommands ?? [],
   )
   const contractDriftGuard = buildContractDriftGuard(
     options.files,
@@ -388,6 +393,7 @@ function buildGuardedAutofixRunner(
   matrix: QuestSmartTestMatrix,
   writableFiles: string[],
   acceptance: QuestExecutableAcceptance,
+  chronicCommands: string[],
 ): QuestGuardedAutofixRunner {
   const failingCommands = acceptance.checks
     .filter((check) => check.kind === 'command' && check.status === 'failed' && check.command)
@@ -397,27 +403,40 @@ function buildGuardedAutofixRunner(
     ...failingCommands,
     ...matrix.minimumCredibleCommands,
   ]).slice(0, 10)
+  const chronic = new Set(chronicCommands)
+  const hasChronic = commands.some((command) => chronic.has(command))
   return {
     version: QUEST_CODING_EXECUTION_VERSION,
     enabled: failureMemory.failures.length > 0 || failingCommands.length > 0,
     maxIterations: 2,
-    queue: commands.map((command, index) => ({
-      id: `autofix-${index + 1}`,
-      command,
-      reason: failureMemory.failures.some((failure) => failure.command === command)
-        ? 'Replay a known failure before widening validation.'
-        : 'Run the minimum credible check and patch only owned files if it fails.',
-      ...(failureMemory.failures.some((failure) => failure.command === command) && { retryOf: command }),
-    })),
+    queue: commands.map((command, index) => {
+      const isKnownFailure = failureMemory.failures.some((failure) => failure.command === command)
+      const isChronic = chronic.has(command)
+      return {
+        id: `autofix-${index + 1}`,
+        command,
+        reason: isChronic
+          ? 'Chronic cross-quest failure — escalate and explain instead of auto-retrying.'
+          : isKnownFailure
+            ? 'Replay a known failure before widening validation.'
+            : 'Run the minimum credible check and patch only owned files if it fails.',
+        ...(isKnownFailure && { retryOf: command }),
+        ...(isChronic && { escalate: true }),
+      }
+    }),
     writableFiles,
     guardrails: [
       'Patch only files in the pre-edit contract.',
       'Apply one small fix per iteration.',
       'Rerun the same failing command before broader validation.',
       'Do not touch secrets, production configuration, paid services, or destructive operations.',
+      ...(hasChronic
+        ? ['Do not auto-retry chronic commands; surface the durable failure history and ask for guidance.']
+        : []),
     ],
     stopConditions: [
       'The same command fails twice with the same fingerprint.',
+      'A chronic cross-quest failure command is queued (escalate immediately).',
       'The fix requires files outside the ownership lock plan.',
       'The security gate becomes blocked.',
       'Runtime parity fails after two attempts.',

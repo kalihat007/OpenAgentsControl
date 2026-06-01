@@ -63,6 +63,11 @@ export async function questV9Command(
   info(`Stale knowledge: ${intelligence.verifiedKnowledgebase.staleKnowledgeReport.staleItems} stale/missing`)
   info(`Behavior oracle: ${intelligence.verifiedKnowledgebase.behaviorOracle.signals.length} signals`)
   info(`Test-authoring candidates: ${intelligence.verifiedKnowledgebase.testAuthoringPlan.candidates.length}`)
+  info(`Semantic repo nodes: ${intelligence.semanticRepoBrain.semanticGraph.summary.nodes}`)
+  info(`Knowledge confidence: ${intelligence.semanticRepoBrain.knowledgeConfidenceScore.overall}`)
+  info(`Failure-fix fingerprints: ${intelligence.semanticRepoBrain.failureFixMemory.fingerprints.length}`)
+  info(`Skill candidates: ${intelligence.semanticRepoBrain.autoSkillBuilder.candidates.length}`)
+  info(`Semantic gate: ${intelligence.semanticRepoBrain.completionGate.verdict}`)
 
   if (intelligence.reviewSignals.length > 0) {
     warn(`Review signals: ${intelligence.reviewSignals.length}`)
@@ -123,13 +128,19 @@ export async function questV9Command(
   log(`  - ${join(artifactDir, 'behavior-oracle.json')}`)
   log(`  - ${join(artifactDir, 'test-authoring-plan.json')}`)
   log(`  - ${join(artifactDir, 'verified-knowledgebase.md')}`)
+  log(`  - ${join(artifactDir, 'semantic-repo-brain.json')}`)
+  log(`  - ${join(artifactDir, 'ast-knowledgebase.json')}`)
+  log(`  - ${join(artifactDir, 'knowledge-confidence-score.json')}`)
+  log(`  - ${join(artifactDir, 'failure-fix-memory.json')}`)
+  log(`  - ${join(artifactDir, 'auto-skill-builder.json')}`)
+  log(`  - ${join(artifactDir, 'semantic-repo-brain.md')}`)
   log('')
 }
 
 export function registerQuestV9Command(program: Command): void {
   program
     .command('quest-v9 [quest-id]')
-    .description('Refresh and inspect Quest v9 coding intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase artifacts')
+    .description('Refresh and inspect Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, and Semantic Repo Brain artifacts')
     .option('--json', 'Print machine-readable coding intelligence', false)
     .option('--objective <text>', 'Objective to use when no quest id is supplied')
     .option('--changed-file <path...>', 'Changed file path(s) to include in the analysis')

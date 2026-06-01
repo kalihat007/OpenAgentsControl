@@ -38,6 +38,18 @@ import {
   writeQuestVerifiedKnowledgebaseArtifacts,
   type QuestVerifiedKnowledgebase,
 } from './quest-verified-knowledgebase.js'
+import {
+  buildQuestSemanticRepoBrain,
+  formatSemanticRepoBrainSummary,
+  writeQuestSemanticRepoBrainArtifacts,
+  type QuestSemanticRepoBrain,
+} from './quest-semantic-repo-brain.js'
+import {
+  buildQuestTemporalMemory,
+  formatTemporalMemorySummary,
+  writeQuestTemporalMemoryArtifacts,
+  type QuestTemporalMemory,
+} from './quest-temporal-memory.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -104,6 +116,8 @@ export interface QuestCodingIntelligence {
   codingAutopilot: QuestCodingAutopilot
   codingExecution: QuestCodingExecution
   verifiedKnowledgebase: QuestVerifiedKnowledgebase
+  semanticRepoBrain: QuestSemanticRepoBrain
+  temporalMemory: QuestTemporalMemory
 }
 
 export interface RefreshQuestCodingIntelligenceOptions {
@@ -161,6 +175,13 @@ export async function refreshQuestCodingIntelligence(
     events,
     gitStatus: repoWiki?.changes.gitStatus ?? [],
   })
+  const temporalMemory = await buildQuestTemporalMemory({
+    projectRoot,
+    questId: options.questId,
+    files: relevantFiles,
+    codingAutopilot,
+    events,
+  })
   const codingExecution = await buildQuestCodingExecution({
     projectRoot,
     objective,
@@ -174,6 +195,7 @@ export async function refreshQuestCodingIntelligence(
     codingAutopilot,
     events,
     gitStatus: repoWiki?.changes.gitStatus ?? [],
+    chronicCommands: temporalMemory.chronicCommands,
   })
   const verifiedKnowledgebase = await buildQuestVerifiedKnowledgebase({
     projectRoot,
@@ -187,6 +209,23 @@ export async function refreshQuestCodingIntelligence(
     runtimeParity,
     codingAutopilot,
     codingExecution,
+    events,
+    gitStatus: repoWiki?.changes.gitStatus ?? [],
+    repoWiki,
+  })
+  const semanticRepoBrain = await buildQuestSemanticRepoBrain({
+    projectRoot,
+    objective,
+    files: relevantFiles,
+    index,
+    impact,
+    patchCapsules,
+    testRecommendations,
+    reviewSignals,
+    runtimeParity,
+    codingAutopilot,
+    codingExecution,
+    verifiedKnowledgebase,
     events,
     gitStatus: repoWiki?.changes.gitStatus ?? [],
     repoWiki,
@@ -208,6 +247,8 @@ export async function refreshQuestCodingIntelligence(
     codingAutopilot,
     codingExecution,
     verifiedKnowledgebase,
+    semanticRepoBrain,
+    temporalMemory,
   }
 
   await writeQuestCodingIntelligence(projectRoot, options.questId, intelligence)
@@ -229,6 +270,8 @@ export async function writeQuestCodingIntelligence(
   await writeQuestCodingAutopilotArtifacts(dir, intelligence.codingAutopilot)
   await writeQuestCodingExecutionArtifacts(dir, intelligence.codingExecution)
   await writeQuestVerifiedKnowledgebaseArtifacts(dir, intelligence.verifiedKnowledgebase)
+  await writeQuestSemanticRepoBrainArtifacts(dir, intelligence.semanticRepoBrain)
+  await writeQuestTemporalMemoryArtifacts(dir, intelligence.temporalMemory)
 }
 
 export function formatCodingReview(intelligence: QuestCodingIntelligence): string {
@@ -284,6 +327,8 @@ export function formatCodingReview(intelligence: QuestCodingIntelligence): strin
   lines.push(formatCodingAutopilotSummary(intelligence.codingAutopilot))
   lines.push(formatCodingExecutionSummary(intelligence.codingExecution))
   lines.push(formatVerifiedKnowledgebaseSummary(intelligence.verifiedKnowledgebase))
+  lines.push(formatSemanticRepoBrainSummary(intelligence.semanticRepoBrain))
+  lines.push(formatTemporalMemorySummary(intelligence.temporalMemory))
   return lines.join('\n')
 }
 

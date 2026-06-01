@@ -1,9 +1,51 @@
 {
   "version": "11",
   "ready": true,
-  "title": "feat: Quest v12 verified knowledgebase smoke",
-  "bodyMarkdown": "# feat: Quest v12 verified knowledgebase smoke\n\n## Summary\n\n- Updated 24 file(s).\n- Selected 7 minimum validation command(s).\n- Automatic review verdict: needs-review.\n- Contract drift watchers: 13\n- Test gaps: 3\n- Security gate: review\n\n## Validation\n\n- bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh: security gate\n- bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts: pending\n- git diff --check: pending\n- git diff --check: security gate\n- npm run build -w packages/cli: pending\n- npm run test:quest-v8:codex: pending\n- npm run test:quest-v8:codex: required when runtime surface changes\n- npm run test:quest-v8:kimi: pending\n- npm run test:quest-v8:kimi: required when runtime surface changes\n- npm run test:quest-v8:opencode: pending\n- npm run test:quest-v8:opencode: required when runtime surface changes\n- npm run typecheck -w packages/cli: pending\n\n## Reviewer Focus\n\n-  M packages/cli/.opencode/.expert-memory.json\n- .opencode/agent/core/openagent.md\n- .opencode/context/core/quest-mode.md\n- README.md\n- packages/cli/src/commands/quest-v9.ts\n- packages/cli/src/lib/quest-coding-execution.ts\n- packages/cli/src/lib/quest-coding-intelligence.test.ts\n- packages/cli/src/lib/quest-coding-intelligence.ts\n- packages/cli/src/lib/quest-run.test.ts\n- packages/cli/src/lib/quest-run.ts\n- packages/cli/src/lib/quest-verified-knowledgebase.ts\n- packages/cli/src/lib/runtime-bridge.test.ts\n\n## Blockers\n\n- No blockers detected.\n",
+  "title": "feat: Quest v13 semantic repo brain smoke",
+  "bodyMarkdown": "# feat: Quest v13 semantic repo brain smoke\n\n## Summary\n\n- Updated 62 file(s).\n- Selected 7 minimum validation command(s).\n- Automatic review verdict: needs-review.\n- Contract drift watchers: 13\n- Test gaps: 1\n- Security gate: review\n\n## Validation\n\n- bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh: security gate\n- bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts: pending\n- git diff --check: pending\n- git diff --check: security gate\n- npm run build -w packages/cli: pending\n- npm run test:quest-v8:codex: pending\n- npm run test:quest-v8:codex: required when runtime surface changes\n- npm run test:quest-v8:kimi: pending\n- npm run test:quest-v8:kimi: required when runtime surface changes\n- npm run test:quest-v8:opencode: pending\n- npm run test:quest-v8:opencode: required when runtime surface changes\n- npm run typecheck -w packages/cli: pending\n\n## Reviewer Focus\n\n- .oac/coding-intelligence/ast-knowledgebase.json\n- .oac/coding-intelligence/auto-skill-builder.json\n- .oac/coding-intelligence/autofix-plan.json\n- .oac/coding-intelligence/automatic-code-review.json\n- .oac/coding-intelligence/behavior-oracle.json\n- .oac/coding-intelligence/coding-autopilot.json\n- .oac/coding-intelligence/coding-execution.json\n- .oac/coding-intelligence/coding-intelligence.json\n- .oac/coding-intelligence/coding-review.md\n- .oac/coding-intelligence/contract-facts.json\n- .oac/coding-intelligence/dependency-research-cache.json\n- .oac/coding-intelligence/dependency-research-gate.json\n\n## Blockers\n\n- No blockers detected.\n",
   "commitGroups": [
+    {
+      "title": ".oac",
+      "files": [
+        ".oac/coding-intelligence/ast-knowledgebase.json",
+        ".oac/coding-intelligence/auto-skill-builder.json",
+        ".oac/coding-intelligence/autofix-plan.json",
+        ".oac/coding-intelligence/automatic-code-review.json",
+        ".oac/coding-intelligence/behavior-oracle.json",
+        ".oac/coding-intelligence/coding-autopilot.json",
+        ".oac/coding-intelligence/coding-execution.json",
+        ".oac/coding-intelligence/coding-intelligence.json",
+        ".oac/coding-intelligence/coding-review.md",
+        ".oac/coding-intelligence/contract-facts.json",
+        ".oac/coding-intelligence/dependency-research-cache.json",
+        ".oac/coding-intelligence/dependency-research-gate.json",
+        ".oac/coding-intelligence/evidence-ledger.json",
+        ".oac/coding-intelligence/executable-acceptance.json",
+        ".oac/coding-intelligence/failure-fix-memory.json",
+        ".oac/coding-intelligence/guarded-autofix-runner.json",
+        ".oac/coding-intelligence/knowledge-confidence-score.json",
+        ".oac/coding-intelligence/knowledgebase-index.json",
+        ".oac/coding-intelligence/ownership-lock-plan.json",
+        ".oac/coding-intelligence/patch-capsules.json",
+        ".oac/coding-intelligence/patch-ledger.json",
+        ".oac/coding-intelligence/pr-auto-packager.json",
+        ".oac/coding-intelligence/pr-auto-packager.md",
+        ".oac/coding-intelligence/pr-readiness.md",
+        ".oac/coding-intelligence/pre-edit-contract.json",
+        ".oac/coding-intelligence/review-patch-loop.json",
+        ".oac/coding-intelligence/security-secrets-gate.json",
+        ".oac/coding-intelligence/semantic-repo-brain.json",
+        ".oac/coding-intelligence/semantic-repo-brain.md",
+        ".oac/coding-intelligence/smart-test-matrix.json",
+        ".oac/coding-intelligence/source-to-patch-trace.json",
+        ".oac/coding-intelligence/stale-knowledge-report.json",
+        ".oac/coding-intelligence/symbol-graph.json",
+        ".oac/coding-intelligence/test-authoring-plan.json",
+        ".oac/coding-intelligence/test-gap-finder.json",
+        ".oac/coding-intelligence/verified-knowledgebase.json",
+        ".oac/coding-intelligence/verified-knowledgebase.md"
+      ]
+    },
     {
       "title": ".opencode",
       "files": [
@@ -20,13 +62,14 @@
     {
       "title": "packages/cli",
       "files": [
+        "packages/cli/.opencode/.expert-memory.json",
         "packages/cli/src/commands/quest-v9.ts",
-        "packages/cli/src/lib/quest-coding-execution.ts",
         "packages/cli/src/lib/quest-coding-intelligence.test.ts",
         "packages/cli/src/lib/quest-coding-intelligence.ts",
         "packages/cli/src/lib/quest-run.test.ts",
         "packages/cli/src/lib/quest-run.ts",
-        "packages/cli/src/lib/quest-verified-knowledgebase.ts",
+        "packages/cli/src/lib/quest-semantic-repo-brain.test.ts",
+        "packages/cli/src/lib/quest-semantic-repo-brain.ts",
         "packages/cli/src/lib/runtime-bridge.test.ts",
         "packages/cli/src/lib/runtime-bridge.ts"
       ]
@@ -66,7 +109,7 @@
   ],
   "validationEvidence": [
     "bash -n plugins/codex-cli/configure-codex-quest-default.sh scripts/tests/test-codex-quest-v8.sh scripts/tests/test-kimi-quest-v8.sh scripts/tests/test-opencode-quest-v8.sh: security gate",
-    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts: pending",
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts: pending",
     "git diff --check: pending",
     "git diff --check: security gate",
     "npm run build -w packages/cli: pending",

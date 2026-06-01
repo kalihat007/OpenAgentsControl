@@ -90,6 +90,12 @@ Required v8 artifacts when available:
 - `behavior-oracle.json` - expected runtime and CLI behavior signals for validation and regression checks
 - `test-authoring-plan.json` - evidence-backed test ideas, target files, and validation commands
 - `verified-knowledgebase.md` - human-readable verified knowledgebase brief
+- `semantic-repo-brain.json` - Quest v13 semantic repo brain rollup for AST-level repo facts, confidence, failures, skills, and completion gate
+- `ast-knowledgebase.json` - AST-style knowledge graph for functions, classes, exports, CLI commands, events, schemas, tests, scripts, prompts, and ownership
+- `knowledge-confidence-score.json` - fact confidence labels: verified, inferred, stale, missing, or needs research
+- `failure-fix-memory.json` - failed-command fingerprints and known fixes to avoid repeating broken paths
+- `auto-skill-builder.json` - approval-gated repeated-workflow skill candidates
+- `semantic-repo-brain.md` - human-readable semantic repo brain brief
 - `summary.json` - machine-readable execution summary
 - `handoff.json` - optional IDE handoff manifest
 - `.oac/memory/promotions.json` - user-reviewed promotion queue for repeated learnings before they become durable repo knowledge
@@ -112,6 +118,7 @@ For adaptive v8 work:
 - read `coding-intelligence.json`, `patch-capsules.json`, and `coding-review.md` when present so coding starts from current impact, tests, and review signals
 - read Coding Autopilot and Coding Execution sidecars when present so coding uses symbol-level context, pre-edit boundaries, smart-test tiers, patch ledger accountability, automatic review, failure replay, runtime parity enforcement, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gating, and PR packaging
 - read Verified Knowledgebase sidecars when present so coding is evidence-first and uses `evidence-ledger.json`, `hallucination-gate.json`, `contract-facts.json`, `source-to-patch-trace.json`, stale knowledge refresh, dependency research cache, behavior oracle, and test-authoring plan before editing or completing work
+- read Semantic Repo Brain sidecars when present so coding uses AST-level repo facts, ownership, confidence labels, failure-fix memory, and user-approved skill candidate policy before editing or completing work
 - keep review decisions, injected tasks, and priority changes append-only
 
 Use these CLI commands for durable status and continuation:
@@ -164,7 +171,7 @@ Treat the repo wiki as current working context, not long-term truth. Durable kno
 
 ## Quest v9 Coding Intelligence
 
-Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Together they are active by default for coding, installer, runtime, adapter, test, and repo-maintenance work.
+Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Together they are active by default for coding, installer, runtime, adapter, test, and repo-maintenance work.
 
 Before editing code, use Quest v9 artifacts to answer:
 
@@ -179,15 +186,18 @@ Before editing code, use Quest v9 artifacts to answer:
 - whether the change is PR-ready and how it should be grouped for review
 - which executable acceptance checks, contract drift watchers, test gaps, regression snapshots, ownership locks, security/secrets findings, and PR package blockers must be closed
 - which claims are verified by local evidence, which facts are assumptions or unknown, whether the hallucination gate passes, and which stale facts need current research before patching
+- which AST-level repo facts are available for functions, classes, exports, CLI commands, events, schemas, tests, package scripts, runtime prompts, and ownership
+- which knowledge facts are verified, inferred, stale, missing, or need research
+- which failed-command fingerprints have known fixes and which repeated workflows are only skill candidates until the user approves promotion
 
-The CLI refreshes Quest v9/v10/v11/v12 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
+The CLI refreshes Quest v9/v10/v11/v12/v13 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
 
 ```bash
 oac quest-v9
 oac quest-v9 <quest-id>
 ```
 
-For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, hallucination gate, security/secrets gate, and any required runtime parity checks are recorded or the gap is explicitly called out.
+For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, hallucination gate, semantic completion gate, security/secrets gate, and any required runtime parity checks are recorded or the gap is explicitly called out.
 
 ## Memory Promotion System
 

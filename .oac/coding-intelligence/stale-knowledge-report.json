@@ -1,19 +1,19 @@
 {
   "version": "12",
-  "checkedAt": "2026-05-29T09:00:07.982Z",
+  "checkedAt": "2026-06-01T06:20:10.166Z",
   "items": [
     {
       "id": "stale-oac-repo-wiki-files-52d72c38",
       "path": ".oac/repo-wiki/files.json",
-      "freshness": "fresh",
-      "ageHours": 3.4,
+      "freshness": "recent",
+      "ageHours": 59,
       "recommendation": "Use as current local evidence."
     },
     {
       "id": "stale-oac-repo-wiki-index-5ac29e50",
       "path": ".oac/repo-wiki/index.md",
-      "freshness": "fresh",
-      "ageHours": 3.4,
+      "freshness": "recent",
+      "ageHours": 59,
       "recommendation": "Use as current local evidence."
     },
     {
@@ -25,16 +25,16 @@
     {
       "id": "stale-install-c0fffa6d",
       "path": "install.sh",
-      "freshness": "recent",
-      "ageHours": 124.3,
-      "recommendation": "Use as current local evidence."
+      "freshness": "stale",
+      "ageHours": 193.6,
+      "recommendation": "Run bash -n and install/update smoke validation."
     },
     {
       "id": "stale-update-efe50602",
       "path": "update.sh",
-      "freshness": "recent",
-      "ageHours": 124.3,
-      "recommendation": "Use as current local evidence."
+      "freshness": "stale",
+      "ageHours": 193.6,
+      "recommendation": "Run bash -n and install/update smoke validation."
     },
     {
       "id": "stale-opencode-agent-core-openagent-5822a9f6",
@@ -54,46 +54,46 @@
       "id": "stale-plugins-kimi-code-openagent-3013a9c2",
       "path": "plugins/kimi-code/openagent.yaml",
       "freshness": "fresh",
-      "ageHours": 0.1,
+      "ageHours": 0.3,
       "recommendation": "Use as current local evidence."
     },
     {
       "id": "stale-plugins-kimi-code-openagent-system-b29c6b4b",
       "path": "plugins/kimi-code/openagent-system.md",
       "freshness": "fresh",
-      "ageHours": 0.1,
+      "ageHours": 0.3,
       "recommendation": "Use as current local evidence."
     },
     {
       "id": "stale-plugins-codex-cli-openagent-19361823",
       "path": "plugins/codex-cli/openagent.toml",
       "freshness": "fresh",
-      "ageHours": 0.1,
+      "ageHours": 0.3,
       "recommendation": "Use as current local evidence."
     },
     {
       "id": "stale-plugins-codex-cli-openagent-system-f7a78007",
       "path": "plugins/codex-cli/openagent-system.md",
       "freshness": "fresh",
-      "ageHours": 0.1,
+      "ageHours": 0.3,
       "recommendation": "Use as current local evidence."
     },
     {
       "id": "stale-users-vikashchaudhary-kimi-agents-openagen-9a2499b2",
       "path": "/Users/vikashchaudhary/.kimi/agents/openagents-control/openagent.yaml",
       "freshness": "fresh",
-      "ageHours": 3.6,
+      "ageHours": 0.1,
       "recommendation": "Use as current local evidence."
     },
     {
       "id": "stale-users-vikashchaudhary-kimi-agents-openagen-f9a59bac",
       "path": "/Users/vikashchaudhary/.kimi/agents/openagents-control/openagent-system.md",
       "freshness": "fresh",
-      "ageHours": 3.6,
+      "ageHours": 0.1,
       "recommendation": "Use as current local evidence."
     }
   ],
-  "staleItems": 1,
+  "staleItems": 3,
   "refreshCommands": [
     "oac repo-wiki",
     "oac quest-v9",

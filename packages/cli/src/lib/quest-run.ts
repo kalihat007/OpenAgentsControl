@@ -111,6 +111,14 @@ export interface QuestRunArtifacts {
   behaviorOracle?: string
   testAuthoringPlan?: string
   verifiedKnowledgebaseBrief?: string
+  semanticRepoBrain?: string
+  astKnowledgebase?: string
+  knowledgeConfidenceScore?: string
+  failureFixMemory?: string
+  autoSkillBuilder?: string
+  semanticRepoBrainBrief?: string
+  temporalMemory?: string
+  temporalMemoryBrief?: string
   summary?: string
   handoff?: string
 }
@@ -294,6 +302,14 @@ export function buildQuestRun(
     behaviorOracle: 'behavior-oracle.json',
     testAuthoringPlan: 'test-authoring-plan.json',
     verifiedKnowledgebaseBrief: 'verified-knowledgebase.md',
+    semanticRepoBrain: 'semantic-repo-brain.json',
+    astKnowledgebase: 'ast-knowledgebase.json',
+    knowledgeConfidenceScore: 'knowledge-confidence-score.json',
+    failureFixMemory: 'failure-fix-memory.json',
+    autoSkillBuilder: 'auto-skill-builder.json',
+    semanticRepoBrainBrief: 'semantic-repo-brain.md',
+    temporalMemory: 'temporal-memory.json',
+    temporalMemoryBrief: 'temporal-memory.md',
     ...options.artifacts,
   }
 
@@ -404,6 +420,14 @@ export function normalizeQuestRun(quest: QuestRun): QuestRun {
       behaviorOracle: quest.artifacts?.behaviorOracle ?? 'behavior-oracle.json',
       testAuthoringPlan: quest.artifacts?.testAuthoringPlan ?? 'test-authoring-plan.json',
       verifiedKnowledgebaseBrief: quest.artifacts?.verifiedKnowledgebaseBrief ?? 'verified-knowledgebase.md',
+      semanticRepoBrain: quest.artifacts?.semanticRepoBrain ?? 'semantic-repo-brain.json',
+      astKnowledgebase: quest.artifacts?.astKnowledgebase ?? 'ast-knowledgebase.json',
+      knowledgeConfidenceScore: quest.artifacts?.knowledgeConfidenceScore ?? 'knowledge-confidence-score.json',
+      failureFixMemory: quest.artifacts?.failureFixMemory ?? 'failure-fix-memory.json',
+      autoSkillBuilder: quest.artifacts?.autoSkillBuilder ?? 'auto-skill-builder.json',
+      semanticRepoBrainBrief: quest.artifacts?.semanticRepoBrainBrief ?? 'semantic-repo-brain.md',
+      temporalMemory: quest.artifacts?.temporalMemory ?? 'temporal-memory.json',
+      temporalMemoryBrief: quest.artifacts?.temporalMemoryBrief ?? 'temporal-memory.md',
     },
     nextStepSuggestions: quest.nextStepSuggestions ?? [],
     runtimes: {
@@ -757,10 +781,12 @@ export function formatRuntimeHandoff(
   lines.push('  Use Coding Execution for runnable acceptance, guarded autofix, contract drift detection, review-to-patch loops, test-gap closure, regression snapshot checks, runtime compatibility, file ownership locks, security/secrets gating, and PR packaging.')
   lines.push('  Read Verified Knowledgebase sidecars when present: verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, and verified-knowledgebase.md.')
   lines.push('  Use Verified Knowledgebase before editing and before completion: cite evidence for files/symbols/commands, treat unknowns as assumptions, stop if hallucination-gate.json is blocked, refresh stale knowledge, and connect every patch capsule to evidence and validation.')
+  lines.push('  Read Semantic Repo Brain sidecars when present: semantic-repo-brain.json, ast-knowledgebase.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, and semantic-repo-brain.md.')
+  lines.push('  Use Semantic Repo Brain before editing and before completion: rely on AST-level repo facts for functions, classes, exports, commands, events, schemas, tests, package scripts, runtime prompts, and ownership; honor confidence labels; replay known failed-command fixes; and suggest skill candidates only for user approval.')
   lines.push('  Before starting any task, run a Pre-Execution Discovery Gate: inspect required local files/context first, append context.loaded/action.summary evidence, then append research.assessed. Perform web/current research only when it can affect correctness; otherwise record needed:false and proceed.')
   lines.push('  The CLI refreshes interaction-memory.json and memory-graph.json from append-only events automatically.')
   lines.push('  The CLI refreshes .oac/repo-wiki/ from Quest lifecycle and file/context events automatically.')
-  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
+  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, and Semantic Repo Brain sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
   lines.push('  The CLI reconciler reads base quest.json + events.ndjson to produce live state.')
   lines.push('  Run "oac quest-status <id>" to see reconciled state.')
 
@@ -940,8 +966,8 @@ function buildRuntimeHints(
 function buildResumePrompt(questId: string, objective: string, runDir: string): string {
   return [
     `Resume OpenAgent Quest ${questId}: ${objective}`,
-    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, verified-knowledgebase.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
-    'Use Quest v9 coding intelligence, Coding Autopilot, Coding Execution, and Verified Knowledgebase for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, evidence ledger, hallucination gate, source-to-patch traceability, stale knowledge checks, behavior oracle, test-authoring plan, and PR readiness before editing or completing the Quest.',
+    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, verified-knowledgebase.md, semantic-repo-brain.json, ast-knowledgebase.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, semantic-repo-brain.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
+    'Use Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, and Semantic Repo Brain for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, evidence ledger, hallucination gate, source-to-patch traceability, stale knowledge checks, behavior oracle, test-authoring plan, AST-level repo facts, knowledge confidence labels, failed-command fixes, approval-gated skill candidates, and PR readiness before editing or completing the Quest.',
     'Continue in Quest Mode + Experts Mode using the same user-selected runtime model.',
   ].join(' ')
 }

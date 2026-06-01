@@ -129,6 +129,12 @@ load `quest.json` first when resuming. Quest v8 artifacts are:
 - `behavior-oracle.json`
 - `test-authoring-plan.json`
 - `verified-knowledgebase.md`
+- `semantic-repo-brain.json`
+- `ast-knowledgebase.json`
+- `knowledge-confidence-score.json`
+- `failure-fix-memory.json`
+- `auto-skill-builder.json`
+- `semantic-repo-brain.md`
 - `.oac/repo-wiki/index.md` (project-level, outside the run dir)
 - `summary.json`
 - optional `handoff.json`
@@ -180,8 +186,8 @@ verification/reflection/completion. If Kimi changes files outside Quest
 write-back, run `oac repo-wiki`; for long local sessions use
 `oac repo-wiki --watch`.
 
-For coding work, use Quest v9 coding intelligence and the v12 Verified
-Knowledgebase by default. Read
+For coding work, use Quest v9 coding intelligence, the v12 Verified
+Knowledgebase, and the v13 Semantic Repo Brain by default. Read
 `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
 `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
 `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`,
@@ -196,7 +202,10 @@ Knowledgebase by default. Read
 `evidence-ledger.json`, `hallucination-gate.json`, `contract-facts.json`,
 `source-to-patch-trace.json`, `stale-knowledge-report.json`,
 `dependency-research-cache.json`, `behavior-oracle.json`,
-`test-authoring-plan.json`, and `verified-knowledgebase.md`
+`test-authoring-plan.json`, `verified-knowledgebase.md`,
+`semantic-repo-brain.json`, `ast-knowledgebase.json`,
+`knowledge-confidence-score.json`, `failure-fix-memory.json`,
+`auto-skill-builder.json`, and `semantic-repo-brain.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure
@@ -206,9 +215,14 @@ test gaps, regression snapshots, runtime compatibility, ownership locks,
 security/secrets gate, PR packaging, evidence ledger, hallucination gate,
 contract facts, source-to-patch traceability, stale knowledge checks,
 dependency research cache, behavior oracle, test-authoring plan, and review
-signals. Do not claim files, symbols, commands, APIs, docs, or test results
+signals, plus AST-level functions, classes, exports, CLI commands, events,
+schemas, tests, package scripts, runtime prompts, ownership, knowledge confidence
+labels, failed-command fingerprints, and approval-gated skill candidates. Do not
+claim files, symbols, commands, APIs, docs, or test results
 without local evidence; if `hallucination-gate.json` is blocked, stop and
-report the blocker before completion. Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
+report the blocker before completion. If `semantic-repo-brain.json` reports a
+blocked semantic completion gate, stop and report the blocker before completion.
+Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
 `tests.selected`, and `review.signals` when those facts change. Run
 `oac quest-v9` or `oac quest-v9 <quest-id>` for a fresh snapshot.
 

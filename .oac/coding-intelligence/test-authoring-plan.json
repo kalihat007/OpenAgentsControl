@@ -5,29 +5,13 @@
       "id": "author-test-gap-1b85gs",
       "sourceFile": "packages/cli/src/commands/quest-v9.ts",
       "suggestedTestFile": "packages/cli/src/commands/quest-v9.test.ts",
-      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
-      "reason": "Changed source file has no nearby test file in the indexed codebase.",
-      "priority": "medium"
-    },
-    {
-      "id": "author-test-gap-o2h7jb",
-      "sourceFile": "packages/cli/src/lib/quest-coding-execution.ts",
-      "suggestedTestFile": "packages/cli/src/lib/quest-coding-execution.test.ts",
-      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
-      "reason": "Changed source file has no nearby test file in the indexed codebase.",
-      "priority": "medium"
-    },
-    {
-      "id": "author-test-gap-b2ln66",
-      "sourceFile": "packages/cli/src/lib/quest-verified-knowledgebase.ts",
-      "suggestedTestFile": "packages/cli/src/lib/quest-verified-knowledgebase.test.ts",
-      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+      "command": "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
       "reason": "Changed source file has no nearby test file in the indexed codebase.",
       "priority": "medium"
     }
   ],
   "commands": [
-    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
+    "bun test packages/cli/src/lib/quest-coding-intelligence.test.ts packages/cli/src/lib/quest-run.test.ts packages/cli/src/lib/quest-semantic-repo-brain.test.ts packages/cli/src/lib/runtime-bridge.test.ts",
     "git diff --check",
     "npm run build -w packages/cli",
     "npm run test:quest-v8:codex",
