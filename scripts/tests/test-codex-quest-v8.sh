@@ -83,6 +83,59 @@ $user_prompt"
 }
 
 OAC_CLI=(bun "$REPO_ROOT/packages/cli/src/index.ts")
+V18_ARTIFACTS=(
+  runtime-reliability-os.json
+  command-failure-index.json
+  timeout-policy.json
+  claim-ledger.json
+  runtime-doctor-report.json
+  autonomous-recovery-plan.json
+  flaky-command-memory.json
+  evidence-replay.md
+)
+V18_DIRECT_SIDECARS="runtime-reliability-os.json, command-failure-index.json, timeout-policy.json, claim-ledger.json, runtime-doctor-report.json, autonomous-recovery-plan.json, flaky-command-memory.json, evidence-replay.md"
+V19_ARTIFACTS=(
+  deep-coding-collaboration-os.json
+  deep-thinking-review.json
+  idea-to-build-brief.json
+  smarter-code-plan.json
+  collaboration-board.json
+  decision-tradeoff-matrix.json
+  build-better-roadmap.md
+)
+V19_DIRECT_SIDECARS="deep-coding-collaboration-os.json, deep-thinking-review.json, idea-to-build-brief.json, smarter-code-plan.json, collaboration-board.json, decision-tradeoff-matrix.json, build-better-roadmap.md"
+
+require_v18_artifact_mentions() {
+  local file="$1"
+  local label="$2"
+  for artifact in "${V18_ARTIFACTS[@]}"; do
+    grep -q "$artifact" "$file" || fail "$label missing Quest v18 $artifact"
+  done
+}
+
+require_v18_artifacts_exist() {
+  local dir="$1"
+  local label="$2"
+  for artifact in "${V18_ARTIFACTS[@]}"; do
+    [ -f "$dir/$artifact" ] || fail "Missing $label Quest v18 $artifact"
+  done
+}
+
+require_v19_artifact_mentions() {
+  local file="$1"
+  local label="$2"
+  for artifact in "${V19_ARTIFACTS[@]}"; do
+    grep -q "$artifact" "$file" || fail "$label missing Quest v19 $artifact"
+  done
+}
+
+require_v19_artifacts_exist() {
+  local dir="$1"
+  local label="$2"
+  for artifact in "${V19_ARTIFACTS[@]}"; do
+    [ -f "$dir/$artifact" ] || fail "Missing $label Quest v19 $artifact"
+  done
+}
 
 printf "\nOpenAgent Quest v8 Codex comprehensive smoke\n"
 printf "Workspace: %s\n\n" "$TEST_DIR"
@@ -151,6 +204,10 @@ grep -q 'release-readiness-dashboard.json' "$INSTALLED_SYSTEM" || fail "Codex sy
 grep -q 'product-architect-review.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Product Architect Intelligence"
 grep -q 'architecture-next-steps.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing architecture next steps"
 grep -q 'strategic-next-actions.md' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing strategic next actions"
+grep -q 'Runtime Reliability + Evidence Replay OS' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Runtime Reliability + Evidence Replay OS"
+require_v18_artifact_mentions "$INSTALLED_SYSTEM" "Codex system prompt"
+grep -q 'Deep Coding Collaboration OS' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Deep Coding Collaboration OS"
+require_v19_artifact_mentions "$INSTALLED_SYSTEM" "Codex system prompt"
 grep -q 'context.loaded' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing context.loaded"
 grep -q 'request.received' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing request.received"
 grep -q 'research.assessed' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing research.assessed"
@@ -160,7 +217,7 @@ grep -q 'quest-v9' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing ques
 grep -q 'coding.intent' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing coding.intent"
 grep -q 'tests.selected' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing tests.selected"
 grep -q 'next_steps.suggested' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing next_steps.suggested"
-pass "Codex adapter advertises Quest v8 adaptive protocol and Quest v9-v17 coding intelligence"
+pass "Codex adapter advertises Quest v8 adaptive protocol and Quest v9-v19 coding intelligence"
 
 [ ! -e "$HOME/.codex/agents/openagent.toml" ] \
   || fail "Remove legacy ~/.codex/agents/openagent.toml symlink (duplicate openagent role)"
@@ -243,7 +300,7 @@ fi
 
 if [ "${RUN_LIVE_CODEX:-0}" = "1" ]; then
   DIRECT_OUT="$TEST_DIR/direct-v8.txt"
-  DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
+  DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, and Deep Coding Collaboration OS sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md, ${V18_DIRECT_SIDECARS}, ${V19_DIRECT_SIDECARS} and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
   if codex_exec_prompt "$TEST_DIR/work" "$DIRECT_PROMPT" "$AGENT_SYSTEM_FILE" > "$DIRECT_OUT" 2>&1; then
     node - "$DIRECT_OUT" <<'NODE'
 const fs = require("fs");
@@ -294,6 +351,21 @@ const checks = {
   architectureNextSteps: /architecture-next-steps\.json/i.test(text),
   roadmapSignals: /roadmap-signals\.json/i.test(text),
   strategicNextActions: /strategic-next-actions\.md/i.test(text),
+  runtimeReliability: /runtime-reliability-os\.json/i.test(text),
+  commandFailureIndex: /command-failure-index\.json/i.test(text),
+  timeoutPolicy: /timeout-policy\.json/i.test(text),
+  claimLedger: /claim-ledger\.json/i.test(text),
+  runtimeDoctorReport: /runtime-doctor-report\.json/i.test(text),
+  autonomousRecoveryPlan: /autonomous-recovery-plan\.json/i.test(text),
+  flakyCommandMemory: /flaky-command-memory\.json/i.test(text),
+  evidenceReplay: /evidence-replay\.md/i.test(text),
+  deepCodingCollaboration: /deep-coding-collaboration-os\.json/i.test(text),
+  deepThinkingReview: /deep-thinking-review\.json/i.test(text),
+  ideaToBuildBrief: /idea-to-build-brief\.json/i.test(text),
+  smarterCodePlan: /smarter-code-plan\.json/i.test(text),
+  collaborationBoard: /collaboration-board\.json/i.test(text),
+  decisionTradeoffMatrix: /decision-tradeoff-matrix\.json/i.test(text),
+  buildBetterRoadmap: /build-better-roadmap\.md/i.test(text),
   patchCapsule: /patch\.capsule/i.test(text),
   testsSelected: /tests\.selected/i.test(text),
 };
@@ -429,6 +501,8 @@ grep -q 'codex exec' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json missin
 [ -f ".oac/runs/${QUEST_ID}/strategic-refactor-radar.json" ] || fail "Missing Quest v17 strategic-refactor-radar.json"
 [ -f ".oac/runs/${QUEST_ID}/architecture-decision-suggestions.json" ] || fail "Missing Quest v17 architecture-decision-suggestions.json"
 [ -f ".oac/runs/${QUEST_ID}/strategic-next-actions.md" ] || fail "Missing Quest v17 strategic next actions brief"
+require_v18_artifacts_exist ".oac/runs/${QUEST_ID}" "Codex runtime"
+require_v19_artifacts_exist ".oac/runs/${QUEST_ID}" "Codex runtime"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
@@ -459,11 +533,18 @@ if (!intelligence.productArchitect.productArchitectReview?.recommendations?.leng
 if (!Array.isArray(intelligence.productArchitect.architectureNextSteps) || intelligence.productArchitect.architectureNextSteps.length < 1) throw new Error("missing v17 architecture next steps");
 if (!Array.isArray(intelligence.productArchitect.roadmapSignals)) throw new Error("missing v17 roadmap signals");
 if (!Array.isArray(intelligence.productArchitect.productRiskRegister)) throw new Error("missing v17 product risk register");
+if (!intelligence.runtimeReliability || intelligence.runtimeReliability.version !== "18") throw new Error("missing Runtime Reliability + Evidence Replay OS v18");
+if (!Array.isArray(intelligence.runtimeReliability.claimLedger?.claims) || intelligence.runtimeReliability.claimLedger.claims.length < 1) throw new Error("missing v18 claim ledger");
+if (!Array.isArray(intelligence.runtimeReliability.evidenceReplay?.replayCommands)) throw new Error("missing v18 replay commands");
+if (!intelligence.deepCodingCollaboration || intelligence.deepCodingCollaboration.version !== "19") throw new Error("missing Deep Coding Collaboration OS v19");
+if (!Array.isArray(intelligence.deepCodingCollaboration.deepThinkingReview?.hardQuestions) || intelligence.deepCodingCollaboration.deepThinkingReview.hardQuestions.length < 1) throw new Error("missing v19 hard questions");
+if (!Array.isArray(intelligence.deepCodingCollaboration.ideaToBuildBrief?.buildSlices) || intelligence.deepCodingCollaboration.ideaToBuildBrief.buildSlices.length < 1) throw new Error("missing v19 idea-to-build slices");
+if (!Array.isArray(intelligence.deepCodingCollaboration.smarterCodePlan?.codeQualityMoves) || intelligence.deepCodingCollaboration.smarterCodePlan.codeQualityMoves.length < 1) throw new Error("missing v19 smarter code moves");
 if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with codex runtime and Quest v9-v17 sidecars"
+pass "Quest v8 artifact created with codex runtime and Quest v9-v19 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -500,7 +581,14 @@ grep -q 'product-architect-review.json' quest-v9.txt || fail "quest-v9 output mi
 grep -q 'architecture-next-steps.json' quest-v9.txt || fail "quest-v9 output missing architecture next steps artifact"
 grep -q 'roadmap-signals.json' quest-v9.txt || fail "quest-v9 output missing roadmap signals artifact"
 grep -q 'strategic-next-actions.md' quest-v9.txt || fail "quest-v9 output missing strategic next actions artifact"
-pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence"
+for artifact in "${V18_ARTIFACTS[@]}"; do
+  grep -q "$artifact" quest-v9.txt || fail "quest-v9 output missing $artifact artifact"
+done
+for artifact in "${V19_ARTIFACTS[@]}"; do
+  grep -q "$artifact" quest-v9.txt || fail "quest-v9 output missing $artifact artifact"
+done
+grep -q 'Deep coding collaboration' quest-v9.txt || fail "quest-v9 output missing Deep Coding Collaboration summary"
+pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, and Deep Coding Collaboration OS"
 
 "${OAC_CLI[@]}" quest-resume "$QUEST_ID" --runtime codex > quest-resume-codex.txt 2>&1
 grep -q 'CODEX Resume' quest-resume-codex.txt || fail "quest-resume --runtime codex missing CODEX header"
@@ -598,6 +686,8 @@ done
   cat daemon-run.txt >&2 || true
   fail "Missing daemon.json for live Codex v8 run"
 }
+require_v18_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live Codex daemon"
+require_v19_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live Codex daemon"
 pass "Live Codex v8 daemon state created"
 
 DEADLINE=$((SECONDS + 900))

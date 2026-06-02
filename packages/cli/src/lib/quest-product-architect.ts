@@ -593,7 +593,7 @@ function buildArchitectureDecisionSuggestions(
     suggestions.push({
       id: 'adr-quest-sidecar-versioning',
       title: 'Quest sidecar versioning and compatibility',
-      decision: 'Define how v9-v17 sidecars are added, normalized, refreshed, and consumed by runtimes.',
+      decision: 'Define how v9-v19 sidecars are added, normalized, refreshed, and consumed by runtimes.',
       tradeoffs: [
         'More sidecars improve accuracy and explainability.',
         'More sidecars increase prompt and maintenance load if not bounded.',

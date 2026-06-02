@@ -399,12 +399,12 @@ install_codex_integration() {
   if [ -f "$codex_cfg_script" ]; then
     # shellcheck source=/dev/null
     . "$codex_cfg_script"
-    configure_codex_quest_default_session || print_warning "Could not set Codex Quest v8 default in ~/.codex/config.toml"
+    configure_codex_quest_default_session || print_warning "Could not set Codex Quest v8/v9-v19 default in ~/.codex/config.toml"
   fi
 
     print_success "Codex CLI integration updated!"
     print_info "Agent file: $plugin_dest/openagent.toml"
-    print_info "Run: codex -C .  (Quest v8 applies to the main session)"
+    print_info "Run: codex -C .  (Quest v8 lifecycle + Quest v9-v19 sidecars apply to the main session)"
 }
 
 install_claude_integration() {

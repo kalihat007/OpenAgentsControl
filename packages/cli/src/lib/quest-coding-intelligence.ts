@@ -68,6 +68,18 @@ import {
   writeQuestProductArchitectArtifacts,
   type QuestProductArchitectIntelligence,
 } from './quest-product-architect.js'
+import {
+  buildQuestRuntimeReliabilityOS,
+  formatRuntimeReliabilitySummary,
+  writeQuestRuntimeReliabilityArtifacts,
+  type QuestRuntimeReliabilityOS,
+} from './quest-runtime-reliability.js'
+import {
+  buildQuestDeepCodingCollaborationOS,
+  formatDeepCodingCollaborationSummary,
+  writeQuestDeepCodingCollaborationArtifacts,
+  type QuestDeepCodingCollaborationOS,
+} from './quest-deep-coding-collaboration.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -139,6 +151,8 @@ export interface QuestCodingIntelligence {
   intelligentCodingTeam: QuestIntelligentCodingTeam
   verifiedDelivery: QuestVerifiedDeliveryOS
   productArchitect: QuestProductArchitectIntelligence
+  runtimeReliability: QuestRuntimeReliabilityOS
+  deepCodingCollaboration: QuestDeepCodingCollaborationOS
 }
 
 export interface RefreshQuestCodingIntelligenceOptions {
@@ -313,6 +327,49 @@ export async function refreshQuestCodingIntelligence(
     gitStatus: repoWiki?.changes.gitStatus ?? [],
     repoWiki,
   })
+  const runtimeReliability = buildQuestRuntimeReliabilityOS({
+    projectRoot,
+    objective,
+    files: relevantFiles,
+    index,
+    impact,
+    patchCapsules,
+    testRecommendations,
+    reviewSignals,
+    runtimeParity,
+    codingExecution,
+    verifiedKnowledgebase,
+    semanticRepoBrain,
+    temporalMemory,
+    verifiedDelivery,
+    productArchitect,
+    events,
+    gitStatus: repoWiki?.changes.gitStatus ?? [],
+    repoWiki,
+  })
+  const deepCodingCollaboration = buildQuestDeepCodingCollaborationOS({
+    projectRoot,
+    objective,
+    files: relevantFiles,
+    index,
+    impact,
+    patchCapsules,
+    testRecommendations,
+    reviewSignals,
+    runtimeParity,
+    codingAutopilot,
+    codingExecution,
+    verifiedKnowledgebase,
+    semanticRepoBrain,
+    temporalMemory,
+    intelligentCodingTeam,
+    verifiedDelivery,
+    productArchitect,
+    runtimeReliability,
+    events,
+    gitStatus: repoWiki?.changes.gitStatus ?? [],
+    repoWiki,
+  })
 
   const intelligence: QuestCodingIntelligence = {
     version: QUEST_CODING_INTELLIGENCE_VERSION,
@@ -335,6 +392,8 @@ export async function refreshQuestCodingIntelligence(
     intelligentCodingTeam,
     verifiedDelivery,
     productArchitect,
+    runtimeReliability,
+    deepCodingCollaboration,
   }
 
   await writeQuestCodingIntelligence(projectRoot, options.questId, intelligence)
@@ -361,6 +420,8 @@ export async function writeQuestCodingIntelligence(
   await writeQuestIntelligentCodingTeamArtifacts(dir, intelligence.intelligentCodingTeam)
   await writeQuestVerifiedDeliveryArtifacts(dir, intelligence.verifiedDelivery)
   await writeQuestProductArchitectArtifacts(dir, intelligence.productArchitect)
+  await writeQuestRuntimeReliabilityArtifacts(dir, intelligence.runtimeReliability)
+  await writeQuestDeepCodingCollaborationArtifacts(dir, intelligence.deepCodingCollaboration)
 }
 
 export function formatCodingReview(intelligence: QuestCodingIntelligence): string {
@@ -421,6 +482,8 @@ export function formatCodingReview(intelligence: QuestCodingIntelligence): strin
   lines.push(formatIntelligentCodingTeamSummary(intelligence.intelligentCodingTeam))
   lines.push(formatVerifiedDeliverySummary(intelligence.verifiedDelivery))
   lines.push(formatProductArchitectSummary(intelligence.productArchitect))
+  lines.push(formatRuntimeReliabilitySummary(intelligence.runtimeReliability))
+  lines.push(formatDeepCodingCollaborationSummary(intelligence.deepCodingCollaboration))
   return lines.join('\n')
 }
 

@@ -57,6 +57,8 @@ async function main(): Promise<void> {
     { registerRepoWikiCommand },
     { registerMemoryPromoteCommand },
     { registerQuestV9Command },
+    { registerQuestReplayCommand },
+    { registerRuntimeDoctorCommand },
     { registerQuestRunCommand },
     { registerQuestDaemonCommand },
   ] = await Promise.all([
@@ -88,6 +90,8 @@ async function main(): Promise<void> {
     import('./commands/repo-wiki.js'),
     import('./commands/memory-promote.js'),
     import('./commands/quest-v9.js'),
+    import('./commands/quest-replay.js'),
+    import('./commands/runtime-doctor.js'),
     import('./commands/quest-run.js'),
     import('./commands/quest-daemon.js'),
   ])
@@ -120,6 +124,8 @@ async function main(): Promise<void> {
   registerRepoWikiCommand(program)
   registerMemoryPromoteCommand(program)
   registerQuestV9Command(program)
+  registerQuestReplayCommand(program)
+  registerRuntimeDoctorCommand(program)
   registerQuestRunCommand(program)
   registerQuestDaemonCommand(program)
 

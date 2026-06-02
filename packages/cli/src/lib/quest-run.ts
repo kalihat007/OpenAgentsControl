@@ -145,6 +145,21 @@ export interface QuestRunArtifacts {
   strategicRefactorRadar?: string
   architectureDecisionSuggestions?: string
   strategicNextActions?: string
+  runtimeReliability?: string
+  commandFailureIndex?: string
+  timeoutPolicy?: string
+  claimLedger?: string
+  runtimeDoctorReport?: string
+  autonomousRecoveryPlan?: string
+  flakyCommandMemory?: string
+  evidenceReplay?: string
+  deepCodingCollaboration?: string
+  deepThinkingReview?: string
+  ideaToBuildBrief?: string
+  smarterCodePlan?: string
+  collaborationBoard?: string
+  decisionTradeoffMatrix?: string
+  buildBetterRoadmap?: string
   summary?: string
   handoff?: string
 }
@@ -362,6 +377,21 @@ export function buildQuestRun(
     strategicRefactorRadar: 'strategic-refactor-radar.json',
     architectureDecisionSuggestions: 'architecture-decision-suggestions.json',
     strategicNextActions: 'strategic-next-actions.md',
+    runtimeReliability: 'runtime-reliability-os.json',
+    commandFailureIndex: 'command-failure-index.json',
+    timeoutPolicy: 'timeout-policy.json',
+    claimLedger: 'claim-ledger.json',
+    runtimeDoctorReport: 'runtime-doctor-report.json',
+    autonomousRecoveryPlan: 'autonomous-recovery-plan.json',
+    flakyCommandMemory: 'flaky-command-memory.json',
+    evidenceReplay: 'evidence-replay.md',
+    deepCodingCollaboration: 'deep-coding-collaboration-os.json',
+    deepThinkingReview: 'deep-thinking-review.json',
+    ideaToBuildBrief: 'idea-to-build-brief.json',
+    smarterCodePlan: 'smarter-code-plan.json',
+    collaborationBoard: 'collaboration-board.json',
+    decisionTradeoffMatrix: 'decision-tradeoff-matrix.json',
+    buildBetterRoadmap: 'build-better-roadmap.md',
     ...options.artifacts,
   }
 
@@ -506,6 +536,21 @@ export function normalizeQuestRun(quest: QuestRun): QuestRun {
       strategicRefactorRadar: quest.artifacts?.strategicRefactorRadar ?? 'strategic-refactor-radar.json',
       architectureDecisionSuggestions: quest.artifacts?.architectureDecisionSuggestions ?? 'architecture-decision-suggestions.json',
       strategicNextActions: quest.artifacts?.strategicNextActions ?? 'strategic-next-actions.md',
+      runtimeReliability: quest.artifacts?.runtimeReliability ?? 'runtime-reliability-os.json',
+      commandFailureIndex: quest.artifacts?.commandFailureIndex ?? 'command-failure-index.json',
+      timeoutPolicy: quest.artifacts?.timeoutPolicy ?? 'timeout-policy.json',
+      claimLedger: quest.artifacts?.claimLedger ?? 'claim-ledger.json',
+      runtimeDoctorReport: quest.artifacts?.runtimeDoctorReport ?? 'runtime-doctor-report.json',
+      autonomousRecoveryPlan: quest.artifacts?.autonomousRecoveryPlan ?? 'autonomous-recovery-plan.json',
+      flakyCommandMemory: quest.artifacts?.flakyCommandMemory ?? 'flaky-command-memory.json',
+      evidenceReplay: quest.artifacts?.evidenceReplay ?? 'evidence-replay.md',
+      deepCodingCollaboration: quest.artifacts?.deepCodingCollaboration ?? 'deep-coding-collaboration-os.json',
+      deepThinkingReview: quest.artifacts?.deepThinkingReview ?? 'deep-thinking-review.json',
+      ideaToBuildBrief: quest.artifacts?.ideaToBuildBrief ?? 'idea-to-build-brief.json',
+      smarterCodePlan: quest.artifacts?.smarterCodePlan ?? 'smarter-code-plan.json',
+      collaborationBoard: quest.artifacts?.collaborationBoard ?? 'collaboration-board.json',
+      decisionTradeoffMatrix: quest.artifacts?.decisionTradeoffMatrix ?? 'decision-tradeoff-matrix.json',
+      buildBetterRoadmap: quest.artifacts?.buildBetterRoadmap ?? 'build-better-roadmap.md',
     },
     nextStepSuggestions: quest.nextStepSuggestions ?? [],
     runtimes: {
@@ -869,12 +914,17 @@ export function formatRuntimeHandoff(
   lines.push('  Use Verified Coding Delivery OS before completion: compile acceptance, label evidence, trace patch provenance, enforce runtime three-cycle checks, propose eval candidates, run the agent debate gate, and check release readiness before claiming done.')
   lines.push('  Read Product Architect Intelligence sidecars when present: product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, and strategic-next-actions.md.')
   lines.push('  Use Product Architect Intelligence after completion: recommend product/architecture next steps, detect capability gaps, promote roadmap signals only with user approval, track product risks, surface strategic refactors, and suggest ADR candidates before waiting for user choice.')
+  lines.push('  Read Runtime Reliability + Evidence Replay OS sidecars when present: runtime-reliability-os.json, command-failure-index.json, timeout-policy.json, claim-ledger.json, runtime-doctor-report.json, autonomous-recovery-plan.json, flaky-command-memory.json, and evidence-replay.md.')
+  lines.push('  Use Runtime Reliability + Evidence Replay OS before completion: classify runtime failures, avoid repeated timeout/step-limit loops, honor Kimi timeout policy, prove final claims through claim-ledger evidence, run runtime doctor checks, follow autonomous recovery actions, and produce replayable evidence.')
+  lines.push('  Read Deep Coding Collaboration OS sidecars when present: deep-coding-collaboration-os.json, deep-thinking-review.json, idea-to-build-brief.json, smarter-code-plan.json, collaboration-board.json, decision-tradeoff-matrix.json, and build-better-roadmap.md.')
+  lines.push('  Use Deep Coding Collaboration OS before editing and before completion: think deeply from idea to build, ask hard product/code questions, choose smarter code strategy, expose tradeoffs, collaborate through checkpoints, and suggest build-better next steps before waiting for user choice.')
   lines.push('  Before starting any task, run a Pre-Execution Discovery Gate: inspect required local files/context first, append context.loaded/action.summary evidence, then append research.assessed. Perform web/current research only when it can affect correctness; otherwise record needed:false and proceed.')
   lines.push('  The CLI refreshes interaction-memory.json and memory-graph.json from append-only events automatically.')
   lines.push('  The CLI refreshes .oac/repo-wiki/ from Quest lifecycle and file/context events automatically.')
-  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
+  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, and Deep Coding Collaboration OS sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
   lines.push('  The CLI reconciler reads base quest.json + events.ndjson to produce live state.')
   lines.push('  Run "oac quest-status <id>" to see reconciled state.')
+  lines.push('  Run "oac quest-replay <id>" to inspect replayable proof and "oac runtime-doctor --runtime kimi" before Kimi release-ready claims.')
 
   return lines.join('\n')
 }
@@ -1052,8 +1102,8 @@ function buildRuntimeHints(
 function buildResumePrompt(questId: string, objective: string, runDir: string): string {
   return [
     `Resume OpenAgent Quest ${questId}: ${objective}`,
-    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, verified-knowledgebase.md, semantic-repo-brain.json, ast-knowledgebase.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, semantic-repo-brain.md, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, temporal-memory.md, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, intelligent-coding-team.md, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, verified-delivery-os.md, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
-    'Use Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, evidence ledger, hallucination gate, source-to-patch traceability, stale knowledge checks, behavior oracle, test-authoring plan, AST-level repo facts, knowledge confidence labels, failed-command fixes, approval-gated skill candidates, chronic cross-quest failure escalation, patch-outcome history, git-history co-change/churn/bug-density/ownership signals, requirement compiling, expert team blackboard ownership, change impact simulation, project skill-pack candidates, team gate checks, acceptance compiling, evidence-first gate checks, patch provenance, runtime three-cycle matrix, auto-eval candidates, agent debate gate, release readiness, product-architect recommendations, capability-gap mapping, roadmap signals, product risks, user-value matrix, strategic refactor radar, ADR suggestions, and PR readiness before editing or completing the Quest.',
+    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, verified-knowledgebase.md, semantic-repo-brain.json, ast-knowledgebase.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, semantic-repo-brain.md, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, temporal-memory.md, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, intelligent-coding-team.md, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, verified-delivery-os.md, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md, runtime-reliability-os.json, command-failure-index.json, timeout-policy.json, claim-ledger.json, runtime-doctor-report.json, autonomous-recovery-plan.json, flaky-command-memory.json, evidence-replay.md, deep-coding-collaboration-os.json, deep-thinking-review.json, idea-to-build-brief.json, smarter-code-plan.json, collaboration-board.json, decision-tradeoff-matrix.json, build-better-roadmap.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
+    'Use Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, and Deep Coding Collaboration OS for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, evidence ledger, hallucination gate, source-to-patch traceability, stale knowledge checks, behavior oracle, test-authoring plan, AST-level repo facts, knowledge confidence labels, failed-command fixes, approval-gated skill candidates, chronic cross-quest failure escalation, patch-outcome history, git-history co-change/churn/bug-density/ownership signals, requirement compiling, expert team blackboard ownership, change impact simulation, project skill-pack candidates, team gate checks, acceptance compiling, evidence-first gate checks, patch provenance, runtime three-cycle matrix, auto-eval candidates, agent debate gate, release readiness, product-architect recommendations, runtime reliability, command-failure fingerprints, timeout policy, claim ledger, runtime doctor checks, autonomous recovery, flaky-command memory, evidence replay, deep-thinking review, idea-to-build brief, smarter code plan, collaboration board, tradeoff matrix, build-better roadmap, capability-gap mapping, roadmap signals, product risks, user-value matrix, strategic refactor radar, ADR suggestions, and PR readiness before editing or completing the Quest.',
     'Continue in Quest Mode + Experts Mode using the same user-selected runtime model.',
   ].join(' ')
 }

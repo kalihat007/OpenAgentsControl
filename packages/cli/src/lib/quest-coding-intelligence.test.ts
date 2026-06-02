@@ -107,6 +107,19 @@ describe('quest-coding-intelligence', () => {
       expect(intelligence.verifiedDelivery.autoEvalGenerator.candidates.length).toBeGreaterThan(0)
       expect(intelligence.verifiedDelivery.agentDebateGate.participants.length).toBe(4)
       expect(intelligence.verifiedDelivery.releaseReadinessDashboard.verdict).toMatch(/pass|review|blocked/)
+      expect(intelligence.productArchitect.version).toBe('17')
+      expect(intelligence.productArchitect.productArchitectReview.verdict).toMatch(/ready|review|blocked/)
+      expect(intelligence.runtimeReliability.version).toBe('18')
+      expect(intelligence.runtimeReliability.runtimeReliabilityBrain.verdict).toMatch(/pass|review|blocked/)
+      expect(intelligence.runtimeReliability.timeoutPolicy.kimiRecommended.nativeTimeoutSymptom).toBe('Killed by timeout (30s)')
+      expect(intelligence.runtimeReliability.claimLedger.claims.length).toBeGreaterThan(0)
+      expect(intelligence.runtimeReliability.runtimeDoctorReport.checks.some((check) => check.runtime === 'kimi')).toBe(true)
+      expect(intelligence.deepCodingCollaboration.version).toBe('19')
+      expect(intelligence.deepCodingCollaboration.deepThinkingReview.hardQuestions.length).toBeGreaterThan(0)
+      expect(intelligence.deepCodingCollaboration.ideaToBuildBrief.buildSlices.length).toBeGreaterThan(0)
+      expect(intelligence.deepCodingCollaboration.smarterCodePlan.codeQualityMoves.length).toBeGreaterThan(0)
+      expect(intelligence.deepCodingCollaboration.collaborationBoard.agentCommitments.length).toBeGreaterThan(0)
+      expect(intelligence.deepCodingCollaboration.decisionTradeoffMatrix.tradeoffs.length).toBeGreaterThan(0)
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Quest v9 Coding Intelligence')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Autopilot')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Execution')
@@ -115,6 +128,8 @@ describe('quest-coding-intelligence', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Temporal Memory')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Intelligent Coding Team OS')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Verified Coding Delivery OS')
+      expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Runtime Reliability + Evidence Replay OS')
+      expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Deep Coding Collaboration OS')
       for (const artifact of [
         'coding-autopilot.json',
         'symbol-graph.json',
@@ -184,9 +199,24 @@ describe('quest-coding-intelligence', () => {
         'strategic-refactor-radar.json',
         'architecture-decision-suggestions.json',
         'strategic-next-actions.md',
+        'runtime-reliability-os.json',
+        'command-failure-index.json',
+        'timeout-policy.json',
+        'claim-ledger.json',
+        'runtime-doctor-report.json',
+        'autonomous-recovery-plan.json',
+        'flaky-command-memory.json',
+        'evidence-replay.md',
+        'deep-coding-collaboration-os.json',
+        'deep-thinking-review.json',
+        'idea-to-build-brief.json',
+        'smarter-code-plan.json',
+        'collaboration-board.json',
+        'decision-tradeoff-matrix.json',
+        'build-better-roadmap.md',
       ]) {
         const content = await readFile(join(tmpRoot, '.oac', 'coding-intelligence', artifact), 'utf-8')
-        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact === 'semantic-repo-brain.md' ? 'Semantic Repo Brain' : artifact === 'temporal-memory.md' ? 'Temporal Memory' : artifact === 'intelligent-coding-team.md' ? 'Intelligent Coding Team OS' : artifact === 'verified-delivery-os.md' ? 'Verified Coding Delivery OS' : artifact === 'strategic-next-actions.md' ? 'Product Architect Strategic Next Actions' : artifact === 'product-architect-review.json' ? 'version' : artifact.includes('next-steps') ? '[' : artifact.includes('roadmap') ? '[' : artifact.includes('capability') ? '[' : artifact.includes('risk') ? '[' : artifact.includes('value') ? '[' : artifact.includes('refactor') ? '[' : artifact.includes('architecture-decision') ? '[' : artifact.endsWith('.md') ? 'Summary' : 'version')
+        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact === 'semantic-repo-brain.md' ? 'Semantic Repo Brain' : artifact === 'temporal-memory.md' ? 'Temporal Memory' : artifact === 'intelligent-coding-team.md' ? 'Intelligent Coding Team OS' : artifact === 'verified-delivery-os.md' ? 'Verified Coding Delivery OS' : artifact === 'strategic-next-actions.md' ? 'Product Architect Strategic Next Actions' : artifact === 'evidence-replay.md' ? 'Quest v18 Evidence Replay' : artifact === 'build-better-roadmap.md' ? 'Quest v19 Build Better Roadmap' : artifact === 'product-architect-review.json' ? 'version' : artifact.includes('next-steps') ? '[' : artifact.includes('roadmap') ? '[' : artifact.includes('capability') ? '[' : artifact.includes('risk') ? '[' : artifact.includes('value') ? '[' : artifact.includes('refactor') ? '[' : artifact.includes('architecture-decision') ? '[' : artifact.endsWith('.md') ? 'Summary' : 'version')
       }
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
@@ -221,6 +251,8 @@ describe('quest-coding-intelligence', () => {
         intelligentCodingTeam: { version: string; teamGate: { verdict: string } }
         verifiedDelivery: { version: string; releaseReadinessDashboard: { verdict: string } }
         productArchitect: { version: string; productArchitectReview: { verdict: string }; roadmapSignals: unknown[] }
+        runtimeReliability: { version: string; verdict: string; claimLedger: { claims: unknown[] } }
+        deepCodingCollaboration: { version: string; verdict: string; deepThinkingReview: { hardQuestions: unknown[] } }
       }
       expect(parsed.version).toBe('9')
       expect(parsed.reason).toBe('quest.file_change')
@@ -238,6 +270,12 @@ describe('quest-coding-intelligence', () => {
       expect(parsed.productArchitect.version).toBe('17')
       expect(parsed.productArchitect.productArchitectReview.verdict).toMatch(/ready|review|blocked/)
       expect(Array.isArray(parsed.productArchitect.roadmapSignals)).toBe(true)
+      expect(parsed.runtimeReliability.version).toBe('18')
+      expect(parsed.runtimeReliability.verdict).toMatch(/pass|review|blocked/)
+      expect(Array.isArray(parsed.runtimeReliability.claimLedger.claims)).toBe(true)
+      expect(parsed.deepCodingCollaboration.version).toBe('19')
+      expect(parsed.deepCodingCollaboration.verdict).toMatch(/ready|review|blocked/)
+      expect(Array.isArray(parsed.deepCodingCollaboration.deepThinkingReview.hardQuestions)).toBe(true)
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'patch-capsules.json'), 'utf-8')).toContain('patch-')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-autopilot.json'), 'utf-8')).toContain('"version": "10"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-execution.json'), 'utf-8')).toContain('"version": "11"')
@@ -281,6 +319,21 @@ describe('quest-coding-intelligence', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'strategic-refactor-radar.json'), 'utf-8')).toContain('[')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'architecture-decision-suggestions.json'), 'utf-8')).toContain('"suggestedAdrPath"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'strategic-next-actions.md'), 'utf-8')).toContain('Product Architect Strategic Next Actions')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'runtime-reliability-os.json'), 'utf-8')).toContain('"version": "18"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'command-failure-index.json'), 'utf-8')).toContain('"version": "18"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'timeout-policy.json'), 'utf-8')).toContain('"Killed by timeout (30s)"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'claim-ledger.json'), 'utf-8')).toContain('"claims"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'runtime-doctor-report.json'), 'utf-8')).toContain('"checks"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'autonomous-recovery-plan.json'), 'utf-8')).toContain('"decisionRules"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'flaky-command-memory.json'), 'utf-8')).toContain('"commands"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'evidence-replay.md'), 'utf-8')).toContain('Quest v18 Evidence Replay')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'deep-coding-collaboration-os.json'), 'utf-8')).toContain('"version": "19"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'deep-thinking-review.json'), 'utf-8')).toContain('"hardQuestions"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'idea-to-build-brief.json'), 'utf-8')).toContain('"buildSlices"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'smarter-code-plan.json'), 'utf-8')).toContain('"codeQualityMoves"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'collaboration-board.json'), 'utf-8')).toContain('"agentCommitments"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'decision-tradeoff-matrix.json'), 'utf-8')).toContain('"tradeoffs"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'build-better-roadmap.md'), 'utf-8')).toContain('Quest v19 Build Better Roadmap')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'symbol-graph.json'), 'utf-8')).toContain('openagent.yaml')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })

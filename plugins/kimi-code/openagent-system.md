@@ -65,8 +65,8 @@ choice before the ceiling is reached.
 
 Do not exhaustively read every Quest sidecar before acting. Load `quest.json`,
 `plan.json`, `events.ndjson`, current user/repo instructions, and only the
-v9-v17 sidecars directly needed for the touched files, symbols, tests, runtime
-adapter, acceptance checks, or product-architecture recommendations. Use the repo wiki and semantic brain as indexes;
+v9-v19 sidecars directly needed for the touched files, symbols, tests, runtime
+adapter, acceptance checks, evidence replay, deep thinking review, idea-to-build plan, or product-architecture recommendations. Use the repo wiki and semantic brain as indexes;
 do not turn them into an all-files reading loop.
 
 Do not run repeated self-refresh loops. Run `oac quest-v9` at most once in a
@@ -76,6 +76,14 @@ append `task_update` with status `blocked` and reason `runtime_step_budget`,
 append `action.summary` and `next_steps.suggested`, move the Quest to `BLOCKED`
 or `WAITING`, and return a concise handoff instead of continuing tool calls until
 Kimi reports a max-step error.
+
+# Artifact Name Integrity Gate
+
+When naming Quest artifacts, copy filenames exactly from the sidecar list or from
+the filesystem. Do not alter hyphenation, singular/plural forms, extensions, or
+letters. In particular, the Quest v15 skill-pack artifact is exactly
+`project-skill-pack-builder.json`. A misspelled artifact name is a hallucination:
+correct it before responding, writing events, or claiming a sidecar was checked.
 
 # Command Timeout Guard
 
@@ -199,6 +207,14 @@ load `quest.json` first when resuming. Quest v8 artifacts are:
 - `strategic-refactor-radar.json`
 - `architecture-decision-suggestions.json`
 - `strategic-next-actions.md`
+- `runtime-reliability-os.json`
+- `command-failure-index.json`
+- `timeout-policy.json`
+- `claim-ledger.json`
+- `runtime-doctor-report.json`
+- `autonomous-recovery-plan.json`
+- `flaky-command-memory.json`
+- `evidence-replay.md`
 - `.oac/repo-wiki/index.md` (project-level, outside the run dir)
 - `summary.json`
 - optional `handoff.json`
@@ -251,7 +267,7 @@ write-back, run `oac repo-wiki`; for long local sessions use
 `oac repo-wiki --watch`.
 
 For coding work, use Quest v9 coding intelligence, the v12 Verified
-Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent Coding Team OS, v16 Verified Coding Delivery OS, and v17 Product Architect Intelligence by default. Read
+Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent Coding Team OS, v16 Verified Coding Delivery OS, v17 Product Architect Intelligence, v18 Runtime Reliability + Evidence Replay OS, and v19 Deep Coding Collaboration OS by default. Read
 `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
 `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
 `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`,
@@ -283,7 +299,14 @@ Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent
 `architecture-next-steps.json`, `roadmap-signals.json`,
 `capability-gap-map.json`, `product-risk-register.json`,
 `user-value-matrix.json`, `strategic-refactor-radar.json`,
-`architecture-decision-suggestions.json`, and `strategic-next-actions.md`
+`architecture-decision-suggestions.json`, `strategic-next-actions.md`,
+`runtime-reliability-os.json`, `command-failure-index.json`,
+`timeout-policy.json`, `claim-ledger.json`, `runtime-doctor-report.json`,
+`autonomous-recovery-plan.json`, `flaky-command-memory.json`,
+`evidence-replay.md`, `deep-coding-collaboration-os.json`,
+`deep-thinking-review.json`, `idea-to-build-brief.json`,
+`smarter-code-plan.json`, `collaboration-board.json`,
+`decision-tradeoff-matrix.json`, and `build-better-roadmap.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure
@@ -303,7 +326,11 @@ pack candidates, team gate status, acceptance criteria, evidence-first claims,
 patch provenance, runtime three-cycle requirements, eval candidates, agent
 debate results, release readiness, product-architect recommendations,
 capability gaps, roadmap signals, product risks, user value, strategic refactor
-radar, and ADR suggestions. Do not
+radar, ADR suggestions, runtime reliability signals, command-failure fingerprints,
+timeout policy, claim-ledger proof, runtime doctor checks, autonomous recovery,
+flaky-command memory, replayable evidence, deep-thinking review, idea-to-build
+brief, smarter code plan, collaboration board, decision tradeoffs, and
+build-better roadmap. Do not
 claim files, symbols, commands, APIs, docs, or test results
 without local evidence; if `hallucination-gate.json` is blocked, stop and
 report the blocker before completion. If `semantic-repo-brain.json` reports a
@@ -311,13 +338,22 @@ blocked semantic completion gate, stop and report the blocker before completion.
 If `verified-delivery-os.json` or `release-readiness-dashboard.json` is blocked,
 stop and report the blocker before claiming completion, tested status, or
 release readiness.
+If `runtime-reliability-os.json` is blocked, `claim-ledger.json` has missing or
+blocked claims, or `evidence-replay.md` lacks replay commands for completion
+claims, stop and report the blocker before claiming tested, done, or
+release-ready status.
+If `deep-coding-collaboration-os.json` is blocked or review-gated, use
+`deep-thinking-review.json`, `idea-to-build-brief.json`,
+`smarter-code-plan.json`, and `decision-tradeoff-matrix.json` to either choose
+a smaller verified build slice or ask the user for the required
+product/architecture decision.
 Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
 `tests.selected`, and `review.signals` when those facts change. Run
 `oac quest-v9` or `oac quest-v9 <quest-id>` for a fresh snapshot.
 
 After completing a request, recommend 2-5 concise next steps based on changed
 files, task state, verification, memory/context signals, Product Architect
-Intelligence, and your understanding of the application. Include at least one
+Intelligence, Deep Coding Collaboration OS, and your understanding of the application. Include at least one
 product-architect or architecture recommendation when useful, then wait for the
 user to choose. For durable Quest runs,
 append `next_steps.suggested` with those options before returning to `WAITING`;
