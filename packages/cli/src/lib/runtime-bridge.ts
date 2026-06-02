@@ -128,7 +128,7 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
   const { questId, objective, runDir } = options
   const tasks = options.tasks ?? []
   return [
-    `Execute this OpenAgent Quest v8 control plane with Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS: ${objective}`,
+    `Execute this OpenAgent Quest v8 control plane with Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence: ${objective}`,
     `Quest ID: ${questId}`,
     `Load the run artifacts from ${runDir}:\n`,
     `  - spec.json (execution spec)`,
@@ -146,12 +146,15 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
     `  - temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, and temporal-memory.md when present (durable cross-quest failure memory with chronic-failure escalation, patch-outcome ledger, git-history co-change/churn/bug-density/ownership signals, and empirical confidence)`,
     `  - intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, and intelligent-coding-team.md when present (requirement compiler, expert team blackboard, change-impact simulator, project skill-pack builder, and team completion gate)`,
     `  - verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, and verified-delivery-os.md when present (acceptance compiler, evidence-first gate, patch provenance ledger, runtime three-cycle matrix, eval candidates, agent debate gate, and release readiness dashboard)`,
+    `  - product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, and strategic-next-actions.md when present (product architect completion review, product/architecture next steps, roadmap signals, capability gaps, product risks, user value, refactor radar, and ADR candidates)`,
     ``,
     `Follow Quest Mode + Experts Mode. Execute all tasks in the plan.`,
-    `Step budget guard: treat this runtime call as one bounded Quest execution cycle. Do not exhaustively read every optional sidecar before acting. Load quest.json, plan.json, events.ndjson, current user instructions, and only the v9-v16 sidecars directly needed for the touched files, symbols, tests, or runtime adapter.`,
+    `Step budget guard: treat this runtime call as one bounded Quest execution cycle. Do not exhaustively read every optional sidecar before acting. Load quest.json, plan.json, events.ndjson, current user instructions, and only the v9-v17 sidecars directly needed for the touched files, symbols, tests, runtime adapter, or product-architecture recommendation.`,
     `Do not run repeated self-refresh loops. Run oac quest-v9 at most once in a runtime call, and only after meaningful file/context changes or when a required delivery sidecar is stale or missing.`,
     `If the task cannot be completed safely within the current runtime step budget, append task_update status "blocked" with reason "runtime_step_budget", append action.summary plus next_steps.suggested, append state_change to "BLOCKED" or "WAITING", and return a concise handoff. Do not keep calling tools until the provider reports a max-step error.`,
-    `Before execution, use interaction-memory.json, agent-memory.json, memory-graph.json, .oac/repo-wiki/, Quest v9 coding-intelligence sidecars, Coding Autopilot sidecars, Coding Execution sidecars, Verified Knowledgebase sidecars, Semantic Repo Brain sidecars, Temporal Memory sidecars, Intelligent Coding Team OS sidecars, and Verified Coding Delivery OS sidecars to avoid repeating work, reuse known context, understand request/task/file/context relationships, and prove delivery readiness.`,
+    `Command timeout guard for Kimi and shell-backed runtimes: before running builds, installs, full test suites, live Quest validation, docker commands, network operations, or any command expected to take more than 20 seconds, request an explicit shell/task timeout such as timeout_s: 300 for normal validation or timeout_s: 900 for deep/live/runtime validation. Avoid relying on native 30s defaults.`,
+    `If a command reports "Killed by timeout (30s)" or another command timeout, do not retry the exact same command with the same timeout. Append an error event with reason "runtime_command_timeout", record the failed command fingerprint in failure-fix memory when available, then either rerun once with a larger timeout and narrower scope or block with next_steps.suggested.`,
+    `Before execution, use interaction-memory.json, agent-memory.json, memory-graph.json, .oac/repo-wiki/, Quest v9 coding-intelligence sidecars, Coding Autopilot sidecars, Coding Execution sidecars, Verified Knowledgebase sidecars, Semantic Repo Brain sidecars, Temporal Memory sidecars, Intelligent Coding Team OS sidecars, Verified Coding Delivery OS sidecars, and Product Architect Intelligence sidecars to avoid repeating work, reuse known context, understand request/task/file/context relationships, prove delivery readiness, and recommend the next product/architecture step.`,
     `Before marking any task in_progress, run a Pre-Execution Discovery Gate: identify the required local files and context, inspect them with repo tools, and append context.loaded plus action.summary evidence for what you explored.`,
     `Then decide whether external/current/web research is needed. Append research.assessed using this JSON shape: {"timestamp":"<ISO time>","type":"research.assessed","data":{"needed":false,"reason":"repo context is sufficient","taskId":"task-001","runtime":"${options.runtime}","queries":[],"changedFiles":["src/file.ts"],"contextFiles":[".opencode/context/core/quest-mode.md"],"cwd":"<working directory>"}}`,
     `Perform web/current research only when external facts, current API docs, regulations, standards, pricing, provider capabilities, or unfamiliar domain knowledge can affect correctness. If local context is enough, record needed:false and start execution.`,
@@ -170,12 +173,12 @@ export function buildRuntimePrompt(options: RuntimeBridgeOptions): string {
     `When observing the directory you are working in, append cwd.observed using this JSON shape: {"timestamp":"<ISO time>","type":"cwd.observed","data":{"cwd":"<working directory>","runtime":"${options.runtime}","taskId":"task-001"}}`,
     `After a meaningful unit of work, append action.summary using this JSON shape: {"timestamp":"<ISO time>","type":"action.summary","data":{"summary":"short summary of what was done","taskId":"task-001","runtime":"${options.runtime}","changedFiles":["src/file.ts"],"contextFiles":[".opencode/context/core/quest-mode.md"],"cwd":"<working directory>"}}`,
     `When you learn a reusable decision, convention, blocker, discovery, or user preference, append knowledge.captured using this JSON shape: {"timestamp":"<ISO time>","type":"knowledge.captured","data":{"kind":"decision","summary":"short reusable learning","taskId":"task-001","runtime":"${options.runtime}","cwd":"<working directory>"}}`,
-    `For coding work, append coding.intent, impact.analyzed, patch.capsule, tests.selected, and review.signals events when you refine intent, understand blast radius, package file changes, select validation, or identify risks. Use Coding Autopilot sidecars for symbol-level context, pre-edit boundaries, patch accountability, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, and PR readiness. Use Coding Execution sidecars for executable acceptance, guarded autofix, contract drift detection, review-to-patch loops, test-gap closure, regression snapshots, runtime compatibility, ownership locks, security/secrets gating, and PR packaging. Use Verified Knowledgebase sidecars for evidence-first coding, hallucination checks, contract facts, source-to-patch traceability, stale knowledge refresh, dependency research cache, behavior oracle, and test-authoring plan. Use Semantic Repo Brain sidecars for AST-level functions/classes/exports/commands/events/schemas/tests/scripts/prompts/ownership, confidence labels, failed-command fingerprints, and approval-gated skill candidates. Use Temporal Memory sidecars to escalate chronic cross-quest failure commands instead of retrying them, treat reverted/hotfixed and bug-prone surfaces as higher risk, and weigh git-history co-change when scoping blast radius. Use Intelligent Coding Team OS sidecars to compile requirements, coordinate expert owners/file locks, simulate change impact, keep project skill-pack candidates approval-gated, and check the team gate before completion. Use Verified Coding Delivery OS sidecars to compile acceptance, label evidence, trace patch provenance, enforce runtime three-cycle checks, propose eval candidates, run the agent debate gate, and check release readiness before claiming done. The CLI refreshes coding-intelligence.json, autopilot sidecars, execution sidecars, verified-knowledgebase sidecars, semantic-repo-brain sidecars, temporal-memory sidecars, intelligent-coding-team sidecars, and verified-delivery sidecars automatically from these events.`,
-    `After the user's request is finished, append next_steps.suggested with 2-5 concise recommendations based on changed files, task state, verification, memory/context signals, and your understanding of this codebase; then wait for the user to choose. Use this JSON shape: {"timestamp":"<ISO time>","type":"next_steps.suggested","data":{"suggestions":[{"id":"run-kimi-live-validation","kind":"verify","title":"Run live Kimi validation for the touched adapter","reason":"Kimi adapter files changed, so live write-back should be proven before release","command":"RUN_LIVE_KIMI=1 OAC_KIMI_LIVE_FORCE=1 npm run test:quest-v8:kimi"}]}}`,
+    `For coding work, append coding.intent, impact.analyzed, patch.capsule, tests.selected, and review.signals events when you refine intent, understand blast radius, package file changes, select validation, or identify risks. Use Coding Autopilot sidecars for symbol-level context, pre-edit boundaries, patch accountability, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, and PR readiness. Use Coding Execution sidecars for executable acceptance, guarded autofix, contract drift detection, review-to-patch loops, test-gap closure, regression snapshots, runtime compatibility, ownership locks, security/secrets gating, and PR packaging. Use Verified Knowledgebase sidecars for evidence-first coding, hallucination checks, contract facts, source-to-patch traceability, stale knowledge refresh, dependency research cache, behavior oracle, and test-authoring plan. Use Semantic Repo Brain sidecars for AST-level functions/classes/exports/commands/events/schemas/tests/scripts/prompts/ownership, confidence labels, failed-command fingerprints, and approval-gated skill candidates. Use Temporal Memory sidecars to escalate chronic cross-quest failure commands instead of retrying them, treat reverted/hotfixed and bug-prone surfaces as higher risk, and weigh git-history co-change when scoping blast radius. Use Intelligent Coding Team OS sidecars to compile requirements, coordinate expert owners/file locks, simulate change impact, keep project skill-pack candidates approval-gated, and check the team gate before completion. Use Verified Coding Delivery OS sidecars to compile acceptance, label evidence, trace patch provenance, enforce runtime three-cycle checks, propose eval candidates, run the agent debate gate, and check release readiness before claiming done. Use Product Architect Intelligence sidecars after completion to recommend product/architecture next steps, detect capability gaps, track product risks, surface roadmap signals for user approval, map user value, flag strategic refactors, and suggest ADR candidates. The CLI refreshes coding-intelligence.json, autopilot sidecars, execution sidecars, verified-knowledgebase sidecars, semantic-repo-brain sidecars, temporal-memory sidecars, intelligent-coding-team sidecars, verified-delivery sidecars, and product-architect sidecars automatically from these events.`,
+    `After the user's request is finished, append next_steps.suggested with 2-5 concise recommendations based on changed files, task state, verification, memory/context signals, Product Architect Intelligence sidecars, and your understanding of this codebase; include at least one product-architect or architecture recommendation when useful, then wait for the user to choose. Use this JSON shape: {"timestamp":"<ISO time>","type":"next_steps.suggested","data":{"suggestions":[{"id":"run-kimi-live-validation","kind":"verify","title":"Run live Kimi validation for the touched adapter","reason":"Kimi adapter files changed, so live write-back should be proven before release","command":"RUN_LIVE_KIMI=1 OAC_KIMI_LIVE_FORCE=1 npm run test:quest-v8:kimi"},{"id":"review-product-architect-next-actions","kind":"review","title":"Review Product Architect next actions","reason":"strategic-next-actions.md identifies architecture/product follow-up choices"}]}}`,
     `When loading context, append context.loaded using this JSON shape: {"timestamp":"<ISO time>","type":"context.loaded","data":{"contextPath":".opencode/context/core/quest-mode.md","taskId":"task-001","reason":"Quest Mode defaults"}}`,
     `When changing context files, append context.changed plus a file_change event so memory-graph.json and interaction-memory.json link the action to both context and file nodes.`,
     `The CLI refreshes .oac/repo-wiki/ after Quest creation and file/context/lifecycle events. If this runtime changes files outside Quest write-back, run oac repo-wiki; for long local sessions use oac repo-wiki --watch.`,
-    `The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS sidecars after Quest creation, file/context/validation events, coding events, and review/verify/complete lifecycle changes. Run oac quest-v9 when you need a fresh coding/autopilot/execution/verified-knowledgebase/semantic/temporal/team/delivery review snapshot.`,
+    `The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence sidecars after Quest creation, file/context/validation events, coding events, and review/verify/complete lifecycle changes. Run oac quest-v9 when you need a fresh coding/autopilot/execution/verified-knowledgebase/semantic/temporal/team/delivery/product-architect review snapshot.`,
     `Do not treat every event as long-term knowledge. Repeated learnings become promotion candidates only; durable repo memory requires user approval through oac memory-promote.`,
     `For long-running tasks (>2 minutes), append periodic task.progress events to help the user track completion. Use percent 0-100 and an optional checkpoint string.`,
     `Use this exact progress JSON shape: {"timestamp":"<ISO time>","type":"task.progress","data":{"taskId":"task-001","percent":50,"checkpoint":"auth-middleware.ts updated","message":"Implementing OAuth middleware"}}`,
@@ -392,9 +395,15 @@ function hasTaskUpdate(events: ReconcilerEvent[], taskId: string, status: string
 const WRITE_BACK_BRIDGE_RUNTIMES = new Set<RuntimeType>(['codex', 'kimi'])
 const STEP_LIMIT_REACHED_PATTERN =
   /\b(?:max(?:imum)? number of steps reached|max steps reached|max-steps-per-turn|step limit reached)\b(?::\s*\d+)?/i
+const COMMAND_TIMEOUT_PATTERN =
+  /(?:killed by timeout\s*\(\s*\d+s\s*\)|command (?:was )?killed by timeout|tool call timed out|shell command timed out|bash command timed out|timed out after \d+(?:ms|s))/i
 
 export function isRuntimeStepLimitError(message: string | undefined): boolean {
   return STEP_LIMIT_REACHED_PATTERN.test(message ?? '')
+}
+
+export function isRuntimeCommandTimeoutError(message: string | undefined): boolean {
+  return COMMAND_TIMEOUT_PATTERN.test(message ?? '')
 }
 
 /** Parse daemon-style objectives for optional injected task / note markers. */
@@ -728,12 +737,119 @@ async function ensureRuntimeStepLimitWriteBack(
   return synthesized
 }
 
+async function ensureRuntimeCommandTimeoutWriteBack(
+  options: RuntimeBridgeOptions,
+  result: { ok: boolean; exitCode: number | null; stdout?: string; errorMessage?: string },
+): Promise<boolean> {
+  const message = [result.errorMessage, result.stdout].filter(Boolean).join('\n')
+  if (!isRuntimeCommandTimeoutError(message)) return false
+
+  const tasks = options.tasks ?? []
+  const events = await loadEvents(options.projectRoot, options.questId)
+  const terminalFor = (taskId: string): boolean =>
+    hasTaskUpdate(events, taskId, 'completed') ||
+    hasTaskUpdate(events, taskId, 'failed') ||
+    hasTaskUpdate(events, taskId, 'blocked')
+
+  if (tasks.length > 0 && tasks.every((task) => terminalFor(task.id))) {
+    return false
+  }
+
+  const ts = (): string => new Date().toISOString()
+  let synthesized = false
+
+  const appendSyntheticEvent = async (
+    type: ReconcilerEvent['type'],
+    data: Record<string, unknown>,
+  ): Promise<void> => {
+    const event: ReconcilerEvent = { timestamp: ts(), type, data }
+    await appendQuestEvent(options.projectRoot, options.questId, event)
+    events.push(event)
+    synthesized = true
+  }
+
+  for (const task of tasks) {
+    if (terminalFor(task.id)) continue
+
+    if (!hasTaskUpdate(events, task.id, 'in_progress')) {
+      await appendSyntheticEvent('task_update', {
+        taskId: task.id,
+        status: 'in_progress',
+        expert: task.agent,
+        title: task.title,
+      })
+    }
+
+    await appendSyntheticEvent('task_update', {
+      taskId: task.id,
+      status: 'blocked',
+      expert: task.agent,
+      title: task.title,
+      reason: 'runtime_command_timeout',
+      runtime: options.runtime,
+    })
+  }
+
+  if (!events.some((event) => event.type === 'error' && event.data.reason === 'runtime_command_timeout')) {
+    await appendSyntheticEvent('error', {
+      message: `Runtime ${options.runtime} hit a command timeout before completing the Quest turn.`,
+      reason: 'runtime_command_timeout',
+      runtime: options.runtime,
+      critical: false,
+      stdoutPreview: result.stdout?.slice(0, 500),
+      errorPreview: result.errorMessage?.slice(0, 500),
+    })
+  }
+
+  if (!events.some((event) => event.type === 'next_steps.suggested')) {
+    await appendSyntheticEvent('next_steps.suggested', {
+      suggestions: [
+        {
+          id: `${options.runtime}-rerun-with-longer-timeout`,
+          kind: 'verify',
+          title: `Rerun the timed-out ${options.runtime} command with a larger timeout`,
+          reason: 'The command hit a native timeout before producing usable completion evidence.',
+          command: `oac quest-resume ${options.questId} --runtime ${options.runtime}`,
+        },
+        {
+          id: `${options.runtime}-split-timeout-command`,
+          kind: 'review',
+          title: 'Split validation into smaller command slices',
+          reason: 'Narrower commands make timeout failures easier to localize and avoid repeating an expensive full run.',
+        },
+      ],
+    })
+  }
+
+  if (!events.some((event) => event.type === 'state_change' && event.data.to === 'BLOCKED')) {
+    await appendSyntheticEvent('state_change', {
+      from: 'EXECUTE',
+      to: 'BLOCKED',
+      reason: 'runtime_command_timeout',
+      runtime: options.runtime,
+    })
+  }
+
+  if (synthesized) {
+    log.warn('Synthesized runtime command-timeout write-back events', {
+      questId: options.questId,
+      runtime: options.runtime,
+      taskCount: tasks.length,
+    })
+  }
+
+  return synthesized
+}
+
 async function finalizeRuntimeBridge(
   options: RuntimeBridgeOptions,
   partial: { ok: boolean; exitCode: number | null; durationMs?: number; stdout?: string; errorMessage?: string },
 ): Promise<void> {
   const stepLimitExceeded = await ensureRuntimeStepLimitWriteBack(options, partial)
-  if (!stepLimitExceeded) {
+  const commandTimeoutExceeded = stepLimitExceeded
+    ? false
+    : await ensureRuntimeCommandTimeoutWriteBack(options, partial)
+  if (!stepLimitExceeded && !commandTimeoutExceeded) {
     await ensureRuntimeWriteBack(options, partial)
   }
   await recordRuntimeCompleted(options, {
@@ -742,12 +858,13 @@ async function finalizeRuntimeBridge(
     durationMs: partial.durationMs,
     errorMessage: partial.errorMessage,
     stepLimitExceeded,
+    commandTimeoutExceeded,
   })
 }
 
 async function recordRuntimeCompleted(
   options: RuntimeBridgeOptions,
-  result: { ok: boolean; exitCode: number | null; errorMessage?: string; durationMs?: number; stepLimitExceeded?: boolean },
+  result: { ok: boolean; exitCode: number | null; errorMessage?: string; durationMs?: number; stepLimitExceeded?: boolean; commandTimeoutExceeded?: boolean },
 ): Promise<void> {
   await appendQuestEvent(options.projectRoot, options.questId, {
     timestamp: new Date().toISOString(),
@@ -760,6 +877,7 @@ async function recordRuntimeCompleted(
       taskIds: options.tasks?.map((task) => task.id) ?? [],
       ...(result.errorMessage ? { errorMessage: result.errorMessage } : {}),
       ...(result.stepLimitExceeded ? { stepLimitExceeded: true } : {}),
+      ...(result.commandTimeoutExceeded ? { commandTimeoutExceeded: true } : {}),
     },
   })
 }

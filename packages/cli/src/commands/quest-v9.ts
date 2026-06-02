@@ -83,6 +83,12 @@ export async function questV9Command(
   info(`Auto-eval candidates: ${intelligence.verifiedDelivery.autoEvalGenerator.candidates.length}`)
   info(`Agent debate gate: ${intelligence.verifiedDelivery.agentDebateGate.verdict}`)
   info(`Release readiness: ${intelligence.verifiedDelivery.releaseReadinessDashboard.verdict}`)
+  info(`Product architect verdict: ${intelligence.productArchitect.productArchitectReview.verdict}`)
+  info(`Architecture next steps: ${intelligence.productArchitect.architectureNextSteps.length}`)
+  info(`Roadmap signals: ${intelligence.productArchitect.roadmapSignals.length}`)
+  info(`Capability gaps: ${intelligence.productArchitect.capabilityGapMap.length}`)
+  info(`Product risks: ${intelligence.productArchitect.productRiskRegister.length}`)
+  info(`Strategic refactor signals: ${intelligence.productArchitect.strategicRefactorRadar.length}`)
 
   if (intelligence.reviewSignals.length > 0) {
     warn(`Review signals: ${intelligence.reviewSignals.length}`)
@@ -168,13 +174,22 @@ export async function questV9Command(
   log(`  - ${join(artifactDir, 'agent-debate-gate.json')}`)
   log(`  - ${join(artifactDir, 'release-readiness-dashboard.json')}`)
   log(`  - ${join(artifactDir, 'verified-delivery-os.md')}`)
+  log(`  - ${join(artifactDir, 'product-architect-review.json')}`)
+  log(`  - ${join(artifactDir, 'architecture-next-steps.json')}`)
+  log(`  - ${join(artifactDir, 'roadmap-signals.json')}`)
+  log(`  - ${join(artifactDir, 'capability-gap-map.json')}`)
+  log(`  - ${join(artifactDir, 'product-risk-register.json')}`)
+  log(`  - ${join(artifactDir, 'user-value-matrix.json')}`)
+  log(`  - ${join(artifactDir, 'strategic-refactor-radar.json')}`)
+  log(`  - ${join(artifactDir, 'architecture-decision-suggestions.json')}`)
+  log(`  - ${join(artifactDir, 'strategic-next-actions.md')}`)
   log('')
 }
 
 export function registerQuestV9Command(program: Command): void {
   program
     .command('quest-v9 [quest-id]')
-    .description('Refresh and inspect Quest v9 coding intelligence through the v16 Verified Coding Delivery OS artifacts')
+    .description('Refresh and inspect Quest v9 coding intelligence through the v17 Product Architect Intelligence artifacts')
     .option('--json', 'Print machine-readable coding intelligence', false)
     .option('--objective <text>', 'Objective to use when no quest id is supplied')
     .option('--changed-file <path...>', 'Changed file path(s) to include in the analysis')

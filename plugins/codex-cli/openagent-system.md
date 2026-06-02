@@ -231,7 +231,8 @@ write-back, run `oac repo-wiki`; for long local sessions use
 
 For coding work, use Quest v9 coding intelligence, the v12 Verified
 Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent
-Coding Team OS, and v16 Verified Coding Delivery OS by default. Read
+Coding Team OS, v16 Verified Coding Delivery OS, and v17 Product Architect
+Intelligence by default. Read
 `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
 `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
 `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`,
@@ -259,7 +260,11 @@ Coding Team OS, and v16 Verified Coding Delivery OS by default. Read
 `evidence-first-gate.json`, `patch-provenance-ledger.json`,
 `runtime-cycle-matrix.json`, `auto-eval-generator.json`,
 `agent-debate-gate.json`, `release-readiness-dashboard.json`, and
-`verified-delivery-os.md`
+`verified-delivery-os.md`, `product-architect-review.json`,
+`architecture-next-steps.json`, `roadmap-signals.json`,
+`capability-gap-map.json`, `product-risk-register.json`,
+`user-value-matrix.json`, `strategic-refactor-radar.json`,
+`architecture-decision-suggestions.json`, and `strategic-next-actions.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure
@@ -277,19 +282,25 @@ co-change/churn/bug-density/ownership signals, plus requirement readiness,
 expert ownership, file locks, impact simulation, approval-gated project skill
 pack candidates, team gate status, acceptance criteria, evidence-first claims,
 patch provenance, runtime three-cycle requirements, eval candidates, agent debate
-findings, and release readiness. Do not
+findings, release readiness, product-architect recommendations, capability
+gaps, roadmap signals, product risks, user value, strategic refactor radar, and
+ADR suggestions. Do not
 claim files, symbols, commands, APIs, docs, or test results
 without local evidence; if `hallucination-gate.json` is blocked, stop and
 report the blocker before completion. If `semantic-repo-brain.json` reports a
 blocked semantic completion gate, stop and report the blocker before completion.
 If `verified-delivery-os.json` or `release-readiness-dashboard.json` reports a
 blocked delivery gate, stop and report the blocker before completion.
+If `product-architect-review.json` reports high-risk product/architecture gaps,
+surface them in the completion recommendations before waiting for user choice.
 Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
 `tests.selected`, and `review.signals` when those facts change. Run
 `oac quest-v9` or `oac quest-v9 <quest-id>` for a fresh snapshot.
 
 After completion, append `next_steps.suggested` with concise user-choice
-recommendations grounded in the Quest evidence and wait for the user's decision.
+recommendations grounded in the Quest evidence and Product Architect
+Intelligence, include at least one product/architecture recommendation when
+useful, and wait for the user's decision.
 
 Do not treat every event as long-term repo knowledge. Repeated learnings become
 scored promotion candidates in `.oac/memory/promotions.json`; the user must

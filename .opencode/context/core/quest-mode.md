@@ -115,6 +115,15 @@ Required v8 artifacts when available:
 - `agent-debate-gate.json` - Quest v16 tech lead, tester, security, and release-lead debate verdicts
 - `release-readiness-dashboard.json` - Quest v16 final readiness dashboard and blockers
 - `verified-delivery-os.md` - human-readable Quest v16 delivery brief
+- `product-architect-review.json` - Quest v17 Product Architect Intelligence rollup for completion recommendations and product/architecture gate
+- `architecture-next-steps.json` - Quest v17 architect-ranked next steps after completion
+- `roadmap-signals.json` - Quest v17 approval-gated roadmap signals from user intent, changes, runtime parity, and delivery evidence
+- `capability-gap-map.json` - Quest v17 product capability gaps and owners
+- `product-risk-register.json` - Quest v17 product/architecture risks and mitigations
+- `user-value-matrix.json` - Quest v17 user/persona value created by the change
+- `strategic-refactor-radar.json` - Quest v17 refactor signals from repeated touched surfaces and failure patterns
+- `architecture-decision-suggestions.json` - Quest v17 ADR candidates and tradeoffs
+- `strategic-next-actions.md` - human-readable Quest v17 product architect recommendations
 - `summary.json` - machine-readable execution summary
 - `handoff.json` - optional IDE handoff manifest
 - `.oac/memory/promotions.json` - user-reviewed promotion queue for repeated learnings before they become durable repo knowledge
@@ -141,12 +150,13 @@ For adaptive v8 work:
 - read Temporal Memory sidecars when present so coding escalates chronic cross-quest failures instead of retrying, treats reverted/hotfixed and bug-prone surfaces as higher risk, and weighs git-history co-change when scoping blast radius
 - read Intelligent Coding Team OS sidecars when present so coding compiles requirements before edits, keeps expert owners and file locks visible, simulates impact, keeps project skill candidates approval-gated, and uses the team gate before completion
 - read Verified Coding Delivery OS sidecars when present so coding compiles acceptance, labels evidence confidence, traces patch provenance, checks runtime three-cycle coverage, proposes evals, runs agent debate, and verifies release readiness before claiming completion
+- read Product Architect Intelligence sidecars when present so completion includes product/architecture next steps, capability gaps, roadmap signals, product risks, user value, strategic refactor radar, and ADR candidates before waiting for the user to choose
 - keep review decisions, injected tasks, and priority changes append-only
 
 Step budget guard:
 
 - treat each runtime turn as one bounded Quest execution cycle
-- do not exhaustively read every optional sidecar before acting; load base run files, current repo/user instructions, and only the v9-v16 sidecars needed for touched files, symbols, tests, adapters, or acceptance checks
+- do not exhaustively read every optional sidecar before acting; load base run files, current repo/user instructions, and only the v9-v17 sidecars needed for touched files, symbols, tests, adapters, acceptance checks, or product-architecture recommendations
 - run `oac quest-v9` at most once in a turn, and only after meaningful file/context changes or stale required sidecars
 - when work cannot finish inside the current turn budget, append `task_update` with status `blocked` and reason `runtime_step_budget`, append `action.summary` and `next_steps.suggested`, move to `BLOCKED` or `WAITING`, and return a concise resume path instead of continuing until a provider max-step error
 
@@ -200,7 +210,7 @@ Treat the repo wiki as current working context, not long-term truth. Durable kno
 
 ## Quest v9 Coding Intelligence
 
-Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Quest v14 adds Temporal Memory. Quest v15 adds the Intelligent Coding Team OS. Quest v16 adds the Verified Coding Delivery OS. Together they are active by default for coding, installer, runtime, adapter, test, and repo-maintenance work.
+Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Quest v14 adds Temporal Memory. Quest v15 adds the Intelligent Coding Team OS. Quest v16 adds the Verified Coding Delivery OS. Quest v17 adds Product Architect Intelligence. Together they are active by default for coding, installer, runtime, adapter, test, product architecture, and repo-maintenance work.
 
 Before editing code, use Quest v9 artifacts to answer:
 
@@ -220,15 +230,16 @@ Before editing code, use Quest v9 artifacts to answer:
 - which failed-command fingerprints have known fixes and which repeated workflows are only skill candidates until the user approves promotion
 - whether requirements are ready, which expert owns each work item, which file locks apply, what impact surfaces are predicted, which project skill-pack candidates are pending approval, and whether the team gate passes
 - which acceptance criteria are satisfied, which claims are verified/inferred/stale/missing, which patches are traceable to requirements/evidence/tests, whether repeated request cycles are covered for required runtimes, which evals should be added, whether the agent debate gate passed, and whether release readiness is blocked
+- which product/architecture next steps should be suggested after completion, which capability gaps and product risks remain, which roadmap signals need user approval, where user value increased, whether a strategic refactor is emerging, and which ADR candidates should be proposed
 
-The CLI refreshes Quest v9/v10/v11/v12/v13/v14/v15/v16 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
+The CLI refreshes Quest v9/v10/v11/v12/v13/v14/v15/v16/v17 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
 
 ```bash
 oac quest-v9
 oac quest-v9 <quest-id>
 ```
 
-For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, hallucination gate, semantic completion gate, security/secrets gate, Intelligent Coding Team OS team gate, Verified Coding Delivery OS release readiness, and any required runtime parity or three-cycle checks are recorded or the gap is explicitly called out.
+For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, hallucination gate, semantic completion gate, security/secrets gate, Intelligent Coding Team OS team gate, Verified Coding Delivery OS release readiness, Product Architect Intelligence recommendations, and any required runtime parity or three-cycle checks are recorded or the gap is explicitly called out.
 
 ## Memory Promotion System
 

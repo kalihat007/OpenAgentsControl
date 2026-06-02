@@ -134,8 +134,8 @@ agent:
 
       Do not exhaustively read every Quest sidecar before acting. Load `quest.json`,
       `plan.json`, `events.ndjson`, current user/repo instructions, and only the
-      v9-v16 sidecars directly needed for the touched files, symbols, tests, runtime
-      adapter, or acceptance checks. Use the repo wiki and semantic brain as indexes;
+      v9-v17 sidecars directly needed for the touched files, symbols, tests, runtime
+      adapter, acceptance checks, or product-architecture recommendations. Use the repo wiki and semantic brain as indexes;
       do not turn them into an all-files reading loop.
 
       Do not run repeated self-refresh loops. Run `oac quest-v9` at most once in a
@@ -145,6 +145,21 @@ agent:
       append `action.summary` and `next_steps.suggested`, move the Quest to `BLOCKED`
       or `WAITING`, and return a concise handoff instead of continuing tool calls until
       Kimi reports a max-step error.
+
+      # Command Timeout Guard
+
+      Kimi shell/background commands can be killed by a native timeout, often shown as
+      `Killed by timeout (30s)`. Before running installs, builds, full test suites,
+      live Quest validation, Docker commands, network operations, or any command that
+      may exceed 20 seconds, request an explicit shell/task timeout instead of relying
+      on the default: use about `timeout_s: 300` for normal validation and
+      `timeout_s: 900` for deep/live/runtime validation.
+
+      If a command is killed by timeout, do not retry the exact same command with the
+      same timeout. Capture the failed command, append an `error` event with reason
+      `runtime_command_timeout`, record/update failure-fix memory when durable Quest
+      artifacts exist, then either rerun once with a larger timeout and narrower scope
+      or block with `next_steps.suggested` so the user can choose the next action.
 
       # Quest Mode
 
@@ -269,6 +284,15 @@ agent:
       - agent-debate-gate.json
       - release-readiness-dashboard.json
       - verified-delivery-os.md
+      - product-architect-review.json
+      - architecture-next-steps.json
+      - roadmap-signals.json
+      - capability-gap-map.json
+      - product-risk-register.json
+      - user-value-matrix.json
+      - strategic-refactor-radar.json
+      - architecture-decision-suggestions.json
+      - strategic-next-actions.md
       - .oac/repo-wiki/index.md (project-level, outside the run dir)
       - summary.json
       - optional handoff.json
@@ -343,7 +367,7 @@ agent:
         when external/current research is actually used
       - use `next_steps.suggested` after completion to offer choices while
         waiting for the user to decide
-      - use Quest v9/v10/v11/v12/v13/v14/v15/v16 coding sidecars before editing or completing coding work:
+      - use Quest v9/v10/v11/v12/v13/v14/v15/v16/v17 coding and product-architect sidecars before editing or completing coding work:
         `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
         `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
         `patch-ledger.json`, `pre-edit-contract.json`,
@@ -372,8 +396,13 @@ agent:
         `verified-delivery-os.json`, `acceptance-compiler.json`,
         `evidence-first-gate.json`, `patch-provenance-ledger.json`,
         `runtime-cycle-matrix.json`, `auto-eval-generator.json`,
-        `agent-debate-gate.json`, `release-readiness-dashboard.json`, and
-        `verified-delivery-os.md` capture intent, affected files/modules/symbols,
+        `agent-debate-gate.json`, `release-readiness-dashboard.json`,
+        `verified-delivery-os.md`, `product-architect-review.json`,
+        `architecture-next-steps.json`, `roadmap-signals.json`,
+        `capability-gap-map.json`, `product-risk-register.json`,
+        `user-value-matrix.json`, `strategic-refactor-radar.json`,
+        `architecture-decision-suggestions.json`, and
+        `strategic-next-actions.md` capture intent, affected files/modules/symbols,
         runtime parity, patch capsules, smart-test tiers, patch ledger,
         pre-edit contract, automatic review, failure replay, dependency
         research gate, bounded autofix, PR readiness, executable acceptance,
@@ -389,7 +418,9 @@ agent:
         simulation, approval-gated project skill candidates, team gate status,
         acceptance criteria, evidence-first claims, patch provenance, runtime
         three-cycle requirements, eval candidates, agent debate, release
-        readiness, and review signals
+        readiness, product-architect recommendations, capability gaps, roadmap
+        signals, product risks, user value, strategic refactor radar, ADR
+        suggestions, and review signals
       - do not claim files, symbols, commands, APIs, docs, or test results without
         local evidence; if `hallucination-gate.json` is blocked, stop and report
         the blocker before completion

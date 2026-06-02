@@ -175,9 +175,18 @@ describe('quest-coding-intelligence', () => {
         'agent-debate-gate.json',
         'release-readiness-dashboard.json',
         'verified-delivery-os.md',
+        'product-architect-review.json',
+        'architecture-next-steps.json',
+        'roadmap-signals.json',
+        'capability-gap-map.json',
+        'product-risk-register.json',
+        'user-value-matrix.json',
+        'strategic-refactor-radar.json',
+        'architecture-decision-suggestions.json',
+        'strategic-next-actions.md',
       ]) {
         const content = await readFile(join(tmpRoot, '.oac', 'coding-intelligence', artifact), 'utf-8')
-        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact === 'semantic-repo-brain.md' ? 'Semantic Repo Brain' : artifact === 'temporal-memory.md' ? 'Temporal Memory' : artifact === 'intelligent-coding-team.md' ? 'Intelligent Coding Team OS' : artifact === 'verified-delivery-os.md' ? 'Verified Coding Delivery OS' : artifact.endsWith('.md') ? 'Summary' : 'version')
+        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact === 'semantic-repo-brain.md' ? 'Semantic Repo Brain' : artifact === 'temporal-memory.md' ? 'Temporal Memory' : artifact === 'intelligent-coding-team.md' ? 'Intelligent Coding Team OS' : artifact === 'verified-delivery-os.md' ? 'Verified Coding Delivery OS' : artifact === 'strategic-next-actions.md' ? 'Product Architect Strategic Next Actions' : artifact === 'product-architect-review.json' ? 'version' : artifact.includes('next-steps') ? '[' : artifact.includes('roadmap') ? '[' : artifact.includes('capability') ? '[' : artifact.includes('risk') ? '[' : artifact.includes('value') ? '[' : artifact.includes('refactor') ? '[' : artifact.includes('architecture-decision') ? '[' : artifact.endsWith('.md') ? 'Summary' : 'version')
       }
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
@@ -211,6 +220,7 @@ describe('quest-coding-intelligence', () => {
         temporalMemory: { version: string; chronicCommands: string[] }
         intelligentCodingTeam: { version: string; teamGate: { verdict: string } }
         verifiedDelivery: { version: string; releaseReadinessDashboard: { verdict: string } }
+        productArchitect: { version: string; productArchitectReview: { verdict: string }; roadmapSignals: unknown[] }
       }
       expect(parsed.version).toBe('9')
       expect(parsed.reason).toBe('quest.file_change')
@@ -225,6 +235,9 @@ describe('quest-coding-intelligence', () => {
       expect(parsed.intelligentCodingTeam.teamGate.verdict).toMatch(/pass|review|blocked/)
       expect(parsed.verifiedDelivery.version).toBe('16')
       expect(parsed.verifiedDelivery.releaseReadinessDashboard.verdict).toMatch(/pass|review|blocked/)
+      expect(parsed.productArchitect.version).toBe('17')
+      expect(parsed.productArchitect.productArchitectReview.verdict).toMatch(/ready|review|blocked/)
+      expect(Array.isArray(parsed.productArchitect.roadmapSignals)).toBe(true)
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'patch-capsules.json'), 'utf-8')).toContain('patch-')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-autopilot.json'), 'utf-8')).toContain('"version": "10"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-execution.json'), 'utf-8')).toContain('"version": "11"')
@@ -259,6 +272,15 @@ describe('quest-coding-intelligence', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'agent-debate-gate.json'), 'utf-8')).toContain('"version": "16"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'release-readiness-dashboard.json'), 'utf-8')).toContain('"version": "16"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'verified-delivery-os.md'), 'utf-8')).toContain('Verified Coding Delivery OS')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'product-architect-review.json'), 'utf-8')).toContain('"version": "17"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'architecture-next-steps.json'), 'utf-8')).toContain('architect-completion-review')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'roadmap-signals.json'), 'utf-8')).toContain('"theme"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'capability-gap-map.json'), 'utf-8')).toContain('"capability"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'product-risk-register.json'), 'utf-8')).toContain('"severity"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'user-value-matrix.json'), 'utf-8')).toContain('"persona"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'strategic-refactor-radar.json'), 'utf-8')).toContain('[')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'architecture-decision-suggestions.json'), 'utf-8')).toContain('"suggestedAdrPath"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'strategic-next-actions.md'), 'utf-8')).toContain('Product Architect Strategic Next Actions')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'symbol-graph.json'), 'utf-8')).toContain('openagent.yaml')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })

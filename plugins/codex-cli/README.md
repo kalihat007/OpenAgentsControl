@@ -39,7 +39,7 @@ session instructions.
 
 `install.sh --with-codex` / `update.sh --with-codex` append
 `developer_instructions` to `~/.codex/config.toml` so **every** `codex -C .`
-session follows Quest v8 plus Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS in the main thread
+session follows Quest v8 plus Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence in the main thread
 (visible `OpenAgent Quest Spec` on substantial work). Codex only spawns the
 `openagent` **subagent** when you
 explicitly ask it to.
@@ -78,7 +78,12 @@ Coding Delivery OS sidecars (`verified-delivery-os.json`,
 `acceptance-compiler.json`, `evidence-first-gate.json`,
 `patch-provenance-ledger.json`, `runtime-cycle-matrix.json`,
 `auto-eval-generator.json`, `agent-debate-gate.json`,
-`release-readiness-dashboard.json`, `verified-delivery-os.md`) are
+`release-readiness-dashboard.json`, `verified-delivery-os.md`) plus Product
+Architect Intelligence sidecars (`product-architect-review.json`,
+`architecture-next-steps.json`, `roadmap-signals.json`,
+`capability-gap-map.json`, `product-risk-register.json`,
+`user-value-matrix.json`, `strategic-refactor-radar.json`,
+`architecture-decision-suggestions.json`, `strategic-next-actions.md`) are
 used by default to carry intent, impact, patch capsules, smart tests, runtime
 parity, review signals, symbol context, pre-edit boundaries, patch ledger,
 failure replay, bounded autofix, PR readiness, executable acceptance, contract
@@ -90,8 +95,10 @@ chronic cross-quest failure escalation, patch-outcome history, and git-history
 co-change/churn/bug-density/ownership signals, requirement readiness, expert
 ownership, file locks, impact simulation, project skill-pack candidates, and
 team gate status, acceptance criteria, evidence-first claims, patch provenance,
-runtime three-cycle requirements, eval candidates, agent debate findings, and
-release readiness. Refresh them with
+runtime three-cycle requirements, eval candidates, agent debate findings,
+release readiness, product-architect recommendations, capability gaps, roadmap
+signals, product risks, user value, strategic refactor radar, and ADR
+suggestions. Refresh them with
 `oac quest-v9` or `oac quest-v9 <quest-id>`.
 
 Repeated learnings become scored promotion candidates in
@@ -188,8 +195,8 @@ OAC compensates in `packages/cli/src/lib/runtime-bridge.ts`:
 3. Discovery and research decisions use `research.assessed` / `research.performed`, so skipped or performed web/current research is visible in Quest memory.
 4. The Quest event stream refreshes `interaction-memory.json` and `memory-graph.json`, keeping user requests, working directories, actions, file/context changes, self-knowledge, and graph links available for resume.
 5. The repo wiki refreshes under `.oac/repo-wiki/` when Quests are created, file/context changes are recorded, and verification/reflection/completion runs; use `oac repo-wiki --watch` when files change outside Quest write-back.
-6. Quest v9 coding, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS sidecars refresh from Quest creation, file/context/validation events, coding events, and review/verify/complete transitions.
-7. Completion can append `next_steps.suggested` so Codex offers evidence-based follow-up recommendations from changed files, task state, verification, memory/context signals, and application understanding, then waits for the user instead of starting another Quest automatically.
+6. Quest v9 coding, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence sidecars refresh from Quest creation, file/context/validation events, coding events, and review/verify/complete transitions.
+7. Completion can append `next_steps.suggested` so Codex offers evidence-based follow-up recommendations from changed files, task state, verification, memory/context signals, Product Architect Intelligence, and application understanding, including a product/architecture recommendation when useful, then waits for the user instead of starting another Quest automatically.
 
 That keeps `oac quest-run --background --runtime codex` and quest-daemon aligned with Kimi.
 For full agent-authored write-back (not synthesized), use interactive `codex -C .` with tools enabled.

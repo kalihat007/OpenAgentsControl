@@ -62,6 +62,12 @@ import {
   writeQuestVerifiedDeliveryArtifacts,
   type QuestVerifiedDeliveryOS,
 } from './quest-verified-delivery.js'
+import {
+  buildQuestProductArchitectIntelligence,
+  formatProductArchitectSummary,
+  writeQuestProductArchitectArtifacts,
+  type QuestProductArchitectIntelligence,
+} from './quest-product-architect.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -132,6 +138,7 @@ export interface QuestCodingIntelligence {
   temporalMemory: QuestTemporalMemory
   intelligentCodingTeam: QuestIntelligentCodingTeam
   verifiedDelivery: QuestVerifiedDeliveryOS
+  productArchitect: QuestProductArchitectIntelligence
 }
 
 export interface RefreshQuestCodingIntelligenceOptions {
@@ -285,6 +292,27 @@ export async function refreshQuestCodingIntelligence(
     gitStatus: repoWiki?.changes.gitStatus ?? [],
     repoWiki,
   })
+  const productArchitect = buildQuestProductArchitectIntelligence({
+    projectRoot,
+    objective,
+    files: relevantFiles,
+    index,
+    impact,
+    patchCapsules,
+    testRecommendations,
+    reviewSignals,
+    runtimeParity,
+    codingAutopilot,
+    codingExecution,
+    verifiedKnowledgebase,
+    semanticRepoBrain,
+    temporalMemory,
+    intelligentCodingTeam,
+    verifiedDelivery,
+    events,
+    gitStatus: repoWiki?.changes.gitStatus ?? [],
+    repoWiki,
+  })
 
   const intelligence: QuestCodingIntelligence = {
     version: QUEST_CODING_INTELLIGENCE_VERSION,
@@ -306,6 +334,7 @@ export async function refreshQuestCodingIntelligence(
     temporalMemory,
     intelligentCodingTeam,
     verifiedDelivery,
+    productArchitect,
   }
 
   await writeQuestCodingIntelligence(projectRoot, options.questId, intelligence)
@@ -331,6 +360,7 @@ export async function writeQuestCodingIntelligence(
   await writeQuestTemporalMemoryArtifacts(dir, intelligence.temporalMemory)
   await writeQuestIntelligentCodingTeamArtifacts(dir, intelligence.intelligentCodingTeam)
   await writeQuestVerifiedDeliveryArtifacts(dir, intelligence.verifiedDelivery)
+  await writeQuestProductArchitectArtifacts(dir, intelligence.productArchitect)
 }
 
 export function formatCodingReview(intelligence: QuestCodingIntelligence): string {
@@ -390,6 +420,7 @@ export function formatCodingReview(intelligence: QuestCodingIntelligence): strin
   lines.push(formatTemporalMemorySummary(intelligence.temporalMemory))
   lines.push(formatIntelligentCodingTeamSummary(intelligence.intelligentCodingTeam))
   lines.push(formatVerifiedDeliverySummary(intelligence.verifiedDelivery))
+  lines.push(formatProductArchitectSummary(intelligence.productArchitect))
   return lines.join('\n')
 }
 

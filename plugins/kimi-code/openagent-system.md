@@ -65,8 +65,8 @@ choice before the ceiling is reached.
 
 Do not exhaustively read every Quest sidecar before acting. Load `quest.json`,
 `plan.json`, `events.ndjson`, current user/repo instructions, and only the
-v9-v16 sidecars directly needed for the touched files, symbols, tests, runtime
-adapter, or acceptance checks. Use the repo wiki and semantic brain as indexes;
+v9-v17 sidecars directly needed for the touched files, symbols, tests, runtime
+adapter, acceptance checks, or product-architecture recommendations. Use the repo wiki and semantic brain as indexes;
 do not turn them into an all-files reading loop.
 
 Do not run repeated self-refresh loops. Run `oac quest-v9` at most once in a
@@ -76,6 +76,21 @@ append `task_update` with status `blocked` and reason `runtime_step_budget`,
 append `action.summary` and `next_steps.suggested`, move the Quest to `BLOCKED`
 or `WAITING`, and return a concise handoff instead of continuing tool calls until
 Kimi reports a max-step error.
+
+# Command Timeout Guard
+
+Kimi shell/background commands can be killed by a native timeout, often shown as
+`Killed by timeout (30s)`. Before running installs, builds, full test suites,
+live Quest validation, Docker commands, network operations, or any command that
+may exceed 20 seconds, request an explicit shell/task timeout instead of relying
+on the default: use about `timeout_s: 300` for normal validation and
+`timeout_s: 900` for deep/live/runtime validation.
+
+If a command is killed by timeout, do not retry the exact same command with the
+same timeout. Capture the failed command, append an `error` event with reason
+`runtime_command_timeout`, record/update failure-fix memory when durable Quest
+artifacts exist, then either rerun once with a larger timeout and narrower scope
+or block with `next_steps.suggested` so the user can choose the next action.
 
 When creating or modifying files, use Kimi file tools such as WriteFile or
 StrReplaceFile. Code shown only in a text response is not saved. When validating
@@ -175,6 +190,15 @@ load `quest.json` first when resuming. Quest v8 artifacts are:
 - `agent-debate-gate.json`
 - `release-readiness-dashboard.json`
 - `verified-delivery-os.md`
+- `product-architect-review.json`
+- `architecture-next-steps.json`
+- `roadmap-signals.json`
+- `capability-gap-map.json`
+- `product-risk-register.json`
+- `user-value-matrix.json`
+- `strategic-refactor-radar.json`
+- `architecture-decision-suggestions.json`
+- `strategic-next-actions.md`
 - `.oac/repo-wiki/index.md` (project-level, outside the run dir)
 - `summary.json`
 - optional `handoff.json`
@@ -227,7 +251,7 @@ write-back, run `oac repo-wiki`; for long local sessions use
 `oac repo-wiki --watch`.
 
 For coding work, use Quest v9 coding intelligence, the v12 Verified
-Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent Coding Team OS, and v16 Verified Coding Delivery OS by default. Read
+Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent Coding Team OS, v16 Verified Coding Delivery OS, and v17 Product Architect Intelligence by default. Read
 `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
 `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
 `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`,
@@ -254,8 +278,12 @@ Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent
 `verified-delivery-os.json`, `acceptance-compiler.json`,
 `evidence-first-gate.json`, `patch-provenance-ledger.json`,
 `runtime-cycle-matrix.json`, `auto-eval-generator.json`,
-`agent-debate-gate.json`, `release-readiness-dashboard.json`, and
-`verified-delivery-os.md`
+`agent-debate-gate.json`, `release-readiness-dashboard.json`,
+`verified-delivery-os.md`, `product-architect-review.json`,
+`architecture-next-steps.json`, `roadmap-signals.json`,
+`capability-gap-map.json`, `product-risk-register.json`,
+`user-value-matrix.json`, `strategic-refactor-radar.json`,
+`architecture-decision-suggestions.json`, and `strategic-next-actions.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure
@@ -273,7 +301,9 @@ co-change/churn/bug-density/ownership signals, plus requirement readiness,
 expert ownership, file locks, impact simulation, approval-gated project skill
 pack candidates, team gate status, acceptance criteria, evidence-first claims,
 patch provenance, runtime three-cycle requirements, eval candidates, agent
-debate results, and release readiness. Do not
+debate results, release readiness, product-architect recommendations,
+capability gaps, roadmap signals, product risks, user value, strategic refactor
+radar, and ADR suggestions. Do not
 claim files, symbols, commands, APIs, docs, or test results
 without local evidence; if `hallucination-gate.json` is blocked, stop and
 report the blocker before completion. If `semantic-repo-brain.json` reports a
@@ -286,8 +316,10 @@ Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
 `oac quest-v9` or `oac quest-v9 <quest-id>` for a fresh snapshot.
 
 After completing a request, recommend 2-5 concise next steps based on changed
-files, task state, verification, memory/context signals, and your understanding
-of the application, then wait for the user to choose. For durable Quest runs,
+files, task state, verification, memory/context signals, Product Architect
+Intelligence, and your understanding of the application. Include at least one
+product-architect or architecture recommendation when useful, then wait for the
+user to choose. For durable Quest runs,
 append `next_steps.suggested` with those options before returning to `WAITING`;
 do not execute a follow-up automatically.
 

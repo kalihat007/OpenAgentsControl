@@ -6,6 +6,7 @@ import {
   buildRuntimePrompt,
   ensureCodexWriteBack,
   ensureRuntimeWriteBack,
+  isRuntimeCommandTimeoutError,
   isRuntimeStepLimitError,
   parseCodexObjectiveHints,
   parseRuntimeObjectiveHints,
@@ -99,6 +100,15 @@ describe('runtime-bridge', () => {
     expect(prompt).toContain('auto-eval-generator.json')
     expect(prompt).toContain('agent-debate-gate.json')
     expect(prompt).toContain('release-readiness-dashboard.json')
+    expect(prompt).toContain('product-architect-review.json')
+    expect(prompt).toContain('architecture-next-steps.json')
+    expect(prompt).toContain('roadmap-signals.json')
+    expect(prompt).toContain('capability-gap-map.json')
+    expect(prompt).toContain('product-risk-register.json')
+    expect(prompt).toContain('user-value-matrix.json')
+    expect(prompt).toContain('strategic-refactor-radar.json')
+    expect(prompt).toContain('architecture-decision-suggestions.json')
+    expect(prompt).toContain('strategic-next-actions.md')
     expect(prompt).toContain('Quest v9 coding')
     expect(prompt).toContain('Coding Autopilot')
     expect(prompt).toContain('Coding Execution')
@@ -107,9 +117,17 @@ describe('runtime-bridge', () => {
     expect(prompt).toContain('Temporal Memory')
     expect(prompt).toContain('Intelligent Coding Team OS')
     expect(prompt).toContain('Verified Coding Delivery OS')
+    expect(prompt).toContain('Product Architect Intelligence')
+    expect(prompt).toContain('Product Architect Intelligence sidecars')
+    expect(prompt).toContain('recommend product/architecture next steps')
+    expect(prompt).toContain('strategic-next-actions.md')
     expect(prompt).toContain('Step budget guard')
     expect(prompt).toContain('Do not exhaustively read every optional sidecar')
     expect(prompt).toContain('runtime_step_budget')
+    expect(prompt).toContain('Command timeout guard')
+    expect(prompt).toContain('timeout_s: 300')
+    expect(prompt).toContain('Killed by timeout (30s)')
+    expect(prompt).toContain('runtime_command_timeout')
     expect(prompt).toContain('request.received')
     expect(prompt).toContain('knowledge.captured')
     expect(prompt).toContain('Pre-Execution Discovery Gate')
@@ -332,6 +350,13 @@ describe('runtime-bridge', () => {
     expect(isRuntimeStepLimitError('kimi exited with code 1')).toBe(false)
   })
 
+  it('detects native command timeout errors', () => {
+    expect(isRuntimeCommandTimeoutError('Killed by timeout (30s)')).toBe(true)
+    expect(isRuntimeCommandTimeoutError('Shell command timed out')).toBe(true)
+    expect(isRuntimeCommandTimeoutError('kimi timed out after 30000ms')).toBe(true)
+    expect(isRuntimeCommandTimeoutError('kimi exited with code 1')).toBe(false)
+  })
+
   it('records blocked Quest write-back when Kimi reaches the native step limit', async () => {
     const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-runtime-bridge-'))
     const questId = 'swarm-kimi-step-limit'
@@ -385,6 +410,64 @@ describe('runtime-bridge', () => {
       expect(raw).toContain('"type":"state_change"')
       expect(raw).toContain('"to":"BLOCKED"')
       expect(raw).toContain('"stepLimitExceeded":true')
+    } finally {
+      await rm(tmpRoot, { recursive: true, force: true })
+    }
+  })
+
+  it('records blocked Quest write-back when Kimi reports a native command timeout', async () => {
+    const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-runtime-bridge-'))
+    const questId = 'swarm-kimi-command-timeout'
+    const runDir = join(tmpRoot, '.oac', 'runs', questId)
+    try {
+      const binDir = join(tmpRoot, 'bin')
+      await mkdir(binDir, { recursive: true })
+      await mkdir(runDir, { recursive: true })
+      const fakeKimi = join(binDir, 'kimi')
+      await writeFile(
+        fakeKimi,
+        [
+          '#!/usr/bin/env node',
+          'const fs = require("fs");',
+          'if (process.argv.includes("--version")) { console.log("kimi-test"); process.exit(0); }',
+          'fs.writeFileSync(process.env.KIMI_ARGV_FILE, JSON.stringify(process.argv.slice(2)));',
+          'console.error("Killed by timeout (30s)");',
+          'process.exit(1);',
+        ].join('\n') + '\n',
+      )
+      await chmod(fakeKimi, 0o755)
+      setEnv('PATH', `${binDir}:${process.env.PATH ?? ''}`)
+      setEnv('KIMI_ARGV_FILE', join(tmpRoot, 'kimi-argv.json'))
+
+      const result = await spawnRuntime({
+        questId,
+        objective: 'Run a Kimi command-timeout repro.',
+        projectRoot: tmpRoot,
+        runDir,
+        runtime: 'kimi',
+        tasks: [{ id: 'task-001', title: 'Bridge task', agent: 'TechLeadAgent' }],
+        timeoutMs: 5000,
+      })
+
+      expect(result.ok).toBe(false)
+      expect(result.errorMessage).toContain('Killed by timeout (30s)')
+
+      const eventsPath = join(runDir, 'events.ndjson')
+      const deadline = Date.now() + 5000
+      let raw = ''
+      while (Date.now() < deadline) {
+        raw = await readFile(eventsPath, 'utf8').catch(() => '')
+        if (raw.includes('"commandTimeoutExceeded":true')) break
+        await new Promise((resolve) => setTimeout(resolve, 50))
+      }
+
+      expect(raw).toContain('"type":"task_update"')
+      expect(raw).toContain('"status":"blocked"')
+      expect(raw).toContain('"reason":"runtime_command_timeout"')
+      expect(raw).toContain('"type":"next_steps.suggested"')
+      expect(raw).toContain('"type":"state_change"')
+      expect(raw).toContain('"to":"BLOCKED"')
+      expect(raw).toContain('"commandTimeoutExceeded":true')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }

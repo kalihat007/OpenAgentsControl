@@ -126,6 +126,15 @@ describe('quest-run', () => {
     expect(quest.artifacts.agentDebateGate).toBe('agent-debate-gate.json')
     expect(quest.artifacts.releaseReadinessDashboard).toBe('release-readiness-dashboard.json')
     expect(quest.artifacts.verifiedDeliveryBrief).toBe('verified-delivery-os.md')
+    expect(quest.artifacts.productArchitectReview).toBe('product-architect-review.json')
+    expect(quest.artifacts.architectureNextSteps).toBe('architecture-next-steps.json')
+    expect(quest.artifacts.roadmapSignals).toBe('roadmap-signals.json')
+    expect(quest.artifacts.capabilityGapMap).toBe('capability-gap-map.json')
+    expect(quest.artifacts.productRiskRegister).toBe('product-risk-register.json')
+    expect(quest.artifacts.userValueMatrix).toBe('user-value-matrix.json')
+    expect(quest.artifacts.strategicRefactorRadar).toBe('strategic-refactor-radar.json')
+    expect(quest.artifacts.architectureDecisionSuggestions).toBe('architecture-decision-suggestions.json')
+    expect(quest.artifacts.strategicNextActions).toBe('strategic-next-actions.md')
     expect(quest.runtimes.kimi.command).toContain('kimi --work-dir .')
   })
 
@@ -188,6 +197,9 @@ describe('quest-run', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'agent-debate-gate.json'), 'utf-8')).toContain('"version": "16"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'release-readiness-dashboard.json'), 'utf-8')).toContain('"version": "16"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'verified-delivery-os.md'), 'utf-8')).toContain('Verified Coding Delivery OS')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'product-architect-review.json'), 'utf-8')).toContain('"version": "17"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'architecture-next-steps.json'), 'utf-8')).toContain('architect-completion-review')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'strategic-next-actions.md'), 'utf-8')).toContain('Product Architect Strategic Next Actions')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }
@@ -361,6 +373,15 @@ describe('quest-run', () => {
     expect(normalized.artifacts.autoEvalGenerator).toBe('auto-eval-generator.json')
     expect(normalized.artifacts.agentDebateGate).toBe('agent-debate-gate.json')
     expect(normalized.artifacts.releaseReadinessDashboard).toBe('release-readiness-dashboard.json')
+    expect(normalized.artifacts.productArchitectReview).toBe('product-architect-review.json')
+    expect(normalized.artifacts.architectureNextSteps).toBe('architecture-next-steps.json')
+    expect(normalized.artifacts.roadmapSignals).toBe('roadmap-signals.json')
+    expect(normalized.artifacts.capabilityGapMap).toBe('capability-gap-map.json')
+    expect(normalized.artifacts.productRiskRegister).toBe('product-risk-register.json')
+    expect(normalized.artifacts.userValueMatrix).toBe('user-value-matrix.json')
+    expect(normalized.artifacts.strategicRefactorRadar).toBe('strategic-refactor-radar.json')
+    expect(normalized.artifacts.architectureDecisionSuggestions).toBe('architecture-decision-suggestions.json')
+    expect(normalized.artifacts.strategicNextActions).toBe('strategic-next-actions.md')
   })
 
   it('formatQuestSummary produces markdown', () => {

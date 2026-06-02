@@ -104,6 +104,10 @@ grep -q 'interaction-memory.json' "$AGENT_FILE" || fail "Kimi adapter does not m
 grep -q 'Step Budget Guard' "$AGENT_FILE" || fail "Kimi adapter does not mention Step Budget Guard"
 grep -q 'max_steps_per_turn' "$AGENT_FILE" || fail "Kimi adapter does not mention Kimi max_steps_per_turn"
 grep -q 'runtime_step_budget' "$AGENT_FILE" || fail "Kimi adapter does not mention runtime_step_budget"
+grep -q 'Command Timeout Guard' "$AGENT_FILE" || fail "Kimi adapter does not mention Command Timeout Guard"
+grep -q 'Killed by timeout (30s)' "$AGENT_FILE" || fail "Kimi adapter does not mention native 30s timeout recovery"
+grep -q 'timeout_s: 300' "$AGENT_FILE" || fail "Kimi adapter does not mention explicit shell/task timeout"
+grep -q 'runtime_command_timeout' "$AGENT_FILE" || fail "Kimi adapter does not mention runtime_command_timeout"
 grep -q 'coding-intelligence.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Quest v9 coding-intelligence.json"
 grep -q 'patch-capsules.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Quest v9 patch-capsules.json"
 grep -q 'coding-review.md' "$AGENT_FILE" || fail "Kimi adapter does not mention Quest v9 coding-review.md"
@@ -142,6 +146,9 @@ grep -q 'runtime-cycle-matrix.json' "$AGENT_FILE" || fail "Kimi adapter does not
 grep -q 'auto-eval-generator.json' "$AGENT_FILE" || fail "Kimi adapter does not mention auto eval generator"
 grep -q 'agent-debate-gate.json' "$AGENT_FILE" || fail "Kimi adapter does not mention agent debate gate"
 grep -q 'release-readiness-dashboard.json' "$AGENT_FILE" || fail "Kimi adapter does not mention release readiness dashboard"
+grep -q 'product-architect-review.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Product Architect Intelligence"
+grep -q 'architecture-next-steps.json' "$AGENT_FILE" || fail "Kimi adapter does not mention architecture next steps"
+grep -q 'strategic-next-actions.md' "$AGENT_FILE" || fail "Kimi adapter does not mention strategic next actions"
 grep -q 'context.loaded' "$AGENT_FILE" || fail "Kimi adapter does not mention context.loaded"
 grep -q 'request.received' "$AGENT_FILE" || fail "Kimi adapter does not mention request.received"
 grep -q 'research.assessed' "$AGENT_FILE" || fail "Kimi adapter does not mention research.assessed"
@@ -151,7 +158,7 @@ grep -q 'quest-v9' "$AGENT_FILE" || fail "Kimi adapter does not mention quest-v9
 grep -q 'coding.intent' "$AGENT_FILE" || fail "Kimi adapter does not mention coding.intent"
 grep -q 'tests.selected' "$AGENT_FILE" || fail "Kimi adapter does not mention tests.selected"
 grep -q 'next_steps.suggested' "$AGENT_FILE" || fail "Kimi adapter does not mention next_steps.suggested"
-pass "Kimi adapter advertises Quest v8 adaptive protocol and Quest v9-v16 coding intelligence"
+pass "Kimi adapter advertises Quest v8 adaptive protocol and Quest v9-v17 coding intelligence"
 
 mkdir -p "$TEST_DIR/work/.oac"
 cd "$TEST_DIR/work"
@@ -211,7 +218,7 @@ cat > .oac/config.json <<'JSON'
 JSON
 
 DIRECT_OUT="$TEST_DIR/direct-v8.txt"
-DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
+DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
 run_with_timeout 120 kimi \
   --work-dir "$TEST_DIR/work" \
   --agent-file "$AGENT_FILE" \
@@ -229,8 +236,8 @@ const text = fs.readFileSync(process.argv[2], "utf8");
 const checks = {
   startsWithQuest: /^(?:```text\s*)?OpenAgent Quest Spec/m.test(text),
   stateNew: /State:\s*NEW/i.test(text),
-  reviewLifecycle: /EXECUTE\s*->\s*REVIEW\s*->\s*VERIFY/i.test(text),
-  reflectLifecycle: /VERIFY\s*->\s*REFLECT\s*->\s*COMPLETE/i.test(text),
+  reviewLifecycle: /EXECUTE\s*(?:->|→)\s*REVIEW\s*(?:->|→)\s*VERIFY/i.test(text),
+  reflectLifecycle: /VERIFY\s*(?:->|→)\s*REFLECT\s*(?:->|→)\s*COMPLETE/i.test(text),
   reviewEvent: /review\.started/i.test(text),
   taskInjected: /task\.injected/i.test(text),
   priorityChanged: /priority\.changed/i.test(text),
@@ -268,6 +275,10 @@ const checks = {
   autoEvalGenerator: /auto-eval-generator\.json/i.test(text),
   agentDebateGate: /agent-debate-gate\.json/i.test(text),
   releaseReadinessDashboard: /release-readiness-dashboard\.json/i.test(text),
+  productArchitectReview: /product-architect-review\.json/i.test(text),
+  architectureNextSteps: /architecture-next-steps\.json/i.test(text),
+  roadmapSignals: /roadmap-signals\.json/i.test(text),
+  strategicNextActions: /strategic-next-actions\.md/i.test(text),
   patchCapsule: /patch\.capsule/i.test(text),
   testsSelected: /tests\.selected/i.test(text),
 };
@@ -323,8 +334,8 @@ function check(label, file) {
     teamLead: /Team Lead:\s*active/i.test(text),
     experts: /Experts:/i.test(text),
     trustLabel: /Trust Label:\s*(planned_only|inspected_only|changed|tested|pushed)/i.test(text),
-    reviewLifecycle: /EXECUTE\s*->\s*REVIEW\s*->\s*VERIFY/i.test(text),
-    reflectLifecycle: /VERIFY\s*->\s*REFLECT\s*->\s*COMPLETE/i.test(text),
+    reviewLifecycle: /EXECUTE\s*(?:->|→)\s*REVIEW\s*(?:->|→)\s*VERIFY/i.test(text),
+    reflectLifecycle: /VERIFY\s*(?:->|→)\s*REFLECT\s*(?:->|→)\s*COMPLETE/i.test(text),
     reviewEvent: /review\.started/i.test(text),
     taskInjected: /task\.injected/i.test(text),
     priorityChanged: /priority\.changed/i.test(text),
@@ -415,6 +426,15 @@ grep -q 'kimi --work-dir' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json m
 [ -f ".oac/runs/${QUEST_ID}/agent-debate-gate.json" ] || fail "Missing Quest v16 agent-debate-gate.json"
 [ -f ".oac/runs/${QUEST_ID}/release-readiness-dashboard.json" ] || fail "Missing Quest v16 release-readiness-dashboard.json"
 [ -f ".oac/runs/${QUEST_ID}/verified-delivery-os.md" ] || fail "Missing Quest v16 Verified Coding Delivery OS brief"
+[ -f ".oac/runs/${QUEST_ID}/product-architect-review.json" ] || fail "Missing Quest v17 product-architect-review.json"
+[ -f ".oac/runs/${QUEST_ID}/architecture-next-steps.json" ] || fail "Missing Quest v17 architecture-next-steps.json"
+[ -f ".oac/runs/${QUEST_ID}/roadmap-signals.json" ] || fail "Missing Quest v17 roadmap-signals.json"
+[ -f ".oac/runs/${QUEST_ID}/capability-gap-map.json" ] || fail "Missing Quest v17 capability-gap-map.json"
+[ -f ".oac/runs/${QUEST_ID}/product-risk-register.json" ] || fail "Missing Quest v17 product-risk-register.json"
+[ -f ".oac/runs/${QUEST_ID}/user-value-matrix.json" ] || fail "Missing Quest v17 user-value-matrix.json"
+[ -f ".oac/runs/${QUEST_ID}/strategic-refactor-radar.json" ] || fail "Missing Quest v17 strategic-refactor-radar.json"
+[ -f ".oac/runs/${QUEST_ID}/architecture-decision-suggestions.json" ] || fail "Missing Quest v17 architecture-decision-suggestions.json"
+[ -f ".oac/runs/${QUEST_ID}/strategic-next-actions.md" ] || fail "Missing Quest v17 strategic next actions brief"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
@@ -454,11 +474,16 @@ if (!intelligence.verifiedDelivery.evidenceFirstGate?.claims?.length) throw new 
 if (!intelligence.verifiedDelivery.runtimeCycleMatrix || intelligence.verifiedDelivery.runtimeCycleMatrix.requiredCycles !== 3) throw new Error("missing v16 runtime three-cycle matrix");
 if (!Array.isArray(intelligence.verifiedDelivery.releaseReadinessDashboard?.requiredCommands)) throw new Error("missing v16 release readiness commands");
 if (!intelligence.verifiedDelivery.releaseReadinessDashboard?.installUpdateGate) throw new Error("missing v16 install/update gate");
+if (!intelligence.productArchitect || intelligence.productArchitect.version !== "17") throw new Error("missing Product Architect Intelligence v17");
+if (!intelligence.productArchitect.productArchitectReview?.recommendations?.length) throw new Error("missing v17 product-architect recommendations");
+if (!Array.isArray(intelligence.productArchitect.architectureNextSteps) || intelligence.productArchitect.architectureNextSteps.length < 1) throw new Error("missing v17 architecture next steps");
+if (!Array.isArray(intelligence.productArchitect.roadmapSignals)) throw new Error("missing v17 roadmap signals");
+if (!Array.isArray(intelligence.productArchitect.productRiskRegister)) throw new Error("missing v17 product risk register");
 if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with kimi runtime and Quest v9-v16 sidecars"
+pass "Quest v8 artifact created with kimi runtime and Quest v9-v17 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -491,7 +516,11 @@ grep -q 'runtime-cycle-matrix.json' quest-v9.txt || fail "quest-v9 output missin
 grep -q 'auto-eval-generator.json' quest-v9.txt || fail "quest-v9 output missing auto eval generator artifact"
 grep -q 'agent-debate-gate.json' quest-v9.txt || fail "quest-v9 output missing agent debate gate artifact"
 grep -q 'release-readiness-dashboard.json' quest-v9.txt || fail "quest-v9 output missing release readiness dashboard artifact"
-pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS"
+grep -q 'product-architect-review.json' quest-v9.txt || fail "quest-v9 output missing product architect review artifact"
+grep -q 'architecture-next-steps.json' quest-v9.txt || fail "quest-v9 output missing architecture next steps artifact"
+grep -q 'roadmap-signals.json' quest-v9.txt || fail "quest-v9 output missing roadmap signals artifact"
+grep -q 'strategic-next-actions.md' quest-v9.txt || fail "quest-v9 output missing strategic next actions artifact"
+pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, and Product Architect Intelligence"
 
 "${OAC_CLI[@]}" quest-resume "$QUEST_ID" --runtime kimi > quest-resume-kimi.txt 2>&1
 grep -q 'KIMI Resume' quest-resume-kimi.txt || fail "quest-resume --runtime kimi missing KIMI header"

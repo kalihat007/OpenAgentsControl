@@ -844,7 +844,7 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
-Quest v8 (evolved from v5-v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable. Quest v9 adds coding intelligence, Quest v10 adds Coding Autopilot, Quest v11 adds Coding Execution, Quest v12 adds the Verified Knowledgebase, Quest v13 adds the Semantic Repo Brain, Quest v14 adds Temporal Memory, Quest v15 adds the Intelligent Coding Team OS, and Quest v16 adds the Verified Coding Delivery OS for intent, impact analysis, patch capsules, smart tests, runtime parity, review signals, symbol context, pre-edit boundaries, patch ledger, failure replay, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gates, PR packaging, evidence ledgers, hallucination gates, source-to-patch traceability, stale knowledge checks, behavior oracles, test-authoring plans, AST-level repo facts, confidence labels, failure-fix memory, approval-gated skill candidates, chronic cross-quest failure escalation, patch-outcome history, git-history co-change/churn/bug-density/ownership signals, requirement compiling, expert team blackboards, impact simulation, project skill-pack candidates, team completion gates, acceptance compiling, evidence-first delivery checks, patch provenance, runtime three-cycle verification, auto-eval candidates, agent debate gates, and release readiness:
+Quest v8 (evolved from v5-v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable. Quest v9 adds coding intelligence, Quest v10 adds Coding Autopilot, Quest v11 adds Coding Execution, Quest v12 adds the Verified Knowledgebase, Quest v13 adds the Semantic Repo Brain, Quest v14 adds Temporal Memory, Quest v15 adds the Intelligent Coding Team OS, Quest v16 adds the Verified Coding Delivery OS, and Quest v17 adds Product Architect Intelligence for intent, impact analysis, patch capsules, smart tests, runtime parity, review signals, symbol context, pre-edit boundaries, patch ledger, failure replay, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gates, PR packaging, evidence ledgers, hallucination gates, source-to-patch traceability, stale knowledge checks, behavior oracles, test-authoring plans, AST-level repo facts, confidence labels, failure-fix memory, approval-gated skill candidates, chronic cross-quest failure escalation, patch-outcome history, git-history co-change/churn/bug-density/ownership signals, requirement compiling, expert team blackboards, impact simulation, project skill-pack candidates, team completion gates, acceptance compiling, evidence-first delivery checks, patch provenance, runtime three-cycle verification, auto-eval candidates, agent debate gates, release readiness, product-architect completion reviews, architecture next steps, roadmap signals, capability-gap mapping, product risks, user-value matrices, strategic refactor radar, ADR suggestions, and strategic next actions:
 
 ```text
 NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING
@@ -933,10 +933,19 @@ auto-eval-generator.json  # v16: regression eval candidate queue
 agent-debate-gate.json    # v16: tech lead/test/security/release debate verdicts
 release-readiness-dashboard.json # v16: final delivery readiness dashboard
 verified-delivery-os.md   # v16: readable delivery brief
+product-architect-review.json # v17: Product Architect Intelligence rollup
+architecture-next-steps.json # v17: architect-ranked next actions after completion
+roadmap-signals.json       # v17: roadmap signals that need user approval
+capability-gap-map.json    # v17: current gaps between product goal and implementation
+product-risk-register.json # v17: product/architecture risks and mitigations
+user-value-matrix.json     # v17: user value, evidence, and proof gaps
+strategic-refactor-radar.json # v17: strategic refactor opportunities
+architecture-decision-suggestions.json # v17: ADR candidates
+strategic-next-actions.md  # v17: readable product architect recommendations
 .oac/repo-wiki/            # project-level living repo wiki
 ```
 
-Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state, `oac quest-resume <quest-id>` to print OpenCode, Kimi, Claude, and Codex resume commands, and `oac quest-v9 <quest-id>` to refresh coding intelligence plus the v12 Verified Knowledgebase, v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent Coding Team OS, and v16 Verified Coding Delivery OS. Resume does not change models; OpenAgent continues with the selected runtime model.
+Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state, `oac quest-resume <quest-id>` to print OpenCode, Kimi, Claude, and Codex resume commands, and `oac quest-v9 <quest-id>` to refresh coding intelligence plus the v12 Verified Knowledgebase, v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent Coding Team OS, v16 Verified Coding Delivery OS, and v17 Product Architect Intelligence. Resume does not change models; OpenAgent continues with the selected runtime model.
 
 You can verify the Kimi Quest cycle locally:
 
