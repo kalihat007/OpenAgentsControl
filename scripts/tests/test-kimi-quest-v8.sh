@@ -45,7 +45,12 @@ NODE
     fi
   fi
   wait_for_kimi_processes_to_release_dir "$TEST_DIR"
-  rm -rf "$TEST_DIR"
+  for _ in $(seq 1 5); do
+    rm -rf "$TEST_DIR" 2>/dev/null && return 0
+    wait_for_kimi_processes_to_release_dir "$TEST_DIR"
+    sleep 0.5
+  done
+  rm -rf "$TEST_DIR" >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
@@ -96,6 +101,9 @@ grep -q 'task.injected' "$AGENT_FILE" || fail "Kimi adapter does not mention tas
 grep -q 'priority.changed' "$AGENT_FILE" || fail "Kimi adapter does not mention priority.changed"
 grep -q 'memory-graph.json' "$AGENT_FILE" || fail "Kimi adapter does not mention memory-graph.json"
 grep -q 'interaction-memory.json' "$AGENT_FILE" || fail "Kimi adapter does not mention interaction-memory.json"
+grep -q 'Step Budget Guard' "$AGENT_FILE" || fail "Kimi adapter does not mention Step Budget Guard"
+grep -q 'max_steps_per_turn' "$AGENT_FILE" || fail "Kimi adapter does not mention Kimi max_steps_per_turn"
+grep -q 'runtime_step_budget' "$AGENT_FILE" || fail "Kimi adapter does not mention runtime_step_budget"
 grep -q 'coding-intelligence.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Quest v9 coding-intelligence.json"
 grep -q 'patch-capsules.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Quest v9 patch-capsules.json"
 grep -q 'coding-review.md' "$AGENT_FILE" || fail "Kimi adapter does not mention Quest v9 coding-review.md"
@@ -121,6 +129,19 @@ grep -q 'auto-skill-builder.json' "$AGENT_FILE" || fail "Kimi adapter does not m
 grep -q 'temporal-memory.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Temporal Memory"
 grep -q 'patch-outcome-ledger.json' "$AGENT_FILE" || fail "Kimi adapter does not mention patch-outcome ledger"
 grep -q 'repo-history-signals.json' "$AGENT_FILE" || fail "Kimi adapter does not mention repo-history signals"
+grep -q 'intelligent-coding-team.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Intelligent Coding Team OS"
+grep -q 'requirement-compiler.json' "$AGENT_FILE" || fail "Kimi adapter does not mention requirement compiler"
+grep -q 'expert-team-blackboard.json' "$AGENT_FILE" || fail "Kimi adapter does not mention expert team blackboard"
+grep -q 'change-impact-simulator.json' "$AGENT_FILE" || fail "Kimi adapter does not mention change impact simulator"
+grep -q 'project-skill-pack-builder.json' "$AGENT_FILE" || fail "Kimi adapter does not mention project skill pack builder"
+grep -q 'verified-delivery-os.json' "$AGENT_FILE" || fail "Kimi adapter does not mention Verified Coding Delivery OS"
+grep -q 'acceptance-compiler.json' "$AGENT_FILE" || fail "Kimi adapter does not mention acceptance compiler"
+grep -q 'evidence-first-gate.json' "$AGENT_FILE" || fail "Kimi adapter does not mention evidence-first gate"
+grep -q 'patch-provenance-ledger.json' "$AGENT_FILE" || fail "Kimi adapter does not mention patch provenance ledger"
+grep -q 'runtime-cycle-matrix.json' "$AGENT_FILE" || fail "Kimi adapter does not mention runtime cycle matrix"
+grep -q 'auto-eval-generator.json' "$AGENT_FILE" || fail "Kimi adapter does not mention auto eval generator"
+grep -q 'agent-debate-gate.json' "$AGENT_FILE" || fail "Kimi adapter does not mention agent debate gate"
+grep -q 'release-readiness-dashboard.json' "$AGENT_FILE" || fail "Kimi adapter does not mention release readiness dashboard"
 grep -q 'context.loaded' "$AGENT_FILE" || fail "Kimi adapter does not mention context.loaded"
 grep -q 'request.received' "$AGENT_FILE" || fail "Kimi adapter does not mention request.received"
 grep -q 'research.assessed' "$AGENT_FILE" || fail "Kimi adapter does not mention research.assessed"
@@ -130,7 +151,7 @@ grep -q 'quest-v9' "$AGENT_FILE" || fail "Kimi adapter does not mention quest-v9
 grep -q 'coding.intent' "$AGENT_FILE" || fail "Kimi adapter does not mention coding.intent"
 grep -q 'tests.selected' "$AGENT_FILE" || fail "Kimi adapter does not mention tests.selected"
 grep -q 'next_steps.suggested' "$AGENT_FILE" || fail "Kimi adapter does not mention next_steps.suggested"
-pass "Kimi adapter advertises Quest v8 adaptive protocol and Quest v9-v14 coding intelligence"
+pass "Kimi adapter advertises Quest v8 adaptive protocol and Quest v9-v16 coding intelligence"
 
 mkdir -p "$TEST_DIR/work/.oac"
 cd "$TEST_DIR/work"
@@ -190,7 +211,7 @@ cat > .oac/config.json <<'JSON'
 JSON
 
 DIRECT_OUT="$TEST_DIR/direct-v8.txt"
-DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, and Semantic Repo Brain sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
+DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
 run_with_timeout 120 kimi \
   --work-dir "$TEST_DIR/work" \
   --agent-file "$AGENT_FILE" \
@@ -231,6 +252,22 @@ const checks = {
   knowledgeConfidenceScore: /knowledge-confidence-score\.json/i.test(text),
   failureFixMemory: /failure-fix-memory\.json/i.test(text),
   autoSkillBuilder: /auto-skill-builder\.json/i.test(text),
+  temporalMemory: /temporal-memory\.json/i.test(text),
+  patchOutcomeLedger: /patch-outcome-ledger\.json/i.test(text),
+  repoHistorySignals: /repo-history-signals\.json/i.test(text),
+  intelligentCodingTeam: /intelligent-coding-team\.json/i.test(text),
+  requirementCompiler: /requirement-compiler\.json/i.test(text),
+  expertTeamBlackboard: /expert-team-blackboard\.json/i.test(text),
+  changeImpactSimulator: /change-impact-simulator\.json/i.test(text),
+  projectSkillPackBuilder: /project-skill-pack-builder\.json/i.test(text),
+  verifiedDeliveryOs: /verified-delivery-os\.json/i.test(text),
+  acceptanceCompiler: /acceptance-compiler\.json/i.test(text),
+  evidenceFirstGate: /evidence-first-gate\.json/i.test(text),
+  patchProvenanceLedger: /patch-provenance-ledger\.json/i.test(text),
+  runtimeCycleMatrix: /runtime-cycle-matrix\.json/i.test(text),
+  autoEvalGenerator: /auto-eval-generator\.json/i.test(text),
+  agentDebateGate: /agent-debate-gate\.json/i.test(text),
+  releaseReadinessDashboard: /release-readiness-dashboard\.json/i.test(text),
   patchCapsule: /patch\.capsule/i.test(text),
   testsSelected: /tests\.selected/i.test(text),
 };
@@ -314,6 +351,8 @@ QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version"
 [ "$QUEST_VERSION" = "8" ] || fail "Expected Quest version 8, got $QUEST_VERSION"
 grep -q 'kimi --work-dir' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json missing kimi runtime command"
 [ -f ".oac/runs/${QUEST_ID}/interaction-memory.json" ] || fail "Missing interaction-memory.json"
+[ -f ".oac/runs/${QUEST_ID}/plan.json" ] || fail "Missing plan.json"
+[ -f ".oac/runs/${QUEST_ID}/spec.json" ] || fail "Missing spec.json"
 [ -f ".oac/runs/${QUEST_ID}/coding-intelligence.json" ] || fail "Missing Quest v9 coding-intelligence.json"
 [ -f ".oac/runs/${QUEST_ID}/patch-capsules.json" ] || fail "Missing Quest v9 patch-capsules.json"
 [ -f ".oac/runs/${QUEST_ID}/coding-review.md" ] || fail "Missing Quest v9 coding-review.md"
@@ -361,11 +400,40 @@ grep -q 'kimi --work-dir' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json m
 [ -f ".oac/runs/${QUEST_ID}/patch-outcome-ledger.json" ] || fail "Missing Quest v14 patch-outcome-ledger.json"
 [ -f ".oac/runs/${QUEST_ID}/repo-history-signals.json" ] || fail "Missing Quest v14 repo-history-signals.json"
 [ -f ".oac/runs/${QUEST_ID}/temporal-memory.md" ] || fail "Missing Quest v14 temporal-memory brief"
+[ -f ".oac/runs/${QUEST_ID}/intelligent-coding-team.json" ] || fail "Missing Quest v15 intelligent-coding-team.json"
+[ -f ".oac/runs/${QUEST_ID}/requirement-compiler.json" ] || fail "Missing Quest v15 requirement-compiler.json"
+[ -f ".oac/runs/${QUEST_ID}/expert-team-blackboard.json" ] || fail "Missing Quest v15 expert-team-blackboard.json"
+[ -f ".oac/runs/${QUEST_ID}/change-impact-simulator.json" ] || fail "Missing Quest v15 change-impact-simulator.json"
+[ -f ".oac/runs/${QUEST_ID}/project-skill-pack-builder.json" ] || fail "Missing Quest v15 project-skill-pack-builder.json"
+[ -f ".oac/runs/${QUEST_ID}/intelligent-coding-team.md" ] || fail "Missing Quest v15 Intelligent Coding Team OS brief"
+[ -f ".oac/runs/${QUEST_ID}/verified-delivery-os.json" ] || fail "Missing Quest v16 verified-delivery-os.json"
+[ -f ".oac/runs/${QUEST_ID}/acceptance-compiler.json" ] || fail "Missing Quest v16 acceptance-compiler.json"
+[ -f ".oac/runs/${QUEST_ID}/evidence-first-gate.json" ] || fail "Missing Quest v16 evidence-first-gate.json"
+[ -f ".oac/runs/${QUEST_ID}/patch-provenance-ledger.json" ] || fail "Missing Quest v16 patch-provenance-ledger.json"
+[ -f ".oac/runs/${QUEST_ID}/runtime-cycle-matrix.json" ] || fail "Missing Quest v16 runtime-cycle-matrix.json"
+[ -f ".oac/runs/${QUEST_ID}/auto-eval-generator.json" ] || fail "Missing Quest v16 auto-eval-generator.json"
+[ -f ".oac/runs/${QUEST_ID}/agent-debate-gate.json" ] || fail "Missing Quest v16 agent-debate-gate.json"
+[ -f ".oac/runs/${QUEST_ID}/release-readiness-dashboard.json" ] || fail "Missing Quest v16 release-readiness-dashboard.json"
+[ -f ".oac/runs/${QUEST_ID}/verified-delivery-os.md" ] || fail "Missing Quest v16 Verified Coding Delivery OS brief"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
 const fs = require("fs");
 const questId = process.argv[2];
+const runDir = `.oac/runs/${questId}`;
+const plan = JSON.parse(fs.readFileSync(`${runDir}/plan.json`, "utf8"));
+const spec = JSON.parse(fs.readFileSync(`${runDir}/spec.json`, "utf8"));
+if (plan.requirementCompiler?.version !== "15") throw new Error("missing pre-planning requirement compiler in plan.json");
+if (!plan.acceptanceCriteria?.some((criterion) => criterion.startsWith("Pre-planning requirement readiness is "))) {
+  throw new Error("missing pre-planning acceptance criteria in plan.json");
+}
+if (spec.requirements?.compilerVersion !== "15") throw new Error("missing requirement compiler metadata in spec.json");
+if (!Array.isArray(spec.requirements?.compiled) || spec.requirements.compiled.length < 1) {
+  throw new Error("missing compiled requirements in spec.json");
+}
+if (!spec.requirements.acceptanceCriteria?.some((criterion) => criterion.startsWith("Pre-planning requirement readiness is "))) {
+  throw new Error("missing pre-planning acceptance criteria in spec.json");
+}
 const intelligence = JSON.parse(fs.readFileSync(`.oac/runs/${questId}/coding-intelligence.json`, "utf8"));
 if (intelligence.version !== "9") throw new Error(`expected Quest v9 coding intelligence, got ${intelligence.version}`);
 if (!intelligence.codingAutopilot || intelligence.codingAutopilot.version !== "10") throw new Error("missing Coding Autopilot v10");
@@ -376,11 +444,21 @@ if (!intelligence.verifiedKnowledgebase.hallucinationGate?.checks?.length) throw
 if (!intelligence.semanticRepoBrain || intelligence.semanticRepoBrain.version !== "13") throw new Error("missing Semantic Repo Brain v13");
 if (!intelligence.semanticRepoBrain.semanticGraph?.summary) throw new Error("missing v13 semantic graph summary");
 if (!intelligence.semanticRepoBrain.completionGate?.checks?.length) throw new Error("missing v13 semantic completion gate checks");
+if (!intelligence.temporalMemory || intelligence.temporalMemory.version !== "14") throw new Error("missing Temporal Memory v14");
+if (!Array.isArray(intelligence.temporalMemory.chronicCommands)) throw new Error("missing v14 chronic command memory");
+if (!intelligence.intelligentCodingTeam || intelligence.intelligentCodingTeam.version !== "15") throw new Error("missing Intelligent Coding Team OS v15");
+if (!intelligence.intelligentCodingTeam.teamGate?.checks?.length) throw new Error("missing v15 team gate checks");
+if (!intelligence.verifiedDelivery || intelligence.verifiedDelivery.version !== "16") throw new Error("missing Verified Coding Delivery OS v16");
+if (!intelligence.verifiedDelivery.acceptanceCompiler?.criteria?.length) throw new Error("missing v16 acceptance criteria");
+if (!intelligence.verifiedDelivery.evidenceFirstGate?.claims?.length) throw new Error("missing v16 evidence-first claims");
+if (!intelligence.verifiedDelivery.runtimeCycleMatrix || intelligence.verifiedDelivery.runtimeCycleMatrix.requiredCycles !== 3) throw new Error("missing v16 runtime three-cycle matrix");
+if (!Array.isArray(intelligence.verifiedDelivery.releaseReadinessDashboard?.requiredCommands)) throw new Error("missing v16 release readiness commands");
+if (!intelligence.verifiedDelivery.releaseReadinessDashboard?.installUpdateGate) throw new Error("missing v16 install/update gate");
 if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with kimi runtime and Quest v9-v14 sidecars"
+pass "Quest v8 artifact created with kimi runtime and Quest v9-v16 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -400,7 +478,20 @@ grep -q 'auto-skill-builder.json' quest-v9.txt || fail "quest-v9 output missing 
 grep -q 'temporal-memory.json' quest-v9.txt || fail "quest-v9 output missing temporal-memory artifact"
 grep -q 'patch-outcome-ledger.json' quest-v9.txt || fail "quest-v9 output missing patch-outcome ledger artifact"
 grep -q 'repo-history-signals.json' quest-v9.txt || fail "quest-v9 output missing repo-history signals artifact"
-pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, and Temporal Memory"
+grep -q 'intelligent-coding-team.json' quest-v9.txt || fail "quest-v9 output missing intelligent coding team artifact"
+grep -q 'requirement-compiler.json' quest-v9.txt || fail "quest-v9 output missing requirement compiler artifact"
+grep -q 'expert-team-blackboard.json' quest-v9.txt || fail "quest-v9 output missing expert team blackboard artifact"
+grep -q 'change-impact-simulator.json' quest-v9.txt || fail "quest-v9 output missing change impact simulator artifact"
+grep -q 'project-skill-pack-builder.json' quest-v9.txt || fail "quest-v9 output missing project skill pack builder artifact"
+grep -q 'verified-delivery-os.json' quest-v9.txt || fail "quest-v9 output missing verified delivery artifact"
+grep -q 'acceptance-compiler.json' quest-v9.txt || fail "quest-v9 output missing acceptance compiler artifact"
+grep -q 'evidence-first-gate.json' quest-v9.txt || fail "quest-v9 output missing evidence-first gate artifact"
+grep -q 'patch-provenance-ledger.json' quest-v9.txt || fail "quest-v9 output missing patch provenance ledger artifact"
+grep -q 'runtime-cycle-matrix.json' quest-v9.txt || fail "quest-v9 output missing runtime cycle matrix artifact"
+grep -q 'auto-eval-generator.json' quest-v9.txt || fail "quest-v9 output missing auto eval generator artifact"
+grep -q 'agent-debate-gate.json' quest-v9.txt || fail "quest-v9 output missing agent debate gate artifact"
+grep -q 'release-readiness-dashboard.json' quest-v9.txt || fail "quest-v9 output missing release readiness dashboard artifact"
+pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS"
 
 "${OAC_CLI[@]}" quest-resume "$QUEST_ID" --runtime kimi > quest-resume-kimi.txt 2>&1
 grep -q 'KIMI Resume' quest-resume-kimi.txt || fail "quest-resume --runtime kimi missing KIMI header"
@@ -509,7 +600,7 @@ if [ "${RUN_LIVE_KIMI:-0}" = "1" ] && [ ! -t 1 ] && [ "${OAC_KIMI_LIVE_FORCE:-0}
 fi
 
 "${OAC_CLI[@]}" quest-run --background --runtime kimi \
-  "Do not modify product files. Complete the Kimi Quest v8 daemon smoke with Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, and Semantic Repo Brain. Inspect local run artifacts first, including coding-autopilot.json, smart-test-matrix.json, coding-execution.json, executable-acceptance.json, security-secrets-gate.json, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, and auto-skill-builder.json when present, append a research.assessed event with needed:false, append coding.intent, impact.analyzed, patch.capsule, tests.selected, and review.signals events, append task_update completion events for every assigned task, append a priority.changed event for the first assigned task with priority 1, append a task.injected event for taskId kimi-v8-dynamic-task with status completed and priority 1, append a next_steps.suggested event with at least two choices, and append a note event that says kimi-v8-daemon-ok." \
+  "Do not modify product files. Complete the Kimi Quest v8 daemon smoke with Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS. Inspect local run artifacts first, including coding-autopilot.json, smart-test-matrix.json, coding-execution.json, executable-acceptance.json, security-secrets-gate.json, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, and release-readiness-dashboard.json when present, append a research.assessed event with needed:false, append coding.intent, impact.analyzed, patch.capsule, tests.selected, and review.signals events, append task_update completion events for every assigned task, append a priority.changed event for the first assigned task with priority 1, append a task.injected event for taskId kimi-v8-dynamic-task with status completed and priority 1, append a next_steps.suggested event with at least two choices, and append a note event that says kimi-v8-daemon-ok." \
   > daemon-run.txt 2>&1
 
 DAEMON_QUEST_ID="$(ls -1 .oac/runs | sort | tail -1)"
@@ -536,6 +627,23 @@ done
 [ -f ".oac/runs/${DAEMON_QUEST_ID}/knowledge-confidence-score.json" ] || fail "Missing live daemon knowledge confidence score"
 [ -f ".oac/runs/${DAEMON_QUEST_ID}/failure-fix-memory.json" ] || fail "Missing live daemon failure fix memory"
 [ -f ".oac/runs/${DAEMON_QUEST_ID}/auto-skill-builder.json" ] || fail "Missing live daemon auto skill builder"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/temporal-memory.json" ] || fail "Missing live daemon Temporal Memory"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/patch-outcome-ledger.json" ] || fail "Missing live daemon patch outcome ledger"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/repo-history-signals.json" ] || fail "Missing live daemon repo history signals"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/temporal-memory.md" ] || fail "Missing live daemon Temporal Memory brief"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/intelligent-coding-team.json" ] || fail "Missing live daemon Intelligent Coding Team OS"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/requirement-compiler.json" ] || fail "Missing live daemon requirement compiler"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/expert-team-blackboard.json" ] || fail "Missing live daemon expert team blackboard"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/change-impact-simulator.json" ] || fail "Missing live daemon change impact simulator"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/project-skill-pack-builder.json" ] || fail "Missing live daemon project skill pack builder"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/verified-delivery-os.json" ] || fail "Missing live daemon Verified Coding Delivery OS"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/acceptance-compiler.json" ] || fail "Missing live daemon acceptance compiler"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/evidence-first-gate.json" ] || fail "Missing live daemon evidence-first gate"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/patch-provenance-ledger.json" ] || fail "Missing live daemon patch provenance ledger"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/runtime-cycle-matrix.json" ] || fail "Missing live daemon runtime cycle matrix"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/auto-eval-generator.json" ] || fail "Missing live daemon auto eval generator"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/agent-debate-gate.json" ] || fail "Missing live daemon agent debate gate"
+[ -f ".oac/runs/${DAEMON_QUEST_ID}/release-readiness-dashboard.json" ] || fail "Missing live daemon release readiness dashboard"
 pass "Live Kimi v8 daemon state created"
 
 DEADLINE=$((SECONDS + 900))

@@ -3,14 +3,26 @@
  */
 
 import type { QuestScenario, RouterResult } from './task-router.js'
+import type {
+  QuestPrePlanningAssumption,
+  QuestPrePlanningRequirement,
+  QuestPrePlanningRequirementCompiler,
+} from './quest-preplanning-requirements.js'
 import type { ExecutionPlan } from './swarm-executor.js'
 
 export const RUN_SPEC_VERSION = '1' as const
 
 export interface RunSpecRequirements {
-  /** Placeholder for future structured requirements extraction. */
   summary: string
   acceptanceCriteria: string[]
+  compilerVersion: QuestPrePlanningRequirementCompiler['version']
+  readiness: QuestPrePlanningRequirementCompiler['readiness']
+  confidence: number
+  compiled: QuestPrePlanningRequirement[]
+  nonGoals: string[]
+  clarifyingQuestions: string[]
+  assumptions: QuestPrePlanningAssumption[]
+  planningNotes: string[]
 }
 
 export interface RunSpecExpert {
@@ -52,6 +64,8 @@ export function buildRunSpec(
     })),
   ]
 
+  const requirementCompiler = plan.requirementCompiler
+
   return {
     version: RUN_SPEC_VERSION,
     runId: plan.session.id,
@@ -60,8 +74,16 @@ export function buildRunSpec(
     createdAt: plan.createdAt,
     experts,
     requirements: {
-      summary: routerResult.objective,
-      acceptanceCriteria: plan.acceptanceCriteria,
+      summary: requirementCompiler.requirements[0]?.statement ?? routerResult.objective,
+      acceptanceCriteria: requirementCompiler.acceptanceCriteria,
+      compilerVersion: requirementCompiler.version,
+      readiness: requirementCompiler.readiness,
+      confidence: requirementCompiler.confidence,
+      compiled: requirementCompiler.requirements,
+      nonGoals: requirementCompiler.nonGoals,
+      clarifyingQuestions: requirementCompiler.clarifyingQuestions,
+      assumptions: requirementCompiler.assumptions,
+      planningNotes: requirementCompiler.planningNotes,
     },
   }
 }

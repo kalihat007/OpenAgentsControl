@@ -56,6 +56,27 @@ regulations, standards, pricing, news, or unfamiliar domain facts can affect
 correctness. If research is performed, append `research.performed` with findings,
 queries, and sources; if not, record `needed:false` and proceed.
 
+# Step Budget Guard
+
+Kimi direct sessions may have a `max_steps_per_turn` ceiling, commonly 100 in
+`~/.kimi/config.toml`. Treat each turn as one bounded Quest execution cycle:
+finish the requested slice, block with evidence, or ask for the user's next
+choice before the ceiling is reached.
+
+Do not exhaustively read every Quest sidecar before acting. Load `quest.json`,
+`plan.json`, `events.ndjson`, current user/repo instructions, and only the
+v9-v16 sidecars directly needed for the touched files, symbols, tests, runtime
+adapter, or acceptance checks. Use the repo wiki and semantic brain as indexes;
+do not turn them into an all-files reading loop.
+
+Do not run repeated self-refresh loops. Run `oac quest-v9` at most once in a
+turn, and only after meaningful file/context changes or when a required delivery
+sidecar is stale or missing. If the work is too large for the current turn,
+append `task_update` with status `blocked` and reason `runtime_step_budget`,
+append `action.summary` and `next_steps.suggested`, move the Quest to `BLOCKED`
+or `WAITING`, and return a concise handoff instead of continuing tool calls until
+Kimi reports a max-step error.
+
 When creating or modifying files, use Kimi file tools such as WriteFile or
 StrReplaceFile. Code shown only in a text response is not saved. When validating
 work, use Shell or other relevant tools and report skipped checks clearly.
@@ -139,6 +160,21 @@ load `quest.json` first when resuming. Quest v8 artifacts are:
 - `patch-outcome-ledger.json`
 - `repo-history-signals.json`
 - `temporal-memory.md`
+- `intelligent-coding-team.json`
+- `requirement-compiler.json`
+- `expert-team-blackboard.json`
+- `change-impact-simulator.json`
+- `project-skill-pack-builder.json`
+- `intelligent-coding-team.md`
+- `verified-delivery-os.json`
+- `acceptance-compiler.json`
+- `evidence-first-gate.json`
+- `patch-provenance-ledger.json`
+- `runtime-cycle-matrix.json`
+- `auto-eval-generator.json`
+- `agent-debate-gate.json`
+- `release-readiness-dashboard.json`
+- `verified-delivery-os.md`
 - `.oac/repo-wiki/index.md` (project-level, outside the run dir)
 - `summary.json`
 - optional `handoff.json`
@@ -191,7 +227,7 @@ write-back, run `oac repo-wiki`; for long local sessions use
 `oac repo-wiki --watch`.
 
 For coding work, use Quest v9 coding intelligence, the v12 Verified
-Knowledgebase, and the v13 Semantic Repo Brain by default. Read
+Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent Coding Team OS, and v16 Verified Coding Delivery OS by default. Read
 `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
 `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
 `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`,
@@ -211,7 +247,15 @@ Knowledgebase, and the v13 Semantic Repo Brain by default. Read
 `knowledge-confidence-score.json`, `failure-fix-memory.json`,
 `auto-skill-builder.json`, `semantic-repo-brain.md`,
 `temporal-memory.json`, `patch-outcome-ledger.json`,
-`repo-history-signals.json`, and `temporal-memory.md`
+`repo-history-signals.json`, `temporal-memory.md`,
+`intelligent-coding-team.json`, `requirement-compiler.json`,
+`expert-team-blackboard.json`, `change-impact-simulator.json`,
+`project-skill-pack-builder.json`, `intelligent-coding-team.md`,
+`verified-delivery-os.json`, `acceptance-compiler.json`,
+`evidence-first-gate.json`, `patch-provenance-ledger.json`,
+`runtime-cycle-matrix.json`, `auto-eval-generator.json`,
+`agent-debate-gate.json`, `release-readiness-dashboard.json`, and
+`verified-delivery-os.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure
@@ -223,11 +267,20 @@ contract facts, source-to-patch traceability, stale knowledge checks,
 dependency research cache, behavior oracle, test-authoring plan, and review
 signals, plus AST-level functions, classes, exports, CLI commands, events,
 schemas, tests, package scripts, runtime prompts, ownership, knowledge confidence
-labels, failed-command fingerprints, and approval-gated skill candidates. Do not
+labels, failed-command fingerprints, approval-gated skill candidates, chronic
+cross-quest failure escalation, patch-outcome history, and git-history
+co-change/churn/bug-density/ownership signals, plus requirement readiness,
+expert ownership, file locks, impact simulation, approval-gated project skill
+pack candidates, team gate status, acceptance criteria, evidence-first claims,
+patch provenance, runtime three-cycle requirements, eval candidates, agent
+debate results, and release readiness. Do not
 claim files, symbols, commands, APIs, docs, or test results
 without local evidence; if `hallucination-gate.json` is blocked, stop and
 report the blocker before completion. If `semantic-repo-brain.json` reports a
 blocked semantic completion gate, stop and report the blocker before completion.
+If `verified-delivery-os.json` or `release-readiness-dashboard.json` is blocked,
+stop and report the blocker before claiming completion, tested status, or
+release readiness.
 Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
 `tests.selected`, and `review.signals` when those facts change. Run
 `oac quest-v9` or `oac quest-v9 <quest-id>` for a fresh snapshot.

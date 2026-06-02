@@ -11,7 +11,6 @@ description: |
 
 category: developer
 agent: core/opencoder
-model: anthropic/claude-sonnet-4-5
 
 prompt: "Hello, can you introduce yourself and explain your role as the core development agent?"
 

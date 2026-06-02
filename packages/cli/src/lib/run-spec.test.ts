@@ -12,5 +12,11 @@ describe('run-spec', () => {
     expect(spec.version).toBe(RUN_SPEC_VERSION)
     expect(spec.experts.some((e) => e.role === 'primary')).toBe(true)
     expect(spec.requirements.summary).toBe(routed.objective)
+    expect(spec.requirements.compilerVersion).toBe('15')
+    expect(spec.requirements.readiness).toMatch(/ready|needs-clarification/)
+    expect(spec.requirements.compiled.length).toBeGreaterThan(0)
+    expect(spec.requirements.acceptanceCriteria.some((criterion) =>
+      criterion.startsWith('Pre-planning requirement readiness is '),
+    )).toBe(true)
   })
 })

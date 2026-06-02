@@ -50,6 +50,18 @@ import {
   writeQuestTemporalMemoryArtifacts,
   type QuestTemporalMemory,
 } from './quest-temporal-memory.js'
+import {
+  buildQuestIntelligentCodingTeam,
+  formatIntelligentCodingTeamSummary,
+  writeQuestIntelligentCodingTeamArtifacts,
+  type QuestIntelligentCodingTeam,
+} from './quest-intelligent-coding-team.js'
+import {
+  buildQuestVerifiedDeliveryOS,
+  formatVerifiedDeliverySummary,
+  writeQuestVerifiedDeliveryArtifacts,
+  type QuestVerifiedDeliveryOS,
+} from './quest-verified-delivery.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -118,6 +130,8 @@ export interface QuestCodingIntelligence {
   verifiedKnowledgebase: QuestVerifiedKnowledgebase
   semanticRepoBrain: QuestSemanticRepoBrain
   temporalMemory: QuestTemporalMemory
+  intelligentCodingTeam: QuestIntelligentCodingTeam
+  verifiedDelivery: QuestVerifiedDeliveryOS
 }
 
 export interface RefreshQuestCodingIntelligenceOptions {
@@ -232,6 +246,45 @@ export async function refreshQuestCodingIntelligence(
     repoWiki,
     temporalMemory,
   })
+  const intelligentCodingTeam = buildQuestIntelligentCodingTeam({
+    projectRoot,
+    objective,
+    files: relevantFiles,
+    index,
+    impact,
+    patchCapsules,
+    testRecommendations,
+    reviewSignals,
+    runtimeParity,
+    codingAutopilot,
+    codingExecution,
+    verifiedKnowledgebase,
+    semanticRepoBrain,
+    temporalMemory,
+    events,
+    gitStatus: repoWiki?.changes.gitStatus ?? [],
+    repoWiki,
+  })
+  const verifiedDelivery = buildQuestVerifiedDeliveryOS({
+    projectRoot,
+    objective,
+    files: relevantFiles,
+    index,
+    impact,
+    patchCapsules,
+    testRecommendations,
+    reviewSignals,
+    runtimeParity,
+    codingAutopilot,
+    codingExecution,
+    verifiedKnowledgebase,
+    semanticRepoBrain,
+    temporalMemory,
+    intelligentCodingTeam,
+    events,
+    gitStatus: repoWiki?.changes.gitStatus ?? [],
+    repoWiki,
+  })
 
   const intelligence: QuestCodingIntelligence = {
     version: QUEST_CODING_INTELLIGENCE_VERSION,
@@ -251,6 +304,8 @@ export async function refreshQuestCodingIntelligence(
     verifiedKnowledgebase,
     semanticRepoBrain,
     temporalMemory,
+    intelligentCodingTeam,
+    verifiedDelivery,
   }
 
   await writeQuestCodingIntelligence(projectRoot, options.questId, intelligence)
@@ -274,6 +329,8 @@ export async function writeQuestCodingIntelligence(
   await writeQuestVerifiedKnowledgebaseArtifacts(dir, intelligence.verifiedKnowledgebase)
   await writeQuestSemanticRepoBrainArtifacts(dir, intelligence.semanticRepoBrain)
   await writeQuestTemporalMemoryArtifacts(dir, intelligence.temporalMemory)
+  await writeQuestIntelligentCodingTeamArtifacts(dir, intelligence.intelligentCodingTeam)
+  await writeQuestVerifiedDeliveryArtifacts(dir, intelligence.verifiedDelivery)
 }
 
 export function formatCodingReview(intelligence: QuestCodingIntelligence): string {
@@ -331,6 +388,8 @@ export function formatCodingReview(intelligence: QuestCodingIntelligence): strin
   lines.push(formatVerifiedKnowledgebaseSummary(intelligence.verifiedKnowledgebase))
   lines.push(formatSemanticRepoBrainSummary(intelligence.semanticRepoBrain))
   lines.push(formatTemporalMemorySummary(intelligence.temporalMemory))
+  lines.push(formatIntelligentCodingTeamSummary(intelligence.intelligentCodingTeam))
+  lines.push(formatVerifiedDeliverySummary(intelligence.verifiedDelivery))
   return lines.join('\n')
 }
 

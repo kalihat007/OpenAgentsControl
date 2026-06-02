@@ -404,7 +404,7 @@ opencode --agent OpenAgent
 claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt "$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)"
 
 # Kimi Code — after install.sh --with-kimi or update.sh --with-kimi from repo clone
-kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
+kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160
 ```
 
 **CLI orchestration (`oac`)** — expert routing, plans, and handoff artifacts:

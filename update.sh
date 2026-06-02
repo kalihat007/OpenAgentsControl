@@ -58,6 +58,11 @@ REPO_NAME="${OPENCODE_REPO_NAME:-OpenAgentsControl}"
 REPO_SLUG="${REPO_OWNER}/${REPO_NAME}"
 BRANCH="${OPENCODE_BRANCH:-main}"
 REPO_URL="${OPENCODE_RAW_URL:-https://raw.githubusercontent.com/${REPO_SLUG}/${BRANCH}}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOCAL_SOURCE_DIR="${OPENCODE_LOCAL_SOURCE_DIR:-}"
+if [ -z "$LOCAL_SOURCE_DIR" ] && [ -d "${SCRIPT_DIR}/.opencode" ]; then
+    LOCAL_SOURCE_DIR="$SCRIPT_DIR"
+fi
 OPENAGENT_SELECTED_MODEL="${OPENAGENT_MODEL:-${OPENAGENT_DEFAULT_MODEL:-}}"
 OPENAGENT_SMALL_MODEL="${OPENAGENT_SMALL_MODEL:-$OPENAGENT_SELECTED_MODEL}"
 
@@ -333,7 +338,7 @@ install_kimi_integration() {
 
     print_success "Kimi Code integration updated!"
     print_info "Agent file: $plugin_dest/openagent.yaml"
-    print_info "Run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+    print_info "Run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160"
 }
 
 #############################################################################
@@ -470,6 +475,23 @@ install_claude_integration() {
 # Update Logic
 #############################################################################
 
+fetch_opencode_component() {
+    local relative_path="$1"
+    local dest="$2"
+    local source=""
+
+    if [ -n "$LOCAL_SOURCE_DIR" ] && [ -f "${LOCAL_SOURCE_DIR}/.opencode/${relative_path}" ]; then
+        source="${LOCAL_SOURCE_DIR}/.opencode/${relative_path}"
+        if [ "$source" = "$dest" ]; then
+            return 0
+        fi
+        cp "$source" "$dest"
+        return $?
+    fi
+
+    curl_fetch "${REPO_URL}/.opencode/${relative_path}" -o "$dest"
+}
+
 update_component() {
     local path="$1"
     local install_dir="$2"
@@ -481,13 +503,12 @@ update_component() {
         return 1
     fi
 
-    local url="${REPO_URL}/.opencode/${relative_path}"
     local backup="${path}.backup"
 
     cp "$path" "$backup"
     BACKUP_FILES+=("$backup")
 
-    if curl_fetch "$url" -o "$path" 2>/dev/null; then
+    if fetch_opencode_component "$relative_path" "$path" 2>/dev/null; then
         print_success "Updated $path"
         rm -f "$backup"
         # Remove from tracking array (bash 3.2 compatible)
@@ -542,7 +563,6 @@ install_missing_component() {
     local install_dir="$1"
     local relative_path="$2"
     local dest="${install_dir}/${relative_path}"
-    local url="${REPO_URL}/.opencode/${relative_path}"
 
     # Guard: keep updater writes inside the selected install directory.
     if [[ "$relative_path" == /* ]] || [[ "$relative_path" == *..* ]]; then
@@ -556,7 +576,7 @@ install_missing_component() {
     fi
 
     mkdir -p "$(dirname "$dest")"
-    if curl_fetch "$url" -o "$dest" 2>/dev/null; then
+    if fetch_opencode_component "$relative_path" "$dest" 2>/dev/null; then
         print_success "Installed missing component: ${relative_path}"
         return 0
     fi
@@ -685,10 +705,10 @@ print_execution_workflow() {
         echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt \"\$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)\""
     fi
     if [ -f "$HOME/.kimi/agents/openagents-control/openagent.yaml" ]; then
-        echo -e "  Kimi Code:     ${CYAN}kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml${NC}"
+        echo -e "  Kimi Code:     ${CYAN}kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160${NC}"
     else
         echo -e "  Kimi Code:     ${CYAN}./update.sh --with-kimi${NC} (from repo clone)"
-        echo "                 then: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+        echo "                 then: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160"
     fi
     if [ -f "$HOME/.codex/agents/openagents-control/openagent.toml" ]; then
         echo -e "  Codex CLI:     ${CYAN}codex -C .${NC}  (operate as openagent — see plugins/codex-cli/README.md)"

@@ -100,6 +100,21 @@ Required v8 artifacts when available:
 - `patch-outcome-ledger.json` - per file-set patch outcomes: validated, reverted, hotfixed, merged
 - `repo-history-signals.json` - git-history co-change, churn, bug-density, and blame-based ownership (HEAD-cached)
 - `temporal-memory.md` - human-readable temporal memory brief
+- `intelligent-coding-team.json` - Quest v15 Intelligent Coding Team OS rollup for requirements, expert ownership, impact simulation, skills, and team gate
+- `requirement-compiler.json` - Quest v15 requirement readiness, acceptance criteria, non-goals, clarifying questions, and research gate
+- `expert-team-blackboard.json` - Quest v15 expert roster, work items, shared context, and file locks
+- `change-impact-simulator.json` - Quest v15 predicted surfaces, dependency walk, risk scenarios, and validation plan
+- `project-skill-pack-builder.json` - Quest v15 approval-gated project playbook and skill candidates
+- `intelligent-coding-team.md` - human-readable Quest v15 team brief
+- `verified-delivery-os.json` - Quest v16 Verified Coding Delivery OS rollup for acceptance, evidence, provenance, runtime cycles, eval candidates, debate, and readiness
+- `acceptance-compiler.json` - Quest v16 done definition, acceptance criteria, validation commands, and open risks
+- `evidence-first-gate.json` - Quest v16 claim confidence and hallucination-resistant delivery gate
+- `patch-provenance-ledger.json` - Quest v16 source-to-patch-to-test traceability for changed files
+- `runtime-cycle-matrix.json` - Quest v16 OpenCode/Kimi/Codex/Claude three-cycle request checks
+- `auto-eval-generator.json` - Quest v16 eval and regression candidate queue
+- `agent-debate-gate.json` - Quest v16 tech lead, tester, security, and release-lead debate verdicts
+- `release-readiness-dashboard.json` - Quest v16 final readiness dashboard and blockers
+- `verified-delivery-os.md` - human-readable Quest v16 delivery brief
 - `summary.json` - machine-readable execution summary
 - `handoff.json` - optional IDE handoff manifest
 - `.oac/memory/promotions.json` - user-reviewed promotion queue for repeated learnings before they become durable repo knowledge
@@ -124,7 +139,16 @@ For adaptive v8 work:
 - read Verified Knowledgebase sidecars when present so coding is evidence-first and uses `evidence-ledger.json`, `hallucination-gate.json`, `contract-facts.json`, `source-to-patch-trace.json`, stale knowledge refresh, dependency research cache, behavior oracle, and test-authoring plan before editing or completing work
 - read Semantic Repo Brain sidecars when present so coding uses AST-level repo facts, ownership, confidence labels, failure-fix memory, and user-approved skill candidate policy before editing or completing work
 - read Temporal Memory sidecars when present so coding escalates chronic cross-quest failures instead of retrying, treats reverted/hotfixed and bug-prone surfaces as higher risk, and weighs git-history co-change when scoping blast radius
+- read Intelligent Coding Team OS sidecars when present so coding compiles requirements before edits, keeps expert owners and file locks visible, simulates impact, keeps project skill candidates approval-gated, and uses the team gate before completion
+- read Verified Coding Delivery OS sidecars when present so coding compiles acceptance, labels evidence confidence, traces patch provenance, checks runtime three-cycle coverage, proposes evals, runs agent debate, and verifies release readiness before claiming completion
 - keep review decisions, injected tasks, and priority changes append-only
+
+Step budget guard:
+
+- treat each runtime turn as one bounded Quest execution cycle
+- do not exhaustively read every optional sidecar before acting; load base run files, current repo/user instructions, and only the v9-v16 sidecars needed for touched files, symbols, tests, adapters, or acceptance checks
+- run `oac quest-v9` at most once in a turn, and only after meaningful file/context changes or stale required sidecars
+- when work cannot finish inside the current turn budget, append `task_update` with status `blocked` and reason `runtime_step_budget`, append `action.summary` and `next_steps.suggested`, move to `BLOCKED` or `WAITING`, and return a concise resume path instead of continuing until a provider max-step error
 
 Use these CLI commands for durable status and continuation:
 
@@ -176,7 +200,7 @@ Treat the repo wiki as current working context, not long-term truth. Durable kno
 
 ## Quest v9 Coding Intelligence
 
-Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Quest v14 adds Temporal Memory. Together they are active by default for coding, installer, runtime, adapter, test, and repo-maintenance work.
+Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Quest v14 adds Temporal Memory. Quest v15 adds the Intelligent Coding Team OS. Quest v16 adds the Verified Coding Delivery OS. Together they are active by default for coding, installer, runtime, adapter, test, and repo-maintenance work.
 
 Before editing code, use Quest v9 artifacts to answer:
 
@@ -194,15 +218,17 @@ Before editing code, use Quest v9 artifacts to answer:
 - which AST-level repo facts are available for functions, classes, exports, CLI commands, events, schemas, tests, package scripts, runtime prompts, and ownership
 - which knowledge facts are verified, inferred, stale, missing, or need research
 - which failed-command fingerprints have known fixes and which repeated workflows are only skill candidates until the user approves promotion
+- whether requirements are ready, which expert owns each work item, which file locks apply, what impact surfaces are predicted, which project skill-pack candidates are pending approval, and whether the team gate passes
+- which acceptance criteria are satisfied, which claims are verified/inferred/stale/missing, which patches are traceable to requirements/evidence/tests, whether repeated request cycles are covered for required runtimes, which evals should be added, whether the agent debate gate passed, and whether release readiness is blocked
 
-The CLI refreshes Quest v9/v10/v11/v12/v13 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
+The CLI refreshes Quest v9/v10/v11/v12/v13/v14/v15/v16 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
 
 ```bash
 oac quest-v9
 oac quest-v9 <quest-id>
 ```
 
-For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, hallucination gate, semantic completion gate, security/secrets gate, and any required runtime parity checks are recorded or the gap is explicitly called out.
+For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, hallucination gate, semantic completion gate, security/secrets gate, Intelligent Coding Team OS team gate, Verified Coding Delivery OS release readiness, and any required runtime parity or three-cycle checks are recorded or the gap is explicitly called out.
 
 ## Memory Promotion System
 

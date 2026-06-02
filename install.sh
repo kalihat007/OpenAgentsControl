@@ -1170,7 +1170,7 @@ install_kimi_integration() {
 
     if ! command -v kimi >/dev/null 2>&1; then
         print_warning "Kimi CLI not found on PATH. Installing adapter files anyway."
-        print_info "Install/login to Kimi CLI, then run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+        print_info "Install/login to Kimi CLI, then run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160"
     fi
 
     mkdir -p "$HOME/.kimi/agents"
@@ -1185,7 +1185,7 @@ install_kimi_integration() {
 
     print_success "Kimi Code integration installed!"
     print_info "Agent file: $plugin_dest/openagent.yaml"
-    print_info "Run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+    print_info "Run: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160"
 }
 
 #############################################################################
@@ -1684,10 +1684,10 @@ print_execution_workflow() {
         echo "                 then: claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt \"\$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)\""
     fi
     if [ -f "$HOME/.kimi/agents/openagents-control/openagent.yaml" ]; then
-        echo -e "  Kimi Code:     ${CYAN}kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml${NC}"
+        echo -e "  Kimi Code:     ${CYAN}kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160${NC}"
     else
         echo -e "  Kimi Code:     ${CYAN}./install.sh advanced --with-kimi${NC} (from repo clone)"
-        echo "                 then: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml"
+        echo "                 then: kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160"
     fi
     if [ -f "$HOME/.codex/agents/openagents-control/openagent.toml" ]; then
         echo -e "  Codex CLI:     ${CYAN}codex -C .${NC}  (operate as openagent — see plugins/codex-cli/README.md)"

@@ -40,7 +40,7 @@ import { loadTestCase, loadTestCases } from './test-case-loader.js';
 import { ResultSaver } from './result-saver.js';
 import { PromptManager } from './prompt-manager.js';
 import { SuiteValidator } from './suite-validator.js';
-import glob from 'glob';
+import * as glob from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { rmSync, existsSync, readdirSync } from 'fs';

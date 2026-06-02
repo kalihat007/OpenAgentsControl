@@ -193,7 +193,7 @@ export class CodexAdapter extends BaseAdapter {
     let i = 0;
 
     while (i < lines.length) {
-      const line = lines[i];
+      const line = lines[i] ?? "";
       const trimmed = line.trim();
 
       // Skip empty lines and comments
@@ -223,7 +223,7 @@ export class CodexAdapter extends BaseAdapter {
           value = firstLine;
           i++;
           while (i < lines.length) {
-            const nextLine = lines[i];
+            const nextLine = lines[i] ?? "";
             if (nextLine.trimEnd().endsWith('"""')) {
               value += "\n" + nextLine.trimEnd().slice(0, -3);
               i++;
@@ -245,7 +245,7 @@ export class CodexAdapter extends BaseAdapter {
         while (i < lines.length && !arrayStr.includes("]")) {
           i++;
           if (i < lines.length) {
-            arrayStr += lines[i].trim();
+            arrayStr += (lines[i] ?? "").trim();
           }
         }
         const inner = arrayStr.slice(1, arrayStr.indexOf("]")).trim();

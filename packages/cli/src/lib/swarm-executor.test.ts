@@ -192,6 +192,13 @@ describe('swarm-executor automatic decomposition', () => {
     expect(spec.scenario).toBe(routed.scenario)
     expect(spec.experts.length).toBeGreaterThan(0)
     expect(spec.requirements.acceptanceCriteria.length).toBeGreaterThan(0)
+    expect(plan.requirementCompiler.version).toBe('15')
+    expect(plan.acceptanceCriteria[0]!.startsWith('Pre-planning requirement readiness is ')).toBe(true)
+    expect(plan.session.tasks.some((task) =>
+      task.acceptanceCriteria.some((criterion) =>
+        criterion.startsWith('Pre-planning requirement readiness is '),
+      ),
+    )).toBe(true)
   })
 
   it('preserves runtime-appended events when persisting run artifacts', async () => {

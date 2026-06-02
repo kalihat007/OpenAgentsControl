@@ -30,6 +30,10 @@ import {
 } from './config.js'
 import { SessionBudgetExceededError, SwarmExecutionError } from './errors.js'
 import { buildRunSpec, type RunSpec } from './run-spec.js'
+import {
+  compilePrePlanningRequirements,
+  type QuestPrePlanningRequirementCompiler,
+} from './quest-preplanning-requirements.js'
 import type { SwarmQualityGateResult } from './swarm-quality-gate.js'
 import {
   buildQuestRun,
@@ -104,6 +108,7 @@ export interface ExecutionPlan {
   schedulerResult: SchedulerResult
   stages: ExecutionStage[]
   decomposition: DecompositionSummary
+  requirementCompiler: QuestPrePlanningRequirementCompiler
   acceptanceCriteria: string[]
   createdAt: string
 }
@@ -235,6 +240,7 @@ function expertToSwarmTask(
   expert: ExpertProfile,
   objective: string,
   isPrimary: boolean,
+  requirementCompiler: QuestPrePlanningRequirementCompiler,
 ): SwarmTask {
   const role = roleForAgent(expert.name)
   const stage = stageForExpert(expert.name, role)
@@ -249,7 +255,10 @@ function expertToSwarmTask(
     reads: expert.filePatterns.slice(0, 5),
     writes: [],
     dependsOn: [],
-    acceptanceCriteria: acceptanceCriteriaForExpert(expert.name, stage, objective),
+    acceptanceCriteria: taskAcceptanceCriteria(
+      acceptanceCriteriaForExpert(expert.name, stage, objective),
+      requirementCompiler,
+    ),
     maxChunkMinutes: stage === 'implementation' ? 15 : 10,
     metadata: {
       category: expert.category,
@@ -290,7 +299,8 @@ export function planExecution(
 ): ExecutionPlan {
   resetTaskCounter()
 
-  const planned = createPlannedTasks(routerResult, options)
+  const requirementCompiler = compilePrePlanningRequirements(routerResult)
+  const planned = createPlannedTasks(routerResult, options, requirementCompiler)
   const tasks = applyRuntimePlanning(planned.tasks, options)
 
   if (tasks.length === 0) {
@@ -336,7 +346,8 @@ export function planExecution(
     schedulerResult,
     stages: stagesFromBatches(schedulerResult.batches),
     decomposition: planned.decomposition,
-    acceptanceCriteria: planAcceptanceCriteria(routerResult.objective),
+    requirementCompiler,
+    acceptanceCriteria: requirementCompiler.acceptanceCriteria,
     createdAt,
   }
 }
@@ -1030,6 +1041,7 @@ async function recordExecutionIncident(
 function createPlannedTasks(
   routerResult: RouterResult,
   options: PlanExecutionOptions,
+  requirementCompiler: QuestPrePlanningRequirementCompiler,
 ): { tasks: SwarmTask[]; decomposition: DecompositionSummary } {
   const autoDecompose = options.autoDecompose ?? true
   const sequentialSubtasks = options.sequentialSubtasks ?? true
@@ -1044,6 +1056,7 @@ function createPlannedTasks(
     if (validation.valid && decomposed.subTasks.length > 1) {
       const decomposedTasks = tasksFromDecomposition(decomposed, experts, {
         sequentialSubtasks,
+        requirementCompiler,
       })
 
       return {
@@ -1071,7 +1084,7 @@ function createPlannedTasks(
   return {
     tasks: wireStageDependencies(
       experts.map(({ expert, isPrimary }) =>
-        expertToSwarmTask(expert, routerResult.objective, isPrimary),
+        expertToSwarmTask(expert, routerResult.objective, isPrimary, requirementCompiler),
       ),
     ),
     decomposition: singleObjectiveSummary(),
@@ -1096,9 +1109,9 @@ function applyRuntimePlanning(
 function tasksFromDecomposition(
   decomposed: DecomposedTask,
   experts: ExpertDefinition[],
-  options: { sequentialSubtasks: boolean },
+  options: { sequentialSubtasks: boolean; requirementCompiler: QuestPrePlanningRequirementCompiler },
 ): { tasks: SwarmTask[]; taskIdsBySubTaskId: Map<string, string> } {
-  const coordinator = createCoordinatorTask(decomposed)
+  const coordinator = createCoordinatorTask(decomposed, options.requirementCompiler)
   const taskIdsBySubTaskId = new Map<string, string>()
   for (const subTask of decomposed.subTasks) {
     taskIdsBySubTaskId.set(subTask.id, nextTaskId())
@@ -1121,6 +1134,7 @@ function tasksFromDecomposition(
         decomposed.dependencies,
         taskIdsBySubTaskId,
       ),
+      requirementCompiler: options.requirementCompiler,
     }),
   )
 
@@ -1130,7 +1144,10 @@ function tasksFromDecomposition(
   }
 }
 
-function createCoordinatorTask(decomposed: DecomposedTask): SwarmTask {
+function createCoordinatorTask(
+  decomposed: DecomposedTask,
+  requirementCompiler: QuestPrePlanningRequirementCompiler,
+): SwarmTask {
   return {
     id: nextTaskId(),
     title: `[TechLeadAgent] Plan sequential expert chunks for ${decomposed.originalObjective}`,
@@ -1142,11 +1159,14 @@ function createCoordinatorTask(decomposed: DecomposedTask): SwarmTask {
     reads: [],
     writes: [],
     dependsOn: [],
-    acceptanceCriteria: [
-      'Objective is decomposed into bounded expert subtasks',
-      'Subtask dependencies, checkpoints, and sync points are explicit',
-      'Experts Mode is used by default for the full sequence',
-    ],
+    acceptanceCriteria: taskAcceptanceCriteria(
+      [
+        'Objective is decomposed into bounded expert subtasks',
+        'Subtask dependencies, checkpoints, and sync points are explicit',
+        'Experts Mode is used by default for the full sequence',
+      ],
+      requirementCompiler,
+    ),
     metadata: {
       isPrimary: true,
       stage: 'planning',
@@ -1168,6 +1188,7 @@ function subTaskToSwarmTask(
     coordinatorTaskId: string
     previousTaskId?: string
     dependencyTaskIds: string[]
+    requirementCompiler: QuestPrePlanningRequirementCompiler
   },
 ): SwarmTask {
   const agent = options.expert?.name ?? subTask.expertId
@@ -1200,11 +1221,14 @@ function subTaskToSwarmTask(
     dependsOn,
     moduleClaims: subTask.producesArtifacts,
     syncAfterTaskIds: [options.taskId],
-    acceptanceCriteria: [
-      `Complete chunk ${options.index + 1}/${options.total}: ${subTask.objective}`,
-      `Produce or update artifacts: ${subTask.producesArtifacts.join(', ') || 'implementation checkpoint'}`,
-      'Checkpoint output is ready for TechLeadAgent sync before the next chunk',
-    ],
+    acceptanceCriteria: taskAcceptanceCriteria(
+      [
+        `Complete chunk ${options.index + 1}/${options.total}: ${subTask.objective}`,
+        `Produce or update artifacts: ${subTask.producesArtifacts.join(', ') || 'implementation checkpoint'}`,
+        'Checkpoint output is ready for TechLeadAgent sync before the next chunk',
+      ],
+      options.requirementCompiler,
+    ),
     maxChunkMinutes: effortToMaxChunkMinutes(subTask.estimatedEffort),
     metadata: {
       stage,
@@ -1393,15 +1417,14 @@ function acceptanceCriteriaForExpert(agentName: string, stage: string, objective
   ]
 }
 
-function planAcceptanceCriteria(objective: string): string[] {
-  return [
-    `Selected experts cover the objective: ${objective}`,
-    'Large objectives are decomposed into bounded expert subtasks automatically',
-    'TechLeadAgent planning completes before dependent specialist work',
-    'Subtasks execute sequence-by-sequence unless dependency-safe parallelism is explicitly selected',
-    'A sync event is recorded after every batch',
-    'Final report marks each acceptance check as passed, failed, or unverified',
-  ]
+function taskAcceptanceCriteria(
+  baseCriteria: string[],
+  requirementCompiler: QuestPrePlanningRequirementCompiler,
+): string[] {
+  return unique([
+    ...baseCriteria,
+    ...requirementCompiler.acceptanceCriteria.slice(0, 4),
+  ])
 }
 
 function buildAcceptanceChecks(
@@ -1664,6 +1687,7 @@ function serializablePlan(plan: ExecutionPlan): Record<string, unknown> {
     createdAt: plan.createdAt,
     maxConcurrency: plan.session.maxConcurrency,
     decomposition: plan.decomposition,
+    requirementCompiler: plan.requirementCompiler,
     stages: plan.stages,
     tasks: plan.session.tasks,
     batches: plan.schedulerResult.batches.map((batch) => ({

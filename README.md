@@ -367,7 +367,7 @@ oac quest-status
 oac quest-resume <quest-id>
 ```
 
-Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --runtime kimi|opencode|claude` runs a strict headless bridge that requires runtime task write-back before completion is trusted. `oac experts --run --live` writes `.oac/runs/{id}/quest.json` and `handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`), Kimi Code (`kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml`), and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt "$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)"`).
+Use `update.sh` (not ad-hoc file copies) to refresh an existing install. `oac experts --run --runtime kimi|opencode|claude` runs a strict headless bridge that requires runtime task write-back before completion is trusted. `oac experts --run --live` writes `.oac/runs/{id}/quest.json` and `handoff.json` with one-liners for OpenCode TUI (`opencode --agent OpenAgent`), Kimi Code (`kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160`), and Claude Code (`claude --plugin-dir ~/.claude/plugins/openagents-control-bridge --append-system-prompt "$(cat ~/.claude/plugins/openagents-control-bridge/openagent-system.md)"`).
 
 ### Step 3: Approve & Ship
 
@@ -813,13 +813,23 @@ OpenAgent can also run directly inside Kimi Code without OpenCode:
 
 ```bash
 ./install.sh advanced --with-kimi
-kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
+kimi --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml --max-steps-per-turn 160
 ```
 
 For a cleaner Quest-style screen without Kimi's visible thinking stream:
 
 ```bash
 kimi --no-thinking --work-dir . --agent-file ~/.kimi/agents/openagents-control/openagent.yaml
+```
+
+For large QuestMode coding sessions, keep Kimi's native step ceiling from ending
+the turn mid-flight by giving the agent a larger explicit budget while OpenAgent
+still self-limits through its Step Budget Guard:
+
+```bash
+kimi --work-dir . \
+  --agent-file ~/.kimi/agents/openagents-control/openagent.yaml \
+  --max-steps-per-turn 160
 ```
 
 The Kimi adapter inherits Kimi's native tools/subagents, uses an OpenAgent Quest-first system prompt, and does not set a model. Kimi uses the default model in `~/.kimi/config.toml`, or the model the user explicitly passes:
@@ -834,7 +844,7 @@ No LLM routing or hidden model selector is added for Kimi. OpenAgent-on-Kimi use
 
 For substantial work, OpenAgent-on-Kimi visibly starts with an `OpenAgent Quest Spec` before edits, file moves, plan-mode handoff, or tool calls. Repo-wide reorganizations must show the proposed target layout and wait for approval before moving or deleting files.
 
-Quest v8 (evolved from v5-v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable. Quest v9 adds coding intelligence, Quest v10 adds Coding Autopilot, Quest v11 adds Coding Execution, Quest v12 adds the Verified Knowledgebase, and Quest v13 adds the Semantic Repo Brain for intent, impact analysis, patch capsules, smart tests, runtime parity, review signals, symbol context, pre-edit boundaries, patch ledger, failure replay, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gates, PR packaging, evidence ledgers, hallucination gates, source-to-patch traceability, stale knowledge checks, behavior oracles, test-authoring plans, AST-level repo facts, confidence labels, failure-fix memory, and approval-gated skill candidates:
+Quest v8 (evolved from v5-v7) adds a small lifecycle, durable run identity, append-only event reconciliation, runtime execution handoff, and adaptive capabilities so long sessions stay predictable. Quest v9 adds coding intelligence, Quest v10 adds Coding Autopilot, Quest v11 adds Coding Execution, Quest v12 adds the Verified Knowledgebase, Quest v13 adds the Semantic Repo Brain, Quest v14 adds Temporal Memory, Quest v15 adds the Intelligent Coding Team OS, and Quest v16 adds the Verified Coding Delivery OS for intent, impact analysis, patch capsules, smart tests, runtime parity, review signals, symbol context, pre-edit boundaries, patch ledger, failure replay, dependency research gates, bounded autofix, PR readiness, executable acceptance, contract drift, test gaps, regression snapshots, runtime compatibility, ownership locks, security/secrets gates, PR packaging, evidence ledgers, hallucination gates, source-to-patch traceability, stale knowledge checks, behavior oracles, test-authoring plans, AST-level repo facts, confidence labels, failure-fix memory, approval-gated skill candidates, chronic cross-quest failure escalation, patch-outcome history, git-history co-change/churn/bug-density/ownership signals, requirement compiling, expert team blackboards, impact simulation, project skill-pack candidates, team completion gates, acceptance compiling, evidence-first delivery checks, patch provenance, runtime three-cycle verification, auto-eval candidates, agent debate gates, and release readiness:
 
 ```text
 NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING
@@ -904,10 +914,29 @@ knowledge-confidence-score.json # v13: verified/inferred/stale/missing/needs-res
 failure-fix-memory.json    # v13: failed-command fingerprints and known fixes
 auto-skill-builder.json    # v13: user-approved skill candidate queue
 semantic-repo-brain.md     # v13: readable semantic repo brief
+temporal-memory.json       # v14: durable cross-quest failure and confidence memory
+patch-outcome-ledger.json  # v14: patch validation/revert/hotfix/merge outcomes
+repo-history-signals.json  # v14: co-change, churn, bug-density, and ownership signals
+temporal-memory.md         # v14: readable temporal memory brief
+intelligent-coding-team.json # v15: Intelligent Coding Team OS rollup
+requirement-compiler.json  # v15: requirement readiness and acceptance criteria
+expert-team-blackboard.json # v15: expert roster, work items, and file locks
+change-impact-simulator.json # v15: predicted surfaces, risks, and validation plan
+project-skill-pack-builder.json # v15: approval-gated project skill candidates
+intelligent-coding-team.md # v15: readable team brief
+verified-delivery-os.json # v16: Verified Coding Delivery OS rollup
+acceptance-compiler.json  # v16: done definition and acceptance evidence
+evidence-first-gate.json  # v16: claim confidence and hallucination-resistant delivery checks
+patch-provenance-ledger.json # v16: patch-to-requirement/evidence/test traceability
+runtime-cycle-matrix.json # v16: required OpenCode/Kimi/Codex/Claude three-cycle checks
+auto-eval-generator.json  # v16: regression eval candidate queue
+agent-debate-gate.json    # v16: tech lead/test/security/release debate verdicts
+release-readiness-dashboard.json # v16: final delivery readiness dashboard
+verified-delivery-os.md   # v16: readable delivery brief
 .oac/repo-wiki/            # project-level living repo wiki
 ```
 
-Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state, `oac quest-resume <quest-id>` to print OpenCode, Kimi, Claude, and Codex resume commands, and `oac quest-v9 <quest-id>` to refresh coding intelligence plus the v12 Verified Knowledgebase and v13 Semantic Repo Brain. Resume does not change models; OpenAgent continues with the selected runtime model.
+Runtimes append progress to `events.ndjson`; they do not rewrite `quest.json`. Use `oac quest-status` to list or inspect the reconciled run state, `oac quest-resume <quest-id>` to print OpenCode, Kimi, Claude, and Codex resume commands, and `oac quest-v9 <quest-id>` to refresh coding intelligence plus the v12 Verified Knowledgebase, v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent Coding Team OS, and v16 Verified Coding Delivery OS. Resume does not change models; OpenAgent continues with the selected runtime model.
 
 You can verify the Kimi Quest cycle locally:
 

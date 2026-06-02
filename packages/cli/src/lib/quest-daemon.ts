@@ -334,6 +334,23 @@ export async function runDaemonLoop(options: DaemonOptions): Promise<void> {
         await settleTerminalRuntimeProcesses(projectRoot, questId, state, reconciled.tasks)
         await finalizeTerminalRuntimes(projectRoot, questId, state)
 
+        const blockedOrFailed = reconciled.tasks.filter(
+          (task) => task.status === 'blocked' || task.status === 'failed' || task.status === 'cancelled',
+        )
+        if (blockedOrFailed.length > 0) {
+          const summary = `Quest has ${blockedOrFailed.length} blocked/failed/cancelled terminal task(s): ${blockedOrFailed.map((task) => task.id).join(', ')}`
+          log.warn('Quest reached terminal tasks with blockers', { questId, summary })
+          await appendQuestEvent(projectRoot, questId, {
+            timestamp: new Date().toISOString(),
+            type: 'state_change',
+            data: { from: reconciled.state, to: 'BLOCKED', reason: 'terminal_task_blocked' },
+          })
+          state.status = 'blocked'
+          state.lastError = summary
+          await saveDaemonState(projectRoot, state)
+          break
+        }
+
         // v8 Review Gate
         if (reconciled.version === '8' && !reconciled.skipReview) {
           const config = await readConfig(projectRoot)

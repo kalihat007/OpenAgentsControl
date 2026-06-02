@@ -121,6 +121,21 @@ export interface QuestRunArtifacts {
   temporalMemoryBrief?: string
   patchOutcomeLedger?: string
   repoHistorySignals?: string
+  intelligentCodingTeam?: string
+  requirementCompiler?: string
+  expertTeamBlackboard?: string
+  changeImpactSimulator?: string
+  projectSkillPackBuilder?: string
+  intelligentCodingTeamBrief?: string
+  verifiedDelivery?: string
+  acceptanceCompiler?: string
+  evidenceFirstGate?: string
+  patchProvenanceLedger?: string
+  runtimeCycleMatrix?: string
+  autoEvalGenerator?: string
+  agentDebateGate?: string
+  releaseReadinessDashboard?: string
+  verifiedDeliveryBrief?: string
   summary?: string
   handoff?: string
 }
@@ -314,6 +329,21 @@ export function buildQuestRun(
     temporalMemoryBrief: 'temporal-memory.md',
     patchOutcomeLedger: 'patch-outcome-ledger.json',
     repoHistorySignals: 'repo-history-signals.json',
+    intelligentCodingTeam: 'intelligent-coding-team.json',
+    requirementCompiler: 'requirement-compiler.json',
+    expertTeamBlackboard: 'expert-team-blackboard.json',
+    changeImpactSimulator: 'change-impact-simulator.json',
+    projectSkillPackBuilder: 'project-skill-pack-builder.json',
+    intelligentCodingTeamBrief: 'intelligent-coding-team.md',
+    verifiedDelivery: 'verified-delivery-os.json',
+    acceptanceCompiler: 'acceptance-compiler.json',
+    evidenceFirstGate: 'evidence-first-gate.json',
+    patchProvenanceLedger: 'patch-provenance-ledger.json',
+    runtimeCycleMatrix: 'runtime-cycle-matrix.json',
+    autoEvalGenerator: 'auto-eval-generator.json',
+    agentDebateGate: 'agent-debate-gate.json',
+    releaseReadinessDashboard: 'release-readiness-dashboard.json',
+    verifiedDeliveryBrief: 'verified-delivery-os.md',
     ...options.artifacts,
   }
 
@@ -434,6 +464,21 @@ export function normalizeQuestRun(quest: QuestRun): QuestRun {
       temporalMemoryBrief: quest.artifacts?.temporalMemoryBrief ?? 'temporal-memory.md',
       patchOutcomeLedger: quest.artifacts?.patchOutcomeLedger ?? 'patch-outcome-ledger.json',
       repoHistorySignals: quest.artifacts?.repoHistorySignals ?? 'repo-history-signals.json',
+      intelligentCodingTeam: quest.artifacts?.intelligentCodingTeam ?? 'intelligent-coding-team.json',
+      requirementCompiler: quest.artifacts?.requirementCompiler ?? 'requirement-compiler.json',
+      expertTeamBlackboard: quest.artifacts?.expertTeamBlackboard ?? 'expert-team-blackboard.json',
+      changeImpactSimulator: quest.artifacts?.changeImpactSimulator ?? 'change-impact-simulator.json',
+      projectSkillPackBuilder: quest.artifacts?.projectSkillPackBuilder ?? 'project-skill-pack-builder.json',
+      intelligentCodingTeamBrief: quest.artifacts?.intelligentCodingTeamBrief ?? 'intelligent-coding-team.md',
+      verifiedDelivery: quest.artifacts?.verifiedDelivery ?? 'verified-delivery-os.json',
+      acceptanceCompiler: quest.artifacts?.acceptanceCompiler ?? 'acceptance-compiler.json',
+      evidenceFirstGate: quest.artifacts?.evidenceFirstGate ?? 'evidence-first-gate.json',
+      patchProvenanceLedger: quest.artifacts?.patchProvenanceLedger ?? 'patch-provenance-ledger.json',
+      runtimeCycleMatrix: quest.artifacts?.runtimeCycleMatrix ?? 'runtime-cycle-matrix.json',
+      autoEvalGenerator: quest.artifacts?.autoEvalGenerator ?? 'auto-eval-generator.json',
+      agentDebateGate: quest.artifacts?.agentDebateGate ?? 'agent-debate-gate.json',
+      releaseReadinessDashboard: quest.artifacts?.releaseReadinessDashboard ?? 'release-readiness-dashboard.json',
+      verifiedDeliveryBrief: quest.artifacts?.verifiedDeliveryBrief ?? 'verified-delivery-os.md',
     },
     nextStepSuggestions: quest.nextStepSuggestions ?? [],
     runtimes: {
@@ -791,10 +836,14 @@ export function formatRuntimeHandoff(
   lines.push('  Use Semantic Repo Brain before editing and before completion: rely on AST-level repo facts for functions, classes, exports, commands, events, schemas, tests, package scripts, runtime prompts, and ownership; honor confidence labels; replay known failed-command fixes; and suggest skill candidates only for user approval.')
   lines.push('  Read Temporal Memory sidecars when present: temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, and temporal-memory.md.')
   lines.push('  Use Temporal Memory before editing and before completion: escalate chronic cross-quest failure commands instead of retrying them, treat reverted/hotfixed and bug-prone surfaces as higher risk, and weigh git-history co-change when scoping the blast radius.')
+  lines.push('  Read Intelligent Coding Team OS sidecars when present: intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, and intelligent-coding-team.md.')
+  lines.push('  Use Intelligent Coding Team OS before editing and before completion: compile requirements, keep expert ownership and file locks visible, simulate change impact, preserve approval-gated skill candidates, and use the team gate as the coding completion checkpoint.')
+  lines.push('  Read Verified Coding Delivery OS sidecars when present: verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, and verified-delivery-os.md.')
+  lines.push('  Use Verified Coding Delivery OS before completion: compile acceptance, label evidence, trace patch provenance, enforce runtime three-cycle checks, propose eval candidates, run the agent debate gate, and check release readiness before claiming done.')
   lines.push('  Before starting any task, run a Pre-Execution Discovery Gate: inspect required local files/context first, append context.loaded/action.summary evidence, then append research.assessed. Perform web/current research only when it can affect correctness; otherwise record needed:false and proceed.')
   lines.push('  The CLI refreshes interaction-memory.json and memory-graph.json from append-only events automatically.')
   lines.push('  The CLI refreshes .oac/repo-wiki/ from Quest lifecycle and file/context events automatically.')
-  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, and Temporal Memory sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
+  lines.push('  The CLI refreshes Quest v9 coding-intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS sidecars from Quest creation, file/context/validation events, and lifecycle review/verify/complete events automatically.')
   lines.push('  The CLI reconciler reads base quest.json + events.ndjson to produce live state.')
   lines.push('  Run "oac quest-status <id>" to see reconciled state.')
 
@@ -974,8 +1023,8 @@ function buildRuntimeHints(
 function buildResumePrompt(questId: string, objective: string, runDir: string): string {
   return [
     `Resume OpenAgent Quest ${questId}: ${objective}`,
-    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, verified-knowledgebase.md, semantic-repo-brain.json, ast-knowledgebase.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, semantic-repo-brain.md, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, temporal-memory.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
-    'Use Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, and Temporal Memory for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, evidence ledger, hallucination gate, source-to-patch traceability, stale knowledge checks, behavior oracle, test-authoring plan, AST-level repo facts, knowledge confidence labels, failed-command fixes, approval-gated skill candidates, chronic cross-quest failure escalation, patch-outcome history, git-history co-change/churn/bug-density/ownership signals, and PR readiness before editing or completing the Quest.',
+    `Load ${runDir}/quest.json plus spec.json, plan.json, events.ndjson, interaction-memory.json, memory-graph.json, agent-memory.json, coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, patch-ledger.json, pre-edit-contract.json, automatic-code-review.json, failure-memory.json, runtime-parity-enforcer.json, dependency-research-gate.json, autofix-plan.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, guarded-autofix-runner.json, contract-drift-guard.json, review-patch-loop.json, test-gap-finder.json, regression-snapshots.json, runtime-compatibility-matrix.json, ownership-lock-plan.json, security-secrets-gate.json, pr-auto-packager.json, pr-auto-packager.md, verified-knowledgebase.json, knowledgebase-index.json, evidence-ledger.json, hallucination-gate.json, contract-facts.json, source-to-patch-trace.json, stale-knowledge-report.json, dependency-research-cache.json, behavior-oracle.json, test-authoring-plan.json, verified-knowledgebase.md, semantic-repo-brain.json, ast-knowledgebase.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, semantic-repo-brain.md, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, temporal-memory.md, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, intelligent-coding-team.md, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, verified-delivery-os.md, acceptance-report.md, and .oac/repo-wiki/index.md when present.`,
+    'Use Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS for coding intent, impact analysis, symbol graph, pre-edit contract, patch ledger, smart tests, automatic review, failure replay, runtime parity, dependency research gates, bounded autofix, executable acceptance, contract drift, test gaps, regression snapshots, ownership locks, security/secrets gates, PR packaging, evidence ledger, hallucination gate, source-to-patch traceability, stale knowledge checks, behavior oracle, test-authoring plan, AST-level repo facts, knowledge confidence labels, failed-command fixes, approval-gated skill candidates, chronic cross-quest failure escalation, patch-outcome history, git-history co-change/churn/bug-density/ownership signals, requirement compiling, expert team blackboard ownership, change impact simulation, project skill-pack candidates, team gate checks, acceptance compiling, evidence-first gate checks, patch provenance, runtime three-cycle matrix, auto-eval candidates, agent debate gate, release readiness, and PR readiness before editing or completing the Quest.',
     'Continue in Quest Mode + Experts Mode using the same user-selected runtime model.',
   ].join(' ')
 }

@@ -91,11 +91,30 @@ describe('quest-coding-intelligence', () => {
       expect(intelligence.semanticRepoBrain.semanticGraph.summary.nodes).toBeGreaterThan(0)
       expect(intelligence.semanticRepoBrain.knowledgeConfidenceScore.facts.length).toBeGreaterThan(0)
       expect(intelligence.semanticRepoBrain.completionGate.verdict).toMatch(/pass|review|blocked/)
+      expect(intelligence.temporalMemory.version).toBe('14')
+      expect(Array.isArray(intelligence.temporalMemory.chronicCommands)).toBe(true)
+      expect(intelligence.intelligentCodingTeam.version).toBe('15')
+      expect(intelligence.intelligentCodingTeam.requirementCompiler.readiness).toMatch(/ready|needs-clarification|blocked/)
+      expect(intelligence.intelligentCodingTeam.expertTeamBlackboard.roster.some((expert) => expert.role === 'coder')).toBe(true)
+      expect(intelligence.intelligentCodingTeam.changeImpactSimulator.predictedSurfaces.length).toBeGreaterThan(0)
+      expect(intelligence.intelligentCodingTeam.projectSkillPackBuilder.candidates.some((candidate) => candidate.name === 'project-validation-playbook')).toBe(true)
+      expect(intelligence.intelligentCodingTeam.teamGate.verdict).toMatch(/pass|review|blocked/)
+      expect(intelligence.verifiedDelivery.version).toBe('16')
+      expect(intelligence.verifiedDelivery.acceptanceCompiler.criteria.length).toBeGreaterThan(0)
+      expect(intelligence.verifiedDelivery.evidenceFirstGate.claims.length).toBeGreaterThan(0)
+      expect(intelligence.verifiedDelivery.patchProvenanceLedger.entries.length).toBeGreaterThan(0)
+      expect(intelligence.verifiedDelivery.runtimeCycleMatrix.requiredCycles).toBe(3)
+      expect(intelligence.verifiedDelivery.autoEvalGenerator.candidates.length).toBeGreaterThan(0)
+      expect(intelligence.verifiedDelivery.agentDebateGate.participants.length).toBe(4)
+      expect(intelligence.verifiedDelivery.releaseReadinessDashboard.verdict).toMatch(/pass|review|blocked/)
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Quest v9 Coding Intelligence')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Autopilot')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Execution')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Verified Knowledgebase')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Semantic Repo Brain')
+      expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Temporal Memory')
+      expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Intelligent Coding Team OS')
+      expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Verified Coding Delivery OS')
       for (const artifact of [
         'coding-autopilot.json',
         'symbol-graph.json',
@@ -137,9 +156,28 @@ describe('quest-coding-intelligence', () => {
         'failure-fix-memory.json',
         'auto-skill-builder.json',
         'semantic-repo-brain.md',
+        'temporal-memory.json',
+        'patch-outcome-ledger.json',
+        'repo-history-signals.json',
+        'temporal-memory.md',
+        'intelligent-coding-team.json',
+        'requirement-compiler.json',
+        'expert-team-blackboard.json',
+        'change-impact-simulator.json',
+        'project-skill-pack-builder.json',
+        'intelligent-coding-team.md',
+        'verified-delivery-os.json',
+        'acceptance-compiler.json',
+        'evidence-first-gate.json',
+        'patch-provenance-ledger.json',
+        'runtime-cycle-matrix.json',
+        'auto-eval-generator.json',
+        'agent-debate-gate.json',
+        'release-readiness-dashboard.json',
+        'verified-delivery-os.md',
       ]) {
         const content = await readFile(join(tmpRoot, '.oac', 'coding-intelligence', artifact), 'utf-8')
-        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact === 'semantic-repo-brain.md' ? 'Semantic Repo Brain' : artifact.endsWith('.md') ? 'Summary' : 'version')
+        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact === 'semantic-repo-brain.md' ? 'Semantic Repo Brain' : artifact === 'temporal-memory.md' ? 'Temporal Memory' : artifact === 'intelligent-coding-team.md' ? 'Intelligent Coding Team OS' : artifact === 'verified-delivery-os.md' ? 'Verified Coding Delivery OS' : artifact.endsWith('.md') ? 'Summary' : 'version')
       }
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
@@ -170,6 +208,9 @@ describe('quest-coding-intelligence', () => {
         codingExecution: { runtimeCompatibilityMatrix: { runtimes: Array<{ runtime: string }> } }
         verifiedKnowledgebase: { hallucinationGate: { verdict: string } }
         semanticRepoBrain: { completionGate: { verdict: string } }
+        temporalMemory: { version: string; chronicCommands: string[] }
+        intelligentCodingTeam: { version: string; teamGate: { verdict: string } }
+        verifiedDelivery: { version: string; releaseReadinessDashboard: { verdict: string } }
       }
       expect(parsed.version).toBe('9')
       expect(parsed.reason).toBe('quest.file_change')
@@ -178,6 +219,12 @@ describe('quest-coding-intelligence', () => {
       expect(parsed.codingExecution.runtimeCompatibilityMatrix.runtimes.some((runtime) => runtime.runtime === 'kimi')).toBe(true)
       expect(parsed.verifiedKnowledgebase.hallucinationGate.verdict).toMatch(/pass|review|blocked/)
       expect(parsed.semanticRepoBrain.completionGate.verdict).toMatch(/pass|review|blocked/)
+      expect(parsed.temporalMemory.version).toBe('14')
+      expect(Array.isArray(parsed.temporalMemory.chronicCommands)).toBe(true)
+      expect(parsed.intelligentCodingTeam.version).toBe('15')
+      expect(parsed.intelligentCodingTeam.teamGate.verdict).toMatch(/pass|review|blocked/)
+      expect(parsed.verifiedDelivery.version).toBe('16')
+      expect(parsed.verifiedDelivery.releaseReadinessDashboard.verdict).toMatch(/pass|review|blocked/)
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'patch-capsules.json'), 'utf-8')).toContain('patch-')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-autopilot.json'), 'utf-8')).toContain('"version": "10"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-execution.json'), 'utf-8')).toContain('"version": "11"')
@@ -193,6 +240,25 @@ describe('quest-coding-intelligence', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'failure-fix-memory.json'), 'utf-8')).toContain('"version": "13"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'auto-skill-builder.json'), 'utf-8')).toContain('"version": "13"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'semantic-repo-brain.md'), 'utf-8')).toContain('Semantic Repo Brain')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'temporal-memory.json'), 'utf-8')).toContain('"version": "14"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'patch-outcome-ledger.json'), 'utf-8')).toContain('"version": "14"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'repo-history-signals.json'), 'utf-8')).toContain('"version": "14"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'temporal-memory.md'), 'utf-8')).toContain('Temporal Memory')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'intelligent-coding-team.json'), 'utf-8')).toContain('"version": "15"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'requirement-compiler.json'), 'utf-8')).toContain('"version": "15"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'expert-team-blackboard.json'), 'utf-8')).toContain('"version": "15"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'change-impact-simulator.json'), 'utf-8')).toContain('"version": "15"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'project-skill-pack-builder.json'), 'utf-8')).toContain('"version": "15"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'intelligent-coding-team.md'), 'utf-8')).toContain('Intelligent Coding Team OS')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'verified-delivery-os.json'), 'utf-8')).toContain('"version": "16"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'acceptance-compiler.json'), 'utf-8')).toContain('"version": "16"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'evidence-first-gate.json'), 'utf-8')).toContain('"version": "16"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'patch-provenance-ledger.json'), 'utf-8')).toContain('"version": "16"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'runtime-cycle-matrix.json'), 'utf-8')).toContain('"version": "16"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'auto-eval-generator.json'), 'utf-8')).toContain('"version": "16"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'agent-debate-gate.json'), 'utf-8')).toContain('"version": "16"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'release-readiness-dashboard.json'), 'utf-8')).toContain('"version": "16"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'verified-delivery-os.md'), 'utf-8')).toContain('Verified Coding Delivery OS')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'symbol-graph.json'), 'utf-8')).toContain('openagent.yaml')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })

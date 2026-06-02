@@ -68,7 +68,7 @@
     "test:opencoder:bash": "npm run test:opencoder -- --pattern='developer/bash-*.yaml'",
     "test:ci": "npm run test:ci:openagent && npm run test:ci:opencoder",
     "test:ci:openagent": "npm run test:openagent -- --pattern='smoke-test.yaml' --no-evaluators",
-    "test:ci:opencoder": "npm run test:opencoder -- --pattern='developer/simple-bash-test.yaml' --no-evaluators",
+    "test:ci:opencoder": "npm run test:opencoder -- --pattern='smoke-test.yaml' --no-evaluators",
     "test:quest-v4:kimi": "bash scripts/tests/test-kimi-quest-cycle.sh",
     "test:quest-v4:opencode": "bash scripts/tests/test-opencode-quest-cycle.sh",
     "test:quest-v4": "npm run test:quest-v4:kimi && npm run test:quest-v4:opencode",

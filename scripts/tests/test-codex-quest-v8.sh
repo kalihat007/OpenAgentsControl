@@ -132,6 +132,22 @@ grep -q 'semantic-repo-brain.json' "$INSTALLED_SYSTEM" || fail "Codex system pro
 grep -q 'knowledge-confidence-score.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing knowledge confidence score"
 grep -q 'failure-fix-memory.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing failure fix memory"
 grep -q 'auto-skill-builder.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing auto skill builder"
+grep -q 'temporal-memory.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Temporal Memory"
+grep -q 'patch-outcome-ledger.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing patch-outcome ledger"
+grep -q 'repo-history-signals.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing repo-history signals"
+grep -q 'intelligent-coding-team.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Intelligent Coding Team OS"
+grep -q 'requirement-compiler.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing requirement compiler"
+grep -q 'expert-team-blackboard.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing expert team blackboard"
+grep -q 'change-impact-simulator.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing change impact simulator"
+grep -q 'project-skill-pack-builder.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing project skill pack builder"
+grep -q 'verified-delivery-os.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing Verified Coding Delivery OS"
+grep -q 'acceptance-compiler.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing acceptance compiler"
+grep -q 'evidence-first-gate.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing evidence-first gate"
+grep -q 'patch-provenance-ledger.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing patch provenance ledger"
+grep -q 'runtime-cycle-matrix.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing runtime cycle matrix"
+grep -q 'auto-eval-generator.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing auto eval generator"
+grep -q 'agent-debate-gate.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing agent debate gate"
+grep -q 'release-readiness-dashboard.json' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing release readiness dashboard"
 grep -q 'context.loaded' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing context.loaded"
 grep -q 'request.received' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing request.received"
 grep -q 'research.assessed' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing research.assessed"
@@ -141,7 +157,7 @@ grep -q 'quest-v9' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing ques
 grep -q 'coding.intent' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing coding.intent"
 grep -q 'tests.selected' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing tests.selected"
 grep -q 'next_steps.suggested' "$INSTALLED_SYSTEM" || fail "Codex system prompt missing next_steps.suggested"
-pass "Codex adapter advertises Quest v8 adaptive protocol and Quest v9-v13 coding intelligence"
+pass "Codex adapter advertises Quest v8 adaptive protocol and Quest v9-v16 coding intelligence"
 
 [ ! -e "$HOME/.codex/agents/openagent.toml" ] \
   || fail "Remove legacy ~/.codex/agents/openagent.toml symlink (duplicate openagent role)"
@@ -224,7 +240,7 @@ fi
 
 if [ "${RUN_LIVE_CODEX:-0}" = "1" ]; then
   DIRECT_OUT="$TEST_DIR/direct-v8.txt"
-  DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, and Semantic Repo Brain sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
+  DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
   if codex_exec_prompt "$TEST_DIR/work" "$DIRECT_PROMPT" "$AGENT_SYSTEM_FILE" > "$DIRECT_OUT" 2>&1; then
     node - "$DIRECT_OUT" <<'NODE'
 const fs = require("fs");
@@ -255,6 +271,22 @@ const checks = {
   knowledgeConfidenceScore: /knowledge-confidence-score\.json/i.test(text),
   failureFixMemory: /failure-fix-memory\.json/i.test(text),
   autoSkillBuilder: /auto-skill-builder\.json/i.test(text),
+  temporalMemory: /temporal-memory\.json/i.test(text),
+  patchOutcomeLedger: /patch-outcome-ledger\.json/i.test(text),
+  repoHistorySignals: /repo-history-signals\.json/i.test(text),
+  intelligentCodingTeam: /intelligent-coding-team\.json/i.test(text),
+  requirementCompiler: /requirement-compiler\.json/i.test(text),
+  expertTeamBlackboard: /expert-team-blackboard\.json/i.test(text),
+  changeImpactSimulator: /change-impact-simulator\.json/i.test(text),
+  projectSkillPackBuilder: /project-skill-pack-builder\.json/i.test(text),
+  verifiedDeliveryOs: /verified-delivery-os\.json/i.test(text),
+  acceptanceCompiler: /acceptance-compiler\.json/i.test(text),
+  evidenceFirstGate: /evidence-first-gate\.json/i.test(text),
+  patchProvenanceLedger: /patch-provenance-ledger\.json/i.test(text),
+  runtimeCycleMatrix: /runtime-cycle-matrix\.json/i.test(text),
+  autoEvalGenerator: /auto-eval-generator\.json/i.test(text),
+  agentDebateGate: /agent-debate-gate\.json/i.test(text),
+  releaseReadinessDashboard: /release-readiness-dashboard\.json/i.test(text),
   patchCapsule: /patch\.capsule/i.test(text),
   testsSelected: /tests\.selected/i.test(text),
 };
@@ -362,6 +394,25 @@ grep -q 'codex exec' .oac/runs/"$QUEST_ID"/quest.json || fail "quest.json missin
 [ -f ".oac/runs/${QUEST_ID}/failure-fix-memory.json" ] || fail "Missing failure fix memory"
 [ -f ".oac/runs/${QUEST_ID}/auto-skill-builder.json" ] || fail "Missing auto skill builder"
 [ -f ".oac/runs/${QUEST_ID}/semantic-repo-brain.md" ] || fail "Missing Semantic Repo Brain brief"
+[ -f ".oac/runs/${QUEST_ID}/temporal-memory.json" ] || fail "Missing Quest v14 temporal-memory.json"
+[ -f ".oac/runs/${QUEST_ID}/patch-outcome-ledger.json" ] || fail "Missing Quest v14 patch-outcome-ledger.json"
+[ -f ".oac/runs/${QUEST_ID}/repo-history-signals.json" ] || fail "Missing Quest v14 repo-history-signals.json"
+[ -f ".oac/runs/${QUEST_ID}/temporal-memory.md" ] || fail "Missing Quest v14 temporal-memory brief"
+[ -f ".oac/runs/${QUEST_ID}/intelligent-coding-team.json" ] || fail "Missing Quest v15 intelligent-coding-team.json"
+[ -f ".oac/runs/${QUEST_ID}/requirement-compiler.json" ] || fail "Missing Quest v15 requirement-compiler.json"
+[ -f ".oac/runs/${QUEST_ID}/expert-team-blackboard.json" ] || fail "Missing Quest v15 expert-team-blackboard.json"
+[ -f ".oac/runs/${QUEST_ID}/change-impact-simulator.json" ] || fail "Missing Quest v15 change-impact-simulator.json"
+[ -f ".oac/runs/${QUEST_ID}/project-skill-pack-builder.json" ] || fail "Missing Quest v15 project-skill-pack-builder.json"
+[ -f ".oac/runs/${QUEST_ID}/intelligent-coding-team.md" ] || fail "Missing Quest v15 Intelligent Coding Team OS brief"
+[ -f ".oac/runs/${QUEST_ID}/verified-delivery-os.json" ] || fail "Missing Quest v16 verified-delivery-os.json"
+[ -f ".oac/runs/${QUEST_ID}/acceptance-compiler.json" ] || fail "Missing Quest v16 acceptance-compiler.json"
+[ -f ".oac/runs/${QUEST_ID}/evidence-first-gate.json" ] || fail "Missing Quest v16 evidence-first-gate.json"
+[ -f ".oac/runs/${QUEST_ID}/patch-provenance-ledger.json" ] || fail "Missing Quest v16 patch-provenance-ledger.json"
+[ -f ".oac/runs/${QUEST_ID}/runtime-cycle-matrix.json" ] || fail "Missing Quest v16 runtime-cycle-matrix.json"
+[ -f ".oac/runs/${QUEST_ID}/auto-eval-generator.json" ] || fail "Missing Quest v16 auto-eval-generator.json"
+[ -f ".oac/runs/${QUEST_ID}/agent-debate-gate.json" ] || fail "Missing Quest v16 agent-debate-gate.json"
+[ -f ".oac/runs/${QUEST_ID}/release-readiness-dashboard.json" ] || fail "Missing Quest v16 release-readiness-dashboard.json"
+[ -f ".oac/runs/${QUEST_ID}/verified-delivery-os.md" ] || fail "Missing Quest v16 Verified Coding Delivery OS brief"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
@@ -377,11 +428,21 @@ if (!intelligence.verifiedKnowledgebase.hallucinationGate?.checks?.length) throw
 if (!intelligence.semanticRepoBrain || intelligence.semanticRepoBrain.version !== "13") throw new Error("missing Semantic Repo Brain v13");
 if (!intelligence.semanticRepoBrain.semanticGraph?.summary) throw new Error("missing v13 semantic graph summary");
 if (!intelligence.semanticRepoBrain.completionGate?.checks?.length) throw new Error("missing v13 semantic completion gate checks");
+if (!intelligence.temporalMemory || intelligence.temporalMemory.version !== "14") throw new Error("missing Temporal Memory v14");
+if (!Array.isArray(intelligence.temporalMemory.chronicCommands)) throw new Error("missing v14 chronic command memory");
+if (!intelligence.intelligentCodingTeam || intelligence.intelligentCodingTeam.version !== "15") throw new Error("missing Intelligent Coding Team OS v15");
+if (!intelligence.intelligentCodingTeam.teamGate?.checks?.length) throw new Error("missing v15 team gate checks");
+if (!intelligence.verifiedDelivery || intelligence.verifiedDelivery.version !== "16") throw new Error("missing Verified Coding Delivery OS v16");
+if (!intelligence.verifiedDelivery.acceptanceCompiler?.criteria?.length) throw new Error("missing v16 acceptance criteria");
+if (!intelligence.verifiedDelivery.evidenceFirstGate?.claims?.length) throw new Error("missing v16 evidence-first claims");
+if (!intelligence.verifiedDelivery.runtimeCycleMatrix || intelligence.verifiedDelivery.runtimeCycleMatrix.requiredCycles !== 3) throw new Error("missing v16 runtime three-cycle matrix");
+if (!Array.isArray(intelligence.verifiedDelivery.releaseReadinessDashboard?.requiredCommands)) throw new Error("missing v16 release readiness commands");
+if (!intelligence.verifiedDelivery.releaseReadinessDashboard?.installUpdateGate) throw new Error("missing v16 install/update gate");
 if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with codex runtime and Quest v9-v13 sidecars"
+pass "Quest v8 artifact created with codex runtime and Quest v9-v16 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -398,7 +459,23 @@ grep -q 'semantic-repo-brain.json' quest-v9.txt || fail "quest-v9 output missing
 grep -q 'knowledge-confidence-score.json' quest-v9.txt || fail "quest-v9 output missing knowledge confidence artifact"
 grep -q 'failure-fix-memory.json' quest-v9.txt || fail "quest-v9 output missing failure-fix memory artifact"
 grep -q 'auto-skill-builder.json' quest-v9.txt || fail "quest-v9 output missing auto skill builder artifact"
-pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, and Semantic Repo Brain"
+grep -q 'temporal-memory.json' quest-v9.txt || fail "quest-v9 output missing temporal-memory artifact"
+grep -q 'patch-outcome-ledger.json' quest-v9.txt || fail "quest-v9 output missing patch-outcome ledger artifact"
+grep -q 'repo-history-signals.json' quest-v9.txt || fail "quest-v9 output missing repo-history signals artifact"
+grep -q 'intelligent-coding-team.json' quest-v9.txt || fail "quest-v9 output missing intelligent coding team artifact"
+grep -q 'requirement-compiler.json' quest-v9.txt || fail "quest-v9 output missing requirement compiler artifact"
+grep -q 'expert-team-blackboard.json' quest-v9.txt || fail "quest-v9 output missing expert team blackboard artifact"
+grep -q 'change-impact-simulator.json' quest-v9.txt || fail "quest-v9 output missing change impact simulator artifact"
+grep -q 'project-skill-pack-builder.json' quest-v9.txt || fail "quest-v9 output missing project skill pack builder artifact"
+grep -q 'verified-delivery-os.json' quest-v9.txt || fail "quest-v9 output missing verified delivery artifact"
+grep -q 'acceptance-compiler.json' quest-v9.txt || fail "quest-v9 output missing acceptance compiler artifact"
+grep -q 'evidence-first-gate.json' quest-v9.txt || fail "quest-v9 output missing evidence-first gate artifact"
+grep -q 'patch-provenance-ledger.json' quest-v9.txt || fail "quest-v9 output missing patch provenance ledger artifact"
+grep -q 'runtime-cycle-matrix.json' quest-v9.txt || fail "quest-v9 output missing runtime cycle matrix artifact"
+grep -q 'auto-eval-generator.json' quest-v9.txt || fail "quest-v9 output missing auto eval generator artifact"
+grep -q 'agent-debate-gate.json' quest-v9.txt || fail "quest-v9 output missing agent debate gate artifact"
+grep -q 'release-readiness-dashboard.json' quest-v9.txt || fail "quest-v9 output missing release readiness dashboard artifact"
+pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, and Verified Coding Delivery OS"
 
 "${OAC_CLI[@]}" quest-resume "$QUEST_ID" --runtime codex > quest-resume-codex.txt 2>&1
 grep -q 'CODEX Resume' quest-resume-codex.txt || fail "quest-resume --runtime codex missing CODEX header"
