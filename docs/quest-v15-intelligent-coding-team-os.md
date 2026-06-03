@@ -278,10 +278,10 @@ The v15 implementation is covered by:
 - shell syntax checks
 - context-link validation
 - registry validation
-- Kimi Quest v8 smoke with v9-v19 sidecars
+- Kimi Quest v8 smoke with v9-v20 sidecars
 - forced live Kimi daemon validation
-- OpenCode Quest v8 smoke with v9-v19 sidecars
-- Codex Quest v8 CLI-path smoke with v9-v19 sidecars
+- OpenCode Quest v8 smoke with v9-v20 sidecars
+- Codex Quest v8 CLI-path smoke with v9-v20 sidecars
 
 ## 10. Future Coding Improvements
 

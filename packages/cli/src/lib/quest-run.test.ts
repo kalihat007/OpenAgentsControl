@@ -150,6 +150,13 @@ describe('quest-run', () => {
     expect(quest.artifacts.collaborationBoard).toBe('collaboration-board.json')
     expect(quest.artifacts.decisionTradeoffMatrix).toBe('decision-tradeoff-matrix.json')
     expect(quest.artifacts.buildBetterRoadmap).toBe('build-better-roadmap.md')
+    expect(quest.artifacts.selfImprovingCodingTeam).toBe('self-improving-coding-team-os.json')
+    expect(quest.artifacts.codingTeamMetrics).toBe('coding-team-metrics.json')
+    expect(quest.artifacts.deliveryRetrospective).toBe('delivery-retrospective.json')
+    expect(quest.artifacts.learningFeedbackLoop).toBe('learning-feedback-loop.json')
+    expect(quest.artifacts.improvementBacklog).toBe('improvement-backlog.json')
+    expect(quest.artifacts.skillEvolutionCandidates).toBe('skill-evolution-candidates.json')
+    expect(quest.artifacts.selfImprovementRoadmap).toBe('self-improvement-roadmap.md')
     expect(quest.runtimes.kimi.command).toContain('kimi --work-dir .')
   })
 
@@ -230,6 +237,9 @@ describe('quest-run', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'collaboration-board.json'), 'utf-8')).toContain('"agentCommitments"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'decision-tradeoff-matrix.json'), 'utf-8')).toContain('"tradeoffs"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'build-better-roadmap.md'), 'utf-8')).toContain('Quest v19 Build Better Roadmap')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'self-improving-coding-team-os.json'), 'utf-8')).toContain('"version": "20"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-team-metrics.json'), 'utf-8')).toContain('"deliveryScore"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'self-improvement-roadmap.md'), 'utf-8')).toContain('Quest v20 Self-Improvement Roadmap')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }
@@ -427,6 +437,13 @@ describe('quest-run', () => {
     expect(normalized.artifacts.collaborationBoard).toBe('collaboration-board.json')
     expect(normalized.artifacts.decisionTradeoffMatrix).toBe('decision-tradeoff-matrix.json')
     expect(normalized.artifacts.buildBetterRoadmap).toBe('build-better-roadmap.md')
+    expect(normalized.artifacts.selfImprovingCodingTeam).toBe('self-improving-coding-team-os.json')
+    expect(normalized.artifacts.codingTeamMetrics).toBe('coding-team-metrics.json')
+    expect(normalized.artifacts.deliveryRetrospective).toBe('delivery-retrospective.json')
+    expect(normalized.artifacts.learningFeedbackLoop).toBe('learning-feedback-loop.json')
+    expect(normalized.artifacts.improvementBacklog).toBe('improvement-backlog.json')
+    expect(normalized.artifacts.skillEvolutionCandidates).toBe('skill-evolution-candidates.json')
+    expect(normalized.artifacts.selfImprovementRoadmap).toBe('self-improvement-roadmap.md')
   })
 
   it('formatQuestSummary produces markdown', () => {

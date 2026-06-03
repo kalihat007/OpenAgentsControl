@@ -92,7 +92,11 @@ Runtime Reliability + Evidence Replay OS sidecars
 (`deep-coding-collaboration-os.json`, `deep-thinking-review.json`,
 `idea-to-build-brief.json`, `smarter-code-plan.json`,
 `collaboration-board.json`, `decision-tradeoff-matrix.json`,
-`build-better-roadmap.md`) are
+`build-better-roadmap.md`) plus Self-Improving Coding Team OS sidecars
+(`self-improving-coding-team-os.json`, `coding-team-metrics.json`,
+`delivery-retrospective.json`, `learning-feedback-loop.json`,
+`improvement-backlog.json`, `skill-evolution-candidates.json`,
+`self-improvement-roadmap.md`) are
 used by default to carry intent, impact, patch capsules, smart tests, runtime
 parity, review signals, symbol context, pre-edit boundaries, patch ledger,
 failure replay, bounded autofix, PR readiness, executable acceptance, contract
@@ -107,7 +111,9 @@ gate status, acceptance criteria, evidence-first claims, patch provenance,
 runtime three-cycle requirements, eval candidates, agent debate findings,
 release readiness, product-architect recommendations, runtime reliability,
 command-failure fingerprints, timeout policy, claim-ledger proof, runtime doctor
-checks, autonomous recovery, flaky-command memory, evidence replay, capability
+checks, autonomous recovery, flaky-command memory, evidence replay, delivery
+metrics, delivery retrospectives, learning feedback loops, improvement backlog,
+approval-gated skill evolution candidates, self-improvement roadmap, capability
 gaps, roadmap signals, product risks, user value, strategic refactor radar, and
 ADR suggestions. Refresh them with
 `oac quest-v9` or `oac quest-v9 <quest-id>`.
@@ -206,8 +212,8 @@ OAC compensates in `packages/cli/src/lib/runtime-bridge.ts`:
 3. Discovery and research decisions use `research.assessed` / `research.performed`, so skipped or performed web/current research is visible in Quest memory.
 4. The Quest event stream refreshes `interaction-memory.json` and `memory-graph.json`, keeping user requests, working directories, actions, file/context changes, self-knowledge, and graph links available for resume.
 5. The repo wiki refreshes under `.oac/repo-wiki/` when Quests are created, file/context changes are recorded, and verification/reflection/completion runs; use `oac repo-wiki --watch` when files change outside Quest write-back.
-6. Quest v9 coding, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, and Deep Coding Collaboration OS sidecars refresh from Quest creation, file/context/validation events, coding events, and review/verify/complete transitions.
-7. Completion can append `next_steps.suggested` so Codex offers evidence-based follow-up recommendations from changed files, task state, verification, memory/context signals, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, and application understanding, including a product/architecture/build recommendation when useful, then waits for the user instead of starting another Quest automatically.
+6. Quest v9 coding, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, and Self-Improving Coding Team OS sidecars refresh from Quest creation, file/context/validation events, coding events, and review/verify/complete transitions.
+7. Completion can append `next_steps.suggested` so Codex offers evidence-based follow-up recommendations from changed files, task state, verification, memory/context signals, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, Self-Improving Coding Team OS, and application understanding, including a product/architecture/build recommendation when useful, then waits for the user instead of starting another Quest automatically.
 
 That keeps `oac quest-run --background --runtime codex` and quest-daemon aligned with Kimi.
 For full agent-authored write-back (not synthesized), use interactive `codex -C .` with tools enabled.

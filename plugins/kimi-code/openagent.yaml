@@ -134,8 +134,8 @@ agent:
 
       Do not exhaustively read every Quest sidecar before acting. Load `quest.json`,
       `plan.json`, `events.ndjson`, current user/repo instructions, and only the
-      v9-v19 sidecars directly needed for the touched files, symbols, tests, runtime
-      adapter, acceptance checks, evidence replay, deep thinking review, idea-to-build plan, or product-architecture recommendations. Use the repo wiki and semantic brain as indexes;
+      v9-v20 sidecars directly needed for the touched files, symbols, tests, runtime
+      adapter, acceptance checks, evidence replay, deep thinking review, idea-to-build plan, delivery retrospective, self-improvement roadmap, or product-architecture recommendations. Use the repo wiki and semantic brain as indexes;
       do not turn them into an all-files reading loop.
 
       Do not run repeated self-refresh loops. Run `oac quest-v9` at most once in a
@@ -383,7 +383,7 @@ agent:
         when external/current research is actually used
       - use `next_steps.suggested` after completion to offer choices while
         waiting for the user to decide
-      - use Quest v9/v10/v11/v12/v13/v14/v15/v16/v17/v18/v19 coding, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, and Deep Coding Collaboration OS sidecars before editing or completing coding work:
+      - use Quest v9/v10/v11/v12/v13/v14/v15/v16/v17/v18/v19/v20 coding, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, and Self-Improving Coding Team OS sidecars before editing or completing coding work:
         `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
         `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
         `patch-ledger.json`, `pre-edit-contract.json`,
@@ -424,8 +424,12 @@ agent:
         `flaky-command-memory.json`, `evidence-replay.md`,
         `deep-coding-collaboration-os.json`, `deep-thinking-review.json`,
         `idea-to-build-brief.json`, `smarter-code-plan.json`,
-        `collaboration-board.json`, `decision-tradeoff-matrix.json`, and
-        `build-better-roadmap.md` capture intent, affected files/modules/symbols,
+        `collaboration-board.json`, `decision-tradeoff-matrix.json`,
+        `build-better-roadmap.md`, `self-improving-coding-team-os.json`,
+        `coding-team-metrics.json`, `delivery-retrospective.json`,
+        `learning-feedback-loop.json`, `improvement-backlog.json`,
+        `skill-evolution-candidates.json`, and `self-improvement-roadmap.md`
+        capture intent, affected files/modules/symbols,
         runtime parity, patch capsules, smart-test tiers, patch ledger,
         pre-edit contract, automatic review, failure replay, dependency
         research gate, bounded autofix, PR readiness, executable acceptance,
@@ -447,7 +451,9 @@ agent:
         timeout policy, claim-ledger proof, runtime doctor checks, autonomous
         recovery, flaky-command memory, replayable evidence, deep-thinking
         review, idea-to-build slices, smarter code moves, collaboration
-        decisions, tradeoffs, build-better roadmap, and review signals
+        decisions, tradeoffs, build-better roadmap, delivery metrics, delivery
+        retrospective, learning feedback loop, improvement backlog, approval-gated
+        skill evolution candidates, self-improvement roadmap, and review signals
       - do not claim files, symbols, commands, APIs, docs, or test results without
         local evidence; if `hallucination-gate.json` is blocked, stop and report
         the blocker before completion
@@ -463,6 +469,9 @@ agent:
         `smarter-code-plan.json`, and `decision-tradeoff-matrix.json` to either
         choose a smaller verified build slice or ask the user for the required
         product/architecture decision
+      - if `self-improving-coding-team-os.json` is blocked or skill evolution
+        candidates need approval, report the delivery/learning blocker and ask
+        before promoting durable team knowledge or skills
       - append `coding.intent`, `impact.analyzed`, `patch.capsule`,
         `tests.selected`, and `review.signals` when coding facts change
       - run `oac quest-v9` or `oac quest-v9 <quest-id>` when a fresh coding

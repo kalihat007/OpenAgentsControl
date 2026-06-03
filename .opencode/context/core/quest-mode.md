@@ -139,6 +139,13 @@ Required v8 artifacts when available:
 - `collaboration-board.json` - Quest v19 user/agent/expert decisions, responsibilities, commitments, and checkpoint cadence
 - `decision-tradeoff-matrix.json` - Quest v19 tradeoffs for scope depth, validation depth, and user-choice boundaries
 - `build-better-roadmap.md` - human-readable Quest v19 build-better next steps after completion
+- `self-improving-coding-team-os.json` - Quest v20 Self-Improving Coding Team OS rollup for delivery, quality, collaboration, learning, and runtime health
+- `coding-team-metrics.json` - Quest v20 delivery/quality/collaboration/learning/runtime scorecard with confidence labels
+- `delivery-retrospective.json` - Quest v20 wins, issues, evidence gaps, and reusable lessons from the completed request
+- `learning-feedback-loop.json` - Quest v20 feedback policy, promotion review signals, and approval-gated improvement loop
+- `improvement-backlog.json` - Quest v20 prioritized coding-team improvements derived from evidence and repeated patterns
+- `skill-evolution-candidates.json` - Quest v20 approval-gated skill evolution candidates that must not be silently promoted
+- `self-improvement-roadmap.md` - human-readable Quest v20 self-improvement roadmap after completion
 - `summary.json` - machine-readable execution summary
 - `handoff.json` - optional IDE handoff manifest
 - `.oac/memory/promotions.json` - user-reviewed promotion queue for repeated learnings before they become durable repo knowledge
@@ -168,12 +175,13 @@ For adaptive v8 work:
 - read Product Architect Intelligence sidecars when present so completion includes product/architecture next steps, capability gaps, roadmap signals, product risks, user value, strategic refactor radar, and ADR candidates before waiting for the user to choose
 - read Runtime Reliability + Evidence Replay OS sidecars when present so runtime timeouts, step limits, failed command fingerprints, claim-ledger proof, runtime doctor checks, autonomous recovery, flaky-command memory, and evidence replay are handled before claiming completion
 - read Deep Coding Collaboration OS sidecars when present so coding thinks deeply from idea to build, asks hard product/code questions, chooses smarter code strategy, exposes tradeoffs, coordinates collaboration decisions, and suggests build-better next steps before waiting for the user to choose
+- read Self-Improving Coding Team OS sidecars when present so completion measures delivery, quality, collaboration, learning, and runtime health; captures retrospectives; updates improvement backlog candidates; and keeps skill evolution approval-gated
 - keep review decisions, injected tasks, and priority changes append-only
 
 Step budget guard:
 
 - treat each runtime turn as one bounded Quest execution cycle
-- do not exhaustively read every optional sidecar before acting; load base run files, current repo/user instructions, and only the v9-v19 sidecars needed for touched files, symbols, tests, adapters, acceptance checks, evidence replay, deep thinking review, idea-to-build plan, or product-architecture recommendations
+- do not exhaustively read every optional sidecar before acting; load base run files, current repo/user instructions, and only the v9-v20 sidecars needed for touched files, symbols, tests, adapters, acceptance checks, evidence replay, deep thinking review, idea-to-build plan, delivery retrospective, self-improvement roadmap, or product-architecture recommendations
 - run `oac quest-v9` at most once in a turn, and only after meaningful file/context changes or stale required sidecars
 - when work cannot finish inside the current turn budget, append `task_update` with status `blocked` and reason `runtime_step_budget`, append `action.summary` and `next_steps.suggested`, move to `BLOCKED` or `WAITING`, and return a concise resume path instead of continuing until a provider max-step error
 - copy Quest sidecar filenames exactly from the artifact list or filesystem; do not alter hyphenation, extensions, singular/plural forms, or letters. The Quest v15 skill-pack artifact is exactly `project-skill-pack-builder.json`; misspelled artifact names are hallucinations to correct before responding or claiming evidence
@@ -228,7 +236,7 @@ Treat the repo wiki as current working context, not long-term truth. Durable kno
 
 ## Quest v9 Coding Intelligence
 
-Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Quest v14 adds Temporal Memory. Quest v15 adds the Intelligent Coding Team OS. Quest v16 adds the Verified Coding Delivery OS. Quest v17 adds Product Architect Intelligence. Quest v18 adds Runtime Reliability + Evidence Replay OS. Quest v19 adds Deep Coding Collaboration OS. Together they are active by default for coding, installer, runtime, adapter, test, product architecture, and repo-maintenance work.
+Quest v9 is the coding intelligence layer on top of the durable v8 control plane. Quest v10 adds Coding Autopilot. Quest v11 adds Coding Execution. Quest v12 adds the Verified Knowledgebase. Quest v13 adds the Semantic Repo Brain. Quest v14 adds Temporal Memory. Quest v15 adds the Intelligent Coding Team OS. Quest v16 adds the Verified Coding Delivery OS. Quest v17 adds Product Architect Intelligence. Quest v18 adds Runtime Reliability + Evidence Replay OS. Quest v19 adds Deep Coding Collaboration OS. Quest v20 adds Self-Improving Coding Team OS. Together they are active by default for coding, installer, runtime, adapter, test, product architecture, and repo-maintenance work.
 
 Before editing code, use Quest v9 artifacts to answer:
 
@@ -251,8 +259,9 @@ Before editing code, use Quest v9 artifacts to answer:
 - which product/architecture next steps should be suggested after completion, which capability gaps and product risks remain, which roadmap signals need user approval, where user value increased, whether a strategic refactor is emerging, and which ADR candidates should be proposed
 - which runtime failures, timeout policies, command fingerprints, claim-ledger proof gaps, runtime doctor checks, autonomous recovery actions, flaky command memories, and evidence replay commands must be handled before a confident completion claim
 - which hard product/code questions, assumptions, idea-to-build slices, smarter code moves, collaboration decisions, tradeoffs, and build-better roadmap items should guide the work from idea through implementation
+- which delivery metrics, retrospectives, learning feedback actions, improvement backlog items, and approval-gated skill evolution candidates should improve the coding team after this request
 
-The CLI refreshes Quest v9/v10/v11/v12/v13/v14/v15/v16/v17/v18/v19 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
+The CLI refreshes Quest v9/v10/v11/v12/v13/v14/v15/v16/v17/v18/v19/v20 sidecars when a durable Quest is created, when `file_change`, `context.changed`, validation, or v9 coding events are appended, and near `REVIEW`, `VERIFY`, `REFLECT`, or `COMPLETE`. To refresh manually, run:
 
 ```bash
 oac quest-v9
@@ -261,7 +270,7 @@ oac quest-replay <quest-id>
 oac runtime-doctor --runtime kimi
 ```
 
-For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, hallucination gate, semantic completion gate, security/secrets gate, Intelligent Coding Team OS team gate, Verified Coding Delivery OS release readiness, Product Architect Intelligence recommendations, Runtime Reliability + Evidence Replay OS claim proof/recovery checks, Deep Coding Collaboration OS reasoning/collaboration checks, and any required runtime parity or three-cycle checks are recorded or the gap is explicitly called out.
+For runtime-facing changes, use the sidecars to keep OpenCode, Kimi, Codex, and Claude prompts/harnesses in parity. Do not mark a coding Quest complete until selected smart tests, executable acceptance checks, hallucination gate, semantic completion gate, security/secrets gate, Intelligent Coding Team OS team gate, Verified Coding Delivery OS release readiness, Product Architect Intelligence recommendations, Runtime Reliability + Evidence Replay OS claim proof/recovery checks, Deep Coding Collaboration OS reasoning/collaboration checks, Self-Improving Coding Team OS delivery metrics/retrospective checks, and any required runtime parity or three-cycle checks are recorded or the gap is explicitly called out.
 
 ## Memory Promotion System
 

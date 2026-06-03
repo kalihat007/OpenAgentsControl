@@ -100,6 +100,10 @@ export async function questV9Command(
   info(`Smarter code moves: ${intelligence.deepCodingCollaboration.smarterCodePlan.codeQualityMoves.length}`)
   info(`Collaboration decisions: ${intelligence.deepCodingCollaboration.collaborationBoard.decisionsNeeded.length}`)
   info(`Decision tradeoffs: ${intelligence.deepCodingCollaboration.decisionTradeoffMatrix.tradeoffs.length}`)
+  info(`Self-improving coding team: ${intelligence.selfImprovingCodingTeam.verdict} (${intelligence.selfImprovingCodingTeam.improvementScore})`)
+  info(`Coding team metrics: delivery ${intelligence.selfImprovingCodingTeam.codingTeamMetrics.deliveryScore} / quality ${intelligence.selfImprovingCodingTeam.codingTeamMetrics.qualityScore} / runtime ${intelligence.selfImprovingCodingTeam.codingTeamMetrics.runtimeScore}`)
+  info(`Improvement backlog: ${intelligence.selfImprovingCodingTeam.improvementBacklog.length}`)
+  info(`Skill evolution candidates: ${intelligence.selfImprovingCodingTeam.skillEvolutionCandidates.length}`)
 
   if (intelligence.reviewSignals.length > 0) {
     warn(`Review signals: ${intelligence.reviewSignals.length}`)
@@ -209,13 +213,20 @@ export async function questV9Command(
   log(`  - ${join(artifactDir, 'collaboration-board.json')}`)
   log(`  - ${join(artifactDir, 'decision-tradeoff-matrix.json')}`)
   log(`  - ${join(artifactDir, 'build-better-roadmap.md')}`)
+  log(`  - ${join(artifactDir, 'self-improving-coding-team-os.json')}`)
+  log(`  - ${join(artifactDir, 'coding-team-metrics.json')}`)
+  log(`  - ${join(artifactDir, 'delivery-retrospective.json')}`)
+  log(`  - ${join(artifactDir, 'learning-feedback-loop.json')}`)
+  log(`  - ${join(artifactDir, 'improvement-backlog.json')}`)
+  log(`  - ${join(artifactDir, 'skill-evolution-candidates.json')}`)
+  log(`  - ${join(artifactDir, 'self-improvement-roadmap.md')}`)
   log('')
 }
 
 export function registerQuestV9Command(program: Command): void {
   program
     .command('quest-v9 [quest-id]')
-    .description('Refresh and inspect Quest v9 coding intelligence through the v19 Deep Coding Collaboration artifacts')
+    .description('Refresh and inspect Quest v9 coding intelligence through the v20 Self-Improving Coding Team artifacts')
     .option('--json', 'Print machine-readable coding intelligence', false)
     .option('--objective <text>', 'Objective to use when no quest id is supplied')
     .option('--changed-file <path...>', 'Changed file path(s) to include in the analysis')

@@ -61,7 +61,7 @@ export function registerQuestReplayCommand(program: Command): void {
     .command('quest-replay <quest-id>')
     .description('Show Quest v18 replayable evidence, claim ledger, and recovery guidance')
     .option('--json', 'Print runtime-reliability-os.json', false)
-    .option('--refresh', 'Refresh v9-v19 sidecars before printing replay evidence', false)
+    .option('--refresh', 'Refresh v9-v20 sidecars before printing replay evidence', false)
     .addHelpText(
       'after',
       `

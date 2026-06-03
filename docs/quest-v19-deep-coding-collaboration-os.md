@@ -43,7 +43,7 @@ product/architecture decision.
 
 ## CLI
 
-`quest-v9` refreshes the v9-v19 intelligence sidecars. `quest-replay` still
+`quest-v9` refreshes the v9-v20 intelligence sidecars. `quest-replay` still
 prints replayable proof, while v19 adds build-better collaboration guidance.
 
 ```bash

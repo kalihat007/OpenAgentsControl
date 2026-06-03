@@ -120,6 +120,11 @@ describe('quest-coding-intelligence', () => {
       expect(intelligence.deepCodingCollaboration.smarterCodePlan.codeQualityMoves.length).toBeGreaterThan(0)
       expect(intelligence.deepCodingCollaboration.collaborationBoard.agentCommitments.length).toBeGreaterThan(0)
       expect(intelligence.deepCodingCollaboration.decisionTradeoffMatrix.tradeoffs.length).toBeGreaterThan(0)
+      expect(intelligence.selfImprovingCodingTeam.version).toBe('20')
+      expect(intelligence.selfImprovingCodingTeam.codingTeamMetrics.deliveryScore).toBeGreaterThanOrEqual(0)
+      expect(intelligence.selfImprovingCodingTeam.deliveryRetrospective.wins.length).toBeGreaterThan(0)
+      expect(intelligence.selfImprovingCodingTeam.learningFeedbackLoop.policy.length).toBeGreaterThan(0)
+      expect(intelligence.selfImprovingCodingTeam.improvementBacklog.length).toBeGreaterThan(0)
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Quest v9 Coding Intelligence')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Autopilot')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Coding Execution')
@@ -130,6 +135,35 @@ describe('quest-coding-intelligence', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Verified Coding Delivery OS')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Runtime Reliability + Evidence Replay OS')
       expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Deep Coding Collaboration OS')
+      expect(await readFile(join(tmpRoot, '.oac', 'coding-intelligence', 'coding-review.md'), 'utf-8')).toContain('Self-Improving Coding Team OS')
+      const expectedArtifactMarker = (artifact: string): string => {
+        if (artifact === 'pr-readiness.md') return 'PR Readiness'
+        if (artifact === 'verified-knowledgebase.md') return 'Verified Knowledgebase'
+        if (artifact === 'semantic-repo-brain.md') return 'Semantic Repo Brain'
+        if (artifact === 'temporal-memory.md') return 'Temporal Memory'
+        if (artifact === 'intelligent-coding-team.md') return 'Intelligent Coding Team OS'
+        if (artifact === 'verified-delivery-os.md') return 'Verified Coding Delivery OS'
+        if (artifact === 'strategic-next-actions.md') return 'Product Architect Strategic Next Actions'
+        if (artifact === 'evidence-replay.md') return 'Quest v18 Evidence Replay'
+        if (artifact === 'build-better-roadmap.md') return 'Quest v19 Build Better Roadmap'
+        if (artifact === 'self-improvement-roadmap.md') return 'Quest v20 Self-Improvement Roadmap'
+        if (artifact === 'coding-team-metrics.json') return 'deliveryScore'
+        if (artifact === 'delivery-retrospective.json') return 'wins'
+        if (artifact === 'learning-feedback-loop.json') return 'policy'
+        if (artifact === 'product-architect-review.json') return 'version'
+        if (artifact.includes('next-steps')) return '['
+        if (artifact.includes('roadmap')) return '['
+        if (artifact.includes('capability')) return '['
+        if (artifact.includes('risk')) return '['
+        if (artifact.includes('value')) return '['
+        if (artifact.includes('refactor')) return '['
+        if (artifact.includes('architecture-decision')) return '['
+        if (artifact.includes('backlog')) return '['
+        if (artifact.includes('skill-evolution')) return '['
+        if (artifact.endsWith('.md')) return 'Summary'
+        return 'version'
+      }
+
       for (const artifact of [
         'coding-autopilot.json',
         'symbol-graph.json',
@@ -214,9 +248,16 @@ describe('quest-coding-intelligence', () => {
         'collaboration-board.json',
         'decision-tradeoff-matrix.json',
         'build-better-roadmap.md',
+        'self-improving-coding-team-os.json',
+        'coding-team-metrics.json',
+        'delivery-retrospective.json',
+        'learning-feedback-loop.json',
+        'improvement-backlog.json',
+        'skill-evolution-candidates.json',
+        'self-improvement-roadmap.md',
       ]) {
         const content = await readFile(join(tmpRoot, '.oac', 'coding-intelligence', artifact), 'utf-8')
-        expect(content).toContain(artifact === 'pr-readiness.md' ? 'PR Readiness' : artifact === 'verified-knowledgebase.md' ? 'Verified Knowledgebase' : artifact === 'semantic-repo-brain.md' ? 'Semantic Repo Brain' : artifact === 'temporal-memory.md' ? 'Temporal Memory' : artifact === 'intelligent-coding-team.md' ? 'Intelligent Coding Team OS' : artifact === 'verified-delivery-os.md' ? 'Verified Coding Delivery OS' : artifact === 'strategic-next-actions.md' ? 'Product Architect Strategic Next Actions' : artifact === 'evidence-replay.md' ? 'Quest v18 Evidence Replay' : artifact === 'build-better-roadmap.md' ? 'Quest v19 Build Better Roadmap' : artifact === 'product-architect-review.json' ? 'version' : artifact.includes('next-steps') ? '[' : artifact.includes('roadmap') ? '[' : artifact.includes('capability') ? '[' : artifact.includes('risk') ? '[' : artifact.includes('value') ? '[' : artifact.includes('refactor') ? '[' : artifact.includes('architecture-decision') ? '[' : artifact.endsWith('.md') ? 'Summary' : 'version')
+        expect(content).toContain(expectedArtifactMarker(artifact))
       }
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
@@ -253,6 +294,7 @@ describe('quest-coding-intelligence', () => {
         productArchitect: { version: string; productArchitectReview: { verdict: string }; roadmapSignals: unknown[] }
         runtimeReliability: { version: string; verdict: string; claimLedger: { claims: unknown[] } }
         deepCodingCollaboration: { version: string; verdict: string; deepThinkingReview: { hardQuestions: unknown[] } }
+        selfImprovingCodingTeam: { version: string; verdict: string; codingTeamMetrics: { deliveryScore: number }; improvementBacklog: unknown[] }
       }
       expect(parsed.version).toBe('9')
       expect(parsed.reason).toBe('quest.file_change')
@@ -276,6 +318,10 @@ describe('quest-coding-intelligence', () => {
       expect(parsed.deepCodingCollaboration.version).toBe('19')
       expect(parsed.deepCodingCollaboration.verdict).toMatch(/ready|review|blocked/)
       expect(Array.isArray(parsed.deepCodingCollaboration.deepThinkingReview.hardQuestions)).toBe(true)
+      expect(parsed.selfImprovingCodingTeam.version).toBe('20')
+      expect(parsed.selfImprovingCodingTeam.verdict).toMatch(/ready|review|blocked/)
+      expect(parsed.selfImprovingCodingTeam.codingTeamMetrics.deliveryScore).toBeGreaterThanOrEqual(0)
+      expect(Array.isArray(parsed.selfImprovingCodingTeam.improvementBacklog)).toBe(true)
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'patch-capsules.json'), 'utf-8')).toContain('patch-')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-autopilot.json'), 'utf-8')).toContain('"version": "10"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-execution.json'), 'utf-8')).toContain('"version": "11"')
@@ -334,6 +380,13 @@ describe('quest-coding-intelligence', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'collaboration-board.json'), 'utf-8')).toContain('"agentCommitments"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'decision-tradeoff-matrix.json'), 'utf-8')).toContain('"tradeoffs"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'build-better-roadmap.md'), 'utf-8')).toContain('Quest v19 Build Better Roadmap')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'self-improving-coding-team-os.json'), 'utf-8')).toContain('"version": "20"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-team-metrics.json'), 'utf-8')).toContain('"deliveryScore"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'delivery-retrospective.json'), 'utf-8')).toContain('"wins"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'learning-feedback-loop.json'), 'utf-8')).toContain('"policy"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'improvement-backlog.json'), 'utf-8')).toContain('"title"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'skill-evolution-candidates.json'), 'utf-8')).toContain('[')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'self-improvement-roadmap.md'), 'utf-8')).toContain('Quest v20 Self-Improvement Roadmap')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'symbol-graph.json'), 'utf-8')).toContain('openagent.yaml')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })

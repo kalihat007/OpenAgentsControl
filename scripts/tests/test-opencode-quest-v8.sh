@@ -85,6 +85,16 @@ V19_ARTIFACTS=(
   build-better-roadmap.md
 )
 V19_DIRECT_SIDECARS="deep-coding-collaboration-os.json, deep-thinking-review.json, idea-to-build-brief.json, smarter-code-plan.json, collaboration-board.json, decision-tradeoff-matrix.json, build-better-roadmap.md"
+V20_ARTIFACTS=(
+  self-improving-coding-team-os.json
+  coding-team-metrics.json
+  delivery-retrospective.json
+  learning-feedback-loop.json
+  improvement-backlog.json
+  skill-evolution-candidates.json
+  self-improvement-roadmap.md
+)
+V20_DIRECT_SIDECARS="self-improving-coding-team-os.json, coding-team-metrics.json, delivery-retrospective.json, learning-feedback-loop.json, improvement-backlog.json, skill-evolution-candidates.json, self-improvement-roadmap.md"
 
 require_v18_artifact_mentions() {
   local file="$1"
@@ -115,6 +125,22 @@ require_v19_artifacts_exist() {
   local label="$2"
   for artifact in "${V19_ARTIFACTS[@]}"; do
     [ -f "$dir/$artifact" ] || fail "Missing $label Quest v19 $artifact"
+  done
+}
+
+require_v20_artifact_mentions() {
+  local file="$1"
+  local label="$2"
+  for artifact in "${V20_ARTIFACTS[@]}"; do
+    grep -q "$artifact" "$file" || fail "$label missing Quest v20 $artifact"
+  done
+}
+
+require_v20_artifacts_exist() {
+  local dir="$1"
+  local label="$2"
+  for artifact in "${V20_ARTIFACTS[@]}"; do
+    [ -f "$dir/$artifact" ] || fail "Missing $label Quest v20 $artifact"
   done
 }
 
@@ -229,6 +255,8 @@ require_v18_artifact_mentions "$REPO_ROOT/.opencode/agent/core/openagent.md" "Op
 grep -q 'Deep Coding Collaboration OS' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
   || fail "OpenCode OpenAgent prompt does not mention Deep Coding Collaboration OS"
 require_v19_artifact_mentions "$REPO_ROOT/.opencode/agent/core/openagent.md" "OpenCode OpenAgent prompt"
+grep -q 'Self-Improving Coding Team OS' "$REPO_ROOT/.opencode/agent/core/openagent.md" || fail "OpenCode OpenAgent prompt does not mention Self-Improving Coding Team OS"
+require_v20_artifact_mentions "$REPO_ROOT/.opencode/agent/core/openagent.md" "OpenCode OpenAgent prompt"
 grep -q 'context.loaded' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
   || fail "OpenCode OpenAgent prompt does not mention context.loaded"
 grep -q 'request.received' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
@@ -269,7 +297,9 @@ require_v18_artifact_mentions "$REPO_ROOT/.opencode/context/core/quest-mode.md" 
 grep -q 'Deep Coding Collaboration OS' "$REPO_ROOT/.opencode/context/core/quest-mode.md" \
   || fail "OpenCode Quest context is missing Deep Coding Collaboration OS"
 require_v19_artifact_mentions "$REPO_ROOT/.opencode/context/core/quest-mode.md" "OpenCode Quest context"
-pass "OpenCode OpenAgent surfaces advertise Quest v8 adaptive protocol and Quest v9-v19 coding intelligence"
+grep -q 'Self-Improving Coding Team OS' "$REPO_ROOT/.opencode/context/core/quest-mode.md" || fail "OpenCode Quest context does not mention Self-Improving Coding Team OS"
+require_v20_artifact_mentions "$REPO_ROOT/.opencode/context/core/quest-mode.md" "OpenCode Quest context"
+pass "OpenCode OpenAgent surfaces advertise Quest v8 adaptive protocol and Quest v9-v20 coding intelligence"
 
 mkdir -p "$TEST_DIR/work/.oac"
 cp -R "$REPO_ROOT/.opencode" "$TEST_DIR/work/.opencode"
@@ -330,7 +360,7 @@ cat > .oac/config.json <<'JSON'
 JSON
 
 DIRECT_OUT="$TEST_DIR/direct-v8.jsonl"
-DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, and Deep Coding Collaboration OS sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md, ${V18_DIRECT_SIDECARS}, ${V19_DIRECT_SIDECARS} and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
+DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, and Self-Improving Coding Team OS sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md, ${V18_DIRECT_SIDECARS}, ${V19_DIRECT_SIDECARS}, ${V20_DIRECT_SIDECARS} and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
 run_with_timeout 180 opencode run \
   --agent OpenAgent \
   --format json \
@@ -431,6 +461,13 @@ const checks = {
   collaborationBoard: /collaboration-board\.json/i.test(text),
   decisionTradeoffMatrix: /decision-tradeoff-matrix\.json/i.test(text),
   buildBetterRoadmap: /build-better-roadmap\.md/i.test(text),
+  selfImprovingCodingTeam: /self-improving-coding-team-os\.json/i.test(text),
+  codingTeamMetrics: /coding-team-metrics\.json/i.test(text),
+  deliveryRetrospective: /delivery-retrospective\.json/i.test(text),
+  learningFeedbackLoop: /learning-feedback-loop\.json/i.test(text),
+  improvementBacklog: /improvement-backlog\.json/i.test(text),
+  skillEvolutionCandidates: /skill-evolution-candidates\.json/i.test(text),
+  selfImprovementRoadmap: /self-improvement-roadmap\.md/i.test(text),
   patchCapsule: /patch\.capsule/i.test(text),
   testsSelected: /tests\.selected/i.test(text),
   teamLead: /Team Lead:\s*active/i.test(text),
@@ -525,6 +562,7 @@ QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version"
 [ -f ".oac/runs/${QUEST_ID}/strategic-next-actions.md" ] || fail "Missing Quest v17 strategic next actions brief"
 require_v18_artifacts_exist ".oac/runs/${QUEST_ID}" "OpenCode runtime"
 require_v19_artifacts_exist ".oac/runs/${QUEST_ID}" "OpenCode runtime"
+require_v20_artifacts_exist ".oac/runs/${QUEST_ID}" "OpenCode runtime"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
@@ -562,11 +600,17 @@ if (!intelligence.deepCodingCollaboration || intelligence.deepCodingCollaboratio
 if (!Array.isArray(intelligence.deepCodingCollaboration.deepThinkingReview?.hardQuestions) || intelligence.deepCodingCollaboration.deepThinkingReview.hardQuestions.length < 1) throw new Error("missing v19 hard questions");
 if (!Array.isArray(intelligence.deepCodingCollaboration.ideaToBuildBrief?.buildSlices) || intelligence.deepCodingCollaboration.ideaToBuildBrief.buildSlices.length < 1) throw new Error("missing v19 idea-to-build slices");
 if (!Array.isArray(intelligence.deepCodingCollaboration.smarterCodePlan?.codeQualityMoves) || intelligence.deepCodingCollaboration.smarterCodePlan.codeQualityMoves.length < 1) throw new Error("missing v19 smarter code moves");
+if (!intelligence.selfImprovingCodingTeam || intelligence.selfImprovingCodingTeam.version !== "20") throw new Error("missing Self-Improving Coding Team OS v20");
+if (typeof intelligence.selfImprovingCodingTeam.codingTeamMetrics?.deliveryScore !== "number") throw new Error("missing v20 coding team delivery score");
+if (!Array.isArray(intelligence.selfImprovingCodingTeam.deliveryRetrospective?.wins)) throw new Error("missing v20 delivery retrospective wins");
+if (!Array.isArray(intelligence.selfImprovingCodingTeam.learningFeedbackLoop?.policy)) throw new Error("missing v20 learning feedback policy");
+if (!Array.isArray(intelligence.selfImprovingCodingTeam.improvementBacklog)) throw new Error("missing v20 improvement backlog");
+if (!Array.isArray(intelligence.selfImprovingCodingTeam.skillEvolutionCandidates)) throw new Error("missing v20 skill evolution candidates");
 if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with Quest v9-v19 sidecars"
+pass "Quest v8 artifact created with Quest v9-v20 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -609,8 +653,12 @@ done
 for artifact in "${V19_ARTIFACTS[@]}"; do
   grep -q "$artifact" quest-v9.txt || fail "quest-v9 output missing $artifact artifact"
 done
+for artifact in "${V20_ARTIFACTS[@]}"; do
+  grep -q "$artifact" quest-v9.txt || fail "quest-v9 output missing $artifact artifact"
+done
 grep -q 'Deep coding collaboration' quest-v9.txt || fail "quest-v9 output missing Deep Coding Collaboration summary"
-pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, and Deep Coding Collaboration OS"
+grep -q 'Self-improving coding team' quest-v9.txt || fail "quest-v9 output missing Self-Improving Coding Team summary"
+pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, and Self-Improving Coding Team OS"
 
 "${OAC_CLI[@]}" quest-status "$QUEST_ID" --json > status.json
 node - "$QUEST_ID" <<'NODE'
@@ -700,6 +748,7 @@ done
 }
 require_v18_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live OpenCode daemon"
 require_v19_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live OpenCode daemon"
+require_v20_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live OpenCode daemon"
 pass "Live OpenCode v8 daemon state created"
 
 DEADLINE=$((SECONDS + 300))

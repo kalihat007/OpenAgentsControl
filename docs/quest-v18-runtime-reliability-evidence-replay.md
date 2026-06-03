@@ -42,7 +42,7 @@ oac quest-replay <quest-id>
 oac runtime-doctor --runtime kimi
 ```
 
-`quest-v9` refreshes the v9-v19 intelligence sidecars. `quest-replay` prints replayable proof. `runtime-doctor` checks configured runtimes and adapter health.
+`quest-v9` refreshes the v9-v20 intelligence sidecars. `quest-replay` prints replayable proof. `runtime-doctor` checks configured runtimes and adapter health.
 
 ## Completion Gate
 

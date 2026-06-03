@@ -232,7 +232,7 @@ write-back, run `oac repo-wiki`; for long local sessions use
 For coding work, use Quest v9 coding intelligence, the v12 Verified
 Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent
 Coding Team OS, v16 Verified Coding Delivery OS, v17 Product Architect
-Intelligence, v18 Runtime Reliability + Evidence Replay OS, and v19 Deep Coding Collaboration OS by default. Read
+Intelligence, v18 Runtime Reliability + Evidence Replay OS, v19 Deep Coding Collaboration OS, and v20 Self-Improving Coding Team OS by default. Read
 `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
 `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
 `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`,
@@ -271,7 +271,11 @@ Intelligence, v18 Runtime Reliability + Evidence Replay OS, and v19 Deep Coding 
 `evidence-replay.md`, `deep-coding-collaboration-os.json`,
 `deep-thinking-review.json`, `idea-to-build-brief.json`,
 `smarter-code-plan.json`, `collaboration-board.json`,
-`decision-tradeoff-matrix.json`, and `build-better-roadmap.md`
+`decision-tradeoff-matrix.json`, `build-better-roadmap.md`,
+`self-improving-coding-team-os.json`, `coding-team-metrics.json`,
+`delivery-retrospective.json`, `learning-feedback-loop.json`,
+`improvement-backlog.json`, `skill-evolution-candidates.json`, and
+`self-improvement-roadmap.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure
@@ -294,7 +298,9 @@ reliability, command-failure fingerprints, timeout policy, claim-ledger proof,
 runtime doctor checks, autonomous recovery, flaky-command memory, evidence
 replay, deep-thinking review, idea-to-build brief, smarter code plan,
 collaboration board, decision tradeoffs, build-better roadmap, capability gaps,
-roadmap signals, product risks, user value, strategic refactor radar, and ADR
+delivery/quality/collaboration/learning/runtime metrics, delivery retrospective,
+learning feedback loop, improvement backlog, approval-gated skill evolution
+candidates, self-improvement roadmap, roadmap signals, product risks, user value, strategic refactor radar, and ADR
 suggestions. Do not
 claim files, symbols, commands, APIs, docs, or test results
 without local evidence; if `hallucination-gate.json` is blocked, stop and
@@ -312,6 +318,9 @@ If `deep-coding-collaboration-os.json` is blocked or review-gated, use
 `smarter-code-plan.json`, and `decision-tradeoff-matrix.json` to either choose
 a smaller verified build slice or ask the user for the required
 product/architecture decision.
+If `self-improving-coding-team-os.json` is blocked or skill evolution candidates
+need approval, report the delivery/learning blocker and ask before promoting
+durable team knowledge or skills.
 Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
 `tests.selected`, and `review.signals` when those facts change. Run
 `oac quest-v9` or `oac quest-v9 <quest-id>` for a fresh snapshot, `oac
@@ -320,7 +329,7 @@ kimi` before Kimi release-ready claims.
 
 After completion, append `next_steps.suggested` with concise user-choice
 recommendations grounded in the Quest evidence and Product Architect
-Intelligence plus Deep Coding Collaboration OS, include at least one
+Intelligence plus Deep Coding Collaboration OS and Self-Improving Coding Team OS, include at least one
 product/architecture/build recommendation when useful, and wait for the user's
 decision.
 
