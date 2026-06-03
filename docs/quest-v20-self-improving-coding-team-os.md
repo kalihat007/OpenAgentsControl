@@ -66,7 +66,7 @@ oac quest-replay <quest-id>
 oac runtime-doctor --runtime kimi
 ```
 
-`quest-v9` refreshes the v9-v20 intelligence sidecars. `quest-replay` prints
+`quest-v9` refreshes the v9-v21 intelligence sidecars. `quest-replay` prints
 replayable proof. `runtime-doctor` checks runtime and adapter health before
 release-ready claims.
 
@@ -77,7 +77,7 @@ v20 coverage should include:
 - focused Quest coding-intelligence tests
 - Quest run artifact persistence tests
 - runtime bridge prompt tests
-- Kimi Quest v8 smoke with v9-v20 sidecars
-- OpenCode Quest v8 smoke with v9-v20 sidecars
-- Codex Quest v8 CLI-path smoke with v9-v20 sidecars
+- Kimi Quest v8 smoke with v9-v21 sidecars
+- OpenCode Quest v8 smoke with v9-v21 sidecars
+- Codex Quest v8 CLI-path smoke with v9-v21 sidecars
 - install/update smoke with Kimi enabled

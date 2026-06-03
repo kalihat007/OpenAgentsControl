@@ -157,6 +157,17 @@ describe('quest-run', () => {
     expect(quest.artifacts.improvementBacklog).toBe('improvement-backlog.json')
     expect(quest.artifacts.skillEvolutionCandidates).toBe('skill-evolution-candidates.json')
     expect(quest.artifacts.selfImprovementRoadmap).toBe('self-improvement-roadmap.md')
+    expect(quest.artifacts.predictiveEngineering).toBe('predictive-engineering-os.json')
+    expect(quest.artifacts.intentArchitectureCompiler).toBe('intent-architecture-compiler.json')
+    expect(quest.artifacts.changeSimulationEngine).toBe('change-simulation-engine.json')
+    expect(quest.artifacts.riskForecastScore).toBe('risk-forecast-score.json')
+    expect(quest.artifacts.implementationPathRanking).toBe('implementation-path-ranking.json')
+    expect(quest.artifacts.testIntelligencePlanner).toBe('test-intelligence-planner.json')
+    expect(quest.artifacts.proofContract).toBe('proof-contract.json')
+    expect(quest.artifacts.architectureDriftDetector).toBe('architecture-drift-detector.json')
+    expect(quest.artifacts.contextFreshnessGate).toBe('context-freshness-gate.json')
+    expect(quest.artifacts.predictiveTimeoutGuard).toBe('predictive-timeout-guard.json')
+    expect(quest.artifacts.predictiveEngineeringRoadmap).toBe('predictive-engineering-roadmap.md')
     expect(quest.runtimes.kimi.command).toContain('kimi --work-dir .')
   })
 
@@ -240,6 +251,10 @@ describe('quest-run', () => {
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'self-improving-coding-team-os.json'), 'utf-8')).toContain('"version": "20"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'coding-team-metrics.json'), 'utf-8')).toContain('"deliveryScore"')
       expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'self-improvement-roadmap.md'), 'utf-8')).toContain('Quest v20 Self-Improvement Roadmap')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'predictive-engineering-os.json'), 'utf-8')).toContain('"version": "21"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'risk-forecast-score.json'), 'utf-8')).toContain('"overallRisk"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'proof-contract.json'), 'utf-8')).toContain('"doneClaims"')
+      expect(await readFile(join(tmpRoot, '.oac', 'runs', quest.questId, 'predictive-engineering-roadmap.md'), 'utf-8')).toContain('Quest v21 Predictive Engineering Roadmap')
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }
@@ -373,6 +388,11 @@ describe('quest-run', () => {
     expect(text).toContain('Intelligent Coding Team OS')
     expect(text).toContain('Pre-Execution Discovery Gate')
     expect(text).toContain('research.assessed')
+    expect(text).toContain('Predictive Engineering OS')
+    expect(text).toContain('predictive-engineering-os.json')
+    expect(text).toContain('risk-forecast-score.json')
+    expect(text).toContain('proof-contract.json')
+    expect(text).toContain('predictive-timeout-guard.json')
   })
 
   it('formatRuntimeHandoff includes codex command', () => {
@@ -444,6 +464,17 @@ describe('quest-run', () => {
     expect(normalized.artifacts.improvementBacklog).toBe('improvement-backlog.json')
     expect(normalized.artifacts.skillEvolutionCandidates).toBe('skill-evolution-candidates.json')
     expect(normalized.artifacts.selfImprovementRoadmap).toBe('self-improvement-roadmap.md')
+    expect(normalized.artifacts.predictiveEngineering).toBe('predictive-engineering-os.json')
+    expect(normalized.artifacts.intentArchitectureCompiler).toBe('intent-architecture-compiler.json')
+    expect(normalized.artifacts.changeSimulationEngine).toBe('change-simulation-engine.json')
+    expect(normalized.artifacts.riskForecastScore).toBe('risk-forecast-score.json')
+    expect(normalized.artifacts.implementationPathRanking).toBe('implementation-path-ranking.json')
+    expect(normalized.artifacts.testIntelligencePlanner).toBe('test-intelligence-planner.json')
+    expect(normalized.artifacts.proofContract).toBe('proof-contract.json')
+    expect(normalized.artifacts.architectureDriftDetector).toBe('architecture-drift-detector.json')
+    expect(normalized.artifacts.contextFreshnessGate).toBe('context-freshness-gate.json')
+    expect(normalized.artifacts.predictiveTimeoutGuard).toBe('predictive-timeout-guard.json')
+    expect(normalized.artifacts.predictiveEngineeringRoadmap).toBe('predictive-engineering-roadmap.md')
   })
 
   it('formatQuestSummary produces markdown', () => {

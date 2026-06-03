@@ -34,7 +34,7 @@ strategic-next-actions.md
 
 OpenAgent, Kimi, OpenCode, Codex, and Claude should use Product Architect Intelligence after the user request is complete:
 
-1. Read the base Quest files and only the v9-v20 sidecars relevant to the touched files, symbols, tests, runtime adapter, evidence replay, deep-thinking review, idea-to-build plan, self-improvement roadmap, or product architecture decision.
+1. Read the base Quest files and only the v9-v21 sidecars relevant to the touched files, symbols, tests, runtime adapter, evidence replay, deep-thinking review, idea-to-build plan, self-improvement roadmap, or product architecture decision.
 2. Complete implementation and verification before recommending follow-up work.
 3. Append or surface `next_steps.suggested` with 2-5 concise recommendations.
 4. Include product/architecture choices such as runtime parity gaps, release readiness closure, durable memory improvements, evaluation coverage, or ADR candidates.
@@ -67,4 +67,4 @@ Run:
 oac quest-v9 <quest-id>
 ```
 
-The command refreshes Quest v9 coding intelligence plus the v10-v20 sidecars, including `strategic-next-actions.md`, `evidence-replay.md`, `build-better-roadmap.md`, and `self-improvement-roadmap.md`.
+The command refreshes Quest v9 coding intelligence plus the v10-v21 sidecars, including `strategic-next-actions.md`, `evidence-replay.md`, `build-better-roadmap.md`, and `self-improvement-roadmap.md`.

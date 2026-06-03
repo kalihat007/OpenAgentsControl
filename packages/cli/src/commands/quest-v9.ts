@@ -104,6 +104,13 @@ export async function questV9Command(
   info(`Coding team metrics: delivery ${intelligence.selfImprovingCodingTeam.codingTeamMetrics.deliveryScore} / quality ${intelligence.selfImprovingCodingTeam.codingTeamMetrics.qualityScore} / runtime ${intelligence.selfImprovingCodingTeam.codingTeamMetrics.runtimeScore}`)
   info(`Improvement backlog: ${intelligence.selfImprovingCodingTeam.improvementBacklog.length}`)
   info(`Skill evolution candidates: ${intelligence.selfImprovingCodingTeam.skillEvolutionCandidates.length}`)
+  info(`Predictive engineering: ${intelligence.predictiveEngineering.verdict} (${intelligence.predictiveEngineering.predictiveScore})`)
+  info(`Risk forecast: ${intelligence.predictiveEngineering.riskForecastScore.overallRisk} (${intelligence.predictiveEngineering.riskForecastScore.riskScore})`)
+  info(`Implementation path: ${intelligence.predictiveEngineering.implementationPathRanking.selectedPath}`)
+  info(`Predictive required tests: ${intelligence.predictiveEngineering.testIntelligencePlanner.requiredTests.length}`)
+  info(`Proof blockers: ${intelligence.predictiveEngineering.proofContract.blockers.length}`)
+  info(`Context freshness: ${intelligence.predictiveEngineering.contextFreshnessGate.verdict}`)
+  info(`Predictive timeout guard: ${intelligence.predictiveEngineering.predictiveTimeoutGuard.verdict}`)
 
   if (intelligence.reviewSignals.length > 0) {
     warn(`Review signals: ${intelligence.reviewSignals.length}`)
@@ -220,13 +227,24 @@ export async function questV9Command(
   log(`  - ${join(artifactDir, 'improvement-backlog.json')}`)
   log(`  - ${join(artifactDir, 'skill-evolution-candidates.json')}`)
   log(`  - ${join(artifactDir, 'self-improvement-roadmap.md')}`)
+  log(`  - ${join(artifactDir, 'predictive-engineering-os.json')}`)
+  log(`  - ${join(artifactDir, 'intent-architecture-compiler.json')}`)
+  log(`  - ${join(artifactDir, 'change-simulation-engine.json')}`)
+  log(`  - ${join(artifactDir, 'risk-forecast-score.json')}`)
+  log(`  - ${join(artifactDir, 'implementation-path-ranking.json')}`)
+  log(`  - ${join(artifactDir, 'test-intelligence-planner.json')}`)
+  log(`  - ${join(artifactDir, 'proof-contract.json')}`)
+  log(`  - ${join(artifactDir, 'architecture-drift-detector.json')}`)
+  log(`  - ${join(artifactDir, 'context-freshness-gate.json')}`)
+  log(`  - ${join(artifactDir, 'predictive-timeout-guard.json')}`)
+  log(`  - ${join(artifactDir, 'predictive-engineering-roadmap.md')}`)
   log('')
 }
 
 export function registerQuestV9Command(program: Command): void {
   program
     .command('quest-v9 [quest-id]')
-    .description('Refresh and inspect Quest v9 coding intelligence through the v20 Self-Improving Coding Team artifacts')
+    .description('Refresh and inspect Quest v9 coding intelligence through the v21 Predictive Engineering artifacts')
     .option('--json', 'Print machine-readable coding intelligence', false)
     .option('--objective <text>', 'Objective to use when no quest id is supplied')
     .option('--changed-file <path...>', 'Changed file path(s) to include in the analysis')

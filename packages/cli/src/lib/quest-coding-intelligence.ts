@@ -86,6 +86,12 @@ import {
   writeQuestSelfImprovingCodingTeamArtifacts,
   type QuestSelfImprovingCodingTeamOS,
 } from './quest-self-improving-coding-team.js'
+import {
+  buildQuestPredictiveEngineeringOS,
+  formatPredictiveEngineeringSummary,
+  writeQuestPredictiveEngineeringArtifacts,
+  type QuestPredictiveEngineeringOS,
+} from './quest-predictive-engineering.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -160,6 +166,7 @@ export interface QuestCodingIntelligence {
   runtimeReliability: QuestRuntimeReliabilityOS
   deepCodingCollaboration: QuestDeepCodingCollaborationOS
   selfImprovingCodingTeam: QuestSelfImprovingCodingTeamOS
+  predictiveEngineering: QuestPredictiveEngineeringOS
 }
 
 export interface RefreshQuestCodingIntelligenceOptions {
@@ -398,6 +405,28 @@ export async function refreshQuestCodingIntelligence(
     gitStatus: repoWiki?.changes.gitStatus ?? [],
     repoWiki,
   })
+  const predictiveEngineering = buildQuestPredictiveEngineeringOS({
+    projectRoot,
+    objective,
+    files: relevantFiles,
+    impact,
+    patchCapsules,
+    testRecommendations,
+    reviewSignals,
+    runtimeParity,
+    verifiedKnowledgebase,
+    semanticRepoBrain,
+    temporalMemory,
+    intelligentCodingTeam,
+    verifiedDelivery,
+    productArchitect,
+    runtimeReliability,
+    deepCodingCollaboration,
+    selfImprovingCodingTeam,
+    events,
+    gitStatus: repoWiki?.changes.gitStatus ?? [],
+    repoWiki,
+  })
 
   const intelligence: QuestCodingIntelligence = {
     version: QUEST_CODING_INTELLIGENCE_VERSION,
@@ -423,6 +452,7 @@ export async function refreshQuestCodingIntelligence(
     runtimeReliability,
     deepCodingCollaboration,
     selfImprovingCodingTeam,
+    predictiveEngineering,
   }
 
   await writeQuestCodingIntelligence(projectRoot, options.questId, intelligence)
@@ -452,6 +482,7 @@ export async function writeQuestCodingIntelligence(
   await writeQuestRuntimeReliabilityArtifacts(dir, intelligence.runtimeReliability)
   await writeQuestDeepCodingCollaborationArtifacts(dir, intelligence.deepCodingCollaboration)
   await writeQuestSelfImprovingCodingTeamArtifacts(dir, intelligence.selfImprovingCodingTeam)
+  await writeQuestPredictiveEngineeringArtifacts(dir, intelligence.predictiveEngineering)
 }
 
 export function formatCodingReview(intelligence: QuestCodingIntelligence): string {
@@ -515,6 +546,7 @@ export function formatCodingReview(intelligence: QuestCodingIntelligence): strin
   lines.push(formatRuntimeReliabilitySummary(intelligence.runtimeReliability))
   lines.push(formatDeepCodingCollaborationSummary(intelligence.deepCodingCollaboration))
   lines.push(formatSelfImprovingCodingTeamSummary(intelligence.selfImprovingCodingTeam))
+  lines.push(formatPredictiveEngineeringSummary(intelligence.predictiveEngineering))
   return lines.join('\n')
 }
 

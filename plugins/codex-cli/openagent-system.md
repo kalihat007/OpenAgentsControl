@@ -178,6 +178,48 @@ load `quest.json` first when resuming. Quest v8 artifacts are:
 - `agent-debate-gate.json`
 - `release-readiness-dashboard.json`
 - `verified-delivery-os.md`
+- `product-architect-review.json`
+- `architecture-next-steps.json`
+- `roadmap-signals.json`
+- `capability-gap-map.json`
+- `product-risk-register.json`
+- `user-value-matrix.json`
+- `strategic-refactor-radar.json`
+- `architecture-decision-suggestions.json`
+- `strategic-next-actions.md`
+- `runtime-reliability-os.json`
+- `command-failure-index.json`
+- `timeout-policy.json`
+- `claim-ledger.json`
+- `runtime-doctor-report.json`
+- `autonomous-recovery-plan.json`
+- `flaky-command-memory.json`
+- `evidence-replay.md`
+- `deep-coding-collaboration-os.json`
+- `deep-thinking-review.json`
+- `idea-to-build-brief.json`
+- `smarter-code-plan.json`
+- `collaboration-board.json`
+- `decision-tradeoff-matrix.json`
+- `build-better-roadmap.md`
+- `self-improving-coding-team-os.json`
+- `coding-team-metrics.json`
+- `delivery-retrospective.json`
+- `learning-feedback-loop.json`
+- `improvement-backlog.json`
+- `skill-evolution-candidates.json`
+- `self-improvement-roadmap.md`
+- `predictive-engineering-os.json`
+- `intent-architecture-compiler.json`
+- `change-simulation-engine.json`
+- `risk-forecast-score.json`
+- `implementation-path-ranking.json`
+- `test-intelligence-planner.json`
+- `proof-contract.json`
+- `architecture-drift-detector.json`
+- `context-freshness-gate.json`
+- `predictive-timeout-guard.json`
+- `predictive-engineering-roadmap.md`
 - `.oac/repo-wiki/index.md` (project-level, outside the run dir)
 - `summary.json`
 - optional `handoff.json`
@@ -232,7 +274,9 @@ write-back, run `oac repo-wiki`; for long local sessions use
 For coding work, use Quest v9 coding intelligence, the v12 Verified
 Knowledgebase, the v13 Semantic Repo Brain, v14 Temporal Memory, v15 Intelligent
 Coding Team OS, v16 Verified Coding Delivery OS, v17 Product Architect
-Intelligence, v18 Runtime Reliability + Evidence Replay OS, v19 Deep Coding Collaboration OS, and v20 Self-Improving Coding Team OS by default. Read
+Intelligence, v18 Runtime Reliability + Evidence Replay OS, v19 Deep Coding
+Collaboration OS, v20 Self-Improving Coding Team OS, and v21 Predictive
+Engineering OS by default. Read
 `coding-intelligence.json`, `patch-capsules.json`, `coding-review.md`,
 `coding-autopilot.json`, `symbol-graph.json`, `smart-test-matrix.json`,
 `patch-ledger.json`, `pre-edit-contract.json`, `automatic-code-review.json`,
@@ -274,8 +318,13 @@ Intelligence, v18 Runtime Reliability + Evidence Replay OS, v19 Deep Coding Coll
 `decision-tradeoff-matrix.json`, `build-better-roadmap.md`,
 `self-improving-coding-team-os.json`, `coding-team-metrics.json`,
 `delivery-retrospective.json`, `learning-feedback-loop.json`,
-`improvement-backlog.json`, `skill-evolution-candidates.json`, and
-`self-improvement-roadmap.md`
+`improvement-backlog.json`, `skill-evolution-candidates.json`,
+`self-improvement-roadmap.md`, `predictive-engineering-os.json`,
+`intent-architecture-compiler.json`, `change-simulation-engine.json`,
+`risk-forecast-score.json`, `implementation-path-ranking.json`,
+`test-intelligence-planner.json`, `proof-contract.json`,
+`architecture-drift-detector.json`, `context-freshness-gate.json`,
+`predictive-timeout-guard.json`, and `predictive-engineering-roadmap.md`
 when present before editing or completing. These sidecars capture intent,
 non-goals, affected files/modules/symbols, runtime parity, small patch capsules,
 smart-test tiers, patch ledger, pre-edit contract, automatic review, failure
@@ -300,8 +349,11 @@ replay, deep-thinking review, idea-to-build brief, smarter code plan,
 collaboration board, decision tradeoffs, build-better roadmap, capability gaps,
 delivery/quality/collaboration/learning/runtime metrics, delivery retrospective,
 learning feedback loop, improvement backlog, approval-gated skill evolution
-candidates, self-improvement roadmap, roadmap signals, product risks, user value, strategic refactor radar, and ADR
-suggestions. Do not
+candidates, self-improvement roadmap, predictive intent architecture, change
+simulation, risk forecasts, implementation path ranking, test intelligence
+planning, proof contracts, architecture drift detection, context freshness,
+predictive timeout guards, roadmap signals, product risks, user value, strategic
+refactor radar, and ADR suggestions. Do not
 claim files, symbols, commands, APIs, docs, or test results
 without local evidence; if `hallucination-gate.json` is blocked, stop and
 report the blocker before completion. If `semantic-repo-brain.json` reports a
@@ -321,6 +373,10 @@ product/architecture decision.
 If `self-improving-coding-team-os.json` is blocked or skill evolution candidates
 need approval, report the delivery/learning blocker and ask before promoting
 durable team knowledge or skills.
+If `predictive-engineering-os.json`, `proof-contract.json`,
+`context-freshness-gate.json`, or `predictive-timeout-guard.json` is blocked or
+review-gated, close the predictive risk/freshness/timeout blocker before
+claiming completion.
 Append `coding.intent`, `impact.analyzed`, `patch.capsule`,
 `tests.selected`, and `review.signals` when those facts change. Run
 `oac quest-v9` or `oac quest-v9 <quest-id>` for a fresh snapshot, `oac
@@ -329,7 +385,8 @@ kimi` before Kimi release-ready claims.
 
 After completion, append `next_steps.suggested` with concise user-choice
 recommendations grounded in the Quest evidence and Product Architect
-Intelligence plus Deep Coding Collaboration OS and Self-Improving Coding Team OS, include at least one
+Intelligence plus Deep Coding Collaboration OS, Self-Improving Coding Team OS,
+and Predictive Engineering OS; include at least one
 product/architecture/build recommendation when useful, and wait for the user's
 decision.
 

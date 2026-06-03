@@ -95,6 +95,20 @@ V20_ARTIFACTS=(
   self-improvement-roadmap.md
 )
 V20_DIRECT_SIDECARS="self-improving-coding-team-os.json, coding-team-metrics.json, delivery-retrospective.json, learning-feedback-loop.json, improvement-backlog.json, skill-evolution-candidates.json, self-improvement-roadmap.md"
+V21_ARTIFACTS=(
+  predictive-engineering-os.json
+  intent-architecture-compiler.json
+  change-simulation-engine.json
+  risk-forecast-score.json
+  implementation-path-ranking.json
+  test-intelligence-planner.json
+  proof-contract.json
+  architecture-drift-detector.json
+  context-freshness-gate.json
+  predictive-timeout-guard.json
+  predictive-engineering-roadmap.md
+)
+V21_DIRECT_SIDECARS="predictive-engineering-os.json, intent-architecture-compiler.json, change-simulation-engine.json, risk-forecast-score.json, implementation-path-ranking.json, test-intelligence-planner.json, proof-contract.json, architecture-drift-detector.json, context-freshness-gate.json, predictive-timeout-guard.json, predictive-engineering-roadmap.md"
 
 require_v18_artifact_mentions() {
   local file="$1"
@@ -141,6 +155,22 @@ require_v20_artifacts_exist() {
   local label="$2"
   for artifact in "${V20_ARTIFACTS[@]}"; do
     [ -f "$dir/$artifact" ] || fail "Missing $label Quest v20 $artifact"
+  done
+}
+
+require_v21_artifact_mentions() {
+  local file="$1"
+  local label="$2"
+  for artifact in "${V21_ARTIFACTS[@]}"; do
+    grep -q "$artifact" "$file" || fail "$label missing Quest v21 $artifact"
+  done
+}
+
+require_v21_artifacts_exist() {
+  local dir="$1"
+  local label="$2"
+  for artifact in "${V21_ARTIFACTS[@]}"; do
+    [ -f "$dir/$artifact" ] || fail "Missing $label Quest v21 $artifact"
   done
 }
 
@@ -257,6 +287,8 @@ grep -q 'Deep Coding Collaboration OS' "$REPO_ROOT/.opencode/agent/core/openagen
 require_v19_artifact_mentions "$REPO_ROOT/.opencode/agent/core/openagent.md" "OpenCode OpenAgent prompt"
 grep -q 'Self-Improving Coding Team OS' "$REPO_ROOT/.opencode/agent/core/openagent.md" || fail "OpenCode OpenAgent prompt does not mention Self-Improving Coding Team OS"
 require_v20_artifact_mentions "$REPO_ROOT/.opencode/agent/core/openagent.md" "OpenCode OpenAgent prompt"
+grep -q 'Predictive Engineering OS' "$REPO_ROOT/.opencode/agent/core/openagent.md" || fail "OpenCode OpenAgent prompt does not mention Predictive Engineering OS"
+require_v21_artifact_mentions "$REPO_ROOT/.opencode/agent/core/openagent.md" "OpenCode OpenAgent prompt"
 grep -q 'context.loaded' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
   || fail "OpenCode OpenAgent prompt does not mention context.loaded"
 grep -q 'request.received' "$REPO_ROOT/.opencode/agent/core/openagent.md" \
@@ -299,7 +331,9 @@ grep -q 'Deep Coding Collaboration OS' "$REPO_ROOT/.opencode/context/core/quest-
 require_v19_artifact_mentions "$REPO_ROOT/.opencode/context/core/quest-mode.md" "OpenCode Quest context"
 grep -q 'Self-Improving Coding Team OS' "$REPO_ROOT/.opencode/context/core/quest-mode.md" || fail "OpenCode Quest context does not mention Self-Improving Coding Team OS"
 require_v20_artifact_mentions "$REPO_ROOT/.opencode/context/core/quest-mode.md" "OpenCode Quest context"
-pass "OpenCode OpenAgent surfaces advertise Quest v8 adaptive protocol and Quest v9-v20 coding intelligence"
+grep -q 'Predictive Engineering OS' "$REPO_ROOT/.opencode/context/core/quest-mode.md" || fail "OpenCode Quest context does not mention Predictive Engineering OS"
+require_v21_artifact_mentions "$REPO_ROOT/.opencode/context/core/quest-mode.md" "OpenCode Quest context"
+pass "OpenCode OpenAgent surfaces advertise Quest v8 adaptive protocol and Quest v9-v21 coding intelligence"
 
 mkdir -p "$TEST_DIR/work/.oac"
 cp -R "$REPO_ROOT/.opencode" "$TEST_DIR/work/.opencode"
@@ -360,7 +394,7 @@ cat > .oac/config.json <<'JSON'
 JSON
 
 DIRECT_OUT="$TEST_DIR/direct-v8.jsonl"
-DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, and Self-Improving Coding Team OS sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md, ${V18_DIRECT_SIDECARS}, ${V19_DIRECT_SIDECARS}, ${V20_DIRECT_SIDECARS} and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
+DIRECT_PROMPT="Do not use tools. Start with OpenAgent Quest Spec. Include State: NEW, Scenario, Intensity, Team Lead: active, Experts, Trust Label, Gate, and the exact lifecycle NEW -> SPEC -> EXECUTE -> REVIEW -> VERIFY -> REFLECT -> COMPLETE -> WAITING. Mention v8 adaptive events review.started, task.injected, priority.changed, and research.assessed. Also mention Quest v9 coding intelligence, Coding Autopilot, Coding Execution, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, Self-Improving Coding Team OS, and Predictive Engineering OS sidecars coding-intelligence.json, patch-capsules.json, coding-review.md, coding-autopilot.json, symbol-graph.json, smart-test-matrix.json, pre-edit-contract.json, pr-readiness.md, coding-execution.json, executable-acceptance.json, runtime-compatibility-matrix.json, security-secrets-gate.json, pr-auto-packager.md, verified-knowledgebase.json, evidence-ledger.json, hallucination-gate.json, source-to-patch-trace.json, behavior-oracle.json, semantic-repo-brain.json, knowledge-confidence-score.json, failure-fix-memory.json, auto-skill-builder.json, temporal-memory.json, patch-outcome-ledger.json, repo-history-signals.json, intelligent-coding-team.json, requirement-compiler.json, expert-team-blackboard.json, change-impact-simulator.json, project-skill-pack-builder.json, verified-delivery-os.json, acceptance-compiler.json, evidence-first-gate.json, patch-provenance-ledger.json, runtime-cycle-matrix.json, auto-eval-generator.json, agent-debate-gate.json, release-readiness-dashboard.json, product-architect-review.json, architecture-next-steps.json, roadmap-signals.json, capability-gap-map.json, product-risk-register.json, user-value-matrix.json, strategic-refactor-radar.json, architecture-decision-suggestions.json, strategic-next-actions.md, ${V18_DIRECT_SIDECARS}, ${V19_DIRECT_SIDECARS}, ${V20_DIRECT_SIDECARS}, ${V21_DIRECT_SIDECARS} and events coding.intent, impact.analyzed, patch.capsule, tests.selected, review.signals."
 run_with_timeout 180 opencode run \
   --agent OpenAgent \
   --format json \
@@ -468,6 +502,17 @@ const checks = {
   improvementBacklog: /improvement-backlog\.json/i.test(text),
   skillEvolutionCandidates: /skill-evolution-candidates\.json/i.test(text),
   selfImprovementRoadmap: /self-improvement-roadmap\.md/i.test(text),
+  predictiveEngineering: /predictive-engineering-os\.json/i.test(text),
+  intentArchitectureCompiler: /intent-architecture-compiler\.json/i.test(text),
+  changeSimulationEngine: /change-simulation-engine\.json/i.test(text),
+  riskForecastScore: /risk-forecast-score\.json/i.test(text),
+  implementationPathRanking: /implementation-path-ranking\.json/i.test(text),
+  testIntelligencePlanner: /test-intelligence-planner\.json/i.test(text),
+  proofContract: /proof-contract\.json/i.test(text),
+  architectureDriftDetector: /architecture-drift-detector\.json/i.test(text),
+  contextFreshnessGate: /context-freshness-gate\.json/i.test(text),
+  predictiveTimeoutGuard: /predictive-timeout-guard\.json/i.test(text),
+  predictiveEngineeringRoadmap: /predictive-engineering-roadmap\.md/i.test(text),
   patchCapsule: /patch\.capsule/i.test(text),
   testsSelected: /tests\.selected/i.test(text),
   teamLead: /Team Lead:\s*active/i.test(text),
@@ -563,6 +608,7 @@ QUEST_VERSION="$(node -p "require('./.oac/runs/${QUEST_ID}/quest.json').version"
 require_v18_artifacts_exist ".oac/runs/${QUEST_ID}" "OpenCode runtime"
 require_v19_artifacts_exist ".oac/runs/${QUEST_ID}" "OpenCode runtime"
 require_v20_artifacts_exist ".oac/runs/${QUEST_ID}" "OpenCode runtime"
+require_v21_artifacts_exist ".oac/runs/${QUEST_ID}" "OpenCode runtime"
 [ -f ".oac/repo-wiki/index.md" ] || fail "Missing repo wiki index after Quest creation"
 grep -q 'Repo Wiki' .oac/repo-wiki/index.md || fail "Repo wiki index missing title"
 node - "$QUEST_ID" <<'NODE'
@@ -606,11 +652,19 @@ if (!Array.isArray(intelligence.selfImprovingCodingTeam.deliveryRetrospective?.w
 if (!Array.isArray(intelligence.selfImprovingCodingTeam.learningFeedbackLoop?.policy)) throw new Error("missing v20 learning feedback policy");
 if (!Array.isArray(intelligence.selfImprovingCodingTeam.improvementBacklog)) throw new Error("missing v20 improvement backlog");
 if (!Array.isArray(intelligence.selfImprovingCodingTeam.skillEvolutionCandidates)) throw new Error("missing v20 skill evolution candidates");
+if (!intelligence.predictiveEngineering || intelligence.predictiveEngineering.version !== "21") throw new Error("missing Predictive Engineering OS v21");
+if (!intelligence.predictiveEngineering.intentArchitectureCompiler?.requirements?.length) throw new Error("missing v21 intent architecture requirements");
+if (!Array.isArray(intelligence.predictiveEngineering.changeSimulationEngine?.predictedSurfaces)) throw new Error("missing v21 predicted surfaces");
+if (!intelligence.predictiveEngineering.riskForecastScore?.overallRisk) throw new Error("missing v21 risk forecast");
+if (!intelligence.predictiveEngineering.implementationPathRanking?.selectedPath) throw new Error("missing v21 implementation path");
+if (!Array.isArray(intelligence.predictiveEngineering.testIntelligencePlanner?.requiredTests)) throw new Error("missing v21 test intelligence plan");
+if (!Array.isArray(intelligence.predictiveEngineering.proofContract?.doneClaims)) throw new Error("missing v21 proof contract");
+if (!Array.isArray(intelligence.predictiveEngineering.predictiveTimeoutGuard?.timeoutPolicy)) throw new Error("missing v21 timeout guard");
 if (!Array.isArray(intelligence.testRecommendations) || intelligence.testRecommendations.length < 1) {
   throw new Error("missing v9 smart-test recommendations");
 }
 NODE
-pass "Quest v8 artifact created with Quest v9-v20 sidecars"
+pass "Quest v8 artifact created with Quest v9-v21 sidecars"
 
 "${OAC_CLI[@]}" quest-v9 "$QUEST_ID" > quest-v9.txt 2>&1
 grep -q 'Quest v9 coding intelligence refreshed' quest-v9.txt || fail "quest-v9 command did not refresh coding intelligence"
@@ -656,9 +710,13 @@ done
 for artifact in "${V20_ARTIFACTS[@]}"; do
   grep -q "$artifact" quest-v9.txt || fail "quest-v9 output missing $artifact artifact"
 done
+for artifact in "${V21_ARTIFACTS[@]}"; do
+  grep -q "$artifact" quest-v9.txt || fail "quest-v9 output missing $artifact artifact"
+done
 grep -q 'Deep coding collaboration' quest-v9.txt || fail "quest-v9 output missing Deep Coding Collaboration summary"
 grep -q 'Self-improving coding team' quest-v9.txt || fail "quest-v9 output missing Self-Improving Coding Team summary"
-pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, and Self-Improving Coding Team OS"
+grep -q 'Predictive engineering' quest-v9.txt || fail "quest-v9 output missing Predictive Engineering summary"
+pass "quest-v9 command refreshes coding intelligence, Verified Knowledgebase, Semantic Repo Brain, Temporal Memory, Intelligent Coding Team OS, Verified Coding Delivery OS, Product Architect Intelligence, Runtime Reliability + Evidence Replay OS, Deep Coding Collaboration OS, Self-Improving Coding Team OS, and Predictive Engineering OS"
 
 "${OAC_CLI[@]}" quest-status "$QUEST_ID" --json > status.json
 node - "$QUEST_ID" <<'NODE'
@@ -734,7 +792,7 @@ if [ "${RUN_LIVE_OPENCODE:-0}" != "1" ]; then
 fi
 
 "${OAC_CLI[@]}" quest-run --background --runtime opencode \
-  "Do not modify product files. Complete the OpenCode Quest v8 daemon smoke. Inspect local run artifacts first and append a research.assessed event with needed:false when possible, append task_update completion events for every assigned task, append a priority.changed event for the first assigned task with priority 1, append a task.injected event for taskId opencode-v8-dynamic-task with status completed and priority 1, and append a note event that says opencode-v8-daemon-ok." \
+  "Do not modify product files. Complete the OpenCode Quest v8 daemon smoke with Predictive Engineering OS enabled. Inspect local run artifacts first, including ${V21_DIRECT_SIDECARS} when present, and append a research.assessed event with needed:false when possible, append task_update completion events for every assigned task, append a priority.changed event for the first assigned task with priority 1, append a task.injected event for taskId opencode-v8-dynamic-task with status completed and priority 1, and append a note event that says opencode-v8-daemon-ok." \
   > daemon-run.txt 2>&1
 
 DAEMON_QUEST_ID="$(ls -1 .oac/runs | sort | tail -1)"
@@ -749,6 +807,7 @@ done
 require_v18_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live OpenCode daemon"
 require_v19_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live OpenCode daemon"
 require_v20_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live OpenCode daemon"
+require_v21_artifacts_exist ".oac/runs/${DAEMON_QUEST_ID}" "live OpenCode daemon"
 pass "Live OpenCode v8 daemon state created"
 
 DEADLINE=$((SECONDS + 300))

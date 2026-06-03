@@ -131,6 +131,17 @@ describe('runtime-bridge', () => {
     expect(prompt).toContain('improvement-backlog.json')
     expect(prompt).toContain('skill-evolution-candidates.json')
     expect(prompt).toContain('self-improvement-roadmap.md')
+    expect(prompt).toContain('predictive-engineering-os.json')
+    expect(prompt).toContain('intent-architecture-compiler.json')
+    expect(prompt).toContain('change-simulation-engine.json')
+    expect(prompt).toContain('risk-forecast-score.json')
+    expect(prompt).toContain('implementation-path-ranking.json')
+    expect(prompt).toContain('test-intelligence-planner.json')
+    expect(prompt).toContain('proof-contract.json')
+    expect(prompt).toContain('architecture-drift-detector.json')
+    expect(prompt).toContain('context-freshness-gate.json')
+    expect(prompt).toContain('predictive-timeout-guard.json')
+    expect(prompt).toContain('predictive-engineering-roadmap.md')
     expect(prompt).toContain('Quest v9 coding')
     expect(prompt).toContain('Coding Autopilot')
     expect(prompt).toContain('Coding Execution')
@@ -143,12 +154,17 @@ describe('runtime-bridge', () => {
     expect(prompt).toContain('Runtime Reliability + Evidence Replay OS')
     expect(prompt).toContain('Deep Coding Collaboration OS')
     expect(prompt).toContain('Self-Improving Coding Team OS')
+    expect(prompt).toContain('Predictive Engineering OS')
     expect(prompt).toContain('Product Architect Intelligence sidecars')
     expect(prompt).toContain('Runtime Reliability + Evidence Replay OS sidecars')
     expect(prompt).toContain('Deep Coding Collaboration OS sidecars')
     expect(prompt).toContain('Self-Improving Coding Team OS sidecars')
+    expect(prompt).toContain('Predictive Engineering OS sidecars')
     expect(prompt).toContain('think deeply from idea to build')
     expect(prompt).toContain('score delivery, quality, collaboration, learning, and runtime health')
+    expect(prompt).toContain('forecast risk')
+    expect(prompt).toContain('proof contracts')
+    expect(prompt).toContain('prevent Kimi timeout or max-step loops')
     expect(prompt).toContain('recommend product/architecture next steps')
     expect(prompt).toContain('strategic-next-actions.md')
     expect(prompt).toContain('runtime_command_timeout')
@@ -360,7 +376,7 @@ describe('runtime-bridge', () => {
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }
-  })
+  }, 15000)
 
   it('parseRuntimeObjectiveHints extracts Kimi daemon smoke markers', () => {
     const hints = parseRuntimeObjectiveHints(
@@ -552,7 +568,7 @@ describe('runtime-bridge', () => {
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }
-  })
+  }, 15000)
 
   it('background codex spawn synthesizes write-back when fake codex exits without file tools', async () => {
     const tmpRoot = await mkdtemp(join(tmpdir(), 'oac-runtime-bridge-'))
@@ -600,5 +616,5 @@ describe('runtime-bridge', () => {
     } finally {
       await rm(tmpRoot, { recursive: true, force: true })
     }
-  })
+  }, 15000)
 })
